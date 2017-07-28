@@ -1,0 +1,1963 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"set",
+				"setColor"
+			],
+			[
+				"pak",
+				"pak_info"
+			],
+			[
+				"ResPack",
+				"ResPack2	(main.lua)"
+			],
+			[
+				"res",
+				"ResPack2.lua"
+			],
+			[
+				"I",
+				"ImageNull"
+			],
+			[
+				"ply",
+				"playingSprite"
+			],
+			[
+				"newimage",
+				"love.image.newImageData"
+			],
+			[
+				"im",
+				"image	(main.lua)"
+			],
+			[
+				"frame",
+				"frameHead"
+			],
+			[
+				"pal",
+				"playing_sprite"
+			],
+			[
+				"play",
+				"playNum"
+			],
+			[
+				"plaing",
+				"playing_sprite	(ResPack.lua)"
+			],
+			[
+				"audio",
+				"love.audio.newSource"
+			],
+			[
+				"open",
+				"opengl"
+			],
+			[
+				"Tmp",
+				"TmpContent"
+			],
+			[
+				"path",
+				"path	parameter"
+			],
+			[
+				"Read",
+				"ReadFile	(ResPack.lua)"
+			],
+			[
+				"line",
+				"love.graphics.line"
+			],
+			[
+				"Set",
+				"SetCenter	(Rect.lua)"
+			],
+			[
+				"to",
+				"tostring	(e)"
+			],
+			[
+				"table",
+				"table.insert	(table, [pos,] value)"
+			],
+			[
+				"Res",
+				"ResPack"
+			],
+			[
+				"in",
+				"init	(ResPack.lua)"
+			],
+			[
+				"Game",
+				"GameMgr"
+			],
+			[
+				"g",
+				"love.graphics.arc"
+			],
+			[
+				"new",
+				"newImage"
+			],
+			[
+				"ke",
+				"keyboard	(conf.lua)"
+			],
+			[
+				"gra",
+				"love.graphics.draw"
+			],
+			[
+				"image",
+				"love.graphics.newImage"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "main.lua",
+			"settings":
+			{
+				"buffer_size": 1771,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Src/GameManager.lua",
+			"settings":
+			{
+				"buffer_size": 1019,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Src/GameMap.lua",
+			"settings":
+			{
+				"buffer_size": 374,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Src/AniPack.lua",
+			"settings":
+			{
+				"buffer_size": 6168,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Src/System/Sprite.lua",
+			"settings":
+			{
+				"buffer_size": 1018,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Src/Rect.lua",
+			"settings":
+			{
+				"buffer_size": 1635,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Src/ResPack2.lua",
+			"settings":
+			{
+				"buffer_size": 2153,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Src/ResPack.lua",
+			"settings":
+			{
+				"buffer_size": 7142,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Script/Character/Swordman/Animation/attack1.ani.lua",
+			"settings":
+			{
+				"buffer_size": 2490,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/User/Lua_Love2d.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/Lua/ggegame.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/Lua/ggeobj.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/Lua/ggeserver.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/Lua Love/LuaLove.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/Lua_Love2d.sublime-build",
+					""
+				],
+				[
+					"Packages/User/Lua_Love2d.sublime-build",
+					"Love2D"
+				],
+				[
+					"Packages/User/Lua_Love2d.sublime-build",
+					"Stop"
+				],
+				[
+					"Packages/User/Lua_Love2d.sublime-build",
+					"ldoc: File"
+				],
+				[
+					"Packages/User/Lua_Love2d.sublime-build",
+					"ldoc: Project"
+				]
+			],
+			[
+				"Packages/User/Lua_Love2d.sublime-build",
+				"Love2D"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 354.0,
+		"last_filter": "Package Control: ",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"fileheader",
+				"FileHeader: Add Header"
+			],
+			[
+				"Packageresourceviewer",
+				"PackageResourceViewer: Open Resource"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Set Syntax: Lua (Love)",
+				"Set Syntax: Lua (Love)"
+			]
+		],
+		"width": 464.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Config",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks/Character",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks/Character/Swordman",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks/Character/Swordman/Equipment",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks/Character/Swordman/Equipment/Avatar",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks/Character/Swordman/Equipment/Avatar/Weapon",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Music",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Script",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Script/Character",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Script/Character/Swordman",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/SoundPacks",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/System"
+	],
+	"file_history":
+	[
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/Rect.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/ResPack.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/ResManager.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/AniPack.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/GameMap.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/GameManager.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/main.lua",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/Preferences.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/ByteData.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/ConfigData.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Config/directory.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/CommonFunction.lua",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Default/Preferences.sublime-settings",
+		"/D/important/研发工具/(源码)ani播放器/sys/动画类.lua",
+		"/D/360安全浏览器下载/GGE v0.95/Core/Game/gge包围盒.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/ffiExtend.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/ffi函数.lua",
+		"/D/360安全浏览器下载/GGE v0.95/Core/Game/ffi函数.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Config/索引.ini",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/Src/ResPack.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/KeyContent.txt",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/KeyContent.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/nn的鬼剑士.lua",
+		"/D/important/研发工具/(源码)ani播放器/sys/ani.lua",
+		"/D/我的文档/Tencent Files/1076438225/FileRecv/帧动画库animation.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/conf.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/SystemClass.lua",
+		"/D/新建文件夹/xiazhu_PAK.lua",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/SideBarEnhancements/Side Bar.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua Love/LuaLove.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/LuaLove.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/评分设定.txt",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/架构草样.txt",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/常用指令.txt",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks/Character/Swordman/Equipment/Avatar/Skin/sm_coat14500b.img/10.png",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/ImagePacks/Character/Swordman/Equipment/Avatar/Skin/sm_coat14500b.img/0.png",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/文件类.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/ResNpk.lua",
+		"/D/important/LOVE Gamedev0.2.8/Doc/复件 状态机实现横版行走跳跃/player.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/middleclass.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/Src/CommonFunction.lua",
+		"/D/important/LOVE Gamedev0.2.8/Doc/复件 状态机实现横版行走跳跃/main.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/Src/middleclass.lua",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Default/Default (Windows).sublime-keymap",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/Default (Windows).sublime-keymap",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/Src/main.lua",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/SublimeTmpl/templates/lua.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/SublimeTmpl/SublimeTmpl.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/SublimeTmpl.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Doc/复件 状态机实现横版行走跳跃/lib/middleclass.lua",
+		"/D/important/LOVE Gamedev0.2.8/Doc/复件 状态机实现横版行走跳跃/lib/anim8.lua",
+		"/D/360安全浏览器下载/GGE v0.95/Core/Game/ggecommon.lua",
+		"/D/important/LOVE Gamedev0.2.8/Doc/复件 状态机实现横版行走跳跃/fsm.lua",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/test.c",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/FileHeader.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/test.lua",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/FileHeader.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Samples/命运之齿/键表值.tex",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/template/header/Lua.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Packages/Text.sublime-package",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/template/header/Lua - 副本.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/template/header/Text.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/template/header/LaTeX.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/template/body/Text.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/template/body/LaTeX.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/Plain text.sublime-settings",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/SublimeTmpl/templates/lua.tmpl",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Toolbar/Main.sublime-menu",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/Lua_Love2d.sublime-build",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggegame.sublime-build",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Theme - Default/Default.sublime-theme",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/FileHeader.sublime-package",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Packages/Color Scheme - Default.sublime-package",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Colorcoder/Monokai (Colorcoded).tmTheme",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Theme - Soda/Default.sublime-theme",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/Default.sublime-theme",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Default/Main.sublime-menu",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua Love/LuaLove.sublime-build",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Toolbar/package-metadata.json",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Package Control/Main.sublime-menu",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/ZZZ/Main.sublime-menu",
+		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/User/Preferences.sublime-settings",
+		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/User/Default (Windows).sublime-keymap",
+		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/Default/Default (Windows).sublime-keymap",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge精灵类.sublime-snippet",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge引擎.sublime-snippet",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggeobj.sublime-build",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge/table.print.sublime-snippet",
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge/string.split.sublime-snippet",
+		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/Default/Preferences.sublime-settings",
+		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/LuaLove/LuaLove.sublime-build",
+		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/User/Distraction Free.sublime-settings",
+		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/User/JSON.sublime-settings"
+	],
+	"find":
+	{
+		"height": 43.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"Center",
+			"temp_position",
+			"playing_sprite",
+			"centre_point",
+			"temp_position",
+			"sprite",
+			"ResPack",
+			"ImageNull",
+			"playing_sprite",
+			"action",
+			"ani",
+			"__pack_null_",
+			"light",
+			"frameDataGP",
+			"focus",
+			"ReadTexture",
+			"Res_cache_pool",
+			"advapi32",
+			"_ffi",
+			"CurrentRect",
+			"obj",
+			"读取数据表中的分支数据",
+			"horizontal",
+			"临时",
+			"水平",
+			"中心点",
+			"音效",
+			"霸体模式",
+			"混合模式",
+			"延迟",
+			"垂直",
+			"中心y",
+			"中心x",
+			"图像帧",
+			"img名称",
+			"npk名称",
+			"临时字符",
+			"总img数",
+			"容器",
+			"攻击盒",
+			"损害盒",
+			"FrameData信息",
+			"信息",
+			"读入文件",
+			"分割文本",
+			"框架",
+			"print",
+			"tmp_width",
+			"temp_position",
+			"x1",
+			"self.x",
+			"self.x1",
+			"playing_sprite",
+			"self.centre_point.x",
+			"png",
+			"Res_cache_poll",
+			"分割文本",
+			"centre_x",
+			"c新建类",
+			"GGE_PAK",
+			"print",
+			"取高度",
+			"取宽度",
+			"PAK_file_name",
+			"gge.纹理",
+			"取高度",
+			"取宽度",
+			"PAK_file_name",
+			"gge.纹理",
+			"file_name",
+			"PAK_file_name",
+			"取高度",
+			"取宽度",
+			"pak_text",
+			"len",
+			"_解密",
+			"初始化",
+			"ggednf/img",
+			"初始化",
+			"_Npkcache",
+			"Npkcache",
+			"ggenpk",
+			"字节集类",
+			"_字节集",
+			"create",
+			"销毁",
+			"创建",
+			"初始化",
+			"middleclass",
+			"new",
+			"ctrl+a",
+			"ctrl+e",
+			"()\n",
+			"ctrl+/",
+			"/",
+			"文件号",
+			"log",
+			"PAK信息",
+			"Q_游戏数据.PAK资源组",
+			"标识",
+			"临时PAK",
+			"ffi",
+			"销毁",
+			"创建",
+			"indent",
+			"tab_",
+			"indent",
+			"indent_guides",
+			"indent_guide",
+			"ruler",
+			"line",
+			"baid",
+			"font.size",
+			"tab_label",
+			"_label",
+			"sidebar_label",
+			"sidebar",
+			"font",
+			"tab",
+			"font",
+			"sidebar",
+			"font",
+			"gge"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"center",
+			"pos",
+			"texture",
+			"center",
+			"pos",
+			"ResPack2",
+			"playingSprite",
+			"playNum",
+			"frameDataGrp",
+			"LoadTexture",
+			"imageCachePool",
+			"ffiExtend",
+			"horizon",
+			"tmp",
+			"horizontal",
+			"center",
+			"sound",
+			"superArmor",
+			"blendMode",
+			"delay",
+			"vertical",
+			"center_y",
+			"center_x",
+			"frameNum",
+			"imgName",
+			"npkName",
+			"tmpStr",
+			"imgNum",
+			"Data",
+			"AtkBox",
+			"HurtBox",
+			"FrameData",
+			"ReadFile",
+			"CutText",
+			"FrameData",
+			"Res_cache_pool",
+			"CutText",
+			"GameMap",
+			"Rect",
+			"ResPack",
+			"getHeight",
+			"getWidth",
+			"PakName",
+			"ResMgr:ReadTexture",
+			"getHeight",
+			"getWidth",
+			"PakName",
+			"ResMgr:ReadTexture",
+			"PakName",
+			"getHeight",
+			"getWidth",
+			"offset_text",
+			"init",
+			"Src/img",
+			"init",
+			"ResNpk",
+			"Src/ByteData",
+			"_ByteData",
+			"destroy",
+			"new",
+			"init",
+			"FileNum",
+			"PakInfo",
+			"Game.Res_pool",
+			"path",
+			"TmpPak",
+			"destroy",
+			"init"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "main.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1771,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								336,
+								336
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								1,
+								1,
+								4,
+								56,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 13,
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Src/GameManager.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1019,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								809,
+								809
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								2,
+								20,
+								28,
+								41,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 52,
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 540.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "Src/GameMap.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 374,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								234,
+								234
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								14,
+								18,
+								56,
+								44,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 16,
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/Lua/Lua.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "Src/AniPack.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6168,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4456,
+								4456
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								18,
+								16,
+								39,
+								54,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 156,
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2947.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "Src/System/Sprite.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1018,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								399,
+								399
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								26,
+								23,
+								41,
+								15,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 20,
+							"syntax": "Packages/Lua/Lua.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 177.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "Src/Rect.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1635,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								354,
+								354
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								14,
+								18,
+								47,
+								51,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 16,
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "Src/ResPack2.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2153,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1998,
+								1998
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								25,
+								23,
+								47,
+								2,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 96,
+							"open_with_edit": true,
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1809.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "Src/ResPack.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7142,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3954,
+								3791
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								3,
+								23,
+								7,
+								34,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 179,
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4357.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "Script/Character/Swordman/Animation/attack1.ani.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2490,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								743,
+								743
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"c_time":
+							[
+								128,
+								3,
+								99,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								100,
+								97,
+								116,
+								101,
+								116,
+								105,
+								109,
+								101,
+								10,
+								113,
+								0,
+								67,
+								10,
+								7,
+								225,
+								7,
+								18,
+								0,
+								2,
+								19,
+								0,
+								0,
+								0,
+								113,
+								1,
+								133,
+								113,
+								2,
+								82,
+								113,
+								3,
+								46
+							],
+							"function_name_status_row": 19,
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 1080.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 35.0
+	},
+	"input":
+	{
+		"height": 43.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 172.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/Lua_Love2d.sublime-build",
+	"project": "命运之齿.sublime-project",
+	"replace":
+	{
+		"height": 80.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 263.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -1,4 +1,4 @@
--- @作者: Night_Walker
+﻿-- @作者: Night_Walker
 -- @邮箱:  1076438225@qq.com
 -- @创建时间:   2017-07-01 01:04:56
 -- @最后修改来自: Night_Walker
@@ -16,6 +16,11 @@ require "Src/ResPack2"
 opengl = love.graphics
 
 function love.load()
+
+	--git修改测试
+	
+
+
 
 
 

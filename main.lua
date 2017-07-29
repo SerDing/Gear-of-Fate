@@ -7,7 +7,7 @@
 require "Src/SystemClass" --加载系统底层的面向对象机制
 
 require "Src/CommonFunction"
-require "Src/GameManager"
+local GameMgr = require "Src/GameManager"
 require "Src/ResManager"
 require "Src/ResPack"
 require "Src/Rect"
@@ -15,18 +15,13 @@ require "Src/ResPack2"
 
 opengl = love.graphics
 
+local gameMgr = GameMgr.new()
+
 function love.load()
 
 	--git修改测试
 	
-
-
-
-
-
 	image = opengl.newImage("/Dat/backgroundpic.png")
-
-	GameMgr = GameMgr.new()
 	ResMgr = ResMgr.new()
 
 	Hero = ResPack.new("/ImagePacks/Character/Swordman/Equipment/Avatar/Skin/sm_coat14500b.img")

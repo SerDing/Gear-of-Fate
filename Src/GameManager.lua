@@ -5,10 +5,10 @@
 -- @Last Modified time: 2017-07-26 00:08:05
 
 
-GameMgr = class()
+local _GameMgr = class()
 
 
-function GameMgr:init() --initialize
+function _GameMgr:init() --initialize
 	Game ={
 
 		tile="",
@@ -57,7 +57,7 @@ function GameMgr:init() --initialize
 end
 
 
-function GameMgr:update(dt)
+function _GameMgr:update(dt)
 
 	-- if(Game.period == 0)then
 
@@ -69,8 +69,8 @@ function GameMgr:update(dt)
 end
 
 
-function GameMgr:draw(x,y)
+function _GameMgr:draw(x,y)
 
 end
 
-return GameMgr
+return _GameMgr

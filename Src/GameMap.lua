@@ -2,28 +2,28 @@
 -- @邮箱:  1076438225@qq.com
 -- @创建时间:   2017-07-14 18:56:44
 -- @最后修改来自: Night_Walker
--- @Last Modified time: 2017-07-17 00:25:09
+-- @Last Modified time: 2017-07-29 22:05:28
 
 
-GameMap = class()
+local GameMap = {}
 
 
-function GameMap:init() --initialize
+function GameMap:Ctor() --initialize
 
 	self.obejcts = {}
 
 end
 
 
-function GameMap:update(dt)
+function GameMap:Update(dt)
 
 end
 
 
-function GameMap:draw(x,y)
+function GameMap:Draw(x,y)
 
 	for n=1,#self.obejcts do
-		self.obejcts[n]:draw()
+		self.obejcts[n]:Draw()
 	end
 
 end

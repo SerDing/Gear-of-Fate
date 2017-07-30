@@ -1,11 +1,13 @@
--- @作者: Night_Walker
--- @邮箱:  1076438225@qq.com
--- @创建时间:   2017-07-16 19:37:50
--- @最后修改来自: Night_Walker
--- @Last Modified time: 2017-07-16 23:45:01
+--[[
+	Desc: An class to load config file
+ 	Author: Night_Walker
+	Since: 2017-07-28 21:54:14
+	Alter: 2017-07-16 23:45:02
+	Docs:
+		*Write notes here even more
+]]
 
-ConfigData = class()
-
+ConfigData = require("Src.Class")()
 
 function ConfigData:init(path) --initialize
 

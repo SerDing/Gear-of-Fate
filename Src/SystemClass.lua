@@ -1,10 +1,12 @@
--- @作者: Night_Walker
--- @邮箱:  1076438225@qq.com
--- @初始化时间:   2017-07-02 20:39:55
--- @最后修改来自: Night_Walker
--- @Last Modified time: 2017-07-10 19:55:45
-
-
+--[[
+	Dscribe: A new lua class
+ 	Author: Night_Walker
+	CreatTime:   2017-07-28 21:54:14
+ 	LastChangedBy: Night_Walker
+	Last Modified time: 2017-07-30 01:39:44
+	Doc:
+		*Write notes here even more
+]]
 
 -- @作者: baidwwy
 -- @邮箱:  313738139@qq.com

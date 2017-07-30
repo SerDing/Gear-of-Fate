@@ -1,35 +1,34 @@
-﻿-- @作者: Night_Walker
--- @邮箱:  1076438225@qq.com
--- @创建时间:   2017-07-01 01:04:56
--- @最后修改来自: Night_Walker
--- @Last Modified time: 2017-07-25 23:53:22
+﻿--[[
+	Desc: Entrace file
+ 	Author: Night_Walker
+	Since: 2017-07-01 01:04:56
+	Alter: 2017-07-30 23:46:00
+	Docs:
+		* Program Entrance
+]]
 
-require "Src/SystemClass" --加载系统底层的面向对象机制
 
 require "Src/CommonFunction"
-local GameMgr = require "Src/GameManager"
-require "Src/ResManager"
-require "Src/ResPack"
-require "Src/Rect"
-require "Src/ResPack2"
 
-opengl = love.graphics
+local _GameMgr = require "Src/GameManager"
 
-local gameMgr = GameMgr.new()
+local _Anima = require "Src/Anima"
+
+local _RESMGR = require "Src/ResManager"
+
+
+
+
+local image = love.graphics.newImage("/Dat/backgroundpic.png")
+
+local hero = _Anima.New("/ImagePacks/Character/Swordman/Equipment/Avatar/Skin/sm_coat14500b.img")
+hero:SetCentrePoint(233,336)
+local weapon = _Anima.New("/ImagePacks/Character/Swordman/Equipment/Avatar/Weapon/sswd4200c.img")
+weapon:SetCentrePoint(233,336)
 
 function love.load()
 
-	--git修改测试
-	
-	image = opengl.newImage("/Dat/backgroundpic.png")
-	ResMgr = ResMgr.new()
-
-	Hero = ResPack.new("/ImagePacks/Character/Swordman/Equipment/Avatar/Skin/sm_coat14500b.img")
-	Hero:SetCentrePoint(233,336)
-	weapon = ResPack.new("/ImagePacks/Character/Swordman/Equipment/Avatar/Weapon/sswd4200c.img")
-	weapon:SetCentrePoint(233,336)
-
-	bgm = ResMgr:LoadSound("/Music/draconian_tower.ogg")
+	local bgm = _RESMGR.LoadSound("/Music/draconian_tower.ogg")
 	bgm:play()
 	bgm:setLooping(true)
 
@@ -54,9 +53,9 @@ end
 function love.update(dt)
 
 
-	Hero:update(7,189,210)
-	weapon:update(7,189,210)
-	ResMgr:update()
+	hero:Update(7,189,210)
+	weapon:Update(7,189,210)
+	_RESMGR:Update()
 
 end
 
@@ -78,8 +77,8 @@ function love.draw()
 	-- 	love.graphics.print("The Right_Ctrl is down",100,100)
 	-- end
 
-	Hero:draw(400,300)
-	weapon:draw(400,300)
+	hero:Draw(400,300)
+	weapon:Draw(400,300)
 end
 
 

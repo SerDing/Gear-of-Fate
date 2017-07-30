@@ -5,10 +5,10 @@
 -- @Last Modified time: 2017-07-27 00:20:15
 
 
-local Sprite = class()
+local _Sprite = class()
 
 
-function Sprite:init(path,x,y,w,h) --initialize
+function _Sprite:init(path,x,y,w,h) --initialize
 
 	self.texture = love.graphics.newImage(path)
 
@@ -30,7 +30,7 @@ end
 
 
 
-function Sprite:draw(x,y,r,sx,sy)
+function _Sprite:draw(x,y,r,sx,sy)
 
 	if (x == nil and y == nil) then
 		self:setPos()
@@ -52,12 +52,12 @@ function Sprite:draw(x,y,r,sx,sy)
 
 end
 
-function Sprite:getRect() --取回包围盒
+function _Sprite:getRect() --取回包围盒
 
 	return self.rect
 
 end
-function Sprite:setCenter(x,y) --取回包围盒
+function _Sprite:setCenter(x,y) --取回包围盒
 
 	self.center.x = x or 0
 	self.center.y = y or 0
@@ -66,4 +66,4 @@ function Sprite:setCenter(x,y) --取回包围盒
 end
 
 
-return Sprite
+return _Sprite

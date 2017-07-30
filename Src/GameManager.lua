@@ -1,54 +1,47 @@
--- @作者: Night_Walker
--- @邮箱:  1076438225@qq.com
--- @创建时间:   2017-07-02 20:28:41
--- @最后修改来自: Night_Walker
--- @Last Modified time: 2017-07-26 00:08:05
+--[[
+	Desc: A single object to manage core blocks of the game.
+ 	Author: Night_Walker
+	Since: 2017-07-28 21:54:14
+	Alter: 2017-07-30 23:28:48
+	Docs:
+		* The class contain many game core data
+]]
 
 
-local _GameMgr = class()
+local _GAMEMGR = {
 
-
-function _GameMgr:init() --initialize
-	Game ={
-
-		tile="",
+		title="",
 		period = 0, --游戏阶段
-		scre_offset = {x = 0 , y = 0 },
-		mouse_pos = {x = 0 , y = 0 },
-		run_path = "",
+		offset = {x = 0 , y = 0 },
+		mousePos = {x = 0 , y = 0 },
+		runPath = "",
 
-		Debug = false,
+		debug = false,
 
-		keyboard_ini = {
+		keyCfg = {
 
-			-- System window keys
-			bag_win = "i", -- the bag window
+
+			bag_win = "i",
 			state_win = "m", -- hero's state window
-			skill_win = "k", -- skill window
+			skill_win = "k",
 
-			-- Character Control keys
+
 			up = "up",
 			down = "down",
 			left = "left",
 			right = "right",
 			attack = "x",
 			jump = "c"
-
-
 		},
-		imageCachePool = {}, --资源缓存池
-		resPool = {}, --资源加载列表
-		soundCachePool = {}
+
+}
 
 
-
-	}
-
-
+function _GAMEMGR.Ctor() --initialize
 
 	--[[
 
-	This is a test to test the SystemClass.lua(面向对象机制)
+	This is a test to test the Class.lua(面向对象机制)
 
 	self.id = 1
 	print("self.id = " .. tostring(self.id))
@@ -57,7 +50,7 @@ function _GameMgr:init() --initialize
 end
 
 
-function _GameMgr:update(dt)
+function _GAMEMGR.Update(dt)
 
 	-- if(Game.period == 0)then
 
@@ -69,8 +62,8 @@ function _GameMgr:update(dt)
 end
 
 
-function _GameMgr:draw(x,y)
+function _GAMEMGR.Draw(x,y)
 
 end
 
-return _GameMgr
+return _GAMEMGR

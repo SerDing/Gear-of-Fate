@@ -1,14 +1,21 @@
--- @作者: Night_Walker
--- @邮箱:  1076438225@qq.com
--- @创建时间:   2017-07-18 16:39:54
--- @最后修改来自: Night_Walker
--- @Last Modified time: 2017-07-27 00:34:18
+--[[
+	Desc: Animation Pack class
+ 	Author: Night_Walker
+	Since: 2017-07-28 21:54:14
+	Alter: 2017-07-30 23:36:07
+	Docs:
+		* This class can contain many *.ani files using :AddAnimation(path)
+		* using :SetAnimation() to switch the class to objective state animation
+]]
 
 
-AniPack = class()
 
+local _AniPack = require("Src.Class")()
 
-function AniPack:init() --initialize
+local _RESMGR = require "ResManager"
+local _ResPack = require "ResPack"
+
+function _AniPack:Ctor() --initialize
 
 	self.pos = {x = 0, y = 0}
 	self.center = {x = 0, y = 0}
@@ -29,8 +36,8 @@ function AniPack:init() --initialize
 	self.count = 0
 	self.time = 0
 
-	self.box = Rect.new(0,0,1,1)
-	self.CurrentBox = Rect.new(0,0,1,1)
+	self.box = require ("Rect")(0,0,1,1)
+	self.currentBox = require ("Rect")(0,0,1,1)
 
 	self.focus = {
 		["focus"] = false,
@@ -44,15 +51,13 @@ function AniPack:init() --initialize
 end
 
 
-function AniPack:update(dt)
+function _AniPack:Update(dt)
 	self.frameHead = string.format("[FRAME%03d]", self.count)
 	if not  self.frameHead then
 		return self
 	end
 
 	self.time = self.time + (dt or 0)
-
-
 
 	if self.time >= (self.frameData[self.frameHead]["[DELAY]"] or 100) / 1000  then
 		self.time = 0-- self.time - self.frameData[self.frameHead]["[DELAY]"] / 1000
@@ -69,9 +74,7 @@ function AniPack:update(dt)
 			elseif self.playNum == 1 then
 			 	self.count = self.count - 1
 			 	self.playNum = self.playNum - 1
-
 			end
-
 		end
 	end
 
@@ -79,42 +82,41 @@ function AniPack:update(dt)
 		--print(string.format("sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1],self.str))
 		-- local img = require "sys/img"(string.format("sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
 
-		local img = ResPack2.new(self.frameData[self.frameHead]["[IMAGE]"][1])
+		local img = _ResPack.New(self.frameData[self.frameHead]["[IMAGE]"][1])
 		if not img then
-			print("Error:AniPack: (update)load imgPack failed. " )
+			print("Error:_AniPack: (update)load imgPack failed. " )
 			return self
 		end
 
 		-- self.spr:置纹理(img:取纹理(self.frameData[self.frameHead]["[IMAGE]"][2]+1))
-		self.playingSprite = img:getTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
-		self.offset = img:getOffset(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
+		self.playingSprite = img:GetTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
+		self.offset = img:GetOffset(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
 	else
 		self.playingSprite = ImageNull
 	end
 
 
 
-	self:setcenter(self.frameData[self.frameHead]["[IMAGE POS]"][1],self.frameData[self.frameHead]["[IMAGE POS]"][2])
+	self:Setcenter(self.frameData[self.frameHead]["[IMAGE POS]"][1],self.frameData[self.frameHead]["[IMAGE POS]"][2])
 
 	if self.num > 1 then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 			if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
 				-- self.spr:置混合(2)
-				self:setBlendMode(2)
+				self:SetBlendMode(2)
 			end
 		end
 
 		if self.frameData[self.frameHead]["[RGBA]"] then
-			self:setColor(ARGB(self.frameData[self.frameHead]["[RGBA]"][1],
+			self:SetColor(ARGB(self.frameData[self.frameHead]["[RGBA]"][1],
 				self.frameData[self.frameHead]["[RGBA]"][2],
 				self.frameData[self.frameHead]["[RGBA]"][3],
 				self.frameData[self.frameHead]["[RGBA]"][4]))
 		end
 	end
-
 end
 
-function AniPack:draw(x,y,r,w,h)
+function _AniPack:Draw(x,y,r,w,h)
 
 	self.pos.x = x or self.pos.x
 	self.pos.y = y or self.pos.y
@@ -169,20 +171,19 @@ function AniPack:draw(x,y,r,w,h)
 		self.center.y)
 
 
-	self.CurrentRect:setPos(self.pos.x,self.pos.y)
+	self.CurrentRect:SetPos(self.pos.x,self.pos.y)
 
 	local tmp_width = self.playing_sprite:getWidth()
 	local tmp_height = self.playing_sprite:getHeight()
 
-	self.CurrentRect:setSize(tmp_width,tmp_height)
-	self.CurrentRect:draw()
-
+	self.CurrentRect:SetSize(tmp_width,tmp_height)
+	self.CurrentRect:Draw()
 end
 
-function AniPack:setAnimation(id,__num)
+function _AniPack:SetAnimation(id,__num)
 
 	if (type(id) ~= "string") then
-	    print("Warning! AniPack:setAnimation()--the type of id must be string ")
+	    print("Warning! _AniPack:setAnimation()--the type of id must be string ")
 	    return
 	end
 
@@ -196,40 +197,38 @@ function AniPack:setAnimation(id,__num)
 	if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
 			-- self.spr:置混合(2)
-			self:setBlendMode(2) -- Alpha线性渐变混合 Alpha.one
+			self:SetBlendMode(2) -- Alpha线性渐变混合 Alpha.one
 		end
 	end
 
 	if self.frameData[self.frameHead]["[RGBA]"] then
-		self:setColor(self.frameData[self.frameHead]["[RGBA]"][1],
+		self:SetColor(self.frameData[self.frameHead]["[RGBA]"][1],
 			self.frameData[self.frameHead]["[RGBA]"][2],
 			self.frameData[self.frameHead]["[RGBA]"][3],
 			self.frameData[self.frameHead]["[RGBA]"][4])
 	end
-
 end
 
-function AniPack:addAnimation(aniPath,__num,id)
+function _AniPack:AddAnimation(aniPath,__num,id)
 	-- aniPath	ani文件的路径
 	-- __num	播放次数
 	-- id		ani的对应动作(状态)名称
 
 	local content = require(aniPath) -- 加载返回ani的table数据
 	sellf.frameDataGrp[id] = {data = content, num = __num}
-
 end
 
-function AniPack:setcenter(x,y)
+function _AniPack:Setcenter(x,y)
 	self.center.x = x or self.center.x
 	self.center.y = y or self.center.y
 end
 
-function AniPack:setColor(r,g,b,a)
+function _AniPack:SetColor(r,g,b,a)
 	self.color = {r = r, g = g, b = b, a = a }
 end
 
-function AniPack:setBlendMode(mode)
+function _AniPack:SetBlendMode(mode)
 	-- statements
 end
 
-return AniPack
+return _AniPack

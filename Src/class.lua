@@ -19,17 +19,17 @@ local function _Clone(object, table)
         elseif lookup_table[object] then
             return lookup_table[object]
         end
-        
+
 		local new_table = table or {}
         lookup_table[object] = new_table
-        
+
 		for key, value in pairs(object) do
             new_table[_copy(key)] = _copy(value)
         end
-		
+
         return setmetatable(new_table, getmetatable(object))
     end
-	
+
     return _copy(object, table)
 end
 
@@ -39,7 +39,7 @@ local function _Class(...) -- super list
 
     if (#superList > 0) then
 		cls = _Clone(superList[1])
-		
+
         for n=2, #superList do
 			cls = _Clone(superList[n], cls)
 		end
@@ -52,7 +52,7 @@ local function _Class(...) -- super list
         instance.class = cls
         instance:Ctor(...)
         return instance
-    end    
+    end
 
     return cls
 end

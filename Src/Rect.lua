@@ -1,17 +1,20 @@
--- @作者: Night_Walker
--- @邮箱:  1076438225@qq.com
--- @创建时间:   2017-07-14 18:47:51
--- @最后修改来自: Night_Walker
--- @Last Modified time: 2017-07-18 17:38:55
+--[[
+	Desc: An class used to check the hitting result
+ 	Author: Night_Walker
+	Since: 2017-07-28 21:54:14
+	Alter: 2017-07-30 11:37:50
+	Docs:
+		*Write notes here even more
+]]
 
 
-Rect = class()
+local Rect = require("Src.Class")()
 
 
-function Rect:init(x,y,w,h) --initialize
+function Rect:Ctor(x,y,w,h) --initialize
 	self.position = {x = 0, y = 0}
 	self.size = {w = 0, h = 0}
-	self.CenterPos = {x = 0, y = 0}
+	self.centerPos = {x = 0, y = 0}
 
 	self.position.x = x or 0
 	self.position.y = y or 0
@@ -27,7 +30,7 @@ function Rect:init(x,y,w,h) --initialize
 
 end
 
-function Rect:draw()
+function Rect:Draw()
 
 	-- print(self.position.x,self.position.y)
 
@@ -36,8 +39,8 @@ function Rect:draw()
 	love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
 
 	love.graphics.rectangle( "line",
-		self.position.x - self.CenterPos.x,
-		self.position.y - self.CenterPos.y,
+		self.position.x - self.centerPos.x,
+		self.position.y - self.centerPos.y,
 		self.size.w,
 		self.size.h )
 
@@ -67,22 +70,22 @@ function Rect:draw()
 end
 
 
-function Rect:setPos(x,y)
+function Rect:SetPos(x,y)
 	self.position.x = x
 	self.position.y = y
 end
 
-function Rect:setCenter(x,y)
-	self.CenterPos.x = x or self.CenterPos.x
-	self.CenterPos.y = y or self.CenterPos.y
+function Rect:SetCenter(x,y)
+	self.centerPos.x = x or self.centerPos.x
+	self.centerPos.y = y or self.centerPos.y
 end
 
-function Rect:setSize(w,h)
+function Rect:SetSize(w,h)
 	self.size.w = w or 0
 	self.size.h = h or 0
 end
 
-function Rect:setColor(r,g,b,a)
+function Rect:SetColor(r,g,b,a)
 	self.color = {
 	r = r,
 	g = g,

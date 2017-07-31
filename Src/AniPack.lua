@@ -4,7 +4,7 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 23:36:07
 	Docs:
-		* This class can contain many *.ani files using :AddAnimation(path)
+		* This class can add many *.ani files by using :AddAnimation(path)
 		* using :SetAnimation() to switch the class to objective state animation
 ]]
 
@@ -21,17 +21,17 @@ function _AniPack:Ctor() --initialize
 	self.center = {x = 0, y = 0}
 	self.size = {w = 1, h = 1}
 
-	self.playingSprite = 0 	-- 当前正在播放的帧图片
+	self.playingSprite = 0
 	self.playNum = 1 	-- 播放次数
 
 	self.frameDataGrp = {} 	-- 帧数据组 包含多个ani的帧数据
 	self.frameData = {} -- 从"*.ani.lua"文件中读取出的帧数据
 	self.frameHead = "[FRAME000]" -- 每一帧的开头帧号
 
-	if (not ImageNull) then
-	    ImageNull = love.image.newImageData(1, 1)
+	if (not _RESMGR.imageNull) then
+	    _RESMGR.imageNull = love.image.newImageData(1, 1)
 	end
-	self.playingSprite = ImageNull
+	self.playingSprite = _RESMGR.imageNull
 
 	self.count = 0
 	self.time = 0
@@ -92,7 +92,7 @@ function _AniPack:Update(dt)
 		self.playingSprite = img:GetTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
 		self.offset = img:GetOffset(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
 	else
-		self.playingSprite = ImageNull
+		self.playingSprite = _RESMGR.imageNull
 	end
 
 
@@ -124,7 +124,7 @@ function _AniPack:Draw(x,y,r,w,h)
 	self.size.h = h or self.size.h
 
 
-	if self.focus["focus"]  then --聚焦 即霸体状态下的外线效果
+	if self.focus["focus"]  then --霸体状态下的外线效果
 
 		self.focus["ARGB"]["A"]  = self.focus["ARGB"]["A"]   + self.focus["dir"] * self.focus["speed"] * 引擎.取帧时间()
 		if self.focus["ARGB"]["A"]  >= self.focus["max"] or
@@ -134,25 +134,25 @@ function _AniPack:Draw(x,y,r,w,h)
 		end
 		self:setColor(ARGB(self.focus["ARGB"]["A"] ,self.focus["ARGB"]["R"],self.focus["ARGB"]["G"],self.focus["ARGB"]["B"]))
 
-		self.spr:显示(
+		self.spr:Draw(
 			math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
 			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
 			r or 0,
 			self.size.w,
 			self.size.h)
 
-		self.spr:显示(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
+		self.spr:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
 			r or 0,
 			self.size.w,
 			self.size.h)
 
-		self.spr:显示(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,
+		self.spr:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,
 			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)+1,
 			r or 0,
 			self.size.w,
 			self.size.h)
 
-		self.spr:显示(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
+		self.spr:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
 			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)+1,
 			r or 0,
 			self.size.w,
@@ -187,8 +187,8 @@ function _AniPack:SetAnimation(id,__num)
 	    return
 	end
 
-	self.frameData = self.frameDataGrp[id].data -- 获取ani帧数据
-	self.playNum = self.frameDataGrp[id].__num or 1  -- 获取播放次数
+	self.frameData = self.frameDataGrp[id].data
+	self.playNum = self.frameDataGrp[id].__num or 1
 
 	self.count = 0
 	self.time = 0
@@ -214,8 +214,19 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 	-- __num	播放次数
 	-- id		ani的对应动作(状态)名称
 
-	local content = require(aniPath) -- 加载返回ani的table数据
-	sellf.frameDataGrp[id] = {data = content, num = __num}
+
+	if(type(aniPath) == "string")then
+		local content = require(aniPath) -- content is a table
+		sellf.frameDataGrp[id] = {data = content, num = __num}
+	elseif (type(aniPath) == "table") then
+	    print("Error: _AniPack:AddAnimation() --> aniPath expect a string ,not a table.")
+	    return self
+	else
+	    print("Error: _AniPack:AddAnimation() --> aniPath get a unexpected type!")
+	    return self
+	end
+
+
 end
 
 function _AniPack:Setcenter(x,y)

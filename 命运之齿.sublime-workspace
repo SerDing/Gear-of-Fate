@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"Add",
+				"AddAnimation"
+			],
+			[
 				"anim",
 				"Anima.lua"
 			],
@@ -151,15 +155,15 @@
 			"file": "Src/AniPack.lua",
 			"settings":
 			{
-				"buffer_size": 6400,
+				"buffer_size": 6692,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "Src/Anima.lua",
+			"file": "Src/Core/Sprite.lua",
 			"settings":
 			{
-				"buffer_size": 6337,
+				"buffer_size": 1045,
 				"line_ending": "Windows"
 			}
 		}
@@ -273,13 +277,27 @@
 	"expanded_folders":
 	[
 		"/D/Git/Clone/Gear-Of-Fate",
-		"/D/Git/Clone/Gear-Of-Fate/Src"
+		"/D/Git/Clone/Gear-Of-Fate/Doc",
+		"/D/Git/Clone/Gear-Of-Fate/ImagePacks/Character",
+		"/D/Git/Clone/Gear-Of-Fate/ImagePacks/Character/Swordman",
+		"/D/Git/Clone/Gear-Of-Fate/Script/Character",
+		"/D/Git/Clone/Gear-Of-Fate/Script/Character/Swordman",
+		"/D/Git/Clone/Gear-Of-Fate/SoundPacks",
+		"/D/Git/Clone/Gear-Of-Fate/Src",
+		"/D/Git/Clone/Gear-Of-Fate/Src/Core"
 	],
 	"file_history":
 	[
+		"/D/Git/Clone/Gear-Of-Fate/Src/Anima.lua",
+		"/D/Git/Clone/Gear-Of-Fate/Doc/Need_AniPack.md",
+		"/D/Git/Clone/Gear-Of-Fate/学习记录.md",
+		"/D/Git/Clone/Gear-Of-Fate/DevPlan.md",
+		"/D/Git/Clone/Gear-Of-Fate/Doc/AniPA",
+		"/D/Git/Clone/Gear-Of-Fate/Config/索引.ini",
+		"/D/Git/Clone/Gear-Of-Fate/Dat/characterSelectStage.ogg",
+		"/D/Git/Clone/Gear-Of-Fate/ImagePacks/Character/Swordman/Equipment/Avatar/Skin/sm_body0000.img/0.png",
 		"/D/Git/Clone/Gear-Of-Fate/Script/Character/Swordman/Animation/attack1.ani.lua",
 		"/D/Git/Clone/Gear-Of-Fate/Src/ResPack2.lua",
-		"/D/Git/Clone/Gear-Of-Fate/Src/Anima.lua",
 		"/D/Git/Clone/Gear-Of-Fate/Src/Class.lua",
 		"/D/Git/Clone/Gear-Of-Fate/Src/ConfigData.lua",
 		"/D/Git/Clone/Gear-Of-Fate/Src/ResManager.lua",
@@ -289,7 +307,6 @@
 		"/D/Git/Clone/Gear-Of-Fate/Src/Src/ResManager.lua",
 		"/D/TmpDev/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/FileHeader/template/header/Lua.tmpl",
 		"/D/TmpDev/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/User/FileHeader.sublime-settings",
-		"/D/Git/Clone/Gear-Of-Fate/学习记录.md",
 		"/D/Documents/Tencent Files/1076438225/FileRecv/require_example/require_example/class.lua",
 		"/D/Documents/Tencent Files/1076438225/FileRecv/require_example/require_example/obj.lua",
 		"/D/Documents/Tencent Files/1076438225/FileRecv/require_example/require_example/mgr.lua",
@@ -398,15 +415,11 @@
 		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge引擎.sublime-snippet",
 		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggeobj.sublime-build",
 		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge/table.print.sublime-snippet",
-		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge/string.split.sublime-snippet",
-		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/Default/Preferences.sublime-settings",
-		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/LuaLove/LuaLove.sublime-build",
-		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/User/Distraction Free.sublime-settings",
-		"/D/360安全浏览器下载/GGE v0.95/Sublime Text/Data/Packages/User/JSON.sublime-settings"
+		"/D/important/LOVE Gamedev0.2.8/Sublime Text/Data/Packages/Lua/ggesnippet/gge/string.split.sublime-snippet"
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 43.0
 	},
 	"find_in_files":
 	{
@@ -420,6 +433,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"显示",
+			"self.rect",
+			"rect",
+			"CurrentRect",
+			"ImageNull",
 			"_ResPack",
 			"_ResPack2",
 			"_ResPack",
@@ -542,12 +560,7 @@
 			"new",
 			"ctrl+a",
 			"ctrl+e",
-			"()\n",
-			"ctrl+/",
-			"/",
-			"文件号",
-			"log",
-			"PAK信息"
+			"()\n"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -555,6 +568,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"Draw",
+			"currentRect",
+			"_RESMGR.imageNull",
 			"_ResPack",
 			"_Anima",
 			"_AniPack",
@@ -651,7 +667,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -667,8 +683,8 @@
 						"selection":
 						[
 							[
-								246,
-								246
+								136,
+								136
 							]
 						],
 						"settings":
@@ -676,61 +692,61 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content"
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
 							],
 							"c_time":
 							[
@@ -780,7 +796,7 @@
 								46
 							],
 							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai Soda (SL).tmTheme",
-							"function_name_status_row": 15,
+							"function_name_status_row": 9,
 							"origin_encoding": "UTF-8",
 							"syntax": "Packages/Lua/Lua.sublime-syntax",
 							"translate_tabs_to_spaces": false
@@ -789,7 +805,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -798,15 +814,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6400,
+						"buffer_size": 6692,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1795,
-								1795
+								3757,
+								3757
 							]
 						],
 						"settings":
@@ -814,21 +830,26 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
@@ -844,31 +865,26 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content"
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
 							],
 							"c_time":
 							[
@@ -918,33 +934,33 @@
 								46
 							],
 							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai Soda (SL).tmTheme",
-							"function_name_status_row": 77,
+							"function_name_status_row": 135,
 							"origin_encoding": "UTF-8",
 							"syntax": "Packages/Lua/Lua.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 3216.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "Src/Anima.lua",
+					"file": "Src/Core/Sprite.lua",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6337,
+						"buffer_size": 1045,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								234,
-								234
+								342,
+								342
 							]
 						],
 						"settings":
@@ -952,21 +968,26 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
@@ -982,31 +1003,26 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content"
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
 							],
 							"c_time":
 							[
@@ -1055,16 +1071,16 @@
 								3,
 								46
 							],
-							"function_name_status_row": 8,
+							"function_name_status_row": 19,
 							"origin_encoding": "UTF-8",
 							"syntax": "Packages/Lua/Lua.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 162.0,
+						"translation.y": 243.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -1113,7 +1129,7 @@
 	"project": "命运之齿.sublime-project",
 	"replace":
 	{
-		"height": 66.0
+		"height": 80.0
 	},
 	"save_all_on_build": true,
 	"select_file":

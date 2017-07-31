@@ -53,8 +53,8 @@ end
 function love.update(dt)
 
 
-	hero:Update(7,189,210)
-	weapon:Update(7,189,210)
+	hero:Update(5,189,210)
+	weapon:Update(5,189,210)
 	_RESMGR:Update()
 
 end

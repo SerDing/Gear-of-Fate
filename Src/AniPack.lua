@@ -9,11 +9,12 @@
 ]]
 
 
-
 local _AniPack = require("Src.Class")()
 
-local _RESMGR = require "ResManager"
-local _ResPack = require "ResPack"
+local _Sprite = require "Src.Core.Sprite"
+local _ResPack = require "Src.ResPack"
+local _RESMGR = require "Src.ResManager"
+local _Rect = require "Src.Core.Rect"
 
 function _AniPack:Ctor() --initialize
 
@@ -21,8 +22,8 @@ function _AniPack:Ctor() --initialize
 	self.center = {x = 0, y = 0}
 	self.size = {w = 1, h = 1}
 
-	self.playingSprite = 0
 	self.playNum = 1 	-- 播放次数
+	self.fileNum = 0000
 
 	self.frameDataGrp = {} 	-- 帧数据组 包含多个ani的帧数据
 	self.frameData = {} -- 从"*.ani.lua"文件中读取出的帧数据
@@ -31,13 +32,13 @@ function _AniPack:Ctor() --initialize
 	if (not _RESMGR.imageNull) then
 	    _RESMGR.imageNull = love.image.newImageData(1, 1)
 	end
-	self.playingSprite = _RESMGR.imageNull
+	self.playingSprite = _Sprite.New(_RESMGR.imageNull)
 
 	self.count = 0
 	self.time = 0
 
-	self.box = require ("Rect")(0,0,1,1)
-	self.currentBox = require ("Rect")(0,0,1,1)
+	self.box = _Rect.New(0,0,1,1)
+	self.currentBox = _Rect.New(0,0,1,1)
 
 	self.focus = {
 		["focus"] = false,
@@ -52,12 +53,17 @@ end
 
 
 function _AniPack:Update(dt)
+
 	self.frameHead = string.format("[FRAME%03d]", self.count)
+
 	if not  self.frameHead then
+		print("Error:_AniPack:Update() --> frameHead is null")
 		return self
 	end
 
 	self.time = self.time + (dt or 0)
+
+	-- print("self.time:" .. tostring(self.time))
 
 	if self.time >= (self.frameData[self.frameHead]["[DELAY]"] or 100) / 1000  then
 		self.time = 0-- self.time - self.frameData[self.frameHead]["[DELAY]"] / 1000
@@ -79,30 +85,30 @@ function _AniPack:Update(dt)
 	end
 
 	if self.frameData[self.frameHead]["[IMAGE]"][1]  ~= "" then
-		--print(string.format("sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1],self.str))
-		-- local img = require "sys/img"(string.format("sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
+		--print(string.format("Sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1],self.str))
+		-- local img = require "sys/img"(string.format("playingSpriteite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
+		local tmpStr = string.format(self.frameData[self.frameHead]["[IMAGE]"][1],self.fileNum)
+		local img = _ResPack.New(_RESMGR.pathHead .. tmpStr)
 
-		local img = _ResPack.New(self.frameData[self.frameHead]["[IMAGE]"][1])
 		if not img then
-			print("Error:_AniPack: (update)load imgPack failed. " )
+			print("Error:_AniPack:Update() --> load imgPack failed. " )
 			return self
 		end
 
-		-- self.spr:置纹理(img:取纹理(self.frameData[self.frameHead]["[IMAGE]"][2]+1))
-		self.playingSprite = img:GetTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
+		self.playingSprite:SetTexture(img:GetTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1))
+		-- self.playingSprite = img:GetTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
 		self.offset = img:GetOffset(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
+		img = nil
 	else
 		self.playingSprite = _RESMGR.imageNull
 	end
 
-
-
-	self:Setcenter(self.frameData[self.frameHead]["[IMAGE POS]"][1],self.frameData[self.frameHead]["[IMAGE POS]"][2])
+	self:SetCenter(-self.frameData[self.frameHead]["[IMAGE POS]"][1],-self.frameData[self.frameHead]["[IMAGE POS]"][2])
 
 	if self.num > 1 then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 			if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
-				-- self.spr:置混合(2)
+				-- self.playingSprite:置混合(2)
 				self:SetBlendMode(2)
 			end
 		end
@@ -123,6 +129,9 @@ function _AniPack:Draw(x,y,r,w,h)
 	self.size.w = w or self.size.w
 	self.size.h = h or self.size.h
 
+	if (r == nil) then
+	    r = 0
+	end
 
 	if self.focus["focus"]  then --霸体状态下的外线效果
 
@@ -134,53 +143,79 @@ function _AniPack:Draw(x,y,r,w,h)
 		end
 		self:setColor(ARGB(self.focus["ARGB"]["A"] ,self.focus["ARGB"]["R"],self.focus["ARGB"]["G"],self.focus["ARGB"]["B"]))
 
-		self.spr:Draw(
+		self.playingSprite:Draw(
 			math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
 			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
 			r or 0,
 			self.size.w,
 			self.size.h)
 
-		self.spr:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
+		self.playingSprite:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
 			r or 0,
 			self.size.w,
 			self.size.h)
 
-		self.spr:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,
+		self.playingSprite:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,
 			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)+1,
 			r or 0,
 			self.size.w,
 			self.size.h)
 
-		self.spr:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
+		self.playingSprite:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
 			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)+1,
 			r or 0,
 			self.size.w,
 			self.size.h)
 	end
 
-
-
-	love.graphics.draw(self.playing_sprite,
-		self.pos.x,
-		self.pos.y,
+	self.playingSprite:SetCenter(self.center.x,self.center.y)
+	self.playingSprite:Draw(
+		self.pos.x + self.offset.x,
+		self.pos.y + self.offset.y,
 		r, 		-- rotation 旋转参数
-		w,
-		h,
-		self.center.x,
-		self.center.y)
+		self.size.w,
+		self.size.h
+		)
 
+	-- self.currentBox = self.playingSprite:GetRect()
 
-	self.CurrentRect:SetPos(self.pos.x,self.pos.y)
+	-- self.currentBox:SetPos(self.pos.x+self.offset.x,self.pos.y+self.offset.y)
+	-- self.currentBox:SetCenter(self.center.x,self.center.y)
 
-	local tmp_width = self.playing_sprite:getWidth()
-	local tmp_height = self.playing_sprite:getHeight()
+	-- local tmp_width = self.playingSprite:GetWidth()
+	-- local tmp_height = self.playingSprite:GetHeight()
 
-	self.CurrentRect:SetSize(tmp_width,tmp_height)
-	self.CurrentRect:Draw()
+	-- self.currentBox:SetSize(tmp_width,tmp_height)
+	-- self.currentBox:Draw()
+	self:Debug()
 end
 
-function _AniPack:SetAnimation(id,__num)
+function _AniPack:Debug(id) -- box Draw
+	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
+	local dmgBox = _Rect.New(0,0,1,1)
+	dmgBox:SetColor(0,255,0,255)
+	if (boxTab) then
+	    for n=1,#boxTab,6 do
+			dmgBox:SetPos(self.pos.x + boxTab[n] * self.size.w,self.pos.y + - boxTab[n+2])
+			dmgBox:SetSize(boxTab[n+3] * self.size.w,-boxTab[n+5] * self.size.h)
+			dmgBox:Draw()
+	    end
+	end
+
+
+	local boxTab = self.frameData[self.frameHead]["[ATTACK BOX]"]
+	local atkBox = _Rect.New(0,0,1,1)
+	atkBox:SetColor(255,0,0,255)
+	if (boxTab) then
+	    for n=1,#boxTab,6 do
+			atkBox:SetPos(self.pos.x + boxTab[n] * self.size.w,self.pos.y + - boxTab[n+2])
+			atkBox:SetSize(boxTab[n+3] * self.size.w,-boxTab[n+5] * self.size.h)
+			atkBox:Draw()
+	    end
+	end
+end
+
+function _AniPack:SetAnimation(id)
 
 	if (type(id) ~= "string") then
 	    print("Warning! _AniPack:setAnimation()--the type of id must be string ")
@@ -188,15 +223,17 @@ function _AniPack:SetAnimation(id,__num)
 	end
 
 	self.frameData = self.frameDataGrp[id].data
-	self.playNum = self.frameDataGrp[id].__num or 1
+	self.playNum = self.frameDataGrp[id].num or 1
 
 	self.count = 0
 	self.time = 0
 	self.num = self.frameData["[FRAME MAX]"]
 
+	self:Update(0)
+
 	if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
-			-- self.spr:置混合(2)
+			-- self.playingSprite:置混合(2)
 			self:SetBlendMode(2) -- Alpha线性渐变混合 Alpha.one
 		end
 	end
@@ -217,7 +254,7 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 
 	if(type(aniPath) == "string")then
 		local content = require(aniPath) -- content is a table
-		sellf.frameDataGrp[id] = {data = content, num = __num}
+		self.frameDataGrp[id] = {data = content, num = __num}
 	elseif (type(aniPath) == "table") then
 	    print("Error: _AniPack:AddAnimation() --> aniPath expect a string ,not a table.")
 	    return self
@@ -229,7 +266,7 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 
 end
 
-function _AniPack:Setcenter(x,y)
+function _AniPack:SetCenter(x,y)
 	self.center.x = x or self.center.x
 	self.center.y = y or self.center.y
 end
@@ -241,5 +278,10 @@ end
 function _AniPack:SetBlendMode(mode)
 	-- statements
 end
+
+function _AniPack:SetFileNum(num)
+	self.fileNum = num
+end
+
 
 return _AniPack

@@ -8,10 +8,9 @@
 ]]
 
 
-local Rect = require("Src.Class")()
+local _Rect = require("Src.Class")()
 
-
-function Rect:Ctor(x,y,w,h) --initialize
+function _Rect:Ctor(x,y,w,h) --initialize
 	self.position = {x = 0, y = 0}
 	self.size = {w = 0, h = 0}
 	self.centerPos = {x = 0, y = 0}
@@ -30,7 +29,7 @@ function Rect:Ctor(x,y,w,h) --initialize
 
 end
 
-function Rect:Draw()
+function _Rect:Draw()
 
 	-- print(self.position.x,self.position.y)
 
@@ -50,13 +49,13 @@ function Rect:Draw()
 
 	旧的 可用的 实验代码
 
-	love.graphics.rectangle( mode, x, y, width, height )
+	love.graphics._Rectangle( mode, x, y, width, height )
 
 
 	local r, g, b, a = love.graphics.getColor()
 	love.graphics.setColor(0,0,255,255)
 
-	love.graphics.rectangle( "line",
+	love.graphics._Rectangle( "line",
 		self.temp_position.x - self.centre_point.x,
 		self.temp_position.y - self.centre_point.y,
 		self.pak_info[self.playing_num].texture:getWidth(),
@@ -70,29 +69,28 @@ function Rect:Draw()
 end
 
 
-function Rect:SetPos(x,y)
+function _Rect:SetPos(x,y)
 	self.position.x = x
 	self.position.y = y
 end
 
-function Rect:SetCenter(x,y)
+function _Rect:SetCenter(x,y)
 	self.centerPos.x = x or self.centerPos.x
 	self.centerPos.y = y or self.centerPos.y
 end
 
-function Rect:SetSize(w,h)
+function _Rect:SetSize(w,h)
 	self.size.w = w or 0
 	self.size.h = h or 0
 end
 
-function Rect:SetColor(r,g,b,a)
+function _Rect:SetColor(r,g,b,a)
 	self.color = {
 	r = r,
 	g = g,
 	b = b,
 	a = a
 	}
-
 end
 
-return Rect
+return _Rect

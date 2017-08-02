@@ -12,7 +12,8 @@
 local _RESMGR = {
 	imageCachePool = {},
 	resPool = {},
-	soundCachePool = {}
+	soundCachePool = {},
+	pathHead = "/ImagePacks/"
 }
 
 

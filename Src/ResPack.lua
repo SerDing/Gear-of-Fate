@@ -7,17 +7,17 @@
 		*Write notes here even more
 ]]
 
-local ResPack2 = require("Src.Class")()
+local _ResPack = require("Src.Class")()
 
+local _RESMGR = require "Src.ResManager"
 
-function ResPack2:Ctor(PakName) --initialize
+function _ResPack:Ctor(PakName) --initialize
 
 	-- Game.run_path = GetRunPath()
 
 	-- self.real_path = Game.run_path .. [[\]] .. PakName
 
 	-- self.fileNum,self.pakInfo = self.empak.GetPakInfo(self.real_path)
-
 
 	-- if(self.pakInfo == nil)then
 	-- 	print("can not get pak infomation!" .. PakName)
@@ -29,7 +29,8 @@ function ResPack2:Ctor(PakName) --initialize
 
 
 	if(love.filesystem.exists(PakName .. "/offset.txt") == false)then
-		print("The pak offset file is not existing! Please check!")
+		print("Error:_ResPack:Ctor() --> The pak offset file is not existing! Please check!")
+		print(PakName)
 		return
 	end
 
@@ -38,7 +39,7 @@ function ResPack2:Ctor(PakName) --initialize
 	self.offset_text = LoadFile(PakName .. "/offset.txt")
 
 	if(self.offset_text == nil)then
-		print("Can not get offset data!" .. PakName)
+		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. PakName)
 		return
 	end
 
@@ -62,37 +63,36 @@ function ResPack2:Ctor(PakName) --initialize
 	end
 
 	self.total_num = table.getn(self.pak_info)
-
 end
 
+function _ResPack:GetTexture(num)
 
-function ResPack2:GetTexture(num)
-	self.pak_info[num].texture = ResMgr:LoadTexture(self.PakName .. "/" .. tostring(num - 1) .. ".png")
+	if (self.pak_info[num].texture == 0) then
+	    self.pak_info[num].texture = _RESMGR.LoadTexture(self.PakName .. "/" .. tostring(num - 1) .. ".png")
+	end
 	return self.pak_info[num].texture
 end
 
-function ResPack2:GetOffset(num)
+function _ResPack:GetOffset(num)
+	local offset = {
+	x = self.pak_info[num].centre_x ,
+	y = self.pak_info[num].centre_y
+	}
 
-	local offset = { x = self.pak_info[num].centre_x , y = self.pak_info[num].centre_y }
 	return offset
-
 end
 
-function ResPack2:GetFrameNum() -- 获取帧数量
-
+function _ResPack:GetFrameNum() -- 获取帧数量
 	return self.total_num
-
 end
 
-function ResPack2:Release()
-
+function _ResPack:Release()
 
 	for n=1,table.getn(self.pak_info) do
 		if (self.pak_info[n].texture ~= 0) then
 			self.pak_info[n].texture:release()
 		end
 	end
-
 end
 
-return ResPack2
+return _ResPack

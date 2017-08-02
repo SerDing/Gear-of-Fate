@@ -1,0 +1,106 @@
+return {
+ 	['[FRAME007]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",166,},
+	},
+	['[FRAME008]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",167,},
+	},
+	['[FRAME005]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-19,-5,0,29,10,107,-31,-4,49,20,7,30,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",164,},
+	},
+	['[FRAME014]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",173,},
+	},
+	['[FRAME004]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-19,-5,0,29,10,107,-31,-4,49,20,7,30,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",163,},
+	},
+	['[FRAME002]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-19,-5,0,29,10,107,-31,-4,49,20,7,30,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",161,},
+	},
+	['[FRAME000]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-19,-5,0,29,10,107,-31,-4,49,20,7,30,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",159,},
+	},
+	['[FRAME009]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",168,},
+	},
+	['[FRAME MAX]'] = 17,
+	['[FRAME013]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",172,},
+	},
+	['[FRAME006]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",165,},
+	},
+	['[FRAME003]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-19,-5,0,29,10,107,-31,-4,49,20,7,30,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",162,},
+	},
+	['[FRAME001]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-19,-5,0,29,10,107,-31,-4,49,20,7,30,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",160,},
+	},
+	['[FRAME016]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",175,},
+	},
+	['[FRAME015]'] = {
+		['[DELAY]'] = 15,
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[IMAGE POS]'] = {-232,-333,},
+		['[SET FLAG]'] = 65534,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",174,},
+	},
+	['[FRAME010]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",169,},
+	},
+	['[FRAME011]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",170,},
+	},
+	['[FRAME012]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-17,-5,0,30,10,107,-26,-3,45,20,6,34,11,-4,77,31,7,20,},
+		['[DELAY]'] = 15,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",171,},
+	},
+ 
+}

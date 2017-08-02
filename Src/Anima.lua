@@ -10,9 +10,9 @@
 
 local _Anima = require("Src.Class")()
 
+local _RESMGR = require "Src.ResManager"
+local _Rect = require "Src.Core.Rect"
 
-	local _RESMGR = require "Src.ResManager"
-	local _Rect = require "Src.Rect"
 
 function _Anima:Ctor(PakName,fir_frame) --initialize
 
@@ -75,8 +75,8 @@ function _Anima:Ctor(PakName,fir_frame) --initialize
 
 			self.pak_info[n]=
 			{
-				centre_x	= tonumber( re_cut[1]),
-				centre_y	= tonumber( re_cut[2]),
+				centre_x = tonumber( re_cut[1]),
+				centre_y = tonumber( re_cut[2]),
 				texture = 0
 			}
 		end

@@ -1,0 +1,96 @@
+return {
+ 	['[FRAME009]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",205,},
+	},
+	['[FRAME014]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",208,},
+	},
+	['[FRAME007]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",49,},
+	},
+	['[FRAME MAX]'] = 15,
+	['[FRAME005]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",47,},
+	},
+	['[FRAME006]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",48,},
+	},
+	['[FRAME003]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",45,},
+	},
+	['[FRAME004]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",46,},
+	},
+	['[FRAME001]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",43,},
+	},
+	['[FRAME002]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",44,},
+	},
+	['[FRAME013]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",208,},
+	},
+	['[FRAME000]'] = {
+		['[DELAY]'] = 70,
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[IMAGE POS]'] = {-232,-333,},
+		['[PLAY SOUND]'] = {"sm_zieg","zieg_invocation",},
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",42,},
+	},
+	['[FRAME012]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",208,},
+	},
+	['[FRAME011]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",207,},
+	},
+	['[FRAME010]'] = {
+		['[DELAY]'] = 70,
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[IMAGE POS]'] = {-232,-333,},
+		['[SET FLAG]'] = 1,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",206,},
+	},
+	['[FRAME008]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "superarmor",
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",204,},
+	},
+ 
+}

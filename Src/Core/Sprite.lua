@@ -69,7 +69,7 @@ function _Sprite:Draw(x,y,r,sx,sy)
 	-- love.graphics.setColor(r,g,b,a)
 
 	self.rect:SetPos(x,y)
-	-- self.rect:Draw()
+	self.rect:Draw()
 end
 
 function _Sprite:SetTexture(tex)

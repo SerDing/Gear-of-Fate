@@ -38,7 +38,8 @@ function _AniPack:Ctor() --initialize
 	self.time = 0
 
 	self.box = _Rect.New(0,0,1,1)
-	self.currentBox = _Rect.New(0,0,1,1)
+
+	-- self.currentBox = _Rect.New(0,0,1,1)
 
 	self.focus = {
 		["focus"] = false,
@@ -143,27 +144,32 @@ function _AniPack:Draw(x,y,r,w,h)
 		end
 		self:setColor(ARGB(self.focus["ARGB"]["A"] ,self.focus["ARGB"]["R"],self.focus["ARGB"]["G"],self.focus["ARGB"]["B"]))
 
+		self.playingSprite:SetCenter(self.center.x,self.center.y)
 		self.playingSprite:Draw(
-			math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
-			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
-			r or 0,
+			math.floor(self.pos.x + self.offset.x ) - 1,
+			math.floor(self.pos.y + self.offset.y ) - 1,
+			r,
 			self.size.w,
 			self.size.h)
 
-		self.playingSprite:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)-1,
-			r or 0,
+		self.playingSprite:Draw(
+			math.floor(self.pos.x + self.offset.x ) + 1,
+			math.floor(self.pos.y + self.offset.y ) - 1,
+			r,
 			self.size.w,
 			self.size.h)
 
-		self.playingSprite:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) + 1,
-			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)+1,
-			r or 0,
+		self.playingSprite:Draw(
+			math.floor(self.pos.x + self.offset.x ) + 1,
+			math.floor(self.pos.y + self.offset.y ) + 1,
+			r,
 			self.size.w,
 			self.size.h)
 
-		self.playingSprite:Draw(math.floor(self.pos.x - self.center.x * self.size.w + self.offset.x * self.size.w) - 1,
-			math.floor(self.pos.y - self.center.y * self.size.h + self.offset.y * self.size.h)+1,
-			r or 0,
+		self.playingSprite:Draw(
+			math.floor(self.pos.x + self.offset.x ) - 1,
+			math.floor(self.pos.y + self.offset.y ) + 1,
+			r,
 			self.size.w,
 			self.size.h)
 	end
@@ -177,20 +183,11 @@ function _AniPack:Draw(x,y,r,w,h)
 		self.size.h
 		)
 
-	-- self.currentBox = self.playingSprite:GetRect()
 
-	-- self.currentBox:SetPos(self.pos.x+self.offset.x,self.pos.y+self.offset.y)
-	-- self.currentBox:SetCenter(self.center.x,self.center.y)
-
-	-- local tmp_width = self.playingSprite:GetWidth()
-	-- local tmp_height = self.playingSprite:GetHeight()
-
-	-- self.currentBox:SetSize(tmp_width,tmp_height)
-	-- self.currentBox:Draw()
 	self:Debug()
 end
 
-function _AniPack:Debug(id) -- box Draw
+function _AniPack:Debug() -- box Draw
 	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
 	local dmgBox = _Rect.New(0,0,1,1)
 	dmgBox:SetColor(0,255,0,255)
@@ -229,7 +226,7 @@ function _AniPack:SetAnimation(id)
 	self.time = 0
 	self.num = self.frameData["[FRAME MAX]"]
 
-	self:Update(0)
+	-- self:Update(0)
 
 	if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
@@ -262,8 +259,6 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 	    print("Error: _AniPack:AddAnimation() --> aniPath get a unexpected type!")
 	    return self
 	end
-
-
 end
 
 function _AniPack:SetCenter(x,y)
@@ -281,6 +276,7 @@ end
 
 function _AniPack:SetFileNum(num)
 	self.fileNum = num
+	print("fileNum changed :" .. tostring(self.fileNum))
 end
 
 

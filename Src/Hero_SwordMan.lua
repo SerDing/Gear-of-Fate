@@ -15,8 +15,8 @@ local _Weapon = require "Src.Weapon"
 
 -- const
 local path = {
-"/Src/Script/Character/Swordman/Animation/",
-"/Src/Script/Equipment/Swordman/Weapon/ssword/"
+"Src/Script/character/swordman/animation/",
+"Src/Script/equipment/swordman/weapon/ssword/"
 }
 local name = {
 "body",
@@ -26,6 +26,9 @@ local pakNum = 2
 
 function Hero_SwordMan:Ctor() --initialize
 
+
+	-- Resource Loading
+	
 	self.pakGrp = {
 		["body"] = _AniPack.New(),
 		["weapon"] = _Weapon.New()
@@ -38,10 +41,21 @@ function Hero_SwordMan:Ctor() --initialize
 	self.pakGrp.body:SetAnimation("attack3")
 	self.pakGrp.body:SetFileNum(0001)
 
-	self.pakGrp.weapon:SetFileNum("Character/Swordman/Equipment/Avatar/Weapon/sswd4200c.img",1)
-	self.pakGrp.weapon:SetFileNum("Character/Swordman/Equipment/Avatar/Weapon/sswd4200c.img",2)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd4200c.img",1)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd4200c.img",2)
 	self.pakGrp.weapon:SetSingle(true)
 	self.pakGrp.weapon:SetAnimation("attack3")
+
+
+	-- Data
+
+	self.state0 = "idle"
+	self.state = self.state0
+
+
+
+
+
 end
 
 function Hero_SwordMan:Update(dt)

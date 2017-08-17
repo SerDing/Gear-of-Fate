@@ -21,12 +21,13 @@ function _AniPack:Ctor() --initialize
 	self.pos = {x = 0, y = 0}
 	self.center = {x = 0, y = 0}
 	self.size = {w = 1, h = 1}
+	self.dir = 1
 
 	self.playNum = 1 	-- 播放次数
 	self.fileNum = 0000
 
-	self.frameDataGrp = {} 	-- 帧数据组 包含多个ani的帧数据
-	self.frameData = {} -- 从"*.ani.lua"文件中读取出的帧数据
+	self.frameDataGrp = {} 	-- 帧数据组 包含多个ani数据
+	self.frameData = {} -- 从ani文件中读取出的帧数据
 	self.frameHead = "[FRAME000]" -- 每一帧的开头帧号
 
 	if (not _RESMGR.imageNull) then
@@ -54,7 +55,7 @@ end
 
 
 function _AniPack:Update(dt)
-
+	
 	self.frameHead = string.format("[FRAME%03d]", self.count)
 
 	if not  self.frameHead then
@@ -121,10 +122,11 @@ function _AniPack:Update(dt)
 				self.frameData[self.frameHead]["[RGBA]"][4]))
 		end
 	end
+
 end
 
 function _AniPack:Draw(x,y,r,w,h)
-
+	
 	self.pos.x = x or self.pos.x
 	self.pos.y = y or self.pos.y
 	self.size.w = w or self.size.w
@@ -142,52 +144,51 @@ function _AniPack:Draw(x,y,r,w,h)
 
 			self.focus["dir"] = -self.focus["dir"]
 		end
-		self:setColor(ARGB(self.focus["ARGB"]["A"] ,self.focus["ARGB"]["R"],self.focus["ARGB"]["G"],self.focus["ARGB"]["B"]))
+		self:SetColor(ARGB(self.focus["ARGB"]["A"] ,self.focus["ARGB"]["R"],self.focus["ARGB"]["G"],self.focus["ARGB"]["B"]))
 
 		self.playingSprite:SetCenter(self.center.x,self.center.y)
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x ) - 1,
 			math.floor(self.pos.y + self.offset.y ) - 1,
 			r,
-			self.size.w,
+			self.size.w * self.dir,
 			self.size.h)
 
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x ) + 1,
 			math.floor(self.pos.y + self.offset.y ) - 1,
 			r,
-			self.size.w,
+			self.size.w * self.dir,
 			self.size.h)
 
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x ) + 1,
 			math.floor(self.pos.y + self.offset.y ) + 1,
 			r,
-			self.size.w,
+			self.size.w * self.dir,
 			self.size.h)
 
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x ) - 1,
 			math.floor(self.pos.y + self.offset.y ) + 1,
 			r,
-			self.size.w,
+			self.size.w * self.dir,
 			self.size.h)
 	end
 
 	self.playingSprite:SetCenter(self.center.x,self.center.y)
 	self.playingSprite:Draw(
-		self.pos.x + self.offset.x,
+		self.pos.x + self.offset.x * self.dir,
 		self.pos.y + self.offset.y,
 		r, 		-- rotation 旋转参数
-		self.size.w,
+		self.size.w * self.dir,
 		self.size.h
-		)
+	)
 
-
-	self:Debug()
+	self:DrawBox()
 end
 
-function _AniPack:Debug() -- box Draw
+function _AniPack:DrawBox()
 	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
 	local dmgBox = _Rect.New(0,0,1,1)
 	dmgBox:SetColor(0,255,0,255)
@@ -226,7 +227,7 @@ function _AniPack:SetAnimation(id)
 	self.time = 0
 	self.num = self.frameData["[FRAME MAX]"]
 
-	-- self:Update(0)
+	self:Update(0)
 
 	if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
@@ -276,8 +277,11 @@ end
 
 function _AniPack:SetFileNum(num)
 	self.fileNum = num
-	print("fileNum changed :" .. tostring(self.fileNum))
+	-- print("fileNum changed :" .. tostring(self.fileNum))
 end
 
+function _AniPack:SetDir(dir_)
+	self.dir = dir_
+end
 
 return _AniPack

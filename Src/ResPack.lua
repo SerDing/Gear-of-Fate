@@ -63,23 +63,34 @@ function _ResPack:Ctor(PakName) --initialize
 	end
 
 	self.total_num = table.getn(self.pak_info)
+	
 end
 
 function _ResPack:GetTexture(num)
 
 	if (self.pak_info[num].texture == 0) then
-	    self.pak_info[num].texture = _RESMGR.LoadTexture(self.PakName .. "/" .. tostring(num - 1) .. ".png")
+		local _path = self.PakName .. "/" .. tostring(num - 1) .. ".png"
+		if(love.filesystem.exists(_path))then
+			local tex = _RESMGR.LoadTexture(_path)
+			self.pak_info[num].texture = tex
+		else
+			print("Err:_ResPack:GetTexture() --> " .. _path .. " not found!")
+			return
+		end
 	end
 	return self.pak_info[num].texture
+
 end
 
 function _ResPack:GetOffset(num)
+	
 	local offset = {
 	x = self.pak_info[num].centre_x ,
 	y = self.pak_info[num].centre_y
 	}
 
 	return offset
+
 end
 
 function _ResPack:GetFrameNum() -- 获取帧数量
@@ -93,6 +104,7 @@ function _ResPack:Release()
 			self.pak_info[n].texture:release()
 		end
 	end
+
 end
 
 return _ResPack

@@ -15,6 +15,7 @@ function _Weapon:Ctor() --initialize
 
 	self.pak_b = _AniPack.New()
 	self.pak_c = _AniPack.New()
+	self.dir = 1
 end
 
 function _Weapon:Update(dt)
@@ -68,5 +69,9 @@ end
 function _Weapon:SetSingle(bool)
 	self.single = bool or self.single
 end
-
+function _Weapon:SetDir(dir_)
+	self.dir = dir_
+	self.pak_b:SetDir(dir_)
+	self.pak_c:SetDir(dir_)
+end
 return _Weapon

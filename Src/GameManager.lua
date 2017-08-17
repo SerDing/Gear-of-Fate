@@ -10,31 +10,35 @@
 
 local _GAMEMGR = {
 
-		title="",
-		period = 0, --游戏阶段
-		offset = {x = 0 , y = 0 },
-		mousePos = {x = 0 , y = 0 },
-		runPath = "",
+	title="",
+	period = 0, --游戏阶段
+	offset = {x = 0 , y = 0 },
+	mousePos = {x = 0 , y = 0 },
+	runPath = "",
 
-		debug = false,
+	debug = false,
 
-		keyCfg = {
-
-
-			bag_win = "i",
-			state_win = "m", -- hero's state window
-			skill_win = "k",
+	keyCfg = {
 
 
-			up = "up",
-			down = "down",
-			left = "left",
-			right = "right",
-			attack = "x",
-			jump = "c"
-		},
+		bag_win = "i",
+		state_win = "m", -- hero's state window
+		skill_win = "k",
+
+
+		up = "up",
+		down = "down",
+		left = "left",
+		right = "right",
+		attack = "x",
+		jump = "c"
+	},
 
 }
+
+local _Hero_SwordMan = require "Src.Hero_SwordMan"
+
+local hero = _Hero_SwordMan.New()
 
 
 function _GAMEMGR.Ctor() --initialize
@@ -57,13 +61,18 @@ function _GAMEMGR.Update(dt)
 	-- elseif(Game.period == 1)then
 
 	-- end
-
+	
+	hero:Update(dt)
 
 end
 
 
 function _GAMEMGR.Draw(x,y)
+	hero:Draw(400,300)
+end
 
+function _GAMEMGR.GetHero()
+	return hero
 end
 
 return _GAMEMGR

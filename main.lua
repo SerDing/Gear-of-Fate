@@ -7,7 +7,13 @@
 		* Program Entrance
 ]]
 
-require "Src/CommonFunction"
+require "Src.Core.TextHandle"
+require "Src.Core.FileSystem"
+require "Src.Core.System"
+
+
+
+local _KEYBOARD = require "Src.Core.KeyBoard"
 
 local _GAMEMGR = require "Src/GameManager"
 local _RESMGR = require "Src/ResManager"
@@ -39,13 +45,11 @@ function love.draw()
 end
 
 function love.keypressed(key) --键盘检测回调函数，当键盘事件触发是调用
-	local _hero = _GAMEMGR.GetHero()
-	_hero:InputPress(key)
+	_KEYBOARD:PressHandle(key)
 end
 
 function love.keyreleased(key) --键盘检测回调函数，当键盘事件触发是调用
-	local _hero = _GAMEMGR.GetHero()
-	_hero:InputRelease(key)
+	_KEYBOARD:ReleaseHandle(key)
 end
 
 function love.mousepressed(x,y,key) --回调函数释放鼠标按钮时触发。

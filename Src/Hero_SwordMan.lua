@@ -9,9 +9,9 @@
 
 local Hero_SwordMan = require("Src.Class")()
 
-
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Weapon"
+local _FSM = require "Src.FSM"  
 
 
 -- const
@@ -55,9 +55,6 @@ local pakNum = 2
 
 function Hero_SwordMan:Ctor() --initialize
 
-	self.state_ori = "stay"
-	self.state = self.state_ori
-
 	self.pos = {x = 400, y = 300}
 	self.spd = {x = 3, y = 2}
 
@@ -72,13 +69,17 @@ function Hero_SwordMan:Ctor() --initialize
 		end
 	end
 
-	self.pakGrp.body:SetAnimation(self.state)
+	
 	self.pakGrp.body:SetFileNum(0001)
-
 	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd4200c.img",1)
 	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd4200c.img",2)
+	
 	self.pakGrp.weapon:SetSingle(true)
-	self.pakGrp.weapon:SetAnimation(self.state)
+	
+
+
+	self.FSM = _FSM.New(self,"rest")
+
 
 end
 
@@ -88,11 +89,7 @@ function Hero_SwordMan:Update(dt)
 		self.pakGrp[name[n]]:Update(dt)
 	end
 
-	if(self.pakGrp.body.playNum == 0)then
-		self:SetState(self.state_ori)
-	end 
-
-	self:StateMachine()	
+	self.FSM:Update(self)
 
 end
 
@@ -110,70 +107,9 @@ function Hero_SwordMan:InputRelease(key)
 	self.key_release = key
 end 
 
-function Hero_SwordMan:StateMachine()
-	
-	if(self.state == "rest" or self.state == "stay")then 
-
-		if(love.keyboard.isDown("up"))then
-			self:SetState("move")
-		end 
-		
-		if(love.keyboard.isDown("down"))then
-			self:SetState("move")
-		end 
-		
-		if(love.keyboard.isDown("left"))then
-			self:SetState("move")
-			self:SetDir(-1)
-		end
-		
-		if(love.keyboard.isDown("right"))then
-			self:SetState("move")
-			self:SetDir(1)
-		end
-		
-		
-	elseif(self.state == "move")then
-		if(love.keyboard.isDown("up"))then
-			self.pos.y = self.pos.y - self.spd.y
-		elseif(love.keyboard.isDown("down"))then
-			self.pos.y = self.pos.y + self.spd.y
-		end 
-
-		if(love.keyboard.isDown("left"))then
-			self.pos.x = self.pos.x - self.spd.x
-			self:SetDir(-1)
-		elseif(love.keyboard.isDown("right"))then
-			self.pos.x = self.pos.x + self.spd.x
-			self:SetDir(1)
-		end
-		
-		if(love.keyboard.isDown("up") == false and
-		love.keyboard.isDown("down") == false and
-		love.keyboard.isDown("left") == false and
-		love.keyboard.isDown("right") == false
-		)then 
-			self:SetState(self.state_ori)
-		end 
-
-	end 
-
-end
-
-function Hero_SwordMan:SetState(state_)
-	
-	if(self.state ~= state_)then
-		self.state = state_
-		self.pakGrp.body:SetAnimation(self.state)
-		self.pakGrp.weapon:SetAnimation(self.state)
-	else
-		return
-	end
-end
-
 function Hero_SwordMan:SetDir(dir_)
 	
-	self.dir = dir_      
+	self.dir = dir_ 
 	for n=1,pakNum do
 		self.pakGrp[name[n]]:SetDir(dir_)
 	end

@@ -59,7 +59,7 @@ function love.draw()
 end
 
 function love.keypressed(key) --键盘检测回调函数，当键盘事件触发是调用
-	 _KEYBOARD.PressHandle(key)
+	_KEYBOARD.PressHandle(key)
 end
 
 function love.keyreleased(key) --键盘检测回调函数，当键盘事件触发是调用

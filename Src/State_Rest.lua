@@ -22,20 +22,14 @@ end
 
 function _State_Rest:Update(hero_,FSM_)
     
-	if(love.keyboard.isDown("up"))then
-		FSM_:SetState("move",hero_)
-	end 
-	
-	if(love.keyboard.isDown("down"))then
+	if(love.keyboard.isDown("up") or love.keyboard.isDown("down"))then
 		FSM_:SetState("move",hero_)
 	end 
 	
 	if(love.keyboard.isDown("left"))then
 		FSM_:SetState("move",hero_)
 		hero_:SetDir(-1)
-	end
-	
-	if(love.keyboard.isDown("right"))then
+	elseif(love.keyboard.isDown("right"))then
 		FSM_:SetState("move",hero_)
 		hero_:SetDir(1)
 	end

@@ -16,29 +16,25 @@ local _enum_hold = 2
 local _enum_released = 3
 
 function _KEYBOARD.Update()
-   
     for k,v in pairs(_KEYBOARD.KEY) do
-        
         if v == _enum_pressed then
             _KEYBOARD.KEY[k] = _enum_hold
         elseif v == _enum_released then
             _KEYBOARD.KEY[k] = nil
         end 
-        
     end 
-
-end 
+end
 
 function _KEYBOARD.Press(key)
-    return _KEYBOARD.CheckKeyState(key,_enum_pressed)
+	return _KEYBOARD.KEY[key] == _enum_pressed
 end 
 
 function _KEYBOARD.Hold(key)
-    return _KEYBOARD.CheckKeyState(key,_enum_hold)
+	return _KEYBOARD.KEY[key] == _enum_hold
 end
 
 function _KEYBOARD.Release(key)
-    return _KEYBOARD.CheckKeyState(key,_enum_released)
+	return _KEYBOARD.KEY[key] == _enum_released
 end
 
 function _KEYBOARD.PressHandle(key)
@@ -46,17 +42,7 @@ function _KEYBOARD.PressHandle(key)
 end
 
 function _KEYBOARD.ReleaseHandle(key)
-     _KEYBOARD.KEY[key] = _enum_released
-end
-
-function _KEYBOARD.CheckKeyState(key,state)
-
-    if _KEYBOARD.KEY[key] == state then
-        return true
-    else 
-        return false
-    end 
-
+	_KEYBOARD.KEY[key] = _enum_released
 end
 
 return _KEYBOARD 

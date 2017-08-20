@@ -28,25 +28,27 @@ function _State_Move:Enter(hero_)
 end
 
 function _State_Move:Update(hero_,FSM_)
-    
-
-    if _KEYBOARD.Hold("up") or _KEYBOARD.Hold("down") then
-        if _KEYBOARD.Hold("up") and _KEYBOARD.Hold("down") then
+	local up = _KEYBOARD.Hold("up")
+	local down = _KEYBOARD.Hold("down")
+	local left = _KEYBOARD.Hold("left")
+	local right = _KEYBOARD.Hold("right")
+	
+    if up or down then
+        if up and down then
             if _time_up > _time_down then
                 hero_.pos.y = hero_.pos.y - hero_.spd.y
             else 
                 hero_.pos.y = hero_.pos.y + hero_.spd.y
             end 
-        elseif _KEYBOARD.Hold("up") then
+        elseif up then
             hero_.pos.y = hero_.pos.y - hero_.spd.y
         else 
             hero_.pos.y = hero_.pos.y + hero_.spd.y
         end 
-    
     end 
     
-    if _KEYBOARD.Hold("left") or _KEYBOARD.Hold("right") then
-        if _KEYBOARD.Hold("left") and _KEYBOARD.Hold("right") then
+    if left or right then
+        if left and right then
             if _time_left > _time_right then
                 hero_.pos.x = hero_.pos.x - hero_.spd.x
                 hero_:SetDir(-1)
@@ -54,63 +56,33 @@ function _State_Move:Update(hero_,FSM_)
                 hero_.pos.x = hero_.pos.x + hero_.spd.x
                 hero_:SetDir(1)
             end 
-        elseif _KEYBOARD.Hold("left") then
+        elseif left then
             hero_.pos.x = hero_.pos.x - hero_.spd.x
-             hero_:SetDir(-1)
+			hero_:SetDir(-1)
         else 
             hero_.pos.x = hero_.pos.x + hero_.spd.x
             hero_:SetDir(1)
         end 
-    
     end 
 
-
-    if _KEYBOARD.Release("up") then
+    if _KEYBOARD.Press("up") then
         _time_up = love.timer.getTime()
-        print("_time_up " .. tostring(_time_up))
     end 
     
-    if _KEYBOARD.Release("down") then
+    if _KEYBOARD.Press("down") then
         _time_down = love.timer.getTime()
-        print("_time_down " .. tostring(_time_down))
     end 
     
-    if _KEYBOARD.Release("left") then
+    if _KEYBOARD.Press("left") then
         _time_left = love.timer.getTime()
-        print("_time_left " .. tostring(_time_left))
     end 
    
-    if _KEYBOARD.Release("right") then
+    if _KEYBOARD.Press("right") then
         _time_right = love.timer.getTime()
-        print("_time_right " .. tostring(_time_right))
     end 
-
-
-
-    -- if(_time_up > _time_down)then
-    --     hero_.pos.y = hero_.pos.y - hero_.spd.y
-    -- elseif(_time_up < _time_down)then
-    --     hero_.pos.y = hero_.pos.y + hero_.spd.y
-    -- end 
-
-    -- if(_time_left > _time_right)then
-    --     hero_.pos.x = hero_.pos.x - hero_.spd.x
-    --     hero_:SetDir(-1)
-    -- elseif(_time_left < _time_right)then
-    --     hero_.pos.x = hero_.pos.x + hero_.spd.x
-    --     hero_:SetDir(1)
-    -- end
     
-    if(love.keyboard.isDown("up") == false and
-    love.keyboard.isDown("down") == false and
-    love.keyboard.isDown("left") == false and
-    love.keyboard.isDown("right") == false
-    )then 
+    if not up and not down and not left and not right then 
         FSM_:SetState(FSM_.oriState,hero_)
-        -- _time_up = 0
-        -- _time_down = 0
-        -- _time_left = 0
-        -- _time_right = 0
     end 
 end 
 

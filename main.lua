@@ -31,6 +31,20 @@ function love.update(dt)
 
 	_GAMEMGR.Update(dt)
 	_RESMGR.Update()
+
+	if _KEYBOARD.Press("lctrl") then
+		print("lctrl is pressed")
+	end
+	
+	if _KEYBOARD.Release("lctrl") then
+		print("lctrl is released")
+	end
+
+	_KEYBOARD.Update()
+
+	
+	
+	
 	
 end
 
@@ -41,15 +55,15 @@ function love.draw()
 	love.graphics.line(400, 0, 400, 600) -- 竖线
 
 	_GAMEMGR.Draw()
-
+	
 end
 
 function love.keypressed(key) --键盘检测回调函数，当键盘事件触发是调用
-	_KEYBOARD:PressHandle(key)
+	 _KEYBOARD.PressHandle(key)
 end
 
 function love.keyreleased(key) --键盘检测回调函数，当键盘事件触发是调用
-	_KEYBOARD:ReleaseHandle(key)
+	_KEYBOARD.ReleaseHandle(key)
 end
 
 function love.mousepressed(x,y,key) --回调函数释放鼠标按钮时触发。

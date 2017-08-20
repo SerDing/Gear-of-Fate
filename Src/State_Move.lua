@@ -9,6 +9,13 @@
 
 local _State_Move = require("Src.Class")()
 
+local _KEYBOARD = require "Src.Core.KeyBoard" 
+
+local _time_up = 0
+local _time_down = 0
+local _time_left = 0
+local _time_right = 0
+
 function _State_Move:Ctor()
     --body
 end 
@@ -22,47 +29,77 @@ end
 
 function _State_Move:Update(hero_,FSM_)
     
-    local time_up = 0
-    local time_down = 0
-    local time_left = 0
-    local time_right = 0
 
-    local dt = love.timer.getDelta()
-
-    if love.keyboard.isDown("up") then
-        time_up = time_up + dt
+    if _KEYBOARD.Hold("up") or _KEYBOARD.Hold("down") then
+        if _KEYBOARD.Hold("up") and _KEYBOARD.Hold("down") then
+            if _time_up > _time_down then
+                hero_.pos.y = hero_.pos.y - hero_.spd.y
+            else 
+                hero_.pos.y = hero_.pos.y + hero_.spd.y
+            end 
+        elseif _KEYBOARD.Hold("up") then
+            hero_.pos.y = hero_.pos.y - hero_.spd.y
+        else 
+            hero_.pos.y = hero_.pos.y + hero_.spd.y
+        end 
+    
     end 
     
-    if love.keyboard.isDown("down") then
-        time_down = time_down + dt
+    if _KEYBOARD.Hold("left") or _KEYBOARD.Hold("right") then
+        if _KEYBOARD.Hold("left") and _KEYBOARD.Hold("right") then
+            if _time_left > _time_right then
+                hero_.pos.x = hero_.pos.x - hero_.spd.x
+                hero_:SetDir(-1)
+            else 
+                hero_.pos.x = hero_.pos.x + hero_.spd.x
+                hero_:SetDir(1)
+            end 
+        elseif _KEYBOARD.Hold("left") then
+            hero_.pos.x = hero_.pos.x - hero_.spd.x
+             hero_:SetDir(-1)
+        else 
+            hero_.pos.x = hero_.pos.x + hero_.spd.x
+            hero_:SetDir(1)
+        end 
+    
+    end 
+
+
+    if _KEYBOARD.Release("up") then
+        _time_up = love.timer.getTime()
+        print("_time_up " .. tostring(_time_up))
     end 
     
-    if love.keyboard.isDown("left") then
-        time_left = time_left + dt
+    if _KEYBOARD.Release("down") then
+        _time_down = love.timer.getTime()
+        print("_time_down " .. tostring(_time_down))
+    end 
+    
+    if _KEYBOARD.Release("left") then
+        _time_left = love.timer.getTime()
+        print("_time_left " .. tostring(_time_left))
     end 
    
-    if love.keyboard.isDown("right") then
-        time_right = time_right + dt
+    if _KEYBOARD.Release("right") then
+        _time_right = love.timer.getTime()
+        print("_time_right " .. tostring(_time_right))
     end 
 
-    
 
 
+    -- if(_time_up > _time_down)then
+    --     hero_.pos.y = hero_.pos.y - hero_.spd.y
+    -- elseif(_time_up < _time_down)then
+    --     hero_.pos.y = hero_.pos.y + hero_.spd.y
+    -- end 
 
-
-	if(time_up > time_down)then
-        hero_.pos.y = hero_.pos.y - hero_.spd.y
-    elseif(time_up < time_down)then
-        hero_.pos.y = hero_.pos.y + hero_.spd.y
-    end 
-
-    if(time_left > time_right)then
-        hero_.pos.x = hero_.pos.x - hero_.spd.x
-        hero_:SetDir(-1)
-    elseif(time_left < time_right)then
-        hero_.pos.x = hero_.pos.x + hero_.spd.x
-        hero_:SetDir(1)
-    end
+    -- if(_time_left > _time_right)then
+    --     hero_.pos.x = hero_.pos.x - hero_.spd.x
+    --     hero_:SetDir(-1)
+    -- elseif(_time_left < _time_right)then
+    --     hero_.pos.x = hero_.pos.x + hero_.spd.x
+    --     hero_:SetDir(1)
+    -- end
     
     if(love.keyboard.isDown("up") == false and
     love.keyboard.isDown("down") == false and
@@ -70,10 +107,10 @@ function _State_Move:Update(hero_,FSM_)
     love.keyboard.isDown("right") == false
     )then 
         FSM_:SetState(FSM_.oriState,hero_)
-        -- time_up = 0
-        -- time_down = 0
-        -- time_left = 0
-        -- time_right = 0
+        -- _time_up = 0
+        -- _time_down = 0
+        -- _time_left = 0
+        -- _time_right = 0
     end 
 end 
 

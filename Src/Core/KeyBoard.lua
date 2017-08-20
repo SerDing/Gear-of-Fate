@@ -1,82 +1,62 @@
 --[[
-	Desc: keyboard class
- 	Author: Night_Walker
-	Since: 2017-07-28 21:54:14
-	Alter: 2017-07-30 12:40:40
-	Docs:
+	Desc. keyboard class
+ 	Author. Night_Walker
+	Since. 2017-07-28 21.54.14
+	Alter. 2017-07-30 12.40.40
+	Docs.
 		* New methods to check the key state
 ]]
 
-local _KeyBoard = require("Src.Class")()
+local _KEYBOARD = {
+    KEY = {} -- example { a = _enum_pressed,down = _enum_released} -- map stucture
+}
 
-function _KeyBoard:Ctor()
-    self.KEY = {} -- id: key_name  state: press or hold or release
-end 
+local _enum_pressed = 1
+local _enum_hold = 2
+local _enum_released = 3
 
-function _KeyBoard:Update()
+function _KEYBOARD.Update()
    
-    for n=1,#self.KEY do
+    for k,v in pairs(_KEYBOARD.KEY) do
         
-        if self.KEY[n].state == "press" then
-            self.KEY[n].state = "hold"
-        end 
-
-        if self.KEY[n].state == "release" then
-            table.remove()
+        if v == _enum_pressed then
+            _KEYBOARD.KEY[k] = _enum_hold
+        elseif v == _enum_released then
+            _KEYBOARD.KEY[k] = nil
         end 
         
-    end
+    end 
 
 end 
 
-function _KeyBoard:Press(key)
-    self:CheckKeyState(key,"press")
+function _KEYBOARD.Press(key)
+    return _KEYBOARD.CheckKeyState(key,_enum_pressed)
 end 
 
-function _KeyBoard:Hold(key)
-    self:CheckKeyState(key,"hold")
+function _KEYBOARD.Hold(key)
+    return _KEYBOARD.CheckKeyState(key,_enum_hold)
 end
 
-function _KeyBoard:Release(key)
-    self:CheckKeyState(key,"release")
+function _KEYBOARD.Release(key)
+    return _KEYBOARD.CheckKeyState(key,_enum_released)
 end
 
-function _KeyBoard:PressHandle(key)
-    local key_ = {id = key, state = "press"}
-    table.insert(self.KEY,key_)
+function _KEYBOARD.PressHandle(key)
+    _KEYBOARD.KEY[key] = _enum_pressed
 end
 
-function _KeyBoard:ReleaseHandle(key)
-    for n=1,#self.KEY do
-        if key == self.KEY[n].id then
-            self.KEY[n].state = "release"
-        end 
-    end 
-    
+function _KEYBOARD.ReleaseHandle(key)
+     _KEYBOARD.KEY[key] = _enum_released
 end
 
-function _KeyBoard:CheckKeyState(key,state)
-    
-    for n=1,#self.KEY do
-        if key == self.KEY[n].id then
-            local _key = self.KEY[n].id
-        end 
-    end 
+function _KEYBOARD.CheckKeyState(key,state)
 
-    if _key ~= nil then
-        if _key.state = state then
-            return true
-        else 
-            return false  
-        end 
+    if _KEYBOARD.KEY[key] == state then
+        return true
     else 
-        return false 
+        return false
     end 
-
 
 end
 
-    
-
-
-return _KeyBoard 
+return _KEYBOARD 

@@ -13,16 +13,14 @@ local _FSM = require("Src.Class")()
 local _State_Rest = require "Src.State_Rest" 
 local _State_Stay = require "Src.State_Stay" 
 local _State_Move = require "Src.State_Move" 
+local _State_Dash = require "Src.State_Dash" 
 -- const
 
 state = {
-
     ["rest"] = _State_Rest,
-
     ["stay"] = _State_Stay,
-
     ["move"] = _State_Move,
-
+    ["dash"] = _State_Dash,
 
 }
 
@@ -46,16 +44,16 @@ function _FSM:Update(hero_)
 
 end
 
-function _FSM:SetState(state_name,hero_)
+function _FSM:SetState(state_name,hero_, ...)
 
     if self.curState.name == state_name then
         return 
     end 
-    
+
     self.preState = self.curState
     self.curState:Exit(hero_)
     self.curState = state[state_name]
-    self.curState:Enter(hero_)
+    self.curState:Enter(hero_,...)
     
 end
 

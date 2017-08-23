@@ -11,21 +11,21 @@ local Hero_SwordMan = require("Src.Class")()
 
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Weapon"
-local _FSM = require "Src.FSM"  
+local _FSM = require "Src.FSM"
 
 
 -- const
-local path = {
+local _path = {
 "Src/Script/character/swordman/animation/",
 "Src/Script/equipment/swordman/weapon/ssword/"
 }
 
-local name = {
+local _name = {
 "body",
 "weapon"
 }
 
-local aniName = {
+local _aniName = {
 "rest", -- idle stand calmly
 "stay", -- stand for fight
 "dash", -- run
@@ -51,7 +51,7 @@ local aniName = {
 
 }
 
-local pakNum = 2
+local _pakNum = 2
 
 function Hero_SwordMan:Ctor() --initialize
 
@@ -63,9 +63,9 @@ function Hero_SwordMan:Ctor() --initialize
 		["weapon"] = _Weapon.New()
 	}
 
-	for n = 1,pakNum do
-		for k = 1,#aniName do
-			self.pakGrp[name[n]]:AddAnimation(path[n] .. aniName[k],-1,aniName[k])
+	for n = 1,_pakNum do
+		for k = 1,#_aniName do
+			self.pakGrp[_name[n]]:AddAnimation(_path[n] .. _aniName[k],-1,_aniName[k])
 		end
 	end
 
@@ -85,8 +85,8 @@ end
 
 function Hero_SwordMan:Update(dt)
 	
-	for n=1,pakNum do
-		self.pakGrp[name[n]]:Update(dt)
+	for n=1,_pakNum do
+		self.pakGrp[_name[n]]:Update(dt)
 	end
 
 	self.FSM:Update(self)
@@ -94,8 +94,8 @@ function Hero_SwordMan:Update(dt)
 end
 
 function Hero_SwordMan:Draw()
-	for n=1,pakNum do
-		self.pakGrp[name[n]]:Draw(self.pos.x,self.pos.y)
+	for n=1,_pakNum do
+		self.pakGrp[_name[n]]:Draw(self.pos.x,self.pos.y)
 	end
 end
 
@@ -110,8 +110,8 @@ end
 function Hero_SwordMan:SetDir(dir_)
 	
 	self.dir = dir_ 
-	for n=1,pakNum do
-		self.pakGrp[name[n]]:SetDir(dir_)
+	for n=1,_pakNum do
+		self.pakGrp[_name[n]]:SetDir(dir_)
 	end
 end
 

@@ -393,22 +393,21 @@ function gj:movelogic()
 	if  引擎.按键弹起(KEY.A) then
 		self.keyupL = 引擎:取游戏时间()
 		
-		elseif 引擎.按键弹起(KEY.D) then
-			self.keyupR = 引擎:取游戏时间() 
-		end
-		
+	elseif 引擎.按键弹起(KEY.D) then
+		self.keyupR = 引擎:取游戏时间() 
+	end
+	
 
-		
-		if not 引擎.按键按住(KEY.A) and not  引擎.按键按住(KEY.D) and not 引擎.按键按住(KEY.W) and not 引擎.按键按住(KEY.S) then
-			if self.state~="stop"   then
-				self:toupdate("stop")
-				
-			end
-
-
-			
+	
+	if not 引擎.按键按住(KEY.A) and 
+	not  引擎.按键按住(KEY.D) and 
+	not 引擎.按键按住(KEY.W) and 
+	not 引擎.按键按住(KEY.S) then
+		if self.state~="stop"   then
+			self:toupdate("stop")
 			
 		end
+	end
 
 
 	if  引擎.按键按住(KEY.A) then  --左
@@ -429,13 +428,13 @@ function gj:movelogic()
 		
 		if(self.state=="go")then
 			self.坐标.x = self.坐标.x-self.spd	 
-			elseif(self.state=="run")then
-				self.坐标.x = self.坐标.x- self.spd * 1.47
-			end
-			
-			if 引擎.按键按下(KEY.A) and 引擎:取游戏时间() - self.keyupL<= 0.15  then
-				self:toupdate("run")
-			end 
+		elseif(self.state=="run")then
+			self.坐标.x = self.坐标.x- self.spd * 1.47
+		end
+		
+		if 引擎.按键按下(KEY.A) and 引擎:取游戏时间() - self.keyupL<= 0.15  then
+			self:toupdate("run")
+		end 
 	elseif 引擎.按键按住(KEY.D) then --右	
 
 
@@ -457,42 +456,47 @@ function gj:movelogic()
 
 		if(self.state=="go")then
 			self.坐标.x = self.坐标.x+ self.spd	 
-			elseif(self.state=="run")then
-				self.坐标.x = self.坐标.x+ self.spd * 1.47
-			end
-
-			if 引擎.按键按下(KEY.D) and 引擎:取游戏时间() - self.keyupR<= 0.15  then
-				
-				self:toupdate("run")
-			end 
+		elseif(self.state=="run")then
+			self.坐标.x = self.坐标.x+ self.spd * 1.47
 		end
+
+		if 引擎.按键按下(KEY.D) and 引擎:取游戏时间() - self.keyupR<= 0.15  then
+			
+			self:toupdate("run")
+		end 
+	end
 
 
 
 	if 引擎.按键按住(KEY.W) then --上
+		
 		if(self.state~="run")then
 			self:toupdate("go",true)
 		end
+		
 		if(self.state=="go")then
 			self.坐标.y = self.坐标.y- self.spd * 0.77
-			elseif(self.state=="run")then
-				self.坐标.y = self.坐标.y- self.spd * 0.87
-			end
-			
+		elseif(self.state=="run")then
+			self.坐标.y = self.坐标.y- self.spd * 0.87
+		end
+		
 	elseif  引擎.按键按住(KEY.S)  then --下
+		
 		if(self.state~="run")then
 			self:toupdate("go",true)
 		end	
+		
 		if(self.state=="go")then
 			self.坐标.y = self.坐标.y + self.spd * 0.77
-			elseif(self.state=="run")then
-				self.坐标.y = self.坐标.y + self.spd * 0.87
-			end	
-		end
+		elseif(self.state=="run")then
+			self.坐标.y = self.坐标.y + self.spd * 0.87
+		end	
 
-		-- if self.state== "run" or   self.state== "go" then
-		-- 	if self.lf ~=self.b:dhz()  and not self.go:是否播放() then 	self.go:播放_高级(60,0,1.0,false) end
-		-- end
+	end
+
+	-- if self.state== "run" or   self.state== "go" then
+	-- 	if self.lf ~=self.b:dhz()  and not self.go:是否播放() then 	self.go:播放_高级(60,0,1.0,false) end
+	-- end
 
 
 

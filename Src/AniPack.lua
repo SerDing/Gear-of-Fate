@@ -185,7 +185,9 @@ function _AniPack:Draw(x,y,r,w,h)
 		self.size.h
 	)
 
-	self:DrawBox()
+		
+	-- self:DrawBox()
+
 end
 
 function _AniPack:DrawBox()

@@ -9,34 +9,53 @@
 
 local _State_Rest = require("Src.Class")()
 
+local _KEYBOARD = require "Src.Core.KeyBoard" 
+
+
+local _Hold_space = 0.1
+
 function _State_Rest:Ctor()
     --body
 end 
 
-function _State_Rest:Enter(hero_)
+function _State_Rest:Enter(hero_,_keyRlstime)
     self.name = "rest"
 	hero_.pakGrp.body:SetAnimation(self.name)
 	hero_.pakGrp.weapon:SetAnimation(self.name)
-
+	self.keyReleaseTime = _keyRlstime or {left = 0, right = 0}
 end
 
 function _State_Rest:Update(hero_,FSM_)
     
-	if(love.keyboard.isDown("up") or love.keyboard.isDown("down"))then
+	if(_KEYBOARD.Press("up") or _KEYBOARD.Press("down"))then
 		FSM_:SetState("move",hero_)
 	end 
 	
-	if(love.keyboard.isDown("left"))then
-		FSM_:SetState("move",hero_)
-		hero_:SetDir(-1)
-	elseif(love.keyboard.isDown("right"))then
-		FSM_:SetState("move",hero_)
-		hero_:SetDir(1)
+	if(_KEYBOARD.Press("left"))then
+		if love.timer.getTime() - self.keyReleaseTime.left <= _Hold_space then
+			print("time: " .. tostring(love.timer.getTime() - self.keyReleaseTime.left))
+			FSM_:SetState("dash",hero_)
+		else 
+			self.keyReleaseTime = 0
+			FSM_:SetState("move",hero_)
+			hero_:SetDir(-1)
+		end 
+	elseif(_KEYBOARD.Press("right"))then
+		if love.timer.getTime() - self.keyReleaseTime.right <= _Hold_space then
+			FSM_:SetState("dash",hero_)
+		else 
+			self.keyReleaseTime = 0
+			FSM_:SetState("move",hero_)
+			hero_:SetDir(1)
+		end
 	end
+
+	
+
 end 
 
 function _State_Rest:Exit(hero_)
-    --body
+    
 end
 
 return _State_Rest 

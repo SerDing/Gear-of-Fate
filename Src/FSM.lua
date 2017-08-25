@@ -26,11 +26,9 @@ state = {
 
 function _FSM:Ctor(hero_,state_name)
     
-    self.oriState = "rest"
-    
+    self.oriState = "stay"
     self.preState = nil
     self.curState = state[state_name]
-    hero_.stateName = ""
     self.curState:Enter(hero_)
     
 end  

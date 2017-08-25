@@ -16,8 +16,6 @@ local _time_down = 0
 local _time_left = 0
 local _time_right = 0
 
-local _keyRlsTime = {left = 0,right = 0}
-
 function _State_Move:Ctor()
    
 end 
@@ -26,7 +24,8 @@ function _State_Move:Enter(hero_)
     self.name = "move"
 	hero_.pakGrp.body:SetAnimation(self.name)
 	hero_.pakGrp.weapon:SetAnimation(self.name)
-    
+    _time_left = 0
+    _time_right = 0
 end
 
 function _State_Move:Update(hero_,FSM_)
@@ -59,9 +58,12 @@ function _State_Move:Update(hero_,FSM_)
             if _time_left > _time_right then
                 hero_.pos.x = hero_.pos.x - hero_.spd.x
                 hero_:SetDir(-1)
+            elseif _time_left == _time_right then
+                hero_.pos.x = hero_.pos.x + hero_.spd.x * hero_:GetDir()
             else 
                 hero_.pos.x = hero_.pos.x + hero_.spd.x
                 hero_:SetDir(1)
+                print(_time_left - _time_right)
             end 
         elseif left then
             hero_.pos.x = hero_.pos.x - hero_.spd.x
@@ -70,23 +72,7 @@ function _State_Move:Update(hero_,FSM_)
             hero_.pos.x = hero_.pos.x + hero_.spd.x
             hero_:SetDir(1)
         end
-    end 
-
-    if _KEYBOARD.Release("left") then
-        _leftRlsTime = love.timer.getTime()
-		_left_Release = true
-    else 
-        _leftRlsTime = 0
-        _left_Release = false
     end
-
-    if _KEYBOARD.Release("right") then
-        _rightRlsTime = love.timer.getTime()
-        _right_Release = true
-    else 
-        _rightRlsTime = 0
-        _right_Release = false
-    end 
 
 
     if _KEYBOARD.Press("up") then
@@ -105,19 +91,14 @@ function _State_Move:Update(hero_,FSM_)
         _time_right = love.timer.getTime()
     end 
     
+    
     if not up and not down and not left and not right then 
-        _keyRlsTime = {left = _leftRlsTime,right = _rightRlsTime}
-        if _left_Release or _right_Release then
-            FSM_:SetState(FSM_.oriState,hero_,_keyRlsTime)
-            
-        else 
-            FSM_:SetState(FSM_.oriState,hero_)
-        end 
-        
+        FSM_:SetState(FSM_.oriState,hero_)
     end 
 end 
 
 function _State_Move:Exit(hero_)
+    
     
     
 end

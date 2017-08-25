@@ -57,6 +57,7 @@ function Hero_SwordMan:Ctor() --initialize
 
 	self.pos = {x = 400, y = 300}
 	self.spd = {x = 3, y = 2}
+	self.dir = 1
 
 	self.pakGrp = {
 		["body"] = _AniPack.New(),
@@ -108,11 +109,15 @@ function Hero_SwordMan:InputRelease(key)
 end 
 
 function Hero_SwordMan:SetDir(dir_)
-	
 	self.dir = dir_ 
 	for n=1,_pakNum do
 		self.pakGrp[_name[n]]:SetDir(dir_)
 	end
 end
+
+function Hero_SwordMan:GetDir()
+	return self.dir
+end
+
 
 return Hero_SwordMan

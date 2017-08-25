@@ -9,12 +9,8 @@
 
 local _State_Dash = require("Src.Class")()
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
+local _KEYBOARD = require "Src.Core.KeyBoard"
 
-local _time_up = 0
-local _time_down = 0
-local _time_left = 0
-local _time_right = 0
 
 function _State_Dash:Ctor()
     --body
@@ -33,52 +29,34 @@ function _State_Dash:Update(hero_,FSM_)
 	local left = _KEYBOARD.Hold("left")
 	local right = _KEYBOARD.Hold("right")
 	
-    if up or down then
-        if up and down then
-            if _time_up > _time_down then
-                hero_.pos.y = hero_.pos.y - hero_.spd.y * 1.5
-            else 
-                hero_.pos.y = hero_.pos.y + hero_.spd.y * 1.5
-            end 
-        elseif up then
-            hero_.pos.y = hero_.pos.y - hero_.spd.y * 1.5
-        else 
-            hero_.pos.y = hero_.pos.y + hero_.spd.y * 1.5
-        end 
+    
+    if up then
+        hero_.pos.y = hero_.pos.y - hero_.spd.y * 1.5
+    elseif down then
+        hero_.pos.y = hero_.pos.y + hero_.spd.y * 1.5
+    end 
+           
+    if left then
+        hero_.pos.x = hero_.pos.x - hero_.spd.x * 2
+        hero_:SetDir(-1)
+    elseif right then
+        hero_.pos.x = hero_.pos.x + hero_.spd.x * 2
+        hero_:SetDir(1)
     end 
     
-    if left or right then
-        if left and right then
-            if _time_left > _time_right then
-                hero_.pos.x = hero_.pos.x - hero_.spd.x * 2
-                hero_:SetDir(-1)
-            else 
-                hero_.pos.x = hero_.pos.x + hero_.spd.x * 2
-                hero_:SetDir(1)
-            end 
-        elseif left then
-            hero_.pos.x = hero_.pos.x - hero_.spd.x * 2
-			hero_:SetDir(-1)
-        else 
-            hero_.pos.x = hero_.pos.x + hero_.spd.x * 2
-            hero_:SetDir(1)
-        end 
-    end 
 
-    if _KEYBOARD.Press("up") then
-        _time_up = love.timer.getTime()
-    end 
-    
-    if _KEYBOARD.Press("down") then
-        _time_down = love.timer.getTime()
-    end 
-    
     if _KEYBOARD.Press("left") then
-        _time_left = love.timer.getTime()
+        if _KEYBOARD.Hold("right") then
+            FSM_:SetState("move",hero_)
+            hero_:SetDir(-1)
+        end 
     end 
    
     if _KEYBOARD.Press("right") then
-        _time_right = love.timer.getTime()
+        if _KEYBOARD.Hold("left") then
+            FSM_:SetState("move",hero_)
+            hero_:SetDir(1)
+        end 
     end 
     
     if not up and not down and not left and not right then 

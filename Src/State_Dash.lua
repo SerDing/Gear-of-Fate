@@ -12,6 +12,7 @@ local _State_Dash = require("Src.Class")()
 local _KEYBOARD = require "Src.Core.KeyBoard"
 
 
+
 function _State_Dash:Ctor()
     --body
 end 
@@ -24,23 +25,25 @@ function _State_Dash:Enter(hero_)
 end
 
 function _State_Dash:Update(hero_,FSM_)
-	local up = _KEYBOARD.Hold("up")
+	
+    
+    local up = _KEYBOARD.Hold("up")
 	local down = _KEYBOARD.Hold("down")
 	local left = _KEYBOARD.Hold("left")
 	local right = _KEYBOARD.Hold("right")
 	
     
     if up then
-        hero_.pos.y = hero_.pos.y - hero_.spd.y * 1.5
+        hero_:Y_Move(- hero_.spd.y * 1.5 )
     elseif down then
-        hero_.pos.y = hero_.pos.y + hero_.spd.y * 1.5
+        hero_:Y_Move( hero_.spd.y * 1.5 )
     end 
            
     if left then
-        hero_.pos.x = hero_.pos.x - hero_.spd.x * 2
+        hero_:X_Move(- hero_.spd.x * 2)
         hero_:SetDir(-1)
     elseif right then
-        hero_.pos.x = hero_.pos.x + hero_.spd.x * 2
+        hero_:X_Move( hero_.spd.x * 2)
         hero_:SetDir(1)
     end 
     
@@ -62,6 +65,11 @@ function _State_Dash:Update(hero_,FSM_)
     if not up and not down and not left and not right then 
         FSM_:SetState(FSM_.oriState,hero_)
     end 
+
+    if _KEYBOARD.Press(hero_.KEY["JUMP"]) then
+		FSM_:SetState("jump",hero_)
+	end 
+
 end 
 
 function _State_Dash:Exit(hero_)

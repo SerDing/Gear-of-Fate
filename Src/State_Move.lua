@@ -38,38 +38,37 @@ function _State_Move:Update(hero_,FSM_)
     local _right_Release = false
     local _leftRlsTime = 0
     local _rightRlsTime = 0
-
+    
     if up or down then
         if up and down then
             if _time_up > _time_down then
-                hero_.pos.y = hero_.pos.y - hero_.spd.y
+                hero_:Y_Move(-hero_.spd.y )
             else 
-                hero_.pos.y = hero_.pos.y + hero_.spd.y
+                hero_:Y_Move(hero_.spd.y )
             end 
         elseif up then
-            hero_.pos.y = hero_.pos.y - hero_.spd.y
+            hero_:Y_Move(-hero_.spd.y )
         else 
-            hero_.pos.y = hero_.pos.y + hero_.spd.y
+            hero_:Y_Move(hero_.spd.y )
         end 
     end 
     
     if left or right then
         if left and right then
             if _time_left > _time_right then
-                hero_.pos.x = hero_.pos.x - hero_.spd.x
+                hero_:X_Move(- hero_.spd.x)
                 hero_:SetDir(-1)
             elseif _time_left == _time_right then
-                hero_.pos.x = hero_.pos.x + hero_.spd.x * hero_:GetDir()
+                hero_:X_Move(hero_.spd.x * hero_:GetDir())
             else 
-                hero_.pos.x = hero_.pos.x + hero_.spd.x
+                hero_:X_Move(hero_.spd.x)
                 hero_:SetDir(1)
-                print(_time_left - _time_right)
             end 
         elseif left then
-            hero_.pos.x = hero_.pos.x - hero_.spd.x
+            hero_:X_Move(- hero_.spd.x)
 			hero_:SetDir(-1)
         else 
-            hero_.pos.x = hero_.pos.x + hero_.spd.x
+            hero_:X_Move(hero_.spd.x)
             hero_:SetDir(1)
         end
     end
@@ -95,6 +94,11 @@ function _State_Move:Update(hero_,FSM_)
     if not up and not down and not left and not right then 
         FSM_:SetState(FSM_.oriState,hero_)
     end 
+
+    if _KEYBOARD.Press(hero_.KEY["JUMP"]) then
+		FSM_:SetState("jump",hero_)
+	end 
+
 end 
 
 function _State_Move:Exit(hero_)

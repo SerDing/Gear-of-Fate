@@ -18,6 +18,17 @@ function _Weapon:Ctor() --initialize
 	self.dir = 1
 end
 
+function _Weapon:NextFrame()
+
+	if self.single then
+		self.pak_b:NextFrame()
+	else
+		self.pak_b:NextFrame()
+		self.pak_c:NextFrame()
+	end
+	
+end
+
 function _Weapon:Update(dt)
 
 	if self.single then
@@ -53,6 +64,12 @@ function _Weapon:SetAnimation(id)
 
 	self.pak_b:SetAnimation(id)
 	self.pak_c:SetAnimation(id)
+end
+
+function _Weapon:SetPlayNum(id,num)
+
+	self.pak_b:SetPlayNum(id,num)
+	self.pak_c:SetPlayNum(id,num)
 end
 
 function _Weapon:SetFileNum(cont,tp)

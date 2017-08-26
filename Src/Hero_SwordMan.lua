@@ -58,6 +58,33 @@ function Hero_SwordMan:Ctor() --initialize
 	self.pos = {x = 400, y = 300}
 	self.spd = {x = 3, y = 2}
 	self.dir = 1
+	self.jumpOffset = 0
+	
+	self.KEY = {
+		["UP"] = "up",
+		["DOWN"] = "down",
+		["LEFT"] = "left",
+		["RIGHT"] = "right",
+		
+		["JUMP"] = "c",
+		["ATTACK"] = "x",
+		["UNIQUE"] = "z",
+
+		["A"] = "a",
+		["S"] = "s",
+		["D"] = "d",
+		["F"] = "f",
+		["G"] = "g",
+		["H"] = "h",
+
+		["Q"] = "q",
+		["W"] = "w",
+		["E"] = "e",
+		["R"] = "r",
+		["T"] = "t",
+		["Y"] = "y",
+		 
+	}
 
 	self.pakGrp = {
 		["body"] = _AniPack.New(),
@@ -70,6 +97,10 @@ function Hero_SwordMan:Ctor() --initialize
 		end
 	end
 
+	for n = 1,_pakNum do
+		self.pakGrp[_name[n]]:SetPlayNum("jump",1)
+	end
+	
 	
 	self.pakGrp.body:SetFileNum(0001)
 	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd4200c.img",1)
@@ -96,17 +127,9 @@ end
 
 function Hero_SwordMan:Draw()
 	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:Draw(self.pos.x,self.pos.y)
+		self.pakGrp[_name[n]]:Draw(self.pos.x,self.pos.y+self.jumpOffset)
 	end
 end
-
-function Hero_SwordMan:InputPress(key)
-	self.key_press = key
-end 
-
-function Hero_SwordMan:InputRelease(key)
-	self.key_release = key
-end 
 
 function Hero_SwordMan:SetDir(dir_)
 	self.dir = dir_ 
@@ -119,5 +142,18 @@ function Hero_SwordMan:GetDir()
 	return self.dir
 end
 
+function Hero_SwordMan:SetJumpOffset(offset)
+	self.jumpOffset = offset or self.jumpOffset
+end
+
+function Hero_SwordMan:X_Move(offset)
+	local _dt = love.timer.getDelta()
+	self.pos.x = self.pos.x + offset
+end
+
+function Hero_SwordMan:Y_Move(offset)
+	local _dt = love.timer.getDelta()
+	self.pos.y = self.pos.y + offset
+end
 
 return Hero_SwordMan

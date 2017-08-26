@@ -14,6 +14,7 @@ local _State_Rest = require "Src.State_Rest"
 local _State_Stay = require "Src.State_Stay" 
 local _State_Move = require "Src.State_Move" 
 local _State_Dash = require "Src.State_Dash" 
+local _State_Jump = require "Src.State_Jump" 
 -- const
 
 state = {
@@ -21,15 +22,17 @@ state = {
     ["stay"] = _State_Stay,
     ["move"] = _State_Move,
     ["dash"] = _State_Dash,
+    ["jump"] = _State_Jump,
+
 
 }
 
 function _FSM:Ctor(hero_,state_name)
     
-    self.oriState = "stay"
+    self.oriState = "rest"
     self.preState = nil
     self.curState = state[state_name]
-    self.curState:Enter(hero_)
+    self.curState:Enter(hero_,self)
     
 end  
 
@@ -42,16 +45,16 @@ function _FSM:Update(hero_)
 
 end
 
-function _FSM:SetState(state_name,hero_, ...)
+function _FSM:SetState(state_name,hero_)
 
     if self.curState.name == state_name then
         return 
-    end 
-
+    end
+ 
     self.preState = self.curState
     self.curState:Exit(hero_)
     self.curState = state[state_name]
-    self.curState:Enter(hero_,...)
+    self.curState:Enter(hero_,self)
     
 end
 

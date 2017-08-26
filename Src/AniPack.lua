@@ -40,8 +40,6 @@ function _AniPack:Ctor() --initialize
 
 	self.box = _Rect.New(0,0,1,1)
 
-	-- self.currentBox = _Rect.New(0,0,1,1)
-
 	self.focus = {
 		["focus"] = false,
 		["max"] = 220,
@@ -53,6 +51,19 @@ function _AniPack:Ctor() --initialize
 
 end
 
+function _AniPack:NextFrame()
+	if self.playNum == 0 then
+		return
+	end
+	if self.count == self.num-1 then
+		if self.playNum > 1 then
+			self.playNum = self.playNum
+		end
+		self.count = 0
+	else
+		self.count = self.count + 1
+	end
+end
 
 function _AniPack:Update(dt)
 	
@@ -88,7 +99,7 @@ function _AniPack:Update(dt)
 
 	if self.frameData[self.frameHead]["[IMAGE]"][1]  ~= "" then
 		--print(string.format("Sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1],self.str))
-		-- local img = require "sys/img"(string.format("playingSpriteite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
+		--local img = require "sys/img"(string.format("playingSpriteite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
 		local tmpStr = string.format(self.frameData[self.frameHead]["[IMAGE]"][1],self.fileNum)
 		local img = _ResPack.New(_RESMGR.pathHead .. tmpStr)
 
@@ -256,12 +267,26 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 		local content = require(aniPath) -- content is a table
 		self.frameDataGrp[id] = {data = content, num = __num}
 	elseif (type(aniPath) == "table") then
-	    print("Error: _AniPack:AddAnimation() --> aniPath expect a string ,not a table.")
+	    print("Err: _AniPack:AddAnimation() --> aniPath expect a string ,not a table.")
 	    return self
 	else
-	    print("Error: _AniPack:AddAnimation() --> aniPath get a unexpected type!")
+	    print("Err: _AniPack:AddAnimation() --> aniPath get a unexpected type!")
 	    return self
 	end
+end
+
+function _AniPack:SetPlayNum(id,num)
+	-- id	ani的对应动作(状态)名称
+	-- num	播放次数
+
+	if type(id) == "string" then
+		self.frameDataGrp[id].num = num
+	elseif type(id) == "number" then
+		print("Err:_AniPack:SetPlayNum() --> id expected a string not number!")
+	else 
+		print("Err:_AniPack:SetPlayNum() --> id get a unexpected type")
+	end 
+	
 end
 
 function _AniPack:SetCenter(x,y)
@@ -285,5 +310,11 @@ end
 function _AniPack:SetDir(dir_)
 	self.dir = dir_
 end
+
+function _AniPack:GetCount()
+	return self.count or 0 
+end
+
+
 
 return _AniPack

@@ -4,7 +4,8 @@
 	Since: 2017-08-07 22:25:22
 	Alter: 2017-08-09 01:53:21
 	Docs:
-		*Write notes here even more
+		* used Finite State Machine to manage the states of hero.
+		
 ]]
 
 local Hero_SwordMan = require("Src.Class")()
@@ -12,7 +13,7 @@ local Hero_SwordMan = require("Src.Class")()
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Weapon"
 local _FSM = require "Src.FSM"
-
+local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 -- const
 local _path = {
@@ -59,7 +60,9 @@ function Hero_SwordMan:Ctor() --initialize
 	self.spd = {x = 3, y = 2}
 	self.dir = 1
 	self.jumpOffset = 0
-	
+	self.jumpPower = 7
+	self.jumpDir = ""
+
 	self.KEY = {
 		["UP"] = "up",
 		["DOWN"] = "down",
@@ -99,6 +102,7 @@ function Hero_SwordMan:Ctor() --initialize
 
 	for n = 1,_pakNum do
 		self.pakGrp[_name[n]]:SetPlayNum("jump",1)
+		self.pakGrp[_name[n]]:SetPlayNum("jumpattack",1)
 	end
 	
 	
@@ -131,6 +135,13 @@ function Hero_SwordMan:Draw()
 	end
 end
 
+--***************[[	 logic 	]]*********************
+
+-- function Hero_SwordMan:Logic_Jump()
+	
+-- end
+
+
 function Hero_SwordMan:SetDir(dir_)
 	self.dir = dir_ 
 	for n=1,_pakNum do
@@ -140,10 +151,6 @@ end
 
 function Hero_SwordMan:GetDir()
 	return self.dir
-end
-
-function Hero_SwordMan:SetJumpOffset(offset)
-	self.jumpOffset = offset or self.jumpOffset
 end
 
 function Hero_SwordMan:X_Move(offset)

@@ -15,6 +15,8 @@ local _State_Stay = require "Src.State_Stay"
 local _State_Move = require "Src.State_Move" 
 local _State_Dash = require "Src.State_Dash" 
 local _State_Jump = require "Src.State_Jump" 
+local _State_JumpAttack = require "Src.State_JumpAttack" 
+
 -- const
 
 state = {
@@ -23,7 +25,7 @@ state = {
     ["move"] = _State_Move,
     ["dash"] = _State_Dash,
     ["jump"] = _State_Jump,
-
+    ["jumpattack"] = _State_JumpAttack,
 
 }
 
@@ -40,7 +42,13 @@ function _FSM:Update(hero_)
     self.curState:Update(hero_,self)
 
     if(hero_.pakGrp.body.playNum == 0)then
-		self:SetState(self.oriState,hero_)
+		
+        if self.curState.name == "jumpattack" then
+            self:SetState("jump",hero_)
+        else 
+            self:SetState(self.oriState,hero_)
+        end 
+        
 	end 
 
 end

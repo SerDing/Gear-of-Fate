@@ -289,6 +289,11 @@ function _AniPack:SetPlayNum(id,num)
 	
 end
 
+function _AniPack:SetFrame(num)
+	-- num	指定帧数
+	self.count = num
+end
+
 function _AniPack:SetCenter(x,y)
 	self.center.x = x or self.center.x
 	self.center.y = y or self.center.y

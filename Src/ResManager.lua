@@ -4,8 +4,8 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 22:10:59
 	Docs:
-		* LoadTexture(FilePath) find repeated resource by FilePath
-		* LoadSound(FilePath) is similar to LoadTexture()
+		* LoadTexture(filePath) find repeated resource by filePath
+		* LoadSound(filePath) is similar to LoadTexture()
 ]]
 
 
@@ -32,35 +32,35 @@ function _RESMGR.Update(dt)
 end
 
 
-function _RESMGR.LoadTexture(FilePath)
+function _RESMGR.LoadTexture(filePath)
 
 
 	for n = 1 , table.getn(_RESMGR.imageCachePool) do
-	    if(_RESMGR.imageCachePool[n].FilePath == FilePath)then
+	    if(_RESMGR.imageCachePool[n].filePath == filePath)then
 	    	return _RESMGR.imageCachePool[n].pointing
 	    end
 	end
 
 
-	local _tmpImage = {pointing = 0, FilePath = FilePath}
-    _tmpImage.pointing =  love.graphics.newImage(FilePath)
-    table.insert(_RESMGR.imageCachePool, #_RESMGR.imageCachePool, _tmpImage)
+	local _tmpImage = {pointing = 0, filePath = filePath}
+    _tmpImage.pointing =  love.graphics.newImage(filePath)
+    _RESMGR.imageCachePool[#_RESMGR.imageCachePool + 1] = _tmpImage
     return _tmpImage.pointing
 end
 
 
-function _RESMGR.LoadSound(FilePath)
+function _RESMGR.LoadSound(filePath)
 
 	for n = 1 , #_RESMGR.soundCachePool do
-	    if(_RESMGR.soundCachePool[n].FilePath == FilePath)then
+	    if(_RESMGR.soundCachePool[n].filePath == filePath)then
 	    	return _RESMGR.soundCachePool[n].pointing
 	    end
 	end
 
 
-	local _tmpSound = {pointing = 0, FilePath = FilePath}
-    _tmpSound.pointing = love.audio.newSource(FilePath)
-    table.insert(_RESMGR.soundCachePool, #_RESMGR.soundCachePool, _tmpSound)
+	local _tmpSound = {pointing = 0, filePath = filePath}
+    _tmpSound.pointing = love.audio.newSource(filePath)
+    _RESMGR.soundCachePool[ #_RESMGR.soundCachePool + 1] = _tmpSound
     return _tmpSound.pointing
 end
 

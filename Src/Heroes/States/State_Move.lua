@@ -11,21 +11,19 @@ local _State_Move = require("Src.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
-local _time_up = 0
-local _time_down = 0
-local _time_left = 0
-local _time_right = 0
-
 function _State_Move:Ctor()
-   
+    self.time_up = 0
+    self.time_down = 0
+    self.time_left = 0
+    self.time_right = 0
 end 
 
 function _State_Move:Enter(hero_)
     self.name = "move"
 	hero_.pakGrp.body:SetAnimation(self.name)
 	hero_.pakGrp.weapon:SetAnimation(self.name)
-    _time_left = 0
-    _time_right = 0
+    self.time_left = 0
+    self.time_right = 0
 end
 
 function _State_Move:Update(hero_,FSM_)
@@ -34,14 +32,9 @@ function _State_Move:Update(hero_,FSM_)
 	local left = _KEYBOARD.Hold("left")
 	local right = _KEYBOARD.Hold("right")
 	
-    local _left_Release = false
-    local _right_Release = false
-    local _leftRlsTime = 0
-    local _rightRlsTime = 0
-    
     if up or down then
         if up and down then
-            if _time_up > _time_down then
+            if self.time_up > self.time_down then
                 hero_:Y_Move(-hero_.spd.y )
             else 
                 hero_:Y_Move(hero_.spd.y )
@@ -55,10 +48,10 @@ function _State_Move:Update(hero_,FSM_)
     
     if left or right then
         if left and right then
-            if _time_left > _time_right then
+            if self.time_left > self.time_right then
                 hero_:X_Move(- hero_.spd.x)
                 hero_:SetDir(-1)
-            elseif _time_left == _time_right then
+            elseif self.time_left == self.time_right then
                 hero_:X_Move(hero_.spd.x * hero_:GetDir())
             else 
                 hero_:X_Move(hero_.spd.x)
@@ -75,19 +68,19 @@ function _State_Move:Update(hero_,FSM_)
 
 
     if _KEYBOARD.Press("up") then
-        _time_up = love.timer.getTime()
+        self.time_up = love.timer.getTime()
     end 
     
     if _KEYBOARD.Press("down") then
-        _time_down = love.timer.getTime()
+        self.time_down = love.timer.getTime()
     end 
     
     if _KEYBOARD.Press("left") then
-        _time_left = love.timer.getTime()
+        self.time_left = love.timer.getTime()
     end 
    
     if _KEYBOARD.Press("right") then
-        _time_right = love.timer.getTime()
+        self.time_right = love.timer.getTime()
     end 
     
     
@@ -97,6 +90,10 @@ function _State_Move:Update(hero_,FSM_)
 
     if _KEYBOARD.Press(hero_.KEY["JUMP"]) then
 		FSM_:SetState("jump",hero_)
+	end 
+
+    if _KEYBOARD.Press(hero_.KEY["ATTACK"]) then
+		FSM_:SetState("attack",hero_)
 	end 
 
 end 

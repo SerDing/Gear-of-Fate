@@ -1,7 +1,6 @@
 return{
 
-DNF_POS = F:\TDDOWNLOAD\地下城与勇士\ImagePacks2\
-ani_pos = 男鬼剑士\bloodrivencast.ani
+
 M_FOREST_TOWN = music\forest_town.ogg
 M_FOREST_02 = music\forest02.ogg
 M_CHARACTER_SELECT = music\character_stage_ds.ogg

@@ -11,8 +11,8 @@
 local Hero_SwordMan = require("Src.Class")()
 
 local _AniPack = require "Src.AniPack"
-local _Weapon = require "Src.Weapon"
-local _FSM = require "Src.FSM"
+local _Weapon = require "Src.Heroes.Weapon"
+local _FSM = require "Src.Heroes.States.FSM"
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 -- const
@@ -41,7 +41,7 @@ local _aniName = {
 "dashattack", -- attack when hero ran
 "sit",
 
-"hitback",
+"hitback",	-- up slash action hit back enemy when hero was damaged
 "hardattack", -- hard_attack
 
 "attack1",
@@ -55,14 +55,13 @@ local _aniName = {
 local _pakNum = 2
 
 function Hero_SwordMan:Ctor() --initialize
-
+	
 	self.pos = {x = 400, y = 300}
 	self.spd = {x = 3, y = 2}
 	self.dir = 1
-	self.jumpOffset = 0
-	self.jumpPower = 7
-	self.jumpDir = ""
 
+	self.jumpOffset = 0
+	
 	self.KEY = {
 		["UP"] = "up",
 		["DOWN"] = "down",
@@ -101,8 +100,13 @@ function Hero_SwordMan:Ctor() --initialize
 	end
 
 	for n = 1,_pakNum do
+		self.pakGrp[_name[n]]:SetPlayNum("attack1",1)
+		self.pakGrp[_name[n]]:SetPlayNum("attack2",1)
+		self.pakGrp[_name[n]]:SetPlayNum("attack3",1)
+
 		self.pakGrp[_name[n]]:SetPlayNum("jump",1)
 		self.pakGrp[_name[n]]:SetPlayNum("jumpattack",1)
+		
 	end
 	
 	

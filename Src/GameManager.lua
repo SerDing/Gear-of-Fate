@@ -36,7 +36,7 @@ local _GAMEMGR = {
 
 }
 
-local _Hero_SwordMan = require "Src.Hero_SwordMan"
+local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
 
 local hero = _Hero_SwordMan.New()
 

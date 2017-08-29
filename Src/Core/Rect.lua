@@ -26,6 +26,8 @@ function _Rect:Ctor(x,y,w,h) --initialize
 	b = 255,
 	a = 255
 	}
+	
+	self.dir = 1
 
 end
 
@@ -38,9 +40,9 @@ function _Rect:Draw()
 	love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
 
 	love.graphics.rectangle( "line",
-		self.position.x - self.centerPos.x,
+		self.position.x - self.centerPos.x * self.dir,
 		self.position.y - self.centerPos.y,
-		self.size.w,
+		self.size.w * self.dir ,
 		self.size.h )
 
 	love.graphics.setColor(r,g,b,a)
@@ -82,6 +84,10 @@ end
 function _Rect:SetSize(w,h)
 	self.size.w = w or 0
 	self.size.h = h or 0
+end
+
+function _Rect:SetDir(dir)
+	self.dir = dir or self.dir
 end
 
 function _Rect:SetColor(r,g,b,a)

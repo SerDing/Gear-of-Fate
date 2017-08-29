@@ -11,13 +11,10 @@ local _State_Rest = require("Src.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
-
-
 local _HOLD_SPACE = 0.2
-local _keyPressTime = {left = 0, right = 0}
 
 function _State_Rest:Ctor()
-    
+    self.keyPressTime = {left = 0, right = 0}
 end 
 
 function _State_Rest:Enter(hero_,_keyRlstime)
@@ -35,23 +32,23 @@ function _State_Rest:Update(hero_,FSM_)
 	local _right = hero_.KEY["RIGHT"]
 	local _jump = hero_.KEY["JUMP"]
 	
-	if(_KEYBOARD.Press(_up) or _KEYBOARD.Press(_down))then
+	if(_KEYBOARD.Hold(_up) or _KEYBOARD.Hold(_down))then
 		FSM_:SetState("move",hero_)
 	end 
 	
-	if(_KEYBOARD.Press(_left))then
-		if love.timer.getTime() - _keyPressTime.left <= _HOLD_SPACE then
+	if(_KEYBOARD.Hold(_left))then
+		if love.timer.getTime() - self.keyPressTime.left <= _HOLD_SPACE then
 			FSM_:SetState("dash",hero_)
 		else
-			_keyPressTime.left = love.timer.getTime()
+			self.keyPressTime.left = love.timer.getTime()
 			hero_:SetDir(-1)
 			FSM_:SetState("move",hero_)
 		end 
-	elseif(_KEYBOARD.Press(_right))then
-		if love.timer.getTime() - _keyPressTime.right <= _HOLD_SPACE then
+	elseif(_KEYBOARD.Hold(_right))then
+		if love.timer.getTime() - self.keyPressTime.right <= _HOLD_SPACE then
 			FSM_:SetState("dash",hero_)
 		else 
-			_keyPressTime.right = love.timer.getTime()
+			self.keyPressTime.right = love.timer.getTime()
 			hero_:SetDir(1)
 			FSM_:SetState("move",hero_)
 		end
@@ -61,6 +58,11 @@ function _State_Rest:Update(hero_,FSM_)
 		FSM_:SetState("jump",hero_)
 	end 
 	
+	if _KEYBOARD.Press(hero_.KEY["ATTACK"]) then
+		FSM_:SetState("attack",hero_)
+	end 
+	
+
 end 
 
 function _State_Rest:Exit(hero_)

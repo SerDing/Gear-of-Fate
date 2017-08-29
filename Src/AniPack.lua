@@ -11,6 +11,7 @@
 
 local _AniPack = require("Src.Class")()
 
+local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _Sprite = require "Src.Core.Sprite"
 local _ResPack = require "Src.ResPack"
 local _RESMGR = require "Src.ResManager"
@@ -48,6 +49,8 @@ function _AniPack:Ctor() --initialize
 		["speed"] = 240,
 		["ARGB"] = {["A"] = 200,["R"] = 0,["G"] = 255,["B"] = 0}
 	}
+
+	self.debug = false
 
 end
 
@@ -134,6 +137,18 @@ function _AniPack:Update(dt)
 		end
 	end
 
+
+
+	if _KEYBOARD.Press("f1") then
+		
+		if self.debug then
+			self.debug = false
+		else 
+			self.debug = true
+		end 
+		
+	end 
+
 end
 
 function _AniPack:Draw(x,y,r,w,h)
@@ -159,28 +174,28 @@ function _AniPack:Draw(x,y,r,w,h)
 
 		self.playingSprite:SetCenter(self.center.x,self.center.y)
 		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x ) - 1,
+			math.floor(self.pos.x + self.offset.x * self.dir ) - 1,
 			math.floor(self.pos.y + self.offset.y ) - 1,
 			r,
 			self.size.w * self.dir,
 			self.size.h)
 
 		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x ) + 1,
+			math.floor(self.pos.x + self.offset.x * self.dir ) + 1,
 			math.floor(self.pos.y + self.offset.y ) - 1,
 			r,
 			self.size.w * self.dir,
 			self.size.h)
 
 		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x ) + 1,
+			math.floor(self.pos.x + self.offset.x * self.dir ) + 1,
 			math.floor(self.pos.y + self.offset.y ) + 1,
 			r,
 			self.size.w * self.dir,
 			self.size.h)
 
 		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x ) - 1,
+			math.floor(self.pos.x + self.offset.x * self.dir ) - 1,
 			math.floor(self.pos.y + self.offset.y ) + 1,
 			r,
 			self.size.w * self.dir,
@@ -196,9 +211,12 @@ function _AniPack:Draw(x,y,r,w,h)
 		self.size.h
 	)
 
-		
-	-- self:DrawBox()
+	
 
+	if self.debug then
+		self:DrawBox()
+	end 
+	
 end
 
 function _AniPack:DrawBox()
@@ -207,8 +225,9 @@ function _AniPack:DrawBox()
 	dmgBox:SetColor(0,255,0,255)
 	if (boxTab) then
 	    for n=1,#boxTab,6 do
-			dmgBox:SetPos(self.pos.x + boxTab[n] * self.size.w,self.pos.y + - boxTab[n+2])
+			dmgBox:SetPos(self.pos.x + boxTab[n] * self.size.w * self.dir,self.pos.y + - boxTab[n+2])
 			dmgBox:SetSize(boxTab[n+3] * self.size.w,-boxTab[n+5] * self.size.h)
+			dmgBox:SetDir(self.dir)
 			dmgBox:Draw()
 	    end
 	end
@@ -219,8 +238,9 @@ function _AniPack:DrawBox()
 	atkBox:SetColor(255,0,0,255)
 	if (boxTab) then
 	    for n=1,#boxTab,6 do
-			atkBox:SetPos(self.pos.x + boxTab[n] * self.size.w,self.pos.y + - boxTab[n+2])
+			atkBox:SetPos(self.pos.x + boxTab[n] * self.size.w * self.dir,self.pos.y + - boxTab[n+2])
 			atkBox:SetSize(boxTab[n+3] * self.size.w,-boxTab[n+5] * self.size.h)
+			atkBox:SetDir(self.dir)
 			atkBox:Draw()
 	    end
 	end

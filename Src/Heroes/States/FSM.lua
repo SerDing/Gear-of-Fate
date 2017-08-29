@@ -10,45 +10,44 @@
 
 local _FSM = require("Src.Class")()
 
-local _State_Rest = require "Src.State_Rest" 
-local _State_Stay = require "Src.State_Stay" 
-local _State_Move = require "Src.State_Move" 
-local _State_Dash = require "Src.State_Dash" 
-local _State_Jump = require "Src.State_Jump" 
+local _pathHead = "Src.Heroes.States."
 
+local _State_Rest = require (_pathHead .. "State_Rest").New()
+local _State_Stay = require (_pathHead .. "State_Stay").New()
+local _State_Move = require (_pathHead .. "State_Move").New()
+local _State_Dash = require (_pathHead .. "State_Dash").New()
+local _State_Jump = require (_pathHead .. "State_Jump").New()
+
+local _State_Attack = require (_pathHead .. "State_Attack").New()
 
 -- const
 
-state = {
+local state = {
     ["rest"] = _State_Rest,
     ["stay"] = _State_Stay,
     ["move"] = _State_Move,
     ["dash"] = _State_Dash,
     ["jump"] = _State_Jump,
     
+    ["attack"] = _State_Attack,
+
 
 }
 
 function _FSM:Ctor(hero_,state_name)
     
-    self.oriState = "rest"
+    self.oriState = "stay"
     self.preState = nil
     self.curState = state[state_name]
     self.curState:Enter(hero_,self)
-    
+
 end  
 
 function _FSM:Update(hero_)
     self.curState:Update(hero_,self)
 
     if(hero_.pakGrp.body.playNum == 0)then
-		
-        if self.curState.name == "jumpattack" then
-            self:SetState("jump",hero_)
-        else 
-            self:SetState(self.oriState,hero_)
-        end 
-        
+        self:SetState(self.oriState,hero_)
 	end 
 
 end

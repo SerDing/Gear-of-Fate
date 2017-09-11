@@ -70,6 +70,10 @@ function _State_Dash:Update(hero_,FSM_)
 		FSM_:SetState("jump",hero_)
 	end 
 
+    if _KEYBOARD.Press(hero_.KEY["ATTACK"]) then
+		FSM_:SetState("dashattack",hero_)
+	end 
+
 end 
 
 function _State_Dash:Exit(hero_)

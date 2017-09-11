@@ -1,5 +1,5 @@
 --[[
-	Desc: A single object to manage core blocks of the game.
+	Desc: A single object to manage core module of the game.
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 23:28:48
@@ -26,12 +26,6 @@ local _GAMEMGR = {
 		skill_win = "k",
 
 
-		up = "up",
-		down = "down",
-		left = "left",
-		right = "right",
-		attack = "x",
-		jump = "c"
 	},
 
 }

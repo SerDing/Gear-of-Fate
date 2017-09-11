@@ -17,11 +17,12 @@ local _RESMGR = {
 }
 
 
-function _RESMGR.Ctor() --initialize
-	_RESMGR.imageCachePool = {}
-	_RESMGR.resPool = {}
-	_RESMGR.soundCachePool = {}
 
+
+
+function _RESMGR.Ctor() --initialize
+	_RESMGR.soundList = require "./Config.SoundPack" 
+	-- print(_RESMGR.soundList.SM_ATK_01)
 end
 
 

@@ -453,6 +453,12 @@ SM_INDARA=sounds\char\swordman\sm_indara.ogg
 SM_LIGHTNINGGOD=sounds\char\swordman\sm_lightninggod.ogg
 SM_LIGHTNINGGOD_CAST=sounds\char\swordman\sm_lightninggod_cast.ogg
 SM_VAJRA=sounds\char\swordman\sm_vajra.ogg
+
+
+
+
+
+
 SW_1ATK_01=sounds\char\swordman_f\sw_1atk_01.ogg
 SW_1ATK_02=sounds\char\swordman_f\sw_1atk_02.ogg
 SW_2ATK_01=sounds\char\swordman_f\sw_2atk_01.ogg

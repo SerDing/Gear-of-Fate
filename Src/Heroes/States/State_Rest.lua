@@ -62,6 +62,10 @@ function _State_Rest:Update(hero_,FSM_)
 		FSM_:SetState("attack",hero_)
 	end 
 	
+	if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
+		FSM_:SetState("upperslash",hero_)
+	end 
+	
 
 end 
 

@@ -246,6 +246,14 @@ function _AniPack:DrawBox()
 	end
 end
 
+function _AniPack:GetAttackBox()
+	return self.frameData[self.frameHead]["[ATTACK BOX]"] or nil
+end
+
+function _AniPack:GetAttackBox()
+	return self.frameData[self.frameHead]["[DAMAGE BOX]"] or nil
+end
+
 function _AniPack:SetAnimation(id)
 
 	if (type(id) ~= "string") then

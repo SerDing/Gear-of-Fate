@@ -31,7 +31,7 @@ local _aniName = {
 "stay", -- stand for fight
 "dash", -- run
 "down", -- fall down
-"move",
+"move", -- walk
 "guard", -- use weapon to defend
 "jump",
 "jumpattack",
@@ -42,13 +42,17 @@ local _aniName = {
 "sit",
 
 "hitback",	-- up slash action hit back enemy when hero was damaged
-"hardattack", -- hard_attack
+"hardattack", -- use the sword with ghost attack enemy
+"upperslashafter",
 
 "attack1",
 "attack2",
 "attack3",
 "damage1",
 "damage2",
+
+
+
 
 }
 
@@ -59,6 +63,8 @@ function Hero_SwordMan:Ctor() --initialize
 	self.pos = {x = 400, y = 300}
 	self.spd = {x = 3, y = 2}
 	self.dir = 1
+
+	self.camp = "HERO"
 
 	self.jumpOffset = 0
 	
@@ -106,7 +112,9 @@ function Hero_SwordMan:Ctor() --initialize
 
 		self.pakGrp[_name[n]]:SetPlayNum("jump",1)
 		self.pakGrp[_name[n]]:SetPlayNum("jumpattack",1)
-		
+
+		self.pakGrp[_name[n]]:SetPlayNum("dashattack",1)
+		self.pakGrp[_name[n]]:SetPlayNum("hitback",1)
 	end
 	
 	
@@ -116,10 +124,13 @@ function Hero_SwordMan:Ctor() --initialize
 	
 	self.pakGrp.weapon:SetSingle(true)
 	
-
-
 	self.FSM = _FSM.New(self,"rest")
 
+-- test ani file 
+
+	-- for n = 1,_pakNum do
+	-- 	self.pakGrp[_name[n]]:SetAnimation("upperslashafter")
+	-- end
 
 end
 
@@ -141,8 +152,8 @@ end
 
 --***************[[	 logic 	]]*********************
 
--- function Hero_SwordMan:Logic_Jump()
-	
+-- function Hero_SwordMan:Logic_Common()
+
 -- end
 
 

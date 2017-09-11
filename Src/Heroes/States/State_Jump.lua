@@ -37,7 +37,8 @@ function _State_Jump:Update(hero_,FSM_)
 	local _body = hero_.pakGrp.body
 	local _dt = love.timer.getDelta()
 
-	--[[  start jump  ]]
+------[[  start jump  ]]
+	
 	if not self.jumpAttack then
 		if self.jumpDir ~= "up" and self.jumpDir ~= "down" then
 			if _body:GetCount() == 1 then
@@ -46,7 +47,8 @@ function _State_Jump:Update(hero_,FSM_)
 		end 
 	end 
 	
-	--[[	up and down logic in jump	]]
+------[[	up and down logic in jump	]]
+	
 	if self.jumpDir == "up" then
 		
 		self.jumpPower = self.jumpPower - _dt * 15
@@ -94,7 +96,8 @@ function _State_Jump:Update(hero_,FSM_)
 		
 	end 
 
-	--[[	move logic in jump	]]
+------[[	move logic in jump	]]
+	
 	if self.jumpDir == "up" or self.jumpDir == "down" then
 		local k = 0.9
 		if FSM_.preState.name == "dash" then
@@ -113,7 +116,8 @@ function _State_Jump:Update(hero_,FSM_)
 		end
 	end 
 
-	--[[	jump attack logic (contain animation handle)	]]
+------[[	jump attack logic (contain animation handle)	]]
+	
 	if not self.jumpAttack then
 		
 		if  hero_.jumpOffset < -2  then
@@ -136,7 +140,7 @@ function _State_Jump:Update(hero_,FSM_)
 				_body.playNum = 1
 			else 
 				self.jumpAttack = false
-				if hero_.jumpOffset >= 0 then
+				if hero_.jumpOffset >= 0 then  --[[	hero has been on land  ]]
 					FSM_:SetState(FSM_.oriState,hero_)
 				else 
 					hero_.pakGrp.body:SetAnimation(self.name)
@@ -150,11 +154,18 @@ function _State_Jump:Update(hero_,FSM_)
 			
 		end 
 
+		--[[	hero has been on land ,then set state to oriState	]]
+
 		if hero_.jumpOffset >= 0 then
 			self.jumpAttack = false
 			FSM_:SetState(FSM_.oriState,hero_)
 		end 
 		
+		--[[	jump attack check	]]
+		-- local _bodyAtkBox = _body:GetAttackBox()
+		-- if _bodyAtkBox then
+		-- 	_ATK_CHECK:CollisionDetection(_bodyAtkBox)
+		-- end 
 		
 	end 
 	

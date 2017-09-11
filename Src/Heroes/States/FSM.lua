@@ -19,6 +19,8 @@ local _State_Dash = require (_pathHead .. "State_Dash").New()
 local _State_Jump = require (_pathHead .. "State_Jump").New()
 
 local _State_Attack = require (_pathHead .. "State_Attack").New()
+local _State_DashAttack = require (_pathHead .. "State_DashAttack").New()
+local _State_UpperSlash = require (_pathHead .. "State_UpperSlash").New()
 
 -- const
 
@@ -30,7 +32,8 @@ local state = {
     ["jump"] = _State_Jump,
     
     ["attack"] = _State_Attack,
-
+    ["dashattack"] = _State_DashAttack,
+    ["upperslash"] = _State_UpperSlash,
 
 }
 

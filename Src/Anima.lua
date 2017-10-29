@@ -264,7 +264,7 @@ function _Anima:SetBlendMode(Mode)
 
 	-- self.playing_sprite:置混合(混合值)
 
-	love.graphics.setBlendMode( Mode )
+	-- love.graphics.setBlendMode( Mode )
 	--[[
 
 	BlendMode

@@ -11,13 +11,14 @@
 local _Sprite = require("Src.Class")()
 
 local _Rect = require "Src.Core.Rect"
+local _RESMGR = require "Src.ResManager" 
 
 function _Sprite:Ctor(path,x,y,w,h) --initialize
 
 	local tp = type(path)
 
 	if (tp == "string") then
-	    self.texture = love.graphics.newImage(path)
+	    self.texture = _RESMGR.LoadTexture(path)
 	else -- path为空纹理时
 	   self.texture = path
 	end
@@ -35,11 +36,12 @@ function _Sprite:Ctor(path,x,y,w,h) --initialize
 	self.center.x = 0
 	self.center.y = 0
 	self.color = {
-	r = 0,
-	g = 0,
-	b = 0,
+	r = 255,
+	g = 255,
+	b = 255,
 	a = 255
 	}
+	self.blendMode = "alpha"
 
 	local tmpWidth = self.texture:getWidth()
 	local tmpHeight = self.texture:getHeight()
@@ -48,25 +50,29 @@ function _Sprite:Ctor(path,x,y,w,h) --initialize
 end
 
 
-function _Sprite:Draw(x,y,r,sx,sy)
+function _Sprite:Draw(x,y,rotation,sx,sy)
 
 	self.pos.x = x or self.pos.x
 	self.pos.y = y or self.pos.y
 
-	-- local r, g, b, a = love.graphics.getColor()
-
+	local r, g, b, a = love.graphics.getColor()
 	-- love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
+
+	local _blendMode = love.graphics.getBlendMode()
+	love.graphics.setBlendMode(self.blendMode)
 
 	love.graphics.draw(self.texture,
 		self.pos.x,
 		self.pos.y,
-		r, 		-- rotation 旋转参数
+		rotation, 		-- rotation 旋转参数
 		sx,
 		sy,
 		self.center.x,
-		self.center.y)
+		self.center.y
+	)
 
-	-- love.graphics.setColor(r,g,b,a)
+	love.graphics.setColor(r,g,b,a)
+	love.graphics.setBlendMode(_blendMode)
 
 	self.rect:SetDir(sx)
 	self.rect:SetPos(self.pos.x,self.pos.y)
@@ -100,6 +106,16 @@ function _Sprite:SetColor(r,g,b,a)
 	b = b,
 	a = a
 	}
+end
+
+function _Sprite:SetFilter(switch)
+	if switch then
+		self.texture:setFilter( "linear", "nearest" )
+	end 
+end
+
+function _Sprite:SetBlendMode(mode)
+	self.blendMode = mode 
 end
 
 function _Sprite:GetRect()

@@ -38,7 +38,7 @@ function _Rect:Draw()
 
 	local r, g, b, a = love.graphics.getColor()
 	love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
-
+	
 	love.graphics.rectangle( "line",
 		self.position.x - self.centerPos.x * self.dir,
 		self.position.y - self.centerPos.y,

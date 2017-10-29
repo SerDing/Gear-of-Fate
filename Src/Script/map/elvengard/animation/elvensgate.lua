@@ -1,0 +1,10 @@
+return {
+--["[NAME]"]= "elvensgate.ani"
+["[FRAME MAX]"]= 1,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-106,-139},
+	["[DELAY]"]=20,
+	["[IMAGE]"]={"map/elvenpath.img",2},
+},
+
+}

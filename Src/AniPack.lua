@@ -39,6 +39,8 @@ function _AniPack:Ctor() --initialize
 	self.count = 0
 	self.time = 0
 
+	self.updateCount = 0
+
 	self.box = _Rect.New(0,0,1,1)
 
 	self.focus = {
@@ -50,7 +52,51 @@ function _AniPack:Ctor() --initialize
 		["ARGB"] = {["A"] = 200,["R"] = 0,["G"] = 255,["B"] = 0}
 	}
 
+	self.filter = false
+
 	self.debug = false
+
+	self.blendModeList = {
+		[1] = "add",
+		[2] = "alpha",
+		[3] = "replace",
+		[4] = "screen",
+		[5] = "subtrac",
+		[6] = "multiply",
+		[7] = "lighten",
+		[8] = "darken",
+		
+	}
+
+	self.blendMode = self.blendModeList[1]
+	--[[
+
+	alpha
+	Alpha blending (normal). The alpha of what's drawn determines its opacity.
+	
+	replace
+	The colors of what's drawn completely replace what was on the screen, with no additional blending. The BlendAlphaMode specified in love.graphics.setBlendMode still affects what happens.
+
+
+	screen
+	'Screen' blending.
+
+	add
+	The pixel colors of what's drawn are added to the pixel colors already on the screen. The alpha of the screen is not modified.
+	
+	subtract
+	The pixel colors of what's drawn are subtracted from the pixel colors already on the screen. The alpha of the screen is not modified.
+	
+	multiply
+	The pixel colors of what's drawn are multiplied with the pixel colors already on the screen (darkening them). The alpha of drawn objects is multiplied with the alpha of the screen rather than determining how much the colors on the screen are affected, even when the "alphamultiply" BlendAlphaMode is used.
+
+	lighten
+	The pixel colors of what's drawn are compared to the existing pixel colors, and the larger of the two values for each color component is used. Only works when the "premultiplied" BlendAlphaMode is used in love.graphics.setBlendMode.
+	
+	darken
+	The pixel colors of what's drawn are compared to the existing pixel colors, and the smaller of the two values for each color component is used. Only works when the "premultiplied" BlendAlphaMode is used in love.graphics.setBlendMode.
+	
+	]]
 
 end
 
@@ -69,6 +115,17 @@ function _AniPack:NextFrame()
 end
 
 function _AniPack:Update(dt)
+
+	--[[
+		When the aniData just has one frame 
+		and this class has updata one time 
+		then doesn't update any more
+	]]
+	if self.num <= 1 then 
+		if self.updateCount >= 1 then
+			return 0
+		end 
+	end 
 	
 	self.frameHead = string.format("[FRAME%03d]", self.count)
 
@@ -116,7 +173,7 @@ function _AniPack:Update(dt)
 		self.offset = img:GetOffset(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
 		img = nil
 	else
-		self.playingSprite = _RESMGR.imageNull
+		self.playingSprite:SetTexture( _RESMGR.imageNull)
 	end
 
 	self:SetCenter(-self.frameData[self.frameHead]["[IMAGE POS]"][1],-self.frameData[self.frameHead]["[IMAGE POS]"][2])
@@ -124,20 +181,20 @@ function _AniPack:Update(dt)
 	if self.num > 1 then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 			if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
-				-- self.playingSprite:置混合(2)
-				self:SetBlendMode(2)
+				self:SetBlendMode(1)
+				self.playingSprite:SetFilter(self.filter)
 			end
 		end
 
 		if self.frameData[self.frameHead]["[RGBA]"] then
-			self:SetColor(ARGB(self.frameData[self.frameHead]["[RGBA]"][1],
+			self:SetColor(self.frameData[self.frameHead]["[RGBA]"][1],
 				self.frameData[self.frameHead]["[RGBA]"][2],
 				self.frameData[self.frameHead]["[RGBA]"][3],
-				self.frameData[self.frameHead]["[RGBA]"][4]))
+				self.frameData[self.frameHead]["[RGBA]"][4])
 		end
 	end
 
-
+	self.updateCount = self.updateCount + 1
 
 	if _KEYBOARD.Press("f1") then
 		
@@ -170,7 +227,11 @@ function _AniPack:Draw(x,y,r,w,h)
 
 			self.focus["dir"] = -self.focus["dir"]
 		end
-		self:SetColor(ARGB(self.focus["ARGB"]["A"] ,self.focus["ARGB"]["R"],self.focus["ARGB"]["G"],self.focus["ARGB"]["B"]))
+		self:SetColor(
+			self.focus["ARGB"]["R"],
+			self.focus["ARGB"]["G"],
+			self.focus["ARGB"]["B"],
+			self.focus["ARGB"]["A"])
 
 		self.playingSprite:SetCenter(self.center.x,self.center.y)
 		self.playingSprite:Draw(
@@ -215,6 +276,7 @@ function _AniPack:Draw(x,y,r,w,h)
 
 	if self.debug then
 		self:DrawBox()
+		self.playingSprite.rect:Draw()
 	end 
 	
 end
@@ -254,16 +316,31 @@ function _AniPack:GetAttackBox()
 	return self.frameData[self.frameHead]["[DAMAGE BOX]"] or nil
 end
 
-function _AniPack:SetAnimation(id)
+function _AniPack:SetAnimation(id,num)
 
-	if (type(id) ~= "string") then
-	    print("Warning! _AniPack:setAnimation()--the type of id must be string ")
-	    return
+	local _idType = type(id)
+
+	if _idType == "string" then
+	    if not self.frameDataGrp[id] then
+			print(
+				"Err:_AniPack:SetAnimation() -- cannot find ani：" .. 
+				id .. 
+				"in frameDataGrp"
+			)
+			return false 
+		else 
+			self.frameData = self.frameDataGrp[id].data
+			self.playNum = self.frameDataGrp[id].num or 1
+		end 
+	elseif _idType == "table" then
+		self.frameData = id
+		self.playNum = num or -1
+	else 
+		print("Err:_AniPack:SetAnimation() -- id type is wrong")
+		return false 
 	end
 
-	self.frameData = self.frameDataGrp[id].data
-	self.playNum = self.frameDataGrp[id].num or 1
-
+	
 	self.count = 0
 	self.time = 0
 	self.num = self.frameData["[FRAME MAX]"]
@@ -272,8 +349,7 @@ function _AniPack:SetAnimation(id)
 
 	if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
-			-- self.playingSprite:置混合(2)
-			self:SetBlendMode(2) -- Alpha线性渐变混合 Alpha.one
+			self:SetBlendMode(1) 
 		end
 	end
 
@@ -296,10 +372,10 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 		self.frameDataGrp[id] = {data = content, num = __num}
 	elseif (type(aniPath) == "table") then
 	    print("Err: _AniPack:AddAnimation() --> aniPath expect a string ,not a table.")
-	    return self
+	    return false
 	else
 	    print("Err: _AniPack:AddAnimation() --> aniPath get a unexpected type!")
-	    return self
+	    return false
 	end
 end
 
@@ -331,8 +407,13 @@ function _AniPack:SetColor(r,g,b,a)
 	self.color = {r = r, g = g, b = b, a = a }
 end
 
-function _AniPack:SetBlendMode(mode)
-	-- statements
+function _AniPack:SetBlendMode(modeNum)
+	self.blendMode = self.blendModeList[modeNum]
+	self.playingSprite:SetBlendMode(self.blendMode)
+end
+
+function _AniPack:SetFilter(switch)
+	self.filter = switch or false
 end
 
 function _AniPack:SetFileNum(num)
@@ -346,6 +427,18 @@ end
 
 function _AniPack:GetCount()
 	return self.count or 0 
+end
+
+function _AniPack:GetRect()
+	return self.playingSprite:GetRect()
+end
+
+function _AniPack:GetWidth()
+	return self.playingSprite:GetWidth()
+end
+
+function _AniPack:GetHeight()
+	return self.playingSprite:GetHeight()
 end
 
 

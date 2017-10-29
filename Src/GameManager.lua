@@ -10,63 +10,46 @@
 
 local _GAMEMGR = {
 
-	title="",
-	period = 0, --游戏阶段
-	offset = {x = 0 , y = 0 },
+	period = 0, 
 	mousePos = {x = 0 , y = 0 },
 	runPath = "",
-
 	debug = false,
-
-	keyCfg = {
-
-
-		bag_win = "i",
-		state_win = "m", -- hero's state window
-		skill_win = "k",
-
-
-	},
 
 }
 
-local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
+local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
 
-local hero = _Hero_SwordMan.New()
-
+local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
 
 function _GAMEMGR.Ctor() --initialize
 
-	--[[
+	_SCENEMGR.Ctor()
+	
 
-	This is a test to test the Class.lua(面向对象机制)
-
-	self.id = 1
-	print("self.id = " .. tostring(self.id))
-
-	]]
 end
 
 
 function _GAMEMGR.Update(dt)
 
-	-- if(Game.period == 0)then
-
-	-- elseif(Game.period == 1)then
-
-	-- end
 	
-	hero:Update(dt)
+	_SCENEMGR.Update(dt)
+
 
 end
 
-
 function _GAMEMGR.Draw(x,y)
-	hero:Draw(400,300)
+	_SCENEMGR.Draw()
+	love.graphics.draw(_HUD, 0, 510)
 end
 
 function _GAMEMGR.GetHero()
-	return hero
+	return _hero
 end
+
+
+
+
+
+
 
 return _GAMEMGR

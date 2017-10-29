@@ -15,3 +15,17 @@ function GetRunPath()
     os.remove("cd.tmp")
     return string.sub(cwd, 1, -2)
 end
+
+--Cut Text(text,cutter)
+string.split = function (str, delimiter)
+	if str  then
+	    local result = {}
+	    str = str..delimiter
+	    delimiter = "(.-)"..delimiter
+	    for match in str:gmatch(delimiter) do
+	        table.insert(result, match)
+	    end
+	    return result
+	end
+	return {}
+end

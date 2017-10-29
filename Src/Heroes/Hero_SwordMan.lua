@@ -58,9 +58,9 @@ local _aniName = {
 
 local _pakNum = 2
 
-function Hero_SwordMan:Ctor() --initialize
+function Hero_SwordMan:Ctor(x,y) --initialize
 	
-	self.pos = {x = 400, y = 300}
+	self.pos = {x = x, y = y}
 	self.spd = {x = 3, y = 2}
 	self.dir = 1
 
@@ -144,9 +144,12 @@ function Hero_SwordMan:Update(dt)
 
 end
 
-function Hero_SwordMan:Draw()
+function Hero_SwordMan:Draw(screenOffset)
 	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:Draw(self.pos.x,self.pos.y+self.jumpOffset)
+		self.pakGrp[_name[n]]:Draw(
+			self.pos.x + screenOffset.x,
+			self.pos.y + screenOffset.y + self.jumpOffset
+		)
 	end
 end
 

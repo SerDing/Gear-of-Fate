@@ -18,7 +18,9 @@ local _KEYBOARD = require "Src.Core.KeyBoard"
 local _GAMEMGR = require "Src/GameManager"
 local _RESMGR = require "Src/ResManager"
 
+
 _RESMGR.Ctor()
+_GAMEMGR.Ctor()
 
 local backGround = love.graphics.newImage("/Dat/backgroundpic.png")
 

@@ -25,24 +25,31 @@ function _ResPack:Ctor(PakName) --initialize
 	-- 	return
 	-- end
 
-
-
-
-	if(love.filesystem.exists(PakName .. "/offset.txt") == false)then
-		print("Error:_ResPack:Ctor() --> The pak offset file is not existing! Please check!")
+	local tmpArray = string.split(PakName,"/")
+	
+	local _offsetName = string.gsub(tmpArray[#tmpArray],".img",".txt")
+	
+	if(love.filesystem.exists(PakName .. "/offset.txt") == false
+	and love.filesystem.exists(PakName .. "/" .. _offsetName) == false
+	)then
 		print(PakName)
+		assert(false,"_ResPack:Ctor() --> The pak offset file is not existing! Please check!")
 		return
 	end
 
 	self.PakName  = PakName
 
-	self.offset_text = LoadFile(PakName .. "/offset.txt")
+	if(love.filesystem.exists(PakName .. "/" .. _offsetName))then
+		self.offset_text = LoadFile(PakName .. "/" .. _offsetName)
+	else 
+		self.offset_text = LoadFile(PakName .. "/offset.txt")
+	end 
 
 	if(self.offset_text == nil)then
 		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. PakName)
 		return
 	end
-
+	
 	local  first_cut = CutText(self.offset_text, "\n")
 
 	self.pak_info = {}

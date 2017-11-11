@@ -99,4 +99,13 @@ function _Rect:SetColor(r,g,b,a)
 	}
 end
 
+function _Rect:CheckPoint(x,y)
+	if x >= self.position.x and x <= self.position.x + self.size.w then
+		if y >= self.position.y and y <= self.position.y + self.size.h then
+			return true
+		end 
+	end 
+	return false 
+end
+
 return _Rect

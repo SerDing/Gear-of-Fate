@@ -37,6 +37,6 @@ return  {
 
 	["[IGA animation]"] ={"animation/iga_elven.ani","[closeback]",500,172,0,},
 
-	["[map name]"] ="pvp无名",
+	["[map name]"] ="d_elvengard",
 
 }

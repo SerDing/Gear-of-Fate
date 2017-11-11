@@ -59,14 +59,14 @@ function _State_Attack:Update(hero_,FSM_)
 
             hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
 
-            if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
-                
-                hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
-
-            end 
+            
         end 
-        
+        if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
+        (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+            
+            hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
+
+        end 
 
         if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
@@ -75,9 +75,9 @@ function _State_Attack:Update(hero_,FSM_)
         end 
 
     elseif self.attackNum == 3 then
-        if _body:GetCount() < 3 then
+        if _body:GetCount() < 4 then
             
-            hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
+            hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
 
             if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
             (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then

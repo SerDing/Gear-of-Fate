@@ -1,5 +1,5 @@
 return {
-    title="C",
+    title="Gear of Fate",
     winSize = {width = 800,height = 600},
     keyCfg = {
 		bag_win = "i",

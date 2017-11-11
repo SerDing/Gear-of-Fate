@@ -1,0 +1,10 @@
+return {
+--["[NAME]"]= "gate.ani"
+["[FRAME MAX]"]= 1,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={0,-70},
+	["[DELAY]"]=20,
+	["[IMAGE]"]={"1dnf/home.img",8},
+},
+
+}

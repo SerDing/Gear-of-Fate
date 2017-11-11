@@ -1,0 +1,26 @@
+return {
+ 	['[FRAME001]'] = {
+		['[IMAGE POS]'] = {-64,-47,},
+		['[DELAY]'] = 120,
+		['[IMAGE]'] = {"map/01obj501.img",0,},
+	},
+	['[LOOP]'] = 1,
+	['[FRAME000]'] = {
+		['[IMAGE POS]'] = {-64,-47,},
+		['[DELAY]'] = 120,
+		['[IMAGE]'] = {"map/01obj500.img",0,},
+	},
+	['[SHADOW]'] = 0,
+	['[FRAME002]'] = {
+		['[IMAGE POS]'] = {-64,-47,},
+		['[DELAY]'] = 120,
+		['[IMAGE]'] = {"map/01obj502.img",0,},
+	},
+	['[FRAME003]'] = {
+		['[IMAGE POS]'] = {-64,-47,},
+		['[DELAY]'] = 120,
+		['[IMAGE]'] = {"map/01obj503.img",0,},
+	},
+	['[FRAME MAX]'] = 4,
+ 
+}

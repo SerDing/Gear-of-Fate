@@ -1,0 +1,12 @@
+return {
+--["[NAME]"]= "hmbgbox05.ani"
+["[FRAME MAX]"]= 1,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-54,-30}
+,
+	["[DELAY]"]=120,
+	["[IMAGE]"]={"map/hendonmyre/hmbgbox.img",4}
+,
+},
+
+}

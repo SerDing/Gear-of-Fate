@@ -7,7 +7,6 @@
 		* The class contain many game core data
 ]]
 
-
 local _GAMEMGR = {
 
 	period = 0, 
@@ -25,31 +24,18 @@ function _GAMEMGR.Ctor() --initialize
 
 	_SCENEMGR.Ctor()
 	
-
 end
 
 
 function _GAMEMGR.Update(dt)
-
 	
 	_SCENEMGR.Update(dt)
-
 
 end
 
 function _GAMEMGR.Draw(x,y)
 	_SCENEMGR.Draw()
-	love.graphics.draw(_HUD, 0, 510)
+	love.graphics.draw(_HUD, 0, 600-90)
 end
-
-function _GAMEMGR.GetHero()
-	return _hero
-end
-
-
-
-
-
-
 
 return _GAMEMGR

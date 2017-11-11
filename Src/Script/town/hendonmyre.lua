@@ -18,8 +18,6 @@ return {
 		[9]={'HendonMyre/Hendon2North.map','[minimap rect]',205,76,243,98,'[/minimap rect]','[dungeon gate]',7},
 	},
 
-
-
 	['[name]']='赫顿玛尔',
 	['[permission]'] = {
 		['[need level]']=3,

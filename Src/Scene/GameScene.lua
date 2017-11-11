@@ -12,36 +12,25 @@ local _GameScene = require("Src.Class")()
 local _Rect = require "Src.Core.Rect"
 local _TileBlock = require "Src.Scene.TileBlock"
 local _AniBlock = require "Src.Scene.AniBlock" 
+local _ObjectMgr = require "Src.Scene.ObjectManager"
+local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 local _GAMEINI = require "Src.Config.GameConfig" 
 
-local _aniLayerName = {
-    "[bottom]",
-    "[closeback]",
-    "[close]",
-    "[normal]",
-}
 local _screenOffset = {x = 0,y = 0}
+local _sceneMgr = {} -- Initialize a null pointer of SceneManager
 
-function _GameScene:Ctor(path,res_) --initialize
+function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     
+    _sceneMgr = sceneMgr
+
     self.pathHead = "Src/Script/map/"
 
-    self.map = require(string.gsub(path,".lua","") )
+    self.map = require(string.gsub(path,".lua",""))
 
     self.res = {}
 
-    self.objects = {}
-
-    -- local tmp = {
-	-- 	["[normal]"] = {},
-	-- 	["[bottom]"] = {},
-	-- 	["[closeback]"] = {},
-	-- 	["[close]"] = {},
-	-- }
-	-- setmetatable(_map, {__index = tmp}) 
-
-    self.aniLayer = {
+    self.layers = {
         ["[normal]"] = {},
         ["[bottom]"] = {},
         ["[closeback]"] = {},
@@ -53,6 +42,8 @@ function _GameScene:Ctor(path,res_) --initialize
     
     self.rect = _Rect.New(0,0,1,1)
 
+    self.debug = false
+
 ------[[    load tiles    ]]
     if not self.res["[tile]"] then
         self.res["[tile]"] = {}
@@ -61,7 +52,7 @@ function _GameScene:Ctor(path,res_) --initialize
     for n=1,#self.map["[tile]"] do
         _tilePath = self.pathHead .. self.directory .. self.map["[tile]"][n]
         self.res["[tile]"][self.map["[tile]"][n]] = _TileBlock.New(_tilePath)
-        self.res["[tile]"][self.map["[tile]"][n]]:SetOffset_2(0, -170 )
+        self.res["[tile]"][self.map["[tile]"][n]]:SetOffset_2(0, -(self.map["[background pos"] or 80) * 2 - 10)
     end 
 
 ------[[    load animation    ]]
@@ -77,8 +68,8 @@ function _GameScene:Ctor(path,res_) --initialize
         self.res["[animation]"][n]:SetPos(_mapAnimation[n+2],_mapAnimation[n+3])
         self.res["[animation]"][n]:SetFilter(true)
         self.res["[animation]"][n]:SetLayer(_mapAnimation[n+1])
-        -- self.aniLayer[ self.res["[animation]"][n].layer ][ #self.aniLayer + 1 ] = self.res["[animation]"][n]
-        table.insert(self.aniLayer[_mapAnimation[n+1]],n)
+        -- self.layers[ self.res["[animation]"][n].layer ][ #self.layers + 1 ] = self.res["[animation]"][n]
+        table.insert(self.layers[_mapAnimation[n+1]],n)
         
     end 
 
@@ -109,71 +100,66 @@ function _GameScene:Ctor(path,res_) --initialize
         
     end 
     
+------[[    Add normal objcets into ObjcetMgr.objects    ]]
 
+    self:Awake()
+    
+end
+
+function _GameScene:Awake() -- ReAdd objects into ObjMgr
+    for n=1,#self.layers["[normal]"] do
+        _ObjectMgr.AddObject(self.res["[animation]"][self.layers["[normal]"][n]])
+    end 
 end
 
 function _GameScene:Update(dt,screenOffset)
     
-    -- for n=1,#self.obejcts do
-	-- 	self.obejcts[n]:Draw()
-	-- end
-    
     _screenOffset = screenOffset
 
-    -- for n=1,#_aniLayerName do
-    --     self:UpdateLayer(_aniLayerName[n],dt)
-    -- end 
     self:UpdateLayer("[bottom]",dt)
     self:UpdateLayer("[closeback]",dt)
     self:UpdateLayer("[close]",dt)
     self:UpdateLayer("[normal]",dt)
 
+    _ObjectMgr.Update(dt)
+
+    if _KEYBOARD.Press("f1") then
+        if not self.debug then
+            self.debug = true
+        else 
+            self.debug = false
+        end 
+    end 
+    
 end
 
+function _GameScene:Draw()
 
-function _GameScene:Draw(x,y)
-
-	-- for n=1,#self.obejcts do
-	-- 	self.obejcts[n]:Draw()
-	-- end
-    
-    
     self:DrawBackGround("[far]",_screenOffset.x,_screenOffset.y)
     self:DrawBackGround("[mid]",_screenOffset.x,_screenOffset.y)
-
     self:DrawTile(_screenOffset.x,_screenOffset.y)
-    
-
-
-    
     self:DrawLayer("[closeback]",_screenOffset.x,_screenOffset.y)
     self:DrawLayer("[bottom]",_screenOffset.x,_screenOffset.y)
-    self:DrawLayer("[normal]",_screenOffset.x,_screenOffset.y)
-    -- if self.debug then
+    _ObjectMgr.Draw(_screenOffset)
+    self:DrawLayer("[close]",_screenOffset.x,_screenOffset.y)
+    
+    
+    if self.debug then
         self:DrawSpecialArea("movable",_screenOffset.x,_screenOffset.y)
         self:DrawSpecialArea("event",_screenOffset.x,_screenOffset.y)
-    -- end 
-    
-
-    -- OBJMGR.draw()  -- object manager draw
-    
-    
-    self:DrawLayer("[close]",_screenOffset.x,_screenOffset.y)
-
+    end 
 
 end
 
 function _GameScene:UpdateLayer(layer,dt)
-    for n=1,#self.aniLayer[layer] do
-        -- self.aniLayer[layer][n]:Update(dt)
-        self.res["[animation]"][self.aniLayer[layer][n]]:Update(dt)
+    for n=1,#self.layers[layer] do
+        self.res["[animation]"][self.layers[layer][n]]:Update(dt)
     end 
 end
 
 function _GameScene:DrawLayer(layer,x,y)
-    for n=1,#self.aniLayer[layer] do
-        self.res["[animation]"][self.aniLayer[layer][n]]:Draw(x,y)
-        
+    for n=1,#self.layers[layer] do
+        self.res["[animation]"][self.layers[layer][n]]:Draw(x,y)
     end 
 end
 
@@ -214,21 +200,24 @@ end
 
 function _GameScene:DrawSpecialArea(type,x,y)
     local _head = ""
+    local _count = 0
     if type == "movable" then
         _head = "[virtual movable area]"
+        _count = 4
     else -- "event"
         _head = "[town movable area]"
+        _count = 6
     end 
 
     local tab = self.map[_head]
 	if not tab then
 		return false
-	end
-	for n=1,#tab,6 do
+    end
+	for n=1,#tab,_count do
         self.rect:SetPos(x + tab[n],200+y + tab[n+1])
         self.rect:SetSize(tab[n+2],tab[n+3])
         if type == "movable" then
-            self.rect:SetColor(255,200,0,255)
+            self.rect:SetColor(0,0,180,255)
         else -- "event"
             self.rect:SetColor(255,0,0,255)
         end 
@@ -242,15 +231,62 @@ function _GameScene:GetWidth()
 	for n=1,#self.map["[tile]"] do
 		w = w + self.res["[tile]"][self.map["[tile]"][n]]:GetWidth()
 	end
-	return  w 
+	return  w
 end
 
 function _GameScene:GetHeight()
 	return 600
 end
 
-function _GameScene:Notify()
-	
+function _GameScene:IsInMoveableArea(x,y)
+    if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
+        return false 
+    end 
+
+    return self:IsInArea("movable",x,y)
+end
+
+function _GameScene:CheckEvent(x,y)
+    local _result = self:IsInArea("event",x,y)
+    
+    if _result then
+        local _index = {area = _result[1], map = _result[2]}
+        _sceneMgr.SwitchScene(_result[1],_result[2],_result[3])
+    end 
+end
+
+function _GameScene:IsInArea(areaType,x,y)
+	local _head = ""
+    local _count = 0
+    
+    if areaType == "movable" then
+        _head = "[virtual movable area]"
+        _count = 4
+    else -- "event"
+        _head = "[town movable area]"
+        _count = 6
+    end 
+    
+    local tab = self.map[_head]
+    
+    if not tab then
+		return false
+    end
+
+	for n=1,#tab,_count do
+        self.rect:SetPos( tab[n], 200 + tab[n + 1])
+        self.rect:SetSize(tab[n + 2] ,tab[n + 3])
+        if self.rect:CheckPoint(x,y) then
+            if _count == 4 then -- movable area
+                return true
+            else -- event area
+                
+                return {tab[n + 4],tab[n + 5],math.ceil(n / 6)}
+            end 
+        end 
+    end
+
+    return false
 end
 
 return _GameScene

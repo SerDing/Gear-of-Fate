@@ -6,22 +6,21 @@
 	Docs:
 		* 
 ]]
-
-local _AniBlock = require("Src.Class")()
+local _obj = require "Src.Scene.Object" 
+local _AniBlock = require("Src.Class")(_obj)
 
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
 local _GAMEINI = require "Src.Config.GameConfig" 
 
 function _AniBlock:Ctor(aniPath,layer)
+	
     self.anima = require(string.sub(aniPath, 1, string.len(aniPath) - 4))
 	
 	self.path = string.sub(aniPath, 1, string.len(aniPath) - 4)
 	
 	local tmpArr = string.split(self.path,"/")
 	self.name = tmpArr[#tmpArr]
-
-	
 
 	self.ani = _AniPack.New()
 	self.ani:SetAnimation(self.anima)
@@ -34,20 +33,20 @@ function _AniBlock:Ctor(aniPath,layer)
 	self.layer = layer or "[closeback]"
 	self.ani:SetFilter(true)
 
-	-- if self.layer == "[normal]" then
-	-- 	self:sc_add()
-	-- 	self:sc_setType("MAP_OBJ")
-	-- end
+	if self.layer == "[normal]" then
+		self:SetType("OBJECT")
+	end
 	self.rect = _Rect.New(0,0,4,4)
 
-	self.debug = false
+	self.debug = true
 	
 	self.display = 1
 
 end 
 
 function _AniBlock:Update(dt)
-    self.ani:Update(dt)
+	self.ani:Update(dt)
+	
 end 
 
 function _AniBlock:Draw(x,y)
@@ -110,7 +109,8 @@ function _AniBlock:SetFilter(switch)
 end
 
 function _AniBlock:GetY()
-    return  self.pos.y + self.offset_2.y
+	
+	return  self.pos.y + self.offset_2.y
 end
 
 function _AniBlock:GetWidth()

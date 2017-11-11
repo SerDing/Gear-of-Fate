@@ -8,7 +8,6 @@
 		* LoadSound(filePath) is similar to LoadTexture()
 ]]
 
-
 local _RESMGR = {
 	imageCachePool = {},
 	resPool = {},
@@ -16,15 +15,11 @@ local _RESMGR = {
 	pathHead = "/ImagePacks/"
 }
 
-
-
-
-
 function _RESMGR.Ctor() --initialize
 	_RESMGR.soundList = require "./Config.SoundPack" 
 	-- print(_RESMGR.soundList.SM_ATK_01)
-end
 
+end
 
 function _RESMGR.Update(dt)
 
@@ -32,16 +27,13 @@ function _RESMGR.Update(dt)
 	-- print( "ResCachePool_Number:"  .. tostring(table.getn(_RESMGR.imageCachePool)) )
 end
 
-
 function _RESMGR.LoadTexture(filePath)
-
 
 	for n = 1 , table.getn(_RESMGR.imageCachePool) do
 	    if(_RESMGR.imageCachePool[n].filePath == filePath)then
 	    	return _RESMGR.imageCachePool[n].pointing
 	    end
 	end
-
 
 	local _tmpImage = {pointing = 0, filePath = filePath}
     _tmpImage.pointing =  love.graphics.newImage(filePath)
@@ -57,7 +49,6 @@ function _RESMGR.LoadSound(filePath)
 	    	return _RESMGR.soundCachePool[n].pointing
 	    end
 	end
-
 
 	local _tmpSound = {pointing = 0, filePath = filePath}
     _tmpSound.pointing = love.audio.newSource(filePath)

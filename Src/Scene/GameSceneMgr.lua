@@ -9,8 +9,8 @@
 
 local _SCENEMGR = {}
 
+local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _Scene = require "Src.Scene.GameScene"
-
 local _sendPos = require "Src.Scene.SendPosition" -- some position data
 
 local _NAME_LIST = {
@@ -32,13 +32,13 @@ local _res = {}
 
 local _GAMEINI = require "Src.Config.GameConfig" 
 
-local hero_ = {} -- init a null pointer that will point to hero
+_ObjectMgr.Ctor()
 
 local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
 
 local _hero = _Hero_SwordMan.New(400,460)
 
-
+_ObjectMgr.AddObject(_hero)
 
 function _SCENEMGR.Ctor()
 
@@ -54,19 +54,21 @@ function _SCENEMGR.Ctor()
 		_Area.town[k] = require ("Src.Script.town." .. v)
 	end 
 
+	_SCENEMGR.curType = "town"
+
 ------[[	test elvengard map	]]
 
-	_SCENEMGR.CreatScene(_Index["elvengard"][1],_Index["elvengard"][2],"town")
+	-- _SCENEMGR.CreatScene(_Index["elvengard"][1],_Index["elvengard"][2],"town")
 	
-	_SCENEMGR.LoadScene(_Index["elvengard"][1],_Index["elvengard"][2],"town")
+	_SCENEMGR.LoadScene(_Index["elvengard"][1],_Index["elvengard"][2],_SCENEMGR.curType)
 
-	_SCENEMGR.SetHeroPtr(_hero)
+	
 end 
 
 function _SCENEMGR.Update(dt)
 	
 	_SCENEMGR.RefreshSystemOffset(_SCENEMGR.curScene:GetWidth(),_SCENEMGR.curScene:GetHeight())
-	_hero:Update(dt)
+	_hero:Update(dt,_SCENEMGR.offset)
 
 	if _SCENEMGR.curScene then
 		_SCENEMGR.curScene:Update(dt,_SCENEMGR.offset)
@@ -82,41 +84,47 @@ function _SCENEMGR.Draw()
 	else 
 		print("Err:SceneMgr.Draw() --> curScene is not existing !")
 	end 
-	_hero:Draw(_SCENEMGR.offset)
+	-- _hero:Draw(_SCENEMGR.offset)
 end
 
 function _SCENEMGR.LoadScene(area,map,type)
 	
+----[[  preDefine  ]]
+	
+	if not _sceneList[type][area] then
+		print(area)
+		_sceneList[type][area] = {}
+	end
+
+	if not _res[area] then
+		_res[area] = {}
+	end 
+
+	if not _res[area][map] then
+		_res[area][map] = {}
+	end 
+----[[    ]]
+	if not _sceneList[type][area][map] then
+		_SCENEMGR.CreatScene(area,map,type)
+	end 
+
 	if _sceneList[type][area][map] then
 		_SCENEMGR.curScene = _sceneList[type][area][map]
 		_SCENEMGR.curIndex = {area,map}
+		_SCENEMGR.curScene:Awake()
+		_hero:SetScenePtr(_SCENEMGR.curScene)
 		return true 
-	else 
-		print(
-			"Err:_SCENEMGR:LoadScene() not created -- area:" .. 
-			tostring(area) .. 
-			" map:" .. 	
-			tostring(map)
-		)
-		return false 
 	end 
 	
-	
+end
+
+function _SCENEMGR.UnLoadScene()
+	_ObjectMgr.RemoveObject("OBJECT")
+	_ObjectMgr.RemoveObject("NPC")
 end
 
 function _SCENEMGR.CreatScene(area,map,type)
 	
-	--[[	preDefine	]]
-	
-	if not _sceneList[type][area] then
-		_sceneList[type][area] = {}
-	end 
-	if not _res[area] then
-		_res[area] = {}
-	end 
-	if not _res[area][map] then
-		_res[area][map] = {}
-	end 
 	--[[	transform file form [*.map] to  [*.lua] 	]]
 	
 	local _path = string.sub(
@@ -125,7 +133,7 @@ function _SCENEMGR.CreatScene(area,map,type)
 		1, 
 		- 4 - 1
 	)
-
+	
 	if not _sceneList[type][area][map] then
 		
 		--[[	check whether the map file exits 	]]
@@ -138,7 +146,7 @@ function _SCENEMGR.CreatScene(area,map,type)
 			return false 
 		end
 		
-		_sceneList[type][area][map] = _Scene.New(_path,_res[area][map]) 
+		_sceneList[type][area][map] = _Scene.New(_path,_res[area][map],_SCENEMGR) 
 	end 
 	
 	
@@ -146,56 +154,70 @@ end
 
 function _SCENEMGR.IsMapFileExisting(path)
 	local fp = io.open(path)
-	local _result 
+ 
 	if not fp then
-		_result = false
+		return false
 	else 
-		_result = true 
+		fp:close()
+		return true
 	end 
-	fp:close()
-	return _result 
+	
 end
 
 function _SCENEMGR.RefreshSystemOffset(w,h)
-	
-	if hero_.pos.x + _SCENEMGR.offset.x < 350 then
-		_SCENEMGR.offset.x,_SCENEMGR.offset.y = _SCENEMGR.GetScreenPos(hero_.pos.x+50,hero_.pos.y,w,h)
-	elseif hero_.pos.x + _SCENEMGR.offset.x > 450 then
-		_SCENEMGR.offset.x,_SCENEMGR.offset.y = _SCENEMGR.GetScreenPos(hero_.pos.x-50,hero_.pos.y,w,h)
+	if _hero.pos.x + _SCENEMGR.offset.x < _GAMEINI.winSize.width / 2 - 50 then
+		_SCENEMGR.offset.x,_SCENEMGR.offset.y = _SCENEMGR.GetScreenPos(_hero.pos.x+50,_hero.pos.y,w,h)
+	elseif _hero.pos.x + _SCENEMGR.offset.x > _GAMEINI.winSize.width / 2 + 50 then
+		_SCENEMGR.offset.x,_SCENEMGR.offset.y = _SCENEMGR.GetScreenPos(_hero.pos.x-50,_hero.pos.y,w,h)
 	else
-		_SCENEMGR.offset.x,_SCENEMGR.offset.y = _SCENEMGR.GetScreenPos(hero_.pos.x,hero_.pos.y,w,h)	--这种时候 x 轴 没必要更新，center 到这边已经没用了 就用来占位吧
+		_SCENEMGR.offset.x,_SCENEMGR.offset.y = _SCENEMGR.GetScreenPos(_hero.pos.x,_hero.pos.y,w,h)	
 	end
 end
 
 function _SCENEMGR.GetScreenPos(x,y,w,h)
-	local w2,h2 = _GAMEINI.winSize.width/2,_GAMEINI.winSize.height/2--half of width or height
+	local w2,h2 = _GAMEINI.winSize.width / 2, _GAMEINI.winSize.height / 2--half of width or height
 	local rx,ry = 0,0
 
 	if w >_GAMEINI.winSize.width then
-		if (x>w2 and x<w-w2) then
-			rx = -(x-w2)
-		elseif x<=w2 then
-			rx=0
-		elseif x>=w-w2 then
-			rx=-(w-_GAMEINI.winSize.width)
+		if (x > w2 and x < w - w2) then
+			rx = - (x - w2)
+		elseif x <= w2 then
+			rx = 0
+		elseif x >= w - w2 then
+			rx = - (w - _GAMEINI.winSize.width)
 		end
 	end
+	
 	if h > _GAMEINI.winSize.height then
-		if (y>h2 and y<h-h2) then
-			ry = -(y-h2)
-		elseif y<=h2 then
-			ry=0
-		elseif y>=h-h2 then
-			ry=-(h-_GAMEINI.winSize.height)
+		if (y > h2 and y < h - h2) then
+			ry = - (y - h2)
+		elseif y <= h2 then
+			ry = 0
+		elseif y >= h - h2 then
+			ry = - (h - _GAMEINI.winSize.height)
 		end
 	end
 
 	return rx,ry
 end
 
-function _SCENEMGR.SetHeroPtr(ptr)
-	assert(ptr,"Warning!!! hero_ pointer is null!!!")
-	hero_ = ptr
+function _SCENEMGR.SwitchScene(area,map,num)
+	
+	local _arr = _Area.town[area]
+	
+	if _arr then
+		local _pos = _sendPos[_SCENEMGR.curIndex[1] ][_SCENEMGR.curIndex[2]][num]
+		if _pos then
+			_SCENEMGR.UnLoadScene()
+			_SCENEMGR.LoadScene(area,map,_SCENEMGR.curType)
+			_hero:SetPosition(_pos.x,_pos.y)
+		end 
+	else
+		print("Err: _SCENEMGR:SwitchScene() the objected AreaData is not Existing!")
+		print(area,map)
+		return false 
+	end
+	
 end
 
 return _SCENEMGR 

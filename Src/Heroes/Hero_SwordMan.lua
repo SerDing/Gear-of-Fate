@@ -7,8 +7,8 @@
 		* used Finite State Machine to manage the states of hero.
 		
 ]]
-
-local Hero_SwordMan = require("Src.Class")()
+local _obj = require "Src.Scene.Object" 
+local Hero_SwordMan = require("Src.Class")(_obj)
 
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Heroes.Weapon"
@@ -19,11 +19,6 @@ local _KEYBOARD = require "Src.Core.KeyBoard"
 local _path = {
 "Src/Script/character/swordman/animation/",
 "Src/Script/equipment/swordman/weapon/ssword/"
-}
-
-local _name = {
-"body",
-"weapon"
 }
 
 local _aniName = {
@@ -51,19 +46,23 @@ local _aniName = {
 "damage1",
 "damage2",
 
+}
 
-
-
+local _name = {
+	"body",
+	"weapon"
 }
 
 local _pakNum = 2
 
+local Scene_ = {} -- init a null Scene Pointer
+
 function Hero_SwordMan:Ctor(x,y) --initialize
-	
+	self:SetType("HERO")
 	self.pos = {x = x, y = y}
 	self.spd = {x = 3, y = 2}
 	self.dir = 1
-
+	self.Y = self.pos.y
 	self.camp = "HERO"
 
 	self.jumpOffset = 0
@@ -104,7 +103,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 			self.pakGrp[_name[n]]:AddAnimation(_path[n] .. _aniName[k],-1,_aniName[k])
 		end
 	end
-
+---- 
 	for n = 1,_pakNum do
 		self.pakGrp[_name[n]]:SetPlayNum("attack1",1)
 		self.pakGrp[_name[n]]:SetPlayNum("attack2",1)
@@ -126,7 +125,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	
 	self.FSM = _FSM.New(self,"rest")
 
--- test ani file 
+---- [[test ani file]] 
 
 	-- for n = 1,_pakNum do
 	-- 	self.pakGrp[_name[n]]:SetAnimation("upperslashafter")
@@ -134,8 +133,10 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 
 end
 
-function Hero_SwordMan:Update(dt)
+function Hero_SwordMan:Update(dt,screenOffset)
 	
+	_screenOffset = screenOffset
+
 	for n=1,_pakNum do
 		self.pakGrp[_name[n]]:Update(dt)
 	end
@@ -144,21 +145,44 @@ function Hero_SwordMan:Update(dt)
 
 end
 
-function Hero_SwordMan:Draw(screenOffset)
+function Hero_SwordMan:Draw(screenOffset_x,screenOffset_y)
 	for n=1,_pakNum do
 		self.pakGrp[_name[n]]:Draw(
-			self.pos.x + screenOffset.x,
-			self.pos.y + screenOffset.y + self.jumpOffset
+			self.pos.x + screenOffset_x,
+			self.pos.y + screenOffset_y + self.jumpOffset
 		)
 	end
+	self.Y = self.pos.y + screenOffset_y
 end
 
---***************[[	 logic 	]]*********************
+function Hero_SwordMan:X_Move(offset)
+	local _dt = love.timer.getDelta()
+	local _dir = (offset > 0) and -1 or 1
 
--- function Hero_SwordMan:Logic_Common()
+	Scene_:CheckEvent(self.pos.x + offset, self.pos.y)
 
--- end
+	if Scene_:IsInMoveableArea(self.pos.x + offset, self.pos.y) then
+		self.pos.x = self.pos.x + offset
+	end
+	
+end
 
+function Hero_SwordMan:Y_Move(offset)
+	local _dt = love.timer.getDelta()
+	local _dir = (offset > 0) and -1 or 1
+	
+	Scene_:CheckEvent(self.pos.x, self.pos.y + offset)
+
+	if Scene_:IsInMoveableArea(self.pos.x, self.pos.y + offset) then
+		self.pos.y = self.pos.y + offset
+	end 
+	
+end
+
+function Hero_SwordMan:SetPosition(x,y)
+	self.pos.x = x or self.pos.x
+	self.pos.y = y or self.pos.y
+end
 
 function Hero_SwordMan:SetDir(dir_)
 	self.dir = dir_ 
@@ -167,18 +191,16 @@ function Hero_SwordMan:SetDir(dir_)
 	end
 end
 
+function Hero_SwordMan:SetScenePtr(ptr)
+	assert(ptr,"Err: SetScenePtr() scene pointer is nil!")
+	Scene_ = ptr
+end
+
 function Hero_SwordMan:GetDir()
 	return self.dir
 end
 
-function Hero_SwordMan:X_Move(offset)
-	local _dt = love.timer.getDelta()
-	self.pos.x = self.pos.x + offset
+function Hero_SwordMan:GetY()
+	return self.Y
 end
-
-function Hero_SwordMan:Y_Move(offset)
-	local _dt = love.timer.getDelta()
-	self.pos.y = self.pos.y + offset
-end
-
 return Hero_SwordMan

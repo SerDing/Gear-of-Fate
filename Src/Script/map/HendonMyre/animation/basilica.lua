@@ -1,0 +1,12 @@
+return {
+--["[NAME]"]= "basilica.ani"
+["[FRAME MAX]"]= 1,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-377,-367}
+,
+	["[DELAY]"]=120,
+	["[IMAGE]"]={"map/hendonmyre/basilica.img",0}
+,
+},
+
+}

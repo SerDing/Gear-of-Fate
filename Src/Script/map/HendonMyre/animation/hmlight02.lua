@@ -1,0 +1,39 @@
+return {
+["[LOOP]"] = 1,
+--["[NAME]"]= "hmlight02.ani"
+["[FRAME MAX]"]= 3,
+["[FRAME000]"]={
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"map/hendonmyre/hendonpath.img",4}
+,
+	["[IMAGE POS]"]={-100,-135}
+,
+	["[DELAY]"]=700,
+	["[RGBA]"]={255,255,255,80}
+,
+	["[INTERPOLATION]"]=1,
+},
+["[FRAME001]"]={
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"map/hendonmyre/hendonpath.img",4}
+,
+	["[IMAGE POS]"]={-100,-135}
+,
+	["[DELAY]"]=700,
+	["[RGBA]"]={255,255,255,220}
+,
+	["[INTERPOLATION]"]=1,
+},
+["[FRAME002]"]={
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"map/hendonmyre/hendonpath.img",4}
+,
+	["[IMAGE POS]"]={-100,-135}
+,
+	["[DELAY]"]=700,
+	["[RGBA]"]={255,255,255,80}
+,
+	["[INTERPOLATION]"]=1,
+},
+
+}

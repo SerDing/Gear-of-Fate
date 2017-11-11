@@ -33,7 +33,7 @@ function _ResPack:Ctor(PakName) --initialize
 	and love.filesystem.exists(PakName .. "/" .. _offsetName) == false
 	)then
 		print(PakName)
-		assert(false,"_ResPack:Ctor() --> The pak offset file is not existing! Please check!")
+		-- assert(false,"_ResPack:Ctor() --> The pak offset file is not existing! Please check!")
 		return
 	end
 
@@ -74,6 +74,11 @@ function _ResPack:Ctor(PakName) --initialize
 end
 
 function _ResPack:GetTexture(num)
+
+	if not self.pak_info then
+		return 
+	end 
+	
 
 	if (self.pak_info[num].texture == 0) then
 		local _path = self.PakName .. "/" .. tostring(num - 1) .. ".png"

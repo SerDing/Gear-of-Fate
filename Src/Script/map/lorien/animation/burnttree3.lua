@@ -1,0 +1,10 @@
+return {
+ 	['[FRAME000]'] = {
+		['[IMAGE POS]'] = {-77,-216,},
+		['[DELAY]'] = 50,
+		['[IMAGE]'] = {"map/01obj110.img",0,},
+	},
+	['[SHADOW]'] = 0,
+	['[FRAME MAX]'] = 1,
+ 
+}

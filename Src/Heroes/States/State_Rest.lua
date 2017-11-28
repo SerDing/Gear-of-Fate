@@ -19,8 +19,8 @@ end
 
 function _State_Rest:Enter(hero_,_keyRlstime)
     self.name = "rest"
-	hero_.pakGrp.body:SetAnimation(self.name)
-	hero_.pakGrp.weapon:SetAnimation(self.name)
+	hero_:GetBody():SetAnimation(self.name)
+	hero_:GetWeapon():SetAnimation(self.name)
 	
 end
 
@@ -66,6 +66,15 @@ function _State_Rest:Update(hero_,FSM_)
 		FSM_:SetState("upperslash",hero_)
 	end 
 	
+	if _KEYBOARD.Press(hero_.KEY["BACK"]) then
+		FSM_:SetState("jump",hero_,true)
+	end
+
+	self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
+	
+	if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
+		FSM_:SetState("gorecross",hero_)
+	end 
 
 end 
 

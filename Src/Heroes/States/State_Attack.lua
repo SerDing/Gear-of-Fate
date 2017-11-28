@@ -21,21 +21,19 @@ function _State_Attack:Ctor()
 
     } 
     
-
     self.attackNum = 0
-
 end 
 
 function _State_Attack:Enter(hero_)
     
-	hero_.pakGrp.body:SetAnimation(self.childName[1])
-	hero_.pakGrp.weapon:SetAnimation(self.childName[1])
+	hero_:GetBody():SetAnimation(self.childName[1])
+	hero_:GetWeapon():SetAnimation(self.childName[1])
 	self.attackNum = 1
 
 end
 
 function _State_Attack:Update(hero_,FSM_)
-    local _body = hero_.pakGrp.body
+    local _body = hero_:GetBody()
     local _dt = love.timer.getDelta()
     
     local _leftHold = _KEYBOARD.Hold(hero_.KEY["LEFT"])
@@ -45,36 +43,30 @@ function _State_Attack:Update(hero_,FSM_)
         
         if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 2
-            hero_.pakGrp.body:SetAnimation(self.childName[self.attackNum])
-	        hero_.pakGrp.weapon:SetAnimation(self.childName[self.attackNum])
+            hero_:GetBody():SetAnimation(self.childName[self.attackNum])
+	        hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
         end 
 
     elseif self.attackNum == 2 then
+       
         if _body:GetCount() <= 2 then
-            
-            -- if _leftHold then
-            --     --body
-            -- end 
-            
-
             hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
-
-            
         end 
+
         if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
         (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
             
             hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
-
         end 
 
         if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
-            hero_.pakGrp.body:SetAnimation(self.childName[self.attackNum])
-	        hero_.pakGrp.weapon:SetAnimation(self.childName[self.attackNum])
+            hero_:GetBody():SetAnimation(self.childName[self.attackNum])
+	        hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
         end 
 
     elseif self.attackNum == 3 then
+       
         if _body:GetCount() < 4 then
             
             hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
@@ -83,16 +75,18 @@ function _State_Attack:Update(hero_,FSM_)
             (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
                 
                 hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
-
             end 
         end 
-
 
     end 
     
     if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
 		FSM_:SetState("upperslash",hero_)
-	end  
+    end 
+    
+    if _KEYBOARD.Press(hero_.KEY["BACK"]) then
+		FSM_:SetState("jump",hero_,true)
+	end
 
 end 
 

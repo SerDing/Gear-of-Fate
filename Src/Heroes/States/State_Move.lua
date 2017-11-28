@@ -16,14 +16,18 @@ function _State_Move:Ctor()
     self.time_down = 0
     self.time_left = 0
     self.time_right = 0
+
+    self.KEYID = {}
 end 
 
 function _State_Move:Enter(hero_)
     self.name = "move"
-	hero_.pakGrp.body:SetAnimation(self.name)
-	hero_.pakGrp.weapon:SetAnimation(self.name)
+	hero_:GetBody():SetAnimation(self.name)
+	hero_:GetWeapon():SetAnimation(self.name)
     self.time_left = 0
     self.time_right = 0
+
+    
 end
 
 function _State_Move:Update(hero_,FSM_)
@@ -94,7 +98,21 @@ function _State_Move:Update(hero_,FSM_)
 
     if _KEYBOARD.Press(hero_.KEY["ATTACK"]) then
 		FSM_:SetState("attack",hero_)
-	end 
+    end 
+    
+    if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
+		FSM_:SetState("upperslash",hero_)
+	end
+
+    if _KEYBOARD.Press(hero_.KEY["BACK"]) then
+		FSM_:SetState("jump",hero_,true)
+    end
+    
+    self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
+    
+    if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
+        FSM_:SetState("gorecross",hero_)
+    end 
 
 end 
 

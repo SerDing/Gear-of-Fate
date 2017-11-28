@@ -14,14 +14,14 @@ local _KEYBOARD = require "Src.Core.KeyBoard"
 
 
 function _State_Dash:Ctor()
-    --body
+    self.KEYID = {}
 end 
 
 function _State_Dash:Enter(hero_)
     self.name = "dash"
-	hero_.pakGrp.body:SetAnimation(self.name)
-	hero_.pakGrp.weapon:SetAnimation(self.name)
-
+	hero_:GetBody():SetAnimation(self.name)
+	hero_:GetWeapon():SetAnimation(self.name)
+    
 end
 
 function _State_Dash:Update(hero_,FSM_)
@@ -72,7 +72,21 @@ function _State_Dash:Update(hero_,FSM_)
 
     if _KEYBOARD.Press(hero_.KEY["ATTACK"]) then
 		FSM_:SetState("dashattack",hero_)
-	end 
+    end 
+    
+    if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
+		FSM_:SetState("upperslash",hero_)
+	end
+
+    if _KEYBOARD.Press(hero_.KEY["BACK"]) then
+		FSM_:SetState("jump",hero_,true)
+	end
+
+    self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
+    
+    if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
+        FSM_:SetState("gorecross",hero_)
+    end 
 
 end 
 

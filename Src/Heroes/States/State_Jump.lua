@@ -17,10 +17,10 @@ function _State_Jump:Ctor()
 	self.jumpAttack = false
 end 
 
-function _State_Jump:Enter(hero_,FSM_)
+function _State_Jump:Enter(hero_,FSM_,backJump)
     self.name = "jump"
-	hero_.pakGrp.body:SetAnimation(self.name)
-	hero_.pakGrp.weapon:SetAnimation(self.name)
+	hero_:GetBody():SetAnimation(self.name)
+	hero_:GetWeapon():SetAnimation(self.name)
 
 	self.jumpDir = ""
 
@@ -30,18 +30,29 @@ function _State_Jump:Enter(hero_,FSM_)
 		self.jumpPower = 7
 	end 
 	
+	if backJump then
+		self.jumpPower = 3.5
+		self.backJump = backJump
+		hero_.pakGrp.body:SetFrame(8)
+		hero_.pakGrp.weapon:SetFrame(8)
+	else 
+		self.backJump = false
+	end 
+	
+
+	
 end
 
 function _State_Jump:Update(hero_,FSM_)
     
-	local _body = hero_.pakGrp.body
+	local _body = hero_:GetBody()
 	local _dt = love.timer.getDelta()
 
 ------[[  start jump  ]]
 	
 	if not self.jumpAttack then
 		if self.jumpDir ~= "up" and self.jumpDir ~= "down" then
-			if _body:GetCount() == 1 then
+			if _body:GetCount() == 1 or _body:GetCount() == 8 then
 				self.jumpDir = "up"
 			end 
 		end 
@@ -62,13 +73,14 @@ function _State_Jump:Update(hero_,FSM_)
 		if self.jumpPower <= 0 then
 			self.jumpDir = "down"
 			if not self.jumpAttack then
-				
-				while _body:GetCount() <= 7 and _body:GetCount() > 0 do
-					for _,v in pairs(hero_.pakGrp) do
-						v:NextFrame()
+				if not self.backJump then
+					while _body:GetCount() <= 7 and _body:GetCount() > 0 do
+						for _,v in pairs(hero_.pakGrp) do
+							v:NextFrame()
+						end
 					end
-				end
-				
+				end 
+
 			end
 
 		end
@@ -98,23 +110,30 @@ function _State_Jump:Update(hero_,FSM_)
 
 ------[[	move logic in jump	]]
 	
-	if self.jumpDir == "up" or self.jumpDir == "down" then
-		local k = 0.9
-		if FSM_.preState.name == "dash" then
-			k = 1.2
+	if not self.backJump then
+		if self.jumpDir == "up" or self.jumpDir == "down" then
+			local k = 0.9
+			if FSM_.preState.name == "dash" then
+				k = 1.2
+			end 
+			if _KEYBOARD.Hold(hero_.KEY["LEFT"]) then
+				if not self.jumpAttack then
+					hero_:SetDir(-1)
+				end
+				hero_:X_Move(hero_.spd.x * k * -1)
+			elseif _KEYBOARD.Hold(hero_.KEY["RIGHT"]) then
+				if not self.jumpAttack then
+					hero_:SetDir(1)
+				end
+				hero_:X_Move(hero_.spd.x * k * 1)
+			end
 		end 
-		if _KEYBOARD.Hold(hero_.KEY["LEFT"]) then
-			if not self.jumpAttack then
-				hero_:SetDir(-1)
-			end
-			hero_:X_Move(hero_.spd.x * k * -1)
-		elseif _KEYBOARD.Hold(hero_.KEY["RIGHT"]) then
-			if not self.jumpAttack then
-				hero_:SetDir(1)
-			end
-			hero_:X_Move(hero_.spd.x * k * 1)
-		end
+	else 
+		hero_:X_Move( 1.75 * hero_.spd.x * hero_:GetDir() * -1)
 	end 
+	
+
+	
 
 ------[[	jump attack logic (contain animation handle)	]]
 	
@@ -122,10 +141,10 @@ function _State_Jump:Update(hero_,FSM_)
 		
 		if  hero_.jumpOffset < -2  then
 			
-			if _KEYBOARD.Hold(hero_.KEY["ATTACK"]) then
+			if _KEYBOARD.Press(hero_.KEY["ATTACK"]) then
 				self.jumpAttack = true
-				hero_.pakGrp.body:SetAnimation("jumpattack")
-				hero_.pakGrp.weapon:SetAnimation("jumpattack")
+				hero_:GetBody():SetAnimation("jumpattack")
+				hero_:GetWeapon():SetAnimation("jumpattack")
 				-- FSM_:SetState("jumpattack",hero_)
 			end 
 		end 
@@ -143,10 +162,10 @@ function _State_Jump:Update(hero_,FSM_)
 				if hero_.jumpOffset >= 0 then  --[[	hero has been on land  ]]
 					FSM_:SetState(FSM_.oriState,hero_)
 				else 
-					hero_.pakGrp.body:SetAnimation(self.name)
-					hero_.pakGrp.weapon:SetAnimation(self.name)
-					hero_.pakGrp.body:SetFrame(8)
-					hero_.pakGrp.weapon:SetFrame(8)
+					hero_:GetBody():SetAnimation(self.name)
+					hero_:GetWeapon():SetAnimation(self.name)
+					hero_:GetBody():SetFrame(8)
+					hero_:GetWeapon():SetFrame(8)
 				end 
 				
 				

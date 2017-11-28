@@ -19,8 +19,8 @@ function _AniBlock:Ctor(aniPath,layer)
 	
 	self.path = string.sub(aniPath, 1, string.len(aniPath) - 4)
 	
-	local tmpArr = string.split(self.path,"/")
-	self.name = tmpArr[#tmpArr]
+	-- local tmpArr = string.split(self.path,"/")
+	-- self.name = tmpArr[#tmpArr]
 
 	self.ani = _AniPack.New()
 	self.ani:SetAnimation(self.anima)
@@ -51,20 +51,23 @@ end
 
 function _AniBlock:Draw(x,y)
 	
-	local _sx = self.ani.pos.x
-	local _sy = self.ani.pos.y
+	local _sx = self.ani:GetSpriteBox().position.x
+	local _sy = self.ani:GetSpriteBox().position.y
 	local _w = self.ani:GetWidth()
 	local _h = self.ani:GetHeight()
 	
 
-
-	-- if _sx + _w < 0 or
-	-- 	_sy + _h < 0 or
-	-- 	_sx > _GAMEINI.winSize.width or
-	-- 	_sy > _GAMEINI.winSize.height then
+	if _sx + _w < -10 or
+		_sy + _h < -10 or
+		_sx > _GAMEINI.winSize.width + 10 or
+		_sy > _GAMEINI.winSize.height + 10 then
 		
-	-- 	self.display = 0
-	-- end
+		self.display = 0
+
+		print(_sx,_sy)
+	else 
+		self.display = 1
+	end
 
 	if self.display == 1 then
 		self.ani:Draw(
@@ -119,6 +122,10 @@ end
 
 function _AniBlock:GetHeight()
     return self.ani:GetHeight() 
+end
+
+function _AniBlock:GetAni()
+    return self.ani
 end
 
 return _AniBlock 

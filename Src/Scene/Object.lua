@@ -23,6 +23,10 @@ function _Object:SetLayerId(id)
     self.layerId = id
 end
 
+function _Object:GetType()
+    return self.type 
+end
+
 function _Object:GetY()
     return 0 
 end

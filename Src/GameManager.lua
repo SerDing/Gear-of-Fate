@@ -10,7 +10,7 @@
 local _GAMEMGR = {
 
 	period = 0, 
-	mousePos = {x = 0 , y = 0 },
+	mousePos = {x = 0, y = 0},
 	runPath = "",
 	debug = false,
 
@@ -34,8 +34,11 @@ function _GAMEMGR.Update(dt)
 end
 
 function _GAMEMGR.Draw(x,y)
+	
 	_SCENEMGR.Draw()
-	love.graphics.draw(_HUD, 0, 600-90)
+	
+	love.graphics.draw(_HUD, 0, 600-91)
+	
 end
 
 return _GAMEMGR

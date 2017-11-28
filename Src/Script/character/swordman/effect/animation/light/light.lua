@@ -1,0 +1,53 @@
+return {
+--["[NAME]"]= "light.ani"
+["[FRAME MAX]"]= 6,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-152,-214}
+,
+	["[DELAY]"]=60,
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"",0}
+,
+},
+["[FRAME001]"]={
+	["[IMAGE POS]"]={-152,-214}
+,
+	["[DELAY]"]=60,
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"",0}
+,
+},
+["[FRAME002]"]={
+	["[IMAGE POS]"]={-152,-214}
+,
+	["[DELAY]"]=60,
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"character/swordman/effect/weaponcombo/ura_beam.img",0}
+,
+},
+["[FRAME003]"]={
+	["[IMAGE POS]"]={-152,-214}
+,
+	["[DELAY]"]=60,
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"character/swordman/effect/weaponcombo/ura_beam.img",1}
+,
+},
+["[FRAME004]"]={
+	["[IMAGE POS]"]={-152,-214}
+,
+	["[DELAY]"]=60,
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"character/swordman/effect/weaponcombo/ura_beam.img",2}
+,
+},
+["[FRAME005]"]={
+	["[IMAGE POS]"]={-152,-214}
+,
+	["[DELAY]"]=60,
+	["[GRAPHIC EFFECT]"]="lineardodge",
+	["[IMAGE]"]={"character/swordman/effect/weaponcombo/ura_beam.img",3}
+,
+},
+
+}

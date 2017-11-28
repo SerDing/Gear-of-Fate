@@ -22,6 +22,8 @@ local _State_Attack = require (_pathHead .. "State_Attack").New()
 local _State_DashAttack = require (_pathHead .. "State_DashAttack").New()
 local _State_UpperSlash = require (_pathHead .. "State_UpperSlash").New()
 
+local _State_GoreCross = require (_pathHead .. "State_GoreCross").New()
+local _State_HopSmash = require (_pathHead .. "State_HopSmash").New()
 -- const
 
 local state = {
@@ -31,10 +33,13 @@ local state = {
     ["dash"] = _State_Dash,
     ["jump"] = _State_Jump,
     
+
     ["attack"] = _State_Attack,
     ["dashattack"] = _State_DashAttack,
     ["upperslash"] = _State_UpperSlash,
 
+    ["gorecross"] = _State_GoreCross,
+    ["hopsmash"] = _State_HopSmash,
 }
 
 function _FSM:Ctor(hero_,state_name)
@@ -44,18 +49,18 @@ function _FSM:Ctor(hero_,state_name)
     self.curState = state[state_name]
     self.curState:Enter(hero_,self)
 
-end  
+end
 
 function _FSM:Update(hero_)
     self.curState:Update(hero_,self)
 
-    if(hero_.pakGrp.body.playNum == 0)then
+    if(hero_:GetBody():GetCurrentPlayNum() == 0)then
         self:SetState(self.oriState,hero_)
 	end 
 
 end
 
-function _FSM:SetState(state_name,hero_)
+function _FSM:SetState(state_name,hero_,...)
 
     if self.curState.name == state_name then
         return 
@@ -64,7 +69,7 @@ function _FSM:SetState(state_name,hero_)
     self.preState = self.curState
     self.curState:Exit(hero_)
     self.curState = state[state_name]
-    self.curState:Enter(hero_,self)
+    self.curState:Enter(hero_,self,...)
     
 end
 

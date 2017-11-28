@@ -10,17 +10,18 @@
 local _State_Stay = require("Src.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
-
+local _EffectMgr = require "Src.Scene.EffectManager" 
 local _HOLD_SPACE = 0.2
 
 function _State_Stay:Ctor()
-    self.keyPressTime = {left = 0, right = 0}
+	self.keyPressTime = {left = 0, right = 0}
+	self.KEYID = {}
 end 
 
 function _State_Stay:Enter(hero_)
     self.name = "stay"
-	hero_.pakGrp.body:SetAnimation(self.name)
-	hero_.pakGrp.weapon:SetAnimation(self.name)
+	hero_:GetBody():SetAnimation(self.name)
+	hero_:GetWeapon():SetAnimation(self.name)
 	
 end
 
@@ -64,7 +65,26 @@ function _State_Stay:Update(hero_,FSM_)
 
 	if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
 		FSM_:SetState("upperslash",hero_)
-	end  
+	end
+	
+	if _KEYBOARD.Press(hero_.KEY["BACK"]) then
+		FSM_:SetState("jump",hero_,true)
+	end
+	
+	
+	self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
+
+	if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
+		FSM_:SetState("gorecross",hero_)
+	end 
+	
+	self.KEYID["HopSmash"] = hero_:GetSkillKeyID("HopSmash")
+	
+	if _KEYBOARD.Press(hero_.KEY[self.KEYID["HopSmash"]]) then
+		FSM_:SetState("hopsmash",hero_)
+	end 
+
+	
 
 end 
 

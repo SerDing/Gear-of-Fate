@@ -22,7 +22,8 @@ function _AniPack:Ctor() --initialize
 	self.pos = {x = 0, y = 0}
 	self.center = {x = 0, y = 0}
 	self.size = {w = 1, h = 1}
-	self.dir = 1
+	self.offset = {x = 0, y = 0}
+	self.dir = 1 -- direction
 
 	self.playNum = 1 	-- 播放次数
 	self.fileNum = 0000
@@ -32,7 +33,8 @@ function _AniPack:Ctor() --initialize
 	self.frameHead = "[FRAME000]" -- 每一帧的开头帧号
 
 	if (not _RESMGR.imageNull) then
-	    _RESMGR.imageNull = love.image.newImageData(1, 1)
+		local _tmpImageData = love.image.newImageData(1, 1)
+	    _RESMGR.imageNull = love.graphics.newImage(_tmpImageData)
 	end
 	self.playingSprite = _Sprite.New(_RESMGR.imageNull)
 
@@ -40,6 +42,8 @@ function _AniPack:Ctor() --initialize
 	self.time = 0
 
 	self.updateCount = 0
+
+	self.baseRate = 1
 
 	self.box = _Rect.New(0,0,1,1)
 
@@ -56,6 +60,8 @@ function _AniPack:Ctor() --initialize
 
 	self.debug = false
 
+	self.plusOffset = true
+
 	self.blendModeList = {
 		[1] = "add",
 		[2] = "alpha",
@@ -69,7 +75,7 @@ function _AniPack:Ctor() --initialize
 	}
 
 	self.blendMode = self.blendModeList[1]
-	--[[
+ --[[ BlendMode Enum
 
 	alpha
 	Alpha blending (normal). The alpha of what's drawn determines its opacity.
@@ -96,8 +102,8 @@ function _AniPack:Ctor() --initialize
 	darken
 	The pixel colors of what's drawn are compared to the existing pixel colors, and the smaller of the two values for each color component is used. Only works when the "premultiplied" BlendAlphaMode is used in love.graphics.setBlendMode.
 	
-	]]
-
+]]
+	
 end
 
 function _AniPack:NextFrame()
@@ -116,6 +122,15 @@ end
 
 function _AniPack:Update(dt)
 
+	--[[ Debug Switch ]]
+	if _KEYBOARD.Press("f1") then
+		if self.debug then
+			self.debug = false
+		else 
+			self.debug = true
+		end 
+	end 
+
 	--[[
 		When the aniData just has one frame 
 		and this class has updata one time 
@@ -126,7 +141,7 @@ function _AniPack:Update(dt)
 			return 0
 		end 
 	end 
-	
+
 	self.frameHead = string.format("[FRAME%03d]", self.count)
 
 	if not  self.frameHead then
@@ -138,7 +153,7 @@ function _AniPack:Update(dt)
 
 	-- print("self.time:" .. tostring(self.time))
 
-	if self.time >= (self.frameData[self.frameHead]["[DELAY]"] or 100) / 1000  then
+	if self.time >= (self.frameData[self.frameHead]["[DELAY]"] or 100) / (1000 * self.baseRate)  then
 		self.time = 0-- self.time - self.frameData[self.frameHead]["[DELAY]"] / 1000
 		if self.playNum ~= 0 then
 			self.count = self.count + 1
@@ -160,17 +175,19 @@ function _AniPack:Update(dt)
 	if self.frameData[self.frameHead]["[IMAGE]"][1]  ~= "" then
 		--print(string.format("Sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1],self.str))
 		--local img = require "sys/img"(string.format("playingSpriteite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
-		local tmpStr = string.format(self.frameData[self.frameHead]["[IMAGE]"][1],self.fileNum)
+		local tmpStr = string.format(string.lower(self.frameData[self.frameHead]["[IMAGE]"][1]),self.fileNum)
+		
 		local img = _ResPack.New(_RESMGR.pathHead .. tmpStr)
-
+		
 		if not img then
 			print("Error:_AniPack:Update() --> load imgPack failed. " )
+			print("    " .. self.frameData[self.frameHead]["[IMAGE]"][1])
 			return self
 		end
 
 		self.playingSprite:SetTexture(img:GetTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1))
-		-- self.playingSprite = img:GetTexture(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
 		self.offset = img:GetOffset(self.frameData[self.frameHead]["[IMAGE]"][2]+1)
+		
 		img = nil
 	else
 		self.playingSprite:SetTexture( _RESMGR.imageNull)
@@ -181,7 +198,7 @@ function _AniPack:Update(dt)
 	if self.num > 1 then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 			if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
-				self:SetBlendMode(1)
+				-- self:SetBlendMode(1)
 				self.playingSprite:SetFilter(self.filter)
 			end
 		end
@@ -195,16 +212,6 @@ function _AniPack:Update(dt)
 	end
 
 	self.updateCount = self.updateCount + 1
-
-	if _KEYBOARD.Press("f1") then
-		
-		if self.debug then
-			self.debug = false
-		else 
-			self.debug = true
-		end 
-		
-	end 
 
 end
 
@@ -264,14 +271,28 @@ function _AniPack:Draw(x,y,r,w,h)
 	end
 
 	self.playingSprite:SetCenter(self.center.x,self.center.y)
-	self.playingSprite:Draw(
-		self.pos.x + self.offset.x * self.dir,
-		self.pos.y + self.offset.y,
-		r, 		-- rotation 旋转参数
-		self.size.w * self.dir,
-		self.size.h
-	)
+	
+	if self.plusOffset then
+		self.playingSprite:Draw(
+			self.pos.x + self.offset.x * self.dir,
+			self.pos.y + self.offset.y,
+			r or 0, 		-- rotation 旋转参数
+			self.size.w * self.dir,
+			self.size.h
+		)
+	else 
+		self.playingSprite:Draw(
+			self.pos.x ,
+			self.pos.y ,
+			r or 0, 		-- rotation 旋转参数
+			self.size.w * self.dir,
+			self.size.h
+		)
+	end 
+	
 
+	
+	
 	
 
 	if self.debug then
@@ -346,10 +367,11 @@ function _AniPack:SetAnimation(id,num)
 	self.num = self.frameData["[FRAME MAX]"]
 
 	self:Update(0)
-
+	self.frameHead = string.format("[FRAME%03d]", self.count)
+	
 	if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
 		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
-			self:SetBlendMode(1) 
+			self:SetBlendMode(1)
 		end
 	end
 
@@ -393,9 +415,18 @@ function _AniPack:SetPlayNum(id,num)
 	
 end
 
+function _AniPack:SetCurrentPlayNum(num)
+	-- num	播放次数
+	self.playNum = num
+end
+
 function _AniPack:SetFrame(num)
 	-- num	指定帧数
 	self.count = num
+end
+
+function _AniPack:SetBaseRate(baseRate)
+	self.baseRate = baseRate
 end
 
 function _AniPack:SetCenter(x,y)
@@ -441,6 +472,49 @@ function _AniPack:GetHeight()
 	return self.playingSprite:GetHeight()
 end
 
+function _AniPack:GetCurrentPlayNum()
+	return self.playNum
+end
 
+function _AniPack:GetSpriteBox()
+	return self.box
+end
+
+function _AniPack:Destroy()
+	
+	self.pos = nil
+	self.center = nil
+	self.size = nil
+	self.offset = nil
+	self.dir = nil
+	
+	self.playNum = nil
+	self.fileNum = nil
+	
+	self.frameDataGrp = nil
+	self.frameData = nil
+	self.frameHead = nil
+	
+	self.playingSprite:Destroy()
+	
+	self.count = nil
+	self.time = nil
+	
+	self.updateCount = nil
+	
+	self.box:Destroy()
+	
+	self.focus = nil
+	
+	self.filter = nil
+	
+	self.debug = nil
+	
+	self.blendModeList = nil
+	
+	self.blendMode = nil
+
+	_AniPack = nil
+end
 
 return _AniPack

@@ -24,29 +24,31 @@ function _ResPack:Ctor(PakName) --initialize
 	-- 	-- 引擎:Log("can not get pak infomation" .. PakName)
 	-- 	return
 	-- end
-
-	local tmpArray = string.split(PakName,"/")
+	
+	self.PakName = PakName
+	
+	local tmpArray = string.split(self.PakName,"/")
 	
 	local _offsetName = string.gsub(tmpArray[#tmpArray],".img",".txt")
 	
-	if(love.filesystem.exists(PakName .. "/offset.txt") == false
-	and love.filesystem.exists(PakName .. "/" .. _offsetName) == false
+	if(love.filesystem.exists(self.PakName .. "/offset.txt") == false
+	and love.filesystem.exists(self.PakName .. "/" .. _offsetName) == false
 	)then
-		print(PakName)
+		print(self.PakName)
 		-- assert(false,"_ResPack:Ctor() --> The pak offset file is not existing! Please check!")
 		return
 	end
 
-	self.PakName  = PakName
+	
 
-	if(love.filesystem.exists(PakName .. "/" .. _offsetName))then
-		self.offset_text = LoadFile(PakName .. "/" .. _offsetName)
+	if(love.filesystem.exists(self.PakName .. "/" .. _offsetName))then
+		self.offset_text = LoadFile(self.PakName .. "/" .. _offsetName)
 	else 
-		self.offset_text = LoadFile(PakName .. "/offset.txt")
+		self.offset_text = LoadFile(self.PakName .. "/offset.txt")
 	end 
 
 	if(self.offset_text == nil)then
-		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. PakName)
+		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. self.PakName)
 		return
 	end
 	
@@ -71,6 +73,9 @@ function _ResPack:Ctor(PakName) --initialize
 
 	self.total_num = table.getn(self.pak_info)
 	
+	
+
+
 end
 
 function _ResPack:GetTexture(num)
@@ -95,10 +100,10 @@ function _ResPack:GetTexture(num)
 end
 
 function _ResPack:GetOffset(num)
-	
+
 	local offset = {
-	x = self.pak_info[num].centre_x ,
-	y = self.pak_info[num].centre_y
+		x = self.pak_info[num].centre_x ,
+		y = self.pak_info[num].centre_y
 	}
 
 	return offset

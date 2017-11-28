@@ -4,12 +4,15 @@
     Since: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
     Alter: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
     Docs: 
-        * load [*.twn] or [*.dgn] then create right scene
+		* load [*.twn] or [*.dgn] then create right scene
+		
 ]]
 
 local _SCENEMGR = {}
 
+local _Sprite = require "Src.Core.Sprite"
 local _ObjectMgr = require "Src.Scene.ObjectManager"
+local _EffectMgr = require "Src.Scene.EffectManager"
 local _Scene = require "Src.Scene.GameScene"
 local _sendPos = require "Src.Scene.SendPosition" -- some position data
 
@@ -32,14 +35,24 @@ local _res = {}
 
 local _GAMEINI = require "Src.Config.GameConfig" 
 
+_EffectMgr.Ctor()
 _ObjectMgr.Ctor()
 
 local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
 
-local _hero = _Hero_SwordMan.New(400,460)
+local _hero = _Hero_SwordMan.New(1400,460)
 
 _ObjectMgr.AddObject(_hero)
 
+local _cover = {
+	imageData = love.image.newImageData(800, 600),
+	sprite = {},
+	alpha = 0,
+	speed = 3,
+}
+
+_cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png"))
+_cover.sprite:SetColor(0,0,0,255)
 function _SCENEMGR.Ctor()
 
 	_SCENEMGR.path = "Src/Script/map/"
@@ -56,7 +69,7 @@ function _SCENEMGR.Ctor()
 
 	_SCENEMGR.curType = "town"
 
-------[[	test elvengard map	]]
+  ----[[	test elvengard map	]]
 
 	-- _SCENEMGR.CreatScene(_Index["elvengard"][1],_Index["elvengard"][2],"town")
 	
@@ -68,31 +81,42 @@ end
 function _SCENEMGR.Update(dt)
 	
 	_SCENEMGR.RefreshSystemOffset(_SCENEMGR.curScene:GetWidth(),_SCENEMGR.curScene:GetHeight())
-	_hero:Update(dt,_SCENEMGR.offset)
-
+	
 	if _SCENEMGR.curScene then
 		_SCENEMGR.curScene:Update(dt,_SCENEMGR.offset)
 	else 
 		print("Err:SceneMgr.Update() --> curScene is not existing !")
 	end 
 
+	if _SCENEMGR.curScene.iterator < _SCENEMGR.curScene.limit then
+		return 
+	else 
+		_hero:Update(dt,_SCENEMGR.offset)
+	end 
+	
 end 
 
 function _SCENEMGR.Draw()
-    if _SCENEMGR.curScene then 
-		_SCENEMGR.curScene:Draw()
+    if _SCENEMGR.curScene then
+		if _cover.alpha <= 240 then --防止切换场景后 场景先于黑色封面显示
+			_SCENEMGR.curScene:Draw()
+		end 
 	else 
 		print("Err:SceneMgr.Draw() --> curScene is not existing !")
 	end 
-	-- _hero:Draw(_SCENEMGR.offset)
+	
+	if _cover.alpha > 0 then
+		_cover.sprite:Draw(0,0)
+		_cover.sprite:SetColor(0,0,0,_cover.alpha)
+		_cover.alpha = _cover.alpha - _cover.speed
+	end 
+	
 end
 
 function _SCENEMGR.LoadScene(area,map,type)
-	
-----[[  preDefine  ]]
+  ----[[  preDefine  ]]
 	
 	if not _sceneList[type][area] then
-		print(area)
 		_sceneList[type][area] = {}
 	end
 
@@ -103,7 +127,7 @@ function _SCENEMGR.LoadScene(area,map,type)
 	if not _res[area][map] then
 		_res[area][map] = {}
 	end 
-----[[    ]]
+  ----[[    ]]
 	if not _sceneList[type][area][map] then
 		_SCENEMGR.CreatScene(area,map,type)
 	end 
@@ -201,24 +225,31 @@ function _SCENEMGR.GetScreenPos(x,y,w,h)
 	return rx,ry
 end
 
-function _SCENEMGR.SwitchScene(area,map,num)
+function _SCENEMGR.SwitchScene(area,map,posIndex)
 	
 	local _arr = _Area.town[area]
 	
 	if _arr then
-		local _pos = _sendPos[_SCENEMGR.curIndex[1] ][_SCENEMGR.curIndex[2]][num]
+		local _pos = _sendPos[_SCENEMGR.curIndex[1] ][_SCENEMGR.curIndex[2]][posIndex]
 		if _pos then
+			_SCENEMGR.PutCover()
 			_SCENEMGR.UnLoadScene()
 			_SCENEMGR.LoadScene(area,map,_SCENEMGR.curType)
 			_hero:SetPosition(_pos.x,_pos.y)
+			-- Refresh screen offset rigth now to avoid position fixing delay when load objects of new scene. 
+			_SCENEMGR.RefreshSystemOffset(_SCENEMGR.curScene:GetWidth(),_SCENEMGR.curScene:GetHeight())
 		end 
 	else
 		print("Err: _SCENEMGR:SwitchScene() the objected AreaData is not Existing!")
 		print(area,map)
-		return false 
+		return false
 	end
 	
 end
+
+function _SCENEMGR.PutCover()
+	_cover.alpha = 255
+end 
 
 return _SCENEMGR 
 

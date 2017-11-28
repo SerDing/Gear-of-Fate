@@ -72,10 +72,22 @@ function _Weapon:SetPlayNum(id,num)
 	self.pak_c:SetPlayNum(id,num)
 end
 
+function _Weapon:SetCurrentPlayNum(num)
+
+	self.pak_b:SetCurrentPlayNum(num)
+	self.pak_c:SetCurrentPlayNum(num)
+end
+
 function _Weapon:SetFrame(num)
 
 	self.pak_b:SetFrame(num)
 	self.pak_c:SetFrame(num)
+end
+
+function _Weapon:SetBaseRate(rate)
+	
+	self.pak_b:SetBaseRate(rate)
+	self.pak_c:SetBaseRate(rate)
 end
 
 function _Weapon:SetFileNum(cont,tp)

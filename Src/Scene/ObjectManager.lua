@@ -19,17 +19,30 @@ _sort = function (obj_a,obj_b)
 	)
 end
 
+
+
 function _ObjectMgr.Ctor()
 	_ObjectMgr.objects = {}
 	
 end 
 
 function _ObjectMgr.Update(dt)
-    for n=1,#_ObjectMgr.objects do
-		if _ObjectMgr.objects[n].Update and _ObjectMgr.objects[n].type ~= "HERO" then
+	
+	for n=1,#_ObjectMgr.objects do
+		if _ObjectMgr.objects[n].Update and _ObjectMgr.objects[n]:GetType() ~= "HERO" then
 			_ObjectMgr.objects[n]:Update(dt)
 		end 
+		
 	end 
+
+	for n=#_ObjectMgr.objects,1,-1 do
+		if _ObjectMgr.objects[n]:GetType() == "EFFECT" then
+			if _ObjectMgr.objects[n]:IsOver() then
+				table.remove(_ObjectMgr.objects,n)
+			end 
+		end 
+	end 
+
 end 
 
 function _ObjectMgr.Draw(ScreenOffset)

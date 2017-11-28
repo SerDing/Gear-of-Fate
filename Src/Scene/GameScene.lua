@@ -5,13 +5,14 @@
     Alter: Sat Sep 09 2017 18:35:30 GMT+0800 (CST)
     Docs: 
         * this module is used to create scene by *.map file
+        * Press space to frezen camera 
 ]]
 
 local _GameScene = require("Src.Class")()
 
 local _Rect = require "Src.Core.Rect"
-local _TileBlock = require "Src.Scene.TileBlock"
-local _AniBlock = require "Src.Scene.AniBlock" 
+local _TileBlock = require "Src.Scene.Blocks.TileBlock"
+local _AniBlock = require "Src.Scene.Blocks.AniBlock" 
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
@@ -19,6 +20,8 @@ local _GAMEINI = require "Src.Config.GameConfig"
 
 local _screenOffset = {x = 0,y = 0}
 local _sceneMgr = {} -- Initialize a null pointer of SceneManager
+
+
 
 function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     
@@ -103,7 +106,10 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
 ------[[    Add normal objcets into ObjcetMgr.objects    ]]
 
     self:Awake()
-    
+--------------------------------
+    self.iterator = 0
+    self.limit = 0
+
 end
 
 function _GameScene:Awake() -- ReAdd objects into ObjMgr
@@ -114,15 +120,6 @@ end
 
 function _GameScene:Update(dt,screenOffset)
     
-    _screenOffset = screenOffset
-
-    self:UpdateLayer("[bottom]",dt)
-    self:UpdateLayer("[closeback]",dt)
-    self:UpdateLayer("[close]",dt)
-    self:UpdateLayer("[normal]",dt)
-
-    _ObjectMgr.Update(dt)
-
     if _KEYBOARD.Press("f1") then
         if not self.debug then
             self.debug = true
@@ -130,6 +127,30 @@ function _GameScene:Update(dt,screenOffset)
             self.debug = false
         end 
     end 
+
+    _screenOffset = screenOffset
+
+    self:UpdateLayer("[bottom]",dt)
+    self:UpdateLayer("[closeback]",dt)
+    self:UpdateLayer("[close]",dt)
+    self:UpdateLayer("[normal]",dt)
+
+  --[[ limit objects update rate  ]]
+    if _KEYBOARD.Press("space") then
+		self.limit = 10
+	end
+
+	if self.iterator < self.limit then
+		self.iterator = self.iterator + 1
+		return  
+	else 
+		self.iterator = 0
+		self.limit = self.limit - 0.25
+	end
+ ----------------------------------
+    _ObjectMgr.Update(dt)
+
+    
     
 end
 

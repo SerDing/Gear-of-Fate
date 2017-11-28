@@ -10,9 +10,6 @@
 require "Src.Core.TextHandle"
 require "Src.Core.FileSystem"
 require "Src.Core.System"
-
-
-
 local _KEYBOARD = require "Src.Core.KeyBoard"
 
 local _GAMEMGR = require "Src/GameManager"
@@ -22,41 +19,61 @@ local _RESMGR = require "Src/ResManager"
 _RESMGR.Ctor()
 _GAMEMGR.Ctor()
 
-local backGround = love.graphics.newImage("/Dat/backgroundpic.png")
+--[[ Key Note:
+
+	* F1 -- Debug 
+	* Space -- Frezen Camera (In fact, it has only effect for objects in scene)
+
+]]
+
+local _iterator = 0
+local _limit = 10
+
+_gamePause = false
 
 function love.load()
 
 	local bgm = _RESMGR.LoadSound("/Music/characterSelectStage.ogg")
-	bgm:play()
+	-- bgm:play()
 	bgm:setLooping(true)
 end
 
 function love.update(dt)
 
+	if _KEYBOARD.Press("lctrl") then
+		_gamePause = true
+		print("pause")
+
+	end
+
+	if _KEYBOARD.Press("rctrl") then
+
+		_gamePause = false
+		print("continue")
+		
+	end
+
+	if _gamePause then
+		return  
+	end 
+	
+
 	_GAMEMGR.Update(dt)
 	_RESMGR.Update()
 
-	if _KEYBOARD.Press("lctrl") then
-		print("lctrl is pressed")
-	end
+	-- if _KEYBOARD.Press("lctrl") then
+	-- 	print("lctrl is pressed")
+	-- end
 	
-	if _KEYBOARD.Release("lctrl") then
-		print("lctrl is released")
-	end
+	-- if _KEYBOARD.Release("lctrl") then
+	-- 	print("lctrl is released")
+	-- end
 
 	_KEYBOARD.Update()
 
-	
-	
-	
-	
 end
 
 function love.draw()
-
-	love.graphics.draw(backGround, 0, 0)
-	love.graphics.line(0, 300, 800, 300) -- 横线
-	love.graphics.line(400, 0, 400, 600) -- 竖线
 
 	_GAMEMGR.Draw()
 	

@@ -76,6 +76,10 @@ function _Rect:SetPos(x,y)
 	self.position.y = y
 end
 
+function _Rect:GetPos()
+	return self.position
+end
+
 function _Rect:SetCenter(x,y)
 	self.centerPos.x = x or self.centerPos.x
 	self.centerPos.y = y or self.centerPos.y
@@ -106,6 +110,17 @@ function _Rect:CheckPoint(x,y)
 		end 
 	end 
 	return false 
+end
+
+function _Rect:Destroy(x,y)
+	
+	self.position = nil
+	self.size = nil
+	self.centerPos = nil
+	self.color = nil
+	self.dir = nil
+	
+	_Rect = nil
 end
 
 return _Rect

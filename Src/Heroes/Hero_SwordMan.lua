@@ -31,6 +31,7 @@ local _aniName = {
 "jump",
 "jumpattack",
 "getitem", -- pick the item
+"gorecross", -- skill: cross slash 
 "grab", -- skill:use ghost_hand to pick an enemy and attack it
 
 "dashattack", -- attack when hero ran
@@ -38,6 +39,9 @@ local _aniName = {
 
 "hitback",	-- up slash action hit back enemy when hero was damaged
 "hardattack", -- use the sword with ghost attack enemy
+"hopsmash",
+"hopsmashready",
+
 "upperslashafter",
 
 "attack1",
@@ -60,13 +64,15 @@ local Scene_ = {} -- init a null Scene Pointer
 function Hero_SwordMan:Ctor(x,y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y}
-	self.spd = {x = 3, y = 2}
+	self.spd = {x = 2.25, y = 2}
 	self.dir = 1
 	self.Y = self.pos.y
 	self.camp = "HERO"
 
 	self.jumpOffset = 0
 	
+	self.atkSpeed = 1.8
+
 	self.KEY = {
 		["UP"] = "up",
 		["DOWN"] = "down",
@@ -76,6 +82,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		["JUMP"] = "c",
 		["ATTACK"] = "x",
 		["UNIQUE"] = "z",
+		["BACK"] = "v",
 
 		["A"] = "a",
 		["S"] = "s",
@@ -90,7 +97,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		["R"] = "r",
 		["T"] = "t",
 		["Y"] = "y",
-		 
+		
 	}
 
 	self.pakGrp = {
@@ -102,6 +109,9 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		for k = 1,#_aniName do
 			self.pakGrp[_name[n]]:AddAnimation(_path[n] .. _aniName[k],-1,_aniName[k])
 		end
+		
+		self.pakGrp[_name[n]]:SetBaseRate(self.atkSpeed)
+		
 	end
 ---- 
 	for n = 1,_pakNum do
@@ -114,22 +124,30 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 
 		self.pakGrp[_name[n]]:SetPlayNum("dashattack",1)
 		self.pakGrp[_name[n]]:SetPlayNum("hitback",1)
+		self.pakGrp[_name[n]]:SetPlayNum("hardattack",1)
+		self.pakGrp[_name[n]]:SetPlayNum("gorecross",1)
+		self.pakGrp[_name[n]]:SetPlayNum("hopsmash",1)
+
+		self.pakGrp[_name[n]]:SetPlayNum("hopsmashready",1)
+		
 	end
 	
 	
 	self.pakGrp.body:SetFileNum(0001)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd4200c.img",1)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd4200c.img",2)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana0003b.img",1)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana0003c.img",2)
 	
-	self.pakGrp.weapon:SetSingle(true)
+	-- self.pakGrp.weapon:SetSingle(true)
 	
-	self.FSM = _FSM.New(self,"rest")
+	self.FSM = _FSM.New(self,"stay")
 
 ---- [[test ani file]] 
 
 	-- for n = 1,_pakNum do
 	-- 	self.pakGrp[_name[n]]:SetAnimation("upperslashafter")
 	-- end
+	
+	self:InitSkillKeyList()
 
 end
 
@@ -200,7 +218,40 @@ function Hero_SwordMan:GetDir()
 	return self.dir
 end
 
+function Hero_SwordMan:GetAtkSpeed()
+	return self.atkSpeed
+end
+
 function Hero_SwordMan:GetY()
 	return self.Y
 end
+
+function Hero_SwordMan:GetBody()
+	return self.pakGrp.body
+end
+
+function Hero_SwordMan:GetWeapon()
+	return self.pakGrp.weapon
+end
+
+function Hero_SwordMan:InitSkillKeyList()
+	
+	self.skillKeyList = {
+		{"A", "HopSmash"}, 
+		{"S", "GoreCross"}, 
+		{"D", "Grab"},
+	}
+	
+end
+
+function Hero_SwordMan:GetSkillKeyID(skillName)
+	
+	for n=1,#self.skillKeyList do
+		if self.skillKeyList[n][2] == skillName then
+			return self.skillKeyList[n][1] 
+		end 
+	end 
+	
+end
+
 return Hero_SwordMan

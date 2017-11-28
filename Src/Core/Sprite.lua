@@ -56,7 +56,7 @@ function _Sprite:Draw(x,y,rotation,sx,sy)
 	self.pos.y = y or self.pos.y
 
 	local r, g, b, a = love.graphics.getColor()
-	-- love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
+	love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
 
 	local _blendMode = love.graphics.getBlendMode()
 	love.graphics.setBlendMode(self.blendMode)
@@ -106,6 +106,7 @@ function _Sprite:SetColor(r,g,b,a)
 	b = b,
 	a = a
 	}
+	
 end
 
 function _Sprite:SetFilter(switch)
@@ -128,6 +129,24 @@ end
 
 function _Sprite:GetHeight()
 	return self.texture:getHeight()
+end
+
+function _Sprite:Destroy()
+	
+	self.texture = nil
+		
+	self.rect:Destroy()
+
+	self.x = nil
+	self.y = nil
+	self.size = nil
+	self.center = nil
+	self.pos = nil
+	self.color = nil
+	self.blendMode = nil
+
+	_Sprite = nil
+
 end
 
 return _Sprite

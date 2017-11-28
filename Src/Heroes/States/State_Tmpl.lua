@@ -15,8 +15,8 @@ end
 
 function _State_Tmp:Enter(hero_)
     self.name = "tmp"
-	hero_.pakGrp.body:SetAnimation(self.name)
-	hero_.pakGrp.weapon:SetAnimation(self.name)
+	hero_:GetBody():SetAnimation(self.name)
+	hero_:GetWeapon():SetAnimation(self.name)
 	
 end
 

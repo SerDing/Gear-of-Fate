@@ -28,19 +28,33 @@
 
 ]]
 
-local _State_AtkBase = require("Src.Class")()
+local _State_AtkBase = require("Src.Core.Class")()
 
+function _State_AtkBase:AtkBase_Init()
 
-function _State_AtkBase:Ctor()
-    --body
-end 
-
-function _State_AtkBase:AtkBaseInit()
-	-- ...
-	self.EffectMgr = require "Src.Scene.EffectManager"
-	self.SoundMgr = require "Src.SoundManager"  
+	-- self.SoundMgr = require "Src.SoundManager"
 	self.atkBaseInit = true
+	self.effect = {}
+
+	self.EffectMgr = require "Src.Scene.EffectManager"
+	
 end 
+
+function _State_AtkBase:AtkBase_Enter(hero_)
+	self.hero_ = hero_
+	self.heroBody = hero_:GetBody()
+	self.dt = 0 
+end 
+
+function _State_AtkBase:AtkBase_Update(hero_,FSM_)
+    self.dt = love.timer.getDelta()
+end 
+
+function _State_AtkBase:AtkBase_Exit()
+	for n=1,#self.effect do
+		self.effect[n] = nil
+    end 
+end
 
 function _State_AtkBase:SetEffectKeyFrame()
     -- statements
@@ -50,22 +64,29 @@ function _State_AtkBase:SetAtkKeyFrame() -- attack judge key frame
     -- statements
 end
 
-function _State_AtkBase:AtkBaseLogic()
-    -- statements
+function _State_AtkBase:Effect(path,layer,num,hero_)
+	
+	if hero_ then
+		self.effect[#self.effect + 1] = self.EffectMgr.ExtraEffect(path, 
+			self.hero_.pos.x, 
+			self.hero_.pos.y + layer, 
+			num, 
+			self.hero_:GetDir(),
+			hero_
+		)
+	else
+		self.effect[#self.effect + 1] = self.EffectMgr.GenerateEffect(path, 
+			self.hero_.pos.x, 
+			self.hero_.pos.y + layer, 
+			num, 
+			self.hero_:GetDir()
+		)
+	end
+	
+	
+	-- print("AtkBase_Effect() --> effect_num:",#self.effect)
+	self.effect[#self.effect]:GetAni():SetBaseRate(self.hero_:GetAtkSpeed())
+	self.effect[#self.effect]:SetLayer(1)
 end
-
-function _State_AtkBase:Enter(hero_)
-    -- statements
-end
-
-function _State_AtkBase:Update(hero_,FSM_)
-    --body
-end 
-
-function _State_AtkBase:Exit(hero_)
-    --body
-end
-
-
 
 return _State_AtkBase 

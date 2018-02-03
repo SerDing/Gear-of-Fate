@@ -1,10 +1,10 @@
 --[[
-	Desc: A new lua class
+	Desc: Objects Manager
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
-		*Write notes here even more
+		* You can change code in update() to process some special needs 
 ]]
 
 local _ObjectMgr = {}
@@ -26,11 +26,20 @@ function _ObjectMgr.Ctor()
 	
 end 
 
-function _ObjectMgr.Update(dt)
+function _ObjectMgr.Update(dt, ...)
 	
+
+
+	
+
 	for n=1,#_ObjectMgr.objects do
-		if _ObjectMgr.objects[n].Update and _ObjectMgr.objects[n]:GetType() ~= "HERO" then
-			_ObjectMgr.objects[n]:Update(dt)
+		
+		if _ObjectMgr.objects[n] and _ObjectMgr.objects[n].Update  then -- and _ObjectMgr.objects[n]:GetType() ~= "HERO"
+			if _ObjectMgr.objects[n]:GetType() == "HERO" then
+				_ObjectMgr.objects[n]:Update(dt, ...)
+			else 
+				_ObjectMgr.objects[n]:Update(dt)
+			end 
 		end 
 		
 	end 
@@ -45,11 +54,11 @@ function _ObjectMgr.Update(dt)
 
 end 
 
-function _ObjectMgr.Draw(ScreenOffset)
+function _ObjectMgr.Draw(offset_x, offset_y)
 	_ObjectMgr.Sort()
 	for n=1,#_ObjectMgr.objects do
 		if _ObjectMgr.objects[n].Draw then
-			_ObjectMgr.objects[n]:Draw(ScreenOffset.x,ScreenOffset.y)
+			_ObjectMgr.objects[n]:Draw(offset_x, offset_y)
 		end 
 	end 
 end

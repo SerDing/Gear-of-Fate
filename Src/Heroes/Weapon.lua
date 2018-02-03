@@ -7,7 +7,7 @@
 		* the class contain "b" and "c" two pack animation
 ]]
 
-local _Weapon = require("Src.Class")()
+local _Weapon = require("Src.Core.Class")()
 
 local _AniPack = require "Src.AniPack"
 
@@ -84,6 +84,12 @@ function _Weapon:SetFrame(num)
 	self.pak_c:SetFrame(num)
 end
 
+function _Weapon:SetColor(r,g,b,a)
+	
+		self.pak_b:SetColor(r,g,b,a)
+		self.pak_c:SetColor(r,g,b,a)
+	end
+
 function _Weapon:SetBaseRate(rate)
 	
 	self.pak_b:SetBaseRate(rate)
@@ -92,7 +98,7 @@ end
 
 function _Weapon:SetFileNum(cont,tp)
 	-- cont 	武器资源包路径
-	-- tp 		需更改的pak标记 如 1-b  2-c
+	-- tp 		需更改的pak标记 如 1->b  2->c
 
 	if (tp == 1) then
 	    self.pak_b:SetFileNum(cont)

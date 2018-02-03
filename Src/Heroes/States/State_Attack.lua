@@ -7,7 +7,7 @@
 		* wrap the logic of Attack1 state in this class
 ]]
 
-local _State_Attack = require("Src.Class")()
+local _State_Attack = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
@@ -22,13 +22,21 @@ function _State_Attack:Ctor()
     } 
     
     self.attackNum = 0
+    self.KEYID = {}
 end 
 
-function _State_Attack:Enter(hero_)
+function _State_Attack:Enter(hero_,FSM_)
     
 	hero_:GetBody():SetAnimation(self.childName[1])
 	hero_:GetWeapon():SetAnimation(self.childName[1])
 	self.attackNum = 1
+
+    if hero_:GetAttackMode() == "frenzy" then
+        FSM_:SetState("frenzyattack",hero_)
+        return  
+    end 
+    
+
 
 end
 
@@ -87,6 +95,18 @@ function _State_Attack:Update(hero_,FSM_)
     if _KEYBOARD.Press(hero_.KEY["BACK"]) then
 		FSM_:SetState("jump",hero_,true)
 	end
+
+    self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
+    
+    if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
+        FSM_:SetState("gorecross",hero_)
+    end 
+
+    self.KEYID["HopSmash"] = hero_:GetSkillKeyID("HopSmash")
+	
+	if _KEYBOARD.Press(hero_.KEY[self.KEYID["HopSmash"]]) then
+		FSM_:SetState("hopsmash",hero_)
+	end 
 
 end 
 

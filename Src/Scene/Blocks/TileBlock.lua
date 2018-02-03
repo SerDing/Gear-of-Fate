@@ -7,7 +7,7 @@
         * write notes here even more
 ]]
 
-local _TileBlock = require("Src.Class")()
+local _TileBlock = require("Src.Core.Class")()
 
 local _Sprite = require "Src.Core.Sprite" 
 local _Rect = require "Src.Core.Rect" 

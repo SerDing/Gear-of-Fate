@@ -7,7 +7,7 @@
 		* wrap the logic of DashAttack state in this class
 ]]
 
-local _State_DashAttack = require("Src.Class")()
+local _State_DashAttack = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard"
 local _EffectMgr = require "Src.Scene.EffectManager" 

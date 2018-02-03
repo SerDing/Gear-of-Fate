@@ -8,7 +8,7 @@
 ]]
 
 
-local _Rect = require("Src.Class")()
+local _Rect = require("Src.Core.Class")()
 
 function _Rect:Ctor(x,y,w,h) --initialize
 	self.position = {x = 0, y = 0}
@@ -24,9 +24,14 @@ function _Rect:Ctor(x,y,w,h) --initialize
 	r = 0,
 	g = 0,
 	b = 255,
-	a = 255
+	a = 120
 	}
 	
+	self.drawTypes = {
+		[0] = "fill",
+		[1] = "line",
+	}
+	self:SetDrawType(0)
 	self.dir = 1
 
 end
@@ -39,7 +44,7 @@ function _Rect:Draw()
 	local r, g, b, a = love.graphics.getColor()
 	love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
 	
-	love.graphics.rectangle( "line",
+	love.graphics.rectangle( self.type,
 		self.position.x - self.centerPos.x * self.dir,
 		self.position.y - self.centerPos.y,
 		self.size.w * self.dir ,
@@ -101,6 +106,10 @@ function _Rect:SetColor(r,g,b,a)
 	b = b,
 	a = a
 	}
+end
+
+function _Rect:SetDrawType(_type) -- _type: 0 --> fill  1 --> line
+	self.type = self.drawTypes[_type]
 end
 
 function _Rect:CheckPoint(x,y)

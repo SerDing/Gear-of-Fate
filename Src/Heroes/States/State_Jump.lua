@@ -7,7 +7,7 @@
 		* wrap the logic of Jump state in this class
 ]]
 
-local _State_Jump = require("Src.Class")()
+local _State_Jump = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
@@ -25,13 +25,13 @@ function _State_Jump:Enter(hero_,FSM_,backJump)
 	self.jumpDir = ""
 
 	if FSM_.preState.name == "dash" then
-		self.jumpPower = 8
+		self.jumpPower = 8 + 2
 	else 
-		self.jumpPower = 7
+		self.jumpPower = 7 + 2
 	end 
 	
 	if backJump then
-		self.jumpPower = 3.5
+		self.jumpPower = 3.5 + 1
 		self.backJump = backJump
 		hero_.pakGrp.body:SetFrame(8)
 		hero_.pakGrp.weapon:SetFrame(8)
@@ -62,7 +62,7 @@ function _State_Jump:Update(hero_,FSM_)
 	
 	if self.jumpDir == "up" then
 		
-		self.jumpPower = self.jumpPower - _dt * 15
+		self.jumpPower = self.jumpPower - _dt * 20
 		
 		if self.jumpPower < 0 then
 			self.jumpPower = 0
@@ -85,14 +85,18 @@ function _State_Jump:Update(hero_,FSM_)
 
 		end
 
+		print("jump up:", hero_.jumpOffset)
+
 	elseif self.jumpDir == "down" then
 		
-		self.jumpPower = self.jumpPower + _dt * 20
+		self.jumpPower = self.jumpPower + _dt * 25
 		
 		if hero_.jumpOffset < 0 then
 			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower + _dt
 		end
 		
+		print("jump down:", hero_.jumpOffset)
+
 		if hero_.jumpOffset >= 0 then
 			if not self.jumpAttack then
 				
@@ -114,7 +118,7 @@ function _State_Jump:Update(hero_,FSM_)
 		if self.jumpDir == "up" or self.jumpDir == "down" then
 			local k = 0.9
 			if FSM_.preState.name == "dash" then
-				k = 1.2
+				k = 2
 			end 
 			if _KEYBOARD.Hold(hero_.KEY["LEFT"]) then
 				if not self.jumpAttack then
@@ -127,9 +131,17 @@ function _State_Jump:Update(hero_,FSM_)
 				end
 				hero_:X_Move(hero_.spd.x * k * 1)
 			end
+
+			if _KEYBOARD.Hold(hero_.KEY["UP"]) then
+				hero_:Y_Move(hero_.spd.y * k * 0.5 * -1)
+			elseif _KEYBOARD.Hold(hero_.KEY["DOWN"]) then
+				hero_:Y_Move(hero_.spd.y * k * 0.5 * 1)
+			end
 		end 
 	else 
-		hero_:X_Move( 1.75 * hero_.spd.x * hero_:GetDir() * -1)
+		if self.jumpDir == "up" or self.jumpDir == "down" then
+			hero_:X_Move( 1.75 * hero_.spd.x * hero_:GetDir() * -1)
+		end
 	end 
 	
 
@@ -148,9 +160,6 @@ function _State_Jump:Update(hero_,FSM_)
 				-- FSM_:SetState("jumpattack",hero_)
 			end 
 		end 
-
-
-		
 	end
 
 	if self.jumpAttack then
@@ -173,7 +182,7 @@ function _State_Jump:Update(hero_,FSM_)
 			
 		end 
 
-		--[[	hero has been on land ,then set state to oriState	]]
+		--[[	Hero has been on land ,then set state to oriState	]]
 
 		if hero_.jumpOffset >= 0 then
 			self.jumpAttack = false
@@ -197,7 +206,7 @@ end
 function _State_Jump:Exit(hero_)
     self.jumpDir = ""
 	self.jumpAttack = false
-
+	hero_.jumpOffset = 0
 end
 
 return _State_Jump 

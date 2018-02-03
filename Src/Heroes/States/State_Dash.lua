@@ -7,7 +7,7 @@
 		* wrap the logic of dash state in this class
 ]]
 
-local _State_Dash = require("Src.Class")()
+local _State_Dash = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard"
 
@@ -66,32 +66,44 @@ function _State_Dash:Update(hero_,FSM_)
         FSM_:SetState(FSM_.oriState,hero_)
     end 
 
-    if _KEYBOARD.Press(hero_.KEY["JUMP"]) then
-		FSM_:SetState("jump",hero_)
-	end 
+----[[  Normal state switching  ]]
 
-    if _KEYBOARD.Press(hero_.KEY["ATTACK"]) then
-		FSM_:SetState("dashattack",hero_)
-    end 
+    self:StateSwitch("JUMP","jump",hero_,FSM_)
+
+    self:StateSwitch("ATTACK","dashattack",hero_,FSM_)
+
+    self:StateSwitch("UNIQUE","upperslash",hero_,FSM_)
+
+    self:StateSwitch("BACK","jump",hero_,FSM_,true)
     
-    if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
-		FSM_:SetState("upperslash",hero_)
-	end
+----[[  Skill state switching  ]]
 
-    if _KEYBOARD.Press(hero_.KEY["BACK"]) then
-		FSM_:SetState("jump",hero_,true)
-	end
+	self:AtkStateSwitch("GoreCross","gorecross",hero_,FSM_)
 
-    self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
+    self:AtkStateSwitch("HopSmash","hopsmash",hero_,FSM_)
+
+    self:AtkStateSwitch("MoonLightSlash","moonslash",hero_,FSM_)
+
+    self:AtkStateSwitch("TripleSlash","tripleslash",hero_,FSM_)
     
-    if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
-        FSM_:SetState("gorecross",hero_)
-    end 
-
 end 
 
 function _State_Dash:Exit(hero_)
     --body
+end
+
+function _State_Dash:StateSwitch(keyID,stateName,hero_,FSM_,...)
+	if _KEYBOARD.Press(hero_.KEY[keyID]) then
+		FSM_:SetState(stateName,hero_,...)
+	end 
+end
+
+function _State_Dash:AtkStateSwitch(skillName,stateName,hero_,FSM_)
+	self.KEYID[skillName] = hero_:GetSkillKeyID(skillName)
+	
+	if _KEYBOARD.Press(hero_.KEY[self.KEYID[skillName]]) then
+		FSM_:SetState(stateName,hero_)
+	end 
 end
 
 return _State_Dash 

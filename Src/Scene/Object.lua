@@ -7,7 +7,7 @@
 		*Write notes here even more
 ]]
 
-local _Object = require("Src.Class")()
+local _Object = require("Src.Core.Class")()
 
 function _Object:Ctor()
 	self.type = "OBJECT"

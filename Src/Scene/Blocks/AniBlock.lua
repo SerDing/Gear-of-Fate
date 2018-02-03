@@ -7,7 +7,7 @@
 		* 
 ]]
 local _obj = require "Src.Scene.Object" 
-local _AniBlock = require("Src.Class")(_obj)
+local _AniBlock = require("Src.Core.Class")(_obj)
 
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
@@ -17,12 +17,11 @@ function _AniBlock:Ctor(aniPath,layer)
 	
     self.anima = require(string.sub(aniPath, 1, string.len(aniPath) - 4))
 	
-	self.path = string.sub(aniPath, 1, string.len(aniPath) - 4)
-	
+	-- self.path = string.sub(aniPath, 1, string.len(aniPath) - 4)	
 	-- local tmpArr = string.split(self.path,"/")
 	-- self.name = tmpArr[#tmpArr]
 
-	self.ani = _AniPack.New()
+	self.ani = _AniPack.New("MAP_ANI_BLOCK")
 	self.ani:SetAnimation(self.anima)
 
 	self.pos = {x = 0,y = 0}
@@ -36,17 +35,20 @@ function _AniBlock:Ctor(aniPath,layer)
 	if self.layer == "[normal]" then
 		self:SetType("OBJECT")
 	end
+
 	self.rect = _Rect.New(0,0,4,4)
+	self.rect:SetDrawType(0)
 
 	self.debug = true
 	
 	self.display = 1
 
-end 
+	
+
+end
 
 function _AniBlock:Update(dt)
-	self.ani:Update(dt)
-	
+		self.ani:Update(dt)
 end 
 
 function _AniBlock:Draw(x,y)
@@ -83,7 +85,7 @@ function _AniBlock:Draw(x,y)
 				math.floor(self.offset.x + self.offset_2.x + self.pos.x + (x or 0))-2,
 				math.floor(self.offset.y + self.offset_2.y + self.pos.y + (y or 0))-2
 			)
-			self.rect:SetColor(0,255,255,100)
+			self.rect:SetColor(0,255,0,255)
 			self.rect:Draw()
 		end
 	end

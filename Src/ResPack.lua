@@ -7,7 +7,7 @@
 		*Write notes here even more
 ]]
 
-local _ResPack = require("Src.Class")()
+local _ResPack = require("Src.Core.Class")()
 
 local _RESMGR = require "Src.ResManager"
 
@@ -34,8 +34,7 @@ function _ResPack:Ctor(PakName) --initialize
 	if(love.filesystem.exists(self.PakName .. "/offset.txt") == false
 	and love.filesystem.exists(self.PakName .. "/" .. _offsetName) == false
 	)then
-		print(self.PakName)
-		-- assert(false,"_ResPack:Ctor() --> The pak offset file is not existing! Please check!")
+		print("The img pack is not existing:",self.PakName)
 		return
 	end
 
@@ -73,9 +72,6 @@ function _ResPack:Ctor(PakName) --initialize
 
 	self.total_num = table.getn(self.pak_info)
 	
-	
-
-
 end
 
 function _ResPack:GetTexture(num)

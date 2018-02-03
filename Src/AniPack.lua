@@ -9,7 +9,7 @@
 ]]
 
 
-local _AniPack = require("Src.Class")()
+local _AniPack = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _Sprite = require "Src.Core.Sprite"
@@ -17,7 +17,9 @@ local _ResPack = require "Src.ResPack"
 local _RESMGR = require "Src.ResManager"
 local _Rect = require "Src.Core.Rect"
 
-function _AniPack:Ctor() --initialize
+function _AniPack:Ctor(_type) --initialize
+
+	self.type = _type or "HERO_ANI"
 
 	self.pos = {x = 0, y = 0}
 	self.center = {x = 0, y = 0}
@@ -136,11 +138,15 @@ function _AniPack:Update(dt)
 		and this class has updata one time 
 		then doesn't update any more
 	]]
-	if self.num <= 1 then 
-		if self.updateCount >= 1 then
-			return 0
-		end 
-	end 
+	
+	if self.type == "MAP_ANI_BLOCK" then
+		if self.num <= 1 then 
+			if self.updateCount >= 1 then
+				return 0
+			end 
+		end 	
+	end
+
 
 	self.frameHead = string.format("[FRAME%03d]", self.count)
 
@@ -289,11 +295,6 @@ function _AniPack:Draw(x,y,r,w,h)
 			self.size.h
 		)
 	end 
-	
-
-	
-	
-	
 
 	if self.debug then
 		self:DrawBox()
@@ -305,7 +306,7 @@ end
 function _AniPack:DrawBox()
 	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
 	local dmgBox = _Rect.New(0,0,1,1)
-	dmgBox:SetColor(0,255,0,255)
+	dmgBox:SetColor(0,255,0,100)
 	if (boxTab) then
 	    for n=1,#boxTab,6 do
 			dmgBox:SetPos(self.pos.x + boxTab[n] * self.size.w * self.dir,self.pos.y + - boxTab[n+2])
@@ -318,7 +319,7 @@ function _AniPack:DrawBox()
 
 	local boxTab = self.frameData[self.frameHead]["[ATTACK BOX]"]
 	local atkBox = _Rect.New(0,0,1,1)
-	atkBox:SetColor(255,0,0,255)
+	atkBox:SetColor(255,0,180,150)
 	if (boxTab) then
 	    for n=1,#boxTab,6 do
 			atkBox:SetPos(self.pos.x + boxTab[n] * self.size.w * self.dir,self.pos.y + - boxTab[n+2])
@@ -370,7 +371,7 @@ function _AniPack:SetAnimation(id,num)
 	self.frameHead = string.format("[FRAME%03d]", self.count)
 	
 	if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] then
-		if self.frameData[self.frameHead]["[GRAPHIC EFFECT]"] =="lineardodge" then
+		if string.lower(self.frameData[self.frameHead]["[GRAPHIC EFFECT]"]) =="lineardodge" then
 			self:SetBlendMode(1)
 		end
 	end
@@ -436,6 +437,7 @@ end
 
 function _AniPack:SetColor(r,g,b,a)
 	self.color = {r = r, g = g, b = b, a = a }
+	self.playingSprite:SetColor(r,g,b,a)
 end
 
 function _AniPack:SetBlendMode(modeNum)
@@ -475,6 +477,11 @@ end
 function _AniPack:GetCurrentPlayNum()
 	return self.playNum
 end
+
+function _AniPack:GetCountTime()
+	return self.time
+end
+
 
 function _AniPack:GetSpriteBox()
 	return self.box

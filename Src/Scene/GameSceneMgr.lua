@@ -17,7 +17,7 @@ local _Scene = require "Src.Scene.GameScene"
 local _sendPos = require "Src.Scene.SendPosition" -- some position data
 
 local _NAME_LIST = {
-	town = require "Src.Script.town.town" ,
+	town = require "./Data/town/town" ,
 	dungeon = {},
 }
 local _Area = {town = {},dungeon = {}}
@@ -53,9 +53,18 @@ local _cover = {
 
 _cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png"))
 _cover.sprite:SetColor(0,0,0,255)
+
+local _passiveObjectList = LoadFile("/Data/passiveobject/passiveobject.lst")
+
+_passiveObjectList = CutText(_passiveObjectList,"\n")
+
+-- _passiveObjectList = CutText(_passiveObjectList[2],"\t")
+
+-- print(_passiveObjectList[1],_passiveObjectList[2])
+
 function _SCENEMGR.Ctor()
 
-	_SCENEMGR.path = "Src/Script/map/"
+	_SCENEMGR.path = "./Data/map/"
 	_SCENEMGR.preScene = {}
 	_SCENEMGR.curScene = {}
 
@@ -64,7 +73,7 @@ function _SCENEMGR.Ctor()
 	_SCENEMGR.curIndex = _Index["elvengard"]
 
 	for k,v in pairs(_NAME_LIST.town) do
-		_Area.town[k] = require ("Src.Script.town." .. v)
+		_Area.town[k] = require ("./Data/town." .. v)
 	end 
 
 	_SCENEMGR.curType = "town"
@@ -86,12 +95,6 @@ function _SCENEMGR.Update(dt)
 		_SCENEMGR.curScene:Update(dt,_SCENEMGR.offset)
 	else 
 		print("Err:SceneMgr.Update() --> curScene is not existing !")
-	end 
-
-	if _SCENEMGR.curScene.iterator < _SCENEMGR.curScene.limit then
-		return 
-	else 
-		_hero:Update(dt,_SCENEMGR.offset)
 	end 
 	
 end 
@@ -249,6 +252,14 @@ end
 
 function _SCENEMGR.PutCover()
 	_cover.alpha = 255
+end 
+
+function _SCENEMGR.SetCameraOffset(x,y)
+	_SCENEMGR.curScene:SetCameraOffset(x,y)
+end 
+
+function _SCENEMGR.GetHero_()
+	return _hero 
 end 
 
 return _SCENEMGR 

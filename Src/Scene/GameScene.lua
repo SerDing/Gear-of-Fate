@@ -4,11 +4,11 @@
     Since: Sat Sep 09 2017 18:35:30 GMT+0800 (CST)
     Alter: Sat Sep 09 2017 18:35:30 GMT+0800 (CST)
     Docs: 
-        * this module is used to create scene by *.map file
+        * This module is used to create scene by *.map file
         * Press space to frezen camera 
 ]]
 
-local _GameScene = require("Src.Class")()
+local _GameScene = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
 local _TileBlock = require "Src.Scene.Blocks.TileBlock"
@@ -27,7 +27,7 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     
     _sceneMgr = sceneMgr
 
-    self.pathHead = "Src/Script/map/"
+    self.pathHead = "../Data/map/"
 
     self.map = require(string.gsub(path,".lua",""))
 
@@ -46,19 +46,38 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     self.rect = _Rect.New(0,0,1,1)
 
     self.debug = false
+    
+    self.iterator = 0
+    self.limit = 0
 
-------[[    load tiles    ]]
+    self.cameraOffset = {x = 0, y = 0}
+
+    self:LoadTiles()
+    self:LoadAnimation()
+    self:LoadBackGround()
+
+    self:Awake() -- Add normal objcets into ObjcetMgr.objects
+
+
+end
+
+function _GameScene:LoadTiles()
+   
     if not self.res["[tile]"] then
         self.res["[tile]"] = {}
     end 
+
     local _tilePath
+
     for n=1,#self.map["[tile]"] do
         _tilePath = self.pathHead .. self.directory .. self.map["[tile]"][n]
         self.res["[tile]"][self.map["[tile]"][n]] = _TileBlock.New(_tilePath)
         self.res["[tile]"][self.map["[tile]"][n]]:SetOffset_2(0, -(self.map["[background pos"] or 80) * 2 - 10)
     end 
 
-------[[    load animation    ]]
+end
+
+function _GameScene:LoadAnimation()
     if not self.res["[animation]"] then
         self.res["[animation]"] = {}
     end 
@@ -71,13 +90,14 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
         self.res["[animation]"][n]:SetPos(_mapAnimation[n+2],_mapAnimation[n+3])
         self.res["[animation]"][n]:SetFilter(true)
         self.res["[animation]"][n]:SetLayer(_mapAnimation[n+1])
-        -- self.layers[ self.res["[animation]"][n].layer ][ #self.layers + 1 ] = self.res["[animation]"][n]
         table.insert(self.layers[_mapAnimation[n+1]],n)
-        
     end 
+   
+ 
+end
 
-------[[    load background (far,middle)    ]]
-
+function _GameScene:LoadBackGround()
+    
     local _bgLayer = {
         "[far]",
         "[mid]"
@@ -102,14 +122,7 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
         end 
         
     end 
-    
-------[[    Add normal objcets into ObjcetMgr.objects    ]]
-
-    self:Awake()
---------------------------------
-    self.iterator = 0
-    self.limit = 0
-
+ 
 end
 
 function _GameScene:Awake() -- ReAdd objects into ObjMgr
@@ -137,7 +150,7 @@ function _GameScene:Update(dt,screenOffset)
 
   --[[ limit objects update rate  ]]
     if _KEYBOARD.Press("space") then
-		self.limit = 10
+		self.limit = 20
 	end
 
 	if self.iterator < self.limit then
@@ -145,29 +158,32 @@ function _GameScene:Update(dt,screenOffset)
 		return  
 	else 
 		self.iterator = 0
-		self.limit = self.limit - 0.25
+		self.limit = self.limit - 2.5
 	end
- ----------------------------------
-    _ObjectMgr.Update(dt)
-
+----------------------------------
+    _ObjectMgr.Update(dt,_sceneMgr.offset)
     
     
 end
 
 function _GameScene:Draw()
 
-    self:DrawBackGround("[far]",_screenOffset.x,_screenOffset.y)
-    self:DrawBackGround("[mid]",_screenOffset.x,_screenOffset.y)
-    self:DrawTile(_screenOffset.x,_screenOffset.y)
-    self:DrawLayer("[closeback]",_screenOffset.x,_screenOffset.y)
-    self:DrawLayer("[bottom]",_screenOffset.x,_screenOffset.y)
-    _ObjectMgr.Draw(_screenOffset)
-    self:DrawLayer("[close]",_screenOffset.x,_screenOffset.y)
+    self:DrawBackGround("[far]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    self:DrawBackGround("[mid]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    
+    self:DrawTile(_screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+
+    self:DrawLayer("[closeback]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    self:DrawLayer("[bottom]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+
+    _ObjectMgr.Draw(_screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+
+    self:DrawLayer("[close]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
     
     
     if self.debug then
-        self:DrawSpecialArea("movable",_screenOffset.x,_screenOffset.y)
-        self:DrawSpecialArea("event",_screenOffset.x,_screenOffset.y)
+        self:DrawSpecialArea("movable",_screenOffset.x + self.cameraOffset.x,_screenOffset.y + self.cameraOffset.y)
+        self:DrawSpecialArea("event",_screenOffset.x + self.cameraOffset.x,_screenOffset.y + self.cameraOffset.y)
     end 
 
 end
@@ -238,9 +254,9 @@ function _GameScene:DrawSpecialArea(type,x,y)
         self.rect:SetPos(x + tab[n],200+y + tab[n+1])
         self.rect:SetSize(tab[n+2],tab[n+3])
         if type == "movable" then
-            self.rect:SetColor(0,0,180,255)
-        else -- "event"
-            self.rect:SetColor(255,0,0,255)
+            self.rect:SetColor(255,255,255,80)
+        else -- "event" : send hero to another map
+            self.rect:SetColor(255,0,0,80)
         end 
         self.rect:Draw()
 	end
@@ -308,6 +324,10 @@ function _GameScene:IsInArea(areaType,x,y)
     end
 
     return false
+end
+
+function _GameScene:SetCameraOffset(x,y)
+    self.cameraOffset = {x = -x, y = -y}
 end
 
 return _GameScene

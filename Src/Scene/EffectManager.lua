@@ -14,7 +14,7 @@ local _ObjectMgr = require "Src.Scene.ObjectManager"
 
 function _EffectMgr.Ctor()
     _EffectMgr.pathHead = {
-		["SwordMan"] = "/Src/Script/character/swordman/effect/animation/" ,
+		["SwordMan"] = "../Data/character/swordman/effect/animation/" ,
 	}
 end 
 
@@ -33,6 +33,21 @@ function _EffectMgr.GenerateEffect(_aniPath,x,y,playNum,dir)
 	_tmpEffect:GetAni():SetCurrentPlayNum(playNum) 
 	
 	_ObjectMgr.AddObject(_tmpEffect)
+
+	return _tmpEffect
+end
+
+function _EffectMgr.ExtraEffect(_aniPath,x,y,playNum,dir,hero_)  -- generate an extra effect to hero class
+	
+	local _tmpEffect = _Effect.New(_aniPath)
+	
+	_tmpEffect:SetPos(x,y)
+	
+	_tmpEffect:SetDir(dir)
+	
+	_tmpEffect:GetAni():SetCurrentPlayNum(playNum) 
+	
+	hero_:AddExtraEffect(_tmpEffect)
 
 	return _tmpEffect
 end

@@ -8,7 +8,7 @@
 ]]
 
 
-local _Sprite = require("Src.Class")()
+local _Sprite = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
 local _RESMGR = require "Src.ResManager" 
@@ -47,6 +47,7 @@ function _Sprite:Ctor(path,x,y,w,h) --initialize
 	local tmpHeight = self.texture:getHeight()
 
 	self.rect:SetSize(tmpWidth,tmpHeight)
+	self.rect:SetColor(0,0,255,50)
 end
 
 

@@ -8,45 +8,41 @@
 ]]
 
 
-local _FSM = require("Src.Class")()
+local _FSM = require("Src.Core.Class")()
 
 local _pathHead = "Src.Heroes.States."
 
-local _State_Rest = require (_pathHead .. "State_Rest").New()
-local _State_Stay = require (_pathHead .. "State_Stay").New()
-local _State_Move = require (_pathHead .. "State_Move").New()
-local _State_Dash = require (_pathHead .. "State_Dash").New()
-local _State_Jump = require (_pathHead .. "State_Jump").New()
-
-local _State_Attack = require (_pathHead .. "State_Attack").New()
-local _State_DashAttack = require (_pathHead .. "State_DashAttack").New()
-local _State_UpperSlash = require (_pathHead .. "State_UpperSlash").New()
-
-local _State_GoreCross = require (_pathHead .. "State_GoreCross").New()
-local _State_HopSmash = require (_pathHead .. "State_HopSmash").New()
--- const
-
-local state = {
-    ["rest"] = _State_Rest,
-    ["stay"] = _State_Stay,
-    ["move"] = _State_Move,
-    ["dash"] = _State_Dash,
-    ["jump"] = _State_Jump,
-    
-
-    ["attack"] = _State_Attack,
-    ["dashattack"] = _State_DashAttack,
-    ["upperslash"] = _State_UpperSlash,
-
-    ["gorecross"] = _State_GoreCross,
-    ["hopsmash"] = _State_HopSmash,
-}
+function _FSM:RegisterState(state_name,class_name)
+    if not self.state then
+        print("Error: state list in FSM was not initialized.")
+        return  
+    end 
+    local _tmpState = require (_pathHead .. class_name).New()
+    self.state[state_name] = _tmpState
+end
 
 function _FSM:Ctor(hero_,state_name)
     
+    self.state = {}
+
+    self:RegisterState("rest","State_Rest")
+    self:RegisterState("stay","State_Stay")
+    self:RegisterState("move","State_Move")
+    self:RegisterState("dash","State_Dash")
+    self:RegisterState("jump","State_Jump")
+    self:RegisterState("attack","State_Attack")
+    self:RegisterState("dashattack","State_DashAttack")
+    self:RegisterState("upperslash","State_UpperSlash")
+    self:RegisterState("gorecross","State_GoreCross")
+    self:RegisterState("hopsmash","State_HopSmash")
+    self:RegisterState("frenzy","State_Frenzy")
+    self:RegisterState("frenzyattack","State_FrenzyAttack")
+    self:RegisterState("moonslash","State_MoonSlash")
+    self:RegisterState("tripleslash","State_TripleSlash")
+
     self.oriState = "stay"
     self.preState = nil
-    self.curState = state[state_name]
+    self.curState = self.state[state_name]
     self.curState:Enter(hero_,self)
 
 end
@@ -68,9 +64,12 @@ function _FSM:SetState(state_name,hero_,...)
  
     self.preState = self.curState
     self.curState:Exit(hero_)
-    self.curState = state[state_name]
+    self.curState = self.state[state_name]
     self.curState:Enter(hero_,self,...)
+    hero_:UpdateAni()
     
 end
+
+
 
 return _FSM 

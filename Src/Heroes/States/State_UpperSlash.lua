@@ -7,12 +7,13 @@
 		* wrap the logic of UpperSlash state in this class
 ]]
 
-local _State_UpperSlash = require("Src.Class")()
+local _State_UpperSlash = require("Src.Core.Class")()
 
 local _EffectMgr = require "Src.Scene.EffectManager" 
+local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 function _State_UpperSlash:Ctor()
-    self.effect = {}
+	self.effect = {}
 end 
 
 function _State_UpperSlash:Enter(hero_)
@@ -28,21 +29,23 @@ function _State_UpperSlash:Update(hero_,FSM_)
 
 	if _body:GetCount() >= 2 and _body:GetCount() <=4 then
 		hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
+		if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
+		(_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+			
+			hero_:X_Move(hero_.spd.x * 50 * _dt * hero_.dir )
+		end 
 	end 
 
 	if _body:GetCount() == 2 and not self.effect[1] then
 		self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "upperslash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())	
 		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-		-- self.effect[1]:SetOffset(-180 * hero_:GetDir(),-80)
-
+		
 	end 
 	
 	if self.effect[1] then
 		self.effect[1].pos.x = self.effect[1].pos.x + hero_.spd.x * 20 * _dt * hero_.dir
 	end 
-	
-	
-	
+
 end 
 
 function _State_UpperSlash:Exit(hero_)

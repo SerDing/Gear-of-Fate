@@ -7,7 +7,7 @@
 		*Write notes here even more
 ]]
 local _obj = require "Src.Scene.Object" 
-local _Effect = require("Src.Class")(_obj)
+local _Effect = require("Src.Core.Class")(_obj)
 
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
@@ -55,7 +55,9 @@ function _Effect:Ctor(aniPath)
 
 	-- self.ani.debug = true
 
-	self.ani.plusOffset = false
+	self.ani.plusOffset = true
+
+	self.layer = 0 -- it's useable just when this effect entity in hero class as an extra effect
 
 end 
 
@@ -108,6 +110,10 @@ end
 
 function _Effect:SetOffset(x,y)
 	self.offset = {x = x,y = y}
+end
+
+function _Effect:SetLayer(layer)
+	self.layer = layer or 1
 end
 
 function _Effect:SetFilter(switch)

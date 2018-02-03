@@ -22,8 +22,9 @@ _GAMEMGR.Ctor()
 --[[ Key Note:
 
 	* F1 -- Debug 
-	* Space -- Frezen Camera (In fact, it has only effect for objects in scene)
-
+	* F2 -- Move Camera -10 pixels
+	* Space -- Frezen Camera (In fact, it just has effect for objects in scene)
+	* left Alt -- Shake Camera
 ]]
 
 local _iterator = 0
@@ -42,41 +43,28 @@ function love.update(dt)
 
 	if _KEYBOARD.Press("lctrl") then
 		_gamePause = true
-		print("pause")
-
+		-- print("pause")
 	end
 
 	if _KEYBOARD.Press("rctrl") then
-
 		_gamePause = false
-		print("continue")
-		
+		-- print("continue")	
 	end
-
+	
 	if _gamePause then
 		return  
 	end 
-	
 
 	_GAMEMGR.Update(dt)
-	_RESMGR.Update()
-
-	-- if _KEYBOARD.Press("lctrl") then
-	-- 	print("lctrl is pressed")
-	-- end
-	
-	-- if _KEYBOARD.Release("lctrl") then
-	-- 	print("lctrl is released")
-	-- end
-
-	_KEYBOARD.Update()
+	_RESMGR.Update(dt)
+	_KEYBOARD.Update(dt)
 
 end
 
 function love.draw()
-
-	_GAMEMGR.Draw()
 	
+	_GAMEMGR.Draw()
+
 end
 
 function love.keypressed(key) --键盘检测回调函数，当键盘事件触发是调用

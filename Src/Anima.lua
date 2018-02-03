@@ -8,7 +8,7 @@
 ]]
 
 
-local _Anima = require("Src.Class")()
+local _Anima = require("Src.Core.Class")()
 
 local _RESMGR = require "Src.ResManager"
 local _Rect = require "Src.Core.Rect"

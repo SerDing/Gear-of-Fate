@@ -94,17 +94,9 @@ function _State_HopSmash:Update(hero_,FSM_)
 			end
 
 			print("HopSmash jumpPower:", self.jumpPower)
-			
-			-- if self.jumpPower > 15 then
-				self.shake = true
-				
-			-- end
 
-
+			self.shake = true
 			self.start = true
-
-
-			
 		end
 
 		if self.start then
@@ -159,7 +151,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 		
 	elseif self.jumpDir == "down" then
 		
-		self.jumpPower = self.jumpPower + _dt * self.basePower * 0.65 * hero_:GetAtkSpeed()
+		self.jumpPower = self.jumpPower + _dt * self.basePower * 1 * hero_:GetAtkSpeed()
 		
 		if hero_.jumpOffset < 0 then
 			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower

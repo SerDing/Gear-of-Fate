@@ -30,8 +30,8 @@ function _RESMGR.Ctor() --initialize
 	local _cacheNameList = {
 		"/ImagePacks/character/swordman/equipment/avatar/skin/sm_body0001.img/",
 		"/ImagePacks/character/swordman/equipment/avatar/weapon/sswd4200c.img/",
-		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana0003b.img/",
-		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana0003c.img/",
+		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana3201b.img/",
+		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana3201c.img/",
 		
 
 		"/ImagePacks/character/swordman/effect/gorecross/gorecross_cross.img/",
@@ -138,7 +138,6 @@ function _RESMGR.LoadTextureByImg(filePath)
 	
 	for n=0,_num - 1 do
 		_RESMGR.LoadTexture(filePath .. tostring(n) .. ".png",true)
-		print(filePath .. tostring(n) .. ".png")
 	end 
 
 end

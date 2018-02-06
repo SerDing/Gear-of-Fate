@@ -6,5 +6,4 @@ return {
 	},
 	['[SHADOW]'] = 0,
 	['[FRAME MAX]'] = 1,
- 
 }

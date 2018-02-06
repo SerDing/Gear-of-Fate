@@ -23,3 +23,16 @@ function CutText(w,z)-- 参数:待分割的字符串,用作分割的字符
     end
 		return a   -- 返回:子串表.(含有空串)
 end
+--分割文本(文本,分割符)
+function split(str, delimiter)
+	if str  then
+	    local result = {}
+	    str = str..delimiter
+	    delimiter = "(.-)"..delimiter
+	    for match in str:gmatch(delimiter) do
+	        table.insert(result, match)
+	    end
+	    return result
+	end
+	return {}
+end

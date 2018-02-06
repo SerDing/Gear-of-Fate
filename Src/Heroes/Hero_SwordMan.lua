@@ -159,11 +159,11 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201b.img",1)
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201c.img",2)
 	
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0003b.img",1)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0003c.img",2)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004b.img",1)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004c.img",2)
 
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500b.img",1)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500c.img",2)
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500b.img",1)
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500c.img",2)
 
 	-- self.pakGrp.weapon:SetSingle(true)
 	
@@ -262,7 +262,7 @@ function Hero_SwordMan:X_Move(offset)
 
 	Scene_:CheckEvent(self.pos.x + offset, self.pos.y)
 
-	if Scene_:IsInMoveableArea(self.pos.x + offset, self.pos.y) then
+	if Scene_:IsInMoveableArea(self.pos.x + offset, self.pos.y) and Scene_:CollideWithObstacles() == false then
 		self.pos.x = self.pos.x + offset
 	end
 	
@@ -274,7 +274,7 @@ function Hero_SwordMan:Y_Move(offset)
 	
 	Scene_:CheckEvent(self.pos.x, self.pos.y + offset)
 
-	if Scene_:IsInMoveableArea(self.pos.x, self.pos.y + offset) then
+	if Scene_:IsInMoveableArea(self.pos.x, self.pos.y + offset) and Scene_:CollideWithObstacles() == false then
 		self.pos.y = self.pos.y + offset
 	end 
 

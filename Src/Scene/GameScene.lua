@@ -11,9 +11,15 @@
 local _GameScene = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
+
 local _TileBlock = require "Src.Scene.Blocks.TileBlock"
+
 local _AniBlock = require "Src.Scene.Blocks.AniBlock" 
+
 local _ObjectMgr = require "Src.Scene.ObjectManager"
+
+local _PassiveObjMgr = require "Src.Scene.PassiveObjManager"
+
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 local _GAMEINI = require "Src.Config.GameConfig" 
@@ -21,7 +27,7 @@ local _GAMEINI = require "Src.Config.GameConfig"
 local _screenOffset = {x = 0,y = 0}
 local _sceneMgr = {} -- Initialize a null pointer of SceneManager
 
-
+_PassiveObjMgr.Ctor()
 
 function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     
@@ -33,12 +39,28 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
 
     self.res = {}
 
-    self.layers = {
-        ["[normal]"] = {},
-        ["[bottom]"] = {},
-        ["[closeback]"] = {},
-        ["[close]"] = {},
-    }
+    self.layers = {         
+        ["[normal]"] = {
+            ["[animation]"] = {},
+            ["[passive object]"] = {},
+        },
+        ["[bottom]"] = {
+            ["[animation]"] = {},
+            ["[passive object]"] = {},
+        },
+        ["[closeback]"] = {
+            ["[animation]"] = {},
+            ["[passive object]"] = {},
+        },
+        ["[close]"] = {
+            ["[animation]"] = {},
+            ["[passive object]"] = {},
+        },
+    }   --[[
+        these layers just storage objects' id and types, 
+        updating and drawing layers equal to find 
+        objects by id then update and draw them
+    ]]
 
     self.directory = string.split(path,"/")
     self.directory = self.directory[#self.directory - 1] .. "/"
@@ -51,13 +73,13 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     self.limit = 0
 
     self.cameraOffset = {x = 0, y = 0}
-
-    self:LoadTiles()
-    self:LoadAnimation()
+    
     self:LoadBackGround()
-
-    self:Awake() -- Add normal objcets into ObjcetMgr.objects
-
+    self:LoadTiles()
+    self:LoadAnimations()
+    self:LoadPassiveObjects()
+    
+    self:Awake() -- Add objcets of normal layer into ObjcetMgr.objects
 
 end
 
@@ -77,7 +99,7 @@ function _GameScene:LoadTiles()
 
 end
 
-function _GameScene:LoadAnimation()
+function _GameScene:LoadAnimations()
     if not self.res["[animation]"] then
         self.res["[animation]"] = {}
     end 
@@ -90,10 +112,29 @@ function _GameScene:LoadAnimation()
         self.res["[animation]"][n]:SetPos(_mapAnimation[n+2],_mapAnimation[n+3])
         self.res["[animation]"][n]:SetFilter(true)
         self.res["[animation]"][n]:SetLayer(_mapAnimation[n+1])
-        table.insert(self.layers[_mapAnimation[n+1]],n)
+        table.insert(self.layers[_mapAnimation[n+1]]["[animation]"],n)
     end 
-   
- 
+    
+end
+
+function _GameScene:LoadPassiveObjects()
+    if not self.res["[passive object]"] then
+        self.res["[passive object]"] = {}
+    end 
+    local _objDataArr = self.map["[passive object]"]
+    local _tmpObj
+    local _ObjPath
+    for n=1,#_objDataArr,4 do
+        
+        _tmpObj = _PassiveObjMgr.GeneratePassiveObj(_objDataArr[n]) 
+        if _tmpObj ~= 0 then
+            self.res["[passive object]"][n] = _tmpObj
+            self.res["[passive object]"][n]:SetPos(_objDataArr[n+1], _objDataArr[n+2], _objDataArr[n+3])
+            self.res["[passive object]"][n]:SetOffset(0, 200)
+            table.insert(self.layers[_tmpObj:GetLayer()]["[passive object]"],n)
+        end
+    end 
+    
 end
 
 function _GameScene:LoadBackGround()
@@ -126,9 +167,14 @@ function _GameScene:LoadBackGround()
 end
 
 function _GameScene:Awake() -- ReAdd objects into ObjMgr
-    for n=1,#self.layers["[normal]"] do
-        _ObjectMgr.AddObject(self.res["[animation]"][self.layers["[normal]"][n]])
+    for n=1,#self.layers["[normal]"]["[animation]"] do
+        _ObjectMgr.AddObject(self.res["[animation]"][self.layers["[normal]"]["[animation]"][n]])
     end 
+    
+    for n=1,#self.layers["[normal]"]["[passive object]"] do
+        _ObjectMgr.AddObject(self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]])
+    end 
+    
 end
 
 function _GameScene:Update(dt,screenOffset)
@@ -160,10 +206,11 @@ function _GameScene:Update(dt,screenOffset)
 		self.iterator = 0
 		self.limit = self.limit - 2.5
 	end
-----------------------------------
+
+
+
     _ObjectMgr.Update(dt,_sceneMgr.offset)
-    
-    
+
 end
 
 function _GameScene:Draw()
@@ -189,14 +236,21 @@ function _GameScene:Draw()
 end
 
 function _GameScene:UpdateLayer(layer,dt)
-    for n=1,#self.layers[layer] do
-        self.res["[animation]"][self.layers[layer][n]]:Update(dt)
+    for n=1,#self.layers[layer]["[animation]"] do
+        self.res["[animation]"][self.layers[layer]["[animation]"][n]]:Update(dt)
+    end 
+    for n=1,#self.layers[layer]["[passive object]"] do
+        self.res["[passive object]"][self.layers[layer]["[passive object]"][n]]:Update(dt)
     end 
 end
 
 function _GameScene:DrawLayer(layer,x,y)
-    for n=1,#self.layers[layer] do
-        self.res["[animation]"][self.layers[layer][n]]:Draw(x,y)
+    for n=1,#self.layers[layer]["[animation]"] do
+        self.res["[animation]"][self.layers[layer]["[animation]"][n]]:Draw(x,y)
+        
+    end 
+    for n=1,#self.layers[layer]["[passive object]"] do
+        self.res["[passive object]"][self.layers[layer]["[passive object]"][n]]:Draw(x,y)
     end 
 end
 
@@ -283,15 +337,6 @@ function _GameScene:IsInMoveableArea(x,y)
     return self:IsInArea("movable",x,y)
 end
 
-function _GameScene:CheckEvent(x,y)
-    local _result = self:IsInArea("event",x,y)
-    
-    if _result then
-        local _index = {area = _result[1], map = _result[2]}
-        _sceneMgr.SwitchScene(_result[1],_result[2],_result[3])
-    end 
-end
-
 function _GameScene:IsInArea(areaType,x,y)
 	local _head = ""
     local _count = 0
@@ -324,6 +369,28 @@ function _GameScene:IsInArea(areaType,x,y)
     end
 
     return false
+end
+
+function _GameScene:CheckEvent(x,y)
+    local _result = self:IsInArea("event",x,y)
+    
+    if _result then
+        local _index = {area = _result[1], map = _result[2]}
+        _sceneMgr.SwitchScene(_result[1],_result[2],_result[3])
+    end 
+end
+
+function _GameScene:CollideWithObstacles(x,y)
+    
+    for i=1,#self.res["[passive object]"] do
+        self.res["[passive object]"][n]
+    end
+    
+    if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
+        return false 
+    end 
+
+    return self:IsInArea("movable",x,y)
 end
 
 function _GameScene:SetCameraOffset(x,y)

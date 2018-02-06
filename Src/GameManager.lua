@@ -55,7 +55,7 @@ function _GAMEMGR.Draw(x,y)
 
 	_SCENEMGR.Draw()
 
-	love.graphics.draw(_HUD, 0, 600-91)
+	-- love.graphics.draw(_HUD, 0, 600-91)
 	
 end
 

@@ -34,12 +34,12 @@ return  {
 	["[animation]"] ={"animation/elvenrdg.ani","[normal]",774,180,0,"animation/stonehead.ani","[normal]",308,171,0,"animation/block1.ani","[bottom]",787,278,0,"animation/block1.ani","[bottom]",563,278,0,"animation/block1.ani","[bottom]",339,278,0,"animation/block1.ani","[bottom]",115,278,0,"animation/tree1.ani","[closeback]",175,164,0,},
 
 	["[passive object]"] ={
-		5 + 1,150,150,0,
-		6 + 1,330,230,500,
-		5 + 1,650,190,0,
-		6 + 1,830,270,500,
-		5 + 1,1150,170,0,
-		6 + 1,1330,250,500,
+		5,150,150,0,
+		6,330,230,500,
+		5,650,190,0,
+		6,830,270,500,
+		5,1150,170,0,
+		6,1330,250,500,
 	},
 
 	-- [["[passvive object]"]]

@@ -11,6 +11,7 @@ local _AniBlock = require("Src.Core.Class")(_obj)
 
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
+local _KEYBOARD = require "Src.Core.KeyBoard"
 local _GAMEINI = require "Src.Config.GameConfig" 
 
 function _AniBlock:Ctor(aniPath,layer)
@@ -39,16 +40,23 @@ function _AniBlock:Ctor(aniPath,layer)
 	self.rect = _Rect.New(0,0,4,4)
 	self.rect:SetDrawType(0)
 
-	self.debug = true
+	self.debug = false
 	
 	self.display = 1
-
-	
 
 end
 
 function _AniBlock:Update(dt)
-		self.ani:Update(dt)
+	
+	self.ani:Update(dt)
+	
+	if _KEYBOARD.Press("f1") then
+		if self.debug then
+			self.debug = false
+		else
+			self.debug = true
+		end
+	end
 end 
 
 function _AniBlock:Draw(x,y)
@@ -114,7 +122,6 @@ function _AniBlock:SetFilter(switch)
 end
 
 function _AniBlock:GetY()
-	
 	return  self.pos.y + self.offset_2.y
 end
 

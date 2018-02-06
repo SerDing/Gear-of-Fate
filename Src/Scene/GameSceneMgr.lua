@@ -54,14 +54,6 @@ local _cover = {
 _cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png"))
 _cover.sprite:SetColor(0,0,0,255)
 
-local _passiveObjectList = LoadFile("/Data/passiveobject/passiveobject.lst")
-
-_passiveObjectList = CutText(_passiveObjectList,"\n")
-
--- _passiveObjectList = CutText(_passiveObjectList[2],"\t")
-
--- print(_passiveObjectList[1],_passiveObjectList[2])
-
 function _SCENEMGR.Ctor()
 
 	_SCENEMGR.path = "./Data/map/"

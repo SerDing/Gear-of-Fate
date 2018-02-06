@@ -65,47 +65,19 @@ function _AniPack:Ctor(_type) --initialize
 	self.plusOffset = true
 
 	self.blendModeList = {
-		[1] = "add",
-		[2] = "alpha",
-		[3] = "replace",
-		[4] = "screen",
-		[5] = "subtrac",
-		[6] = "multiply",
-		[7] = "lighten",
-		[8] = "darken",
+		[1] = "add", -- The pixel colors of what's drawn are added to the pixel colors already on the screen. The alpha of the screen is not modified.
+		[2] = "alpha", -- Alpha blending (normal). The alpha of what's drawn determines its opacity.
+		[3] = "replace", -- The colors of what's drawn completely replace what was on the screen, with no additional blending. The BlendAlphaMode specified in love.graphics.setBlendMode still affects what happens.
+		[4] = "screen", -- 'Screen' blending.
+		[5] = "subtrac", -- The pixel colors of what's drawn are subtracted from the pixel colors already on the screen. The alpha of the screen is not modified.
+		[6] = "multiply", -- The pixel colors of what's drawn are multiplied with the pixel colors already on the screen (darkening them). The alpha of drawn objects is multiplied with the alpha of the screen rather than determining how much the colors on the screen are affected, even when the "alphamultiply" BlendAlphaMode is used.
+		[7] = "lighten", -- The pixel colors of what's drawn are compared to the existing pixel colors, and the larger of the two values for each color component is used. Only works when the "premultiplied" BlendAlphaMode is used in love.graphics.setBlendMode.
+		[8] = "darken", -- The pixel colors of what's drawn are compared to the existing pixel colors, and the smaller of the two values for each color component is used. Only works when the "premultiplied" BlendAlphaMode is used in love.graphics.setBlendMode.
 		
 	}
 
 	self.blendMode = self.blendModeList[1]
- --[[ BlendMode Enum
-
-	alpha
-	Alpha blending (normal). The alpha of what's drawn determines its opacity.
-	
-	replace
-	The colors of what's drawn completely replace what was on the screen, with no additional blending. The BlendAlphaMode specified in love.graphics.setBlendMode still affects what happens.
-
-
-	screen
-	'Screen' blending.
-
-	add
-	The pixel colors of what's drawn are added to the pixel colors already on the screen. The alpha of the screen is not modified.
-	
-	subtract
-	The pixel colors of what's drawn are subtracted from the pixel colors already on the screen. The alpha of the screen is not modified.
-	
-	multiply
-	The pixel colors of what's drawn are multiplied with the pixel colors already on the screen (darkening them). The alpha of drawn objects is multiplied with the alpha of the screen rather than determining how much the colors on the screen are affected, even when the "alphamultiply" BlendAlphaMode is used.
-
-	lighten
-	The pixel colors of what's drawn are compared to the existing pixel colors, and the larger of the two values for each color component is used. Only works when the "premultiplied" BlendAlphaMode is used in love.graphics.setBlendMode.
-	
-	darken
-	The pixel colors of what's drawn are compared to the existing pixel colors, and the smaller of the two values for each color component is used. Only works when the "premultiplied" BlendAlphaMode is used in love.graphics.setBlendMode.
-	
-]]
-	
+ 
 end
 
 function _AniPack:NextFrame()

@@ -7,18 +7,18 @@
 		*Write notes here even more
 ]]
 
-local _CollisionJudger = require("Src.Core.Class")()
+local _Monster = require("Src.Core.Class")()
 
-function _CollisionJudger:Ctor()
+function _Monster:Ctor()
     --body
 end 
 
-function _CollisionJudger:Update(dt)
+function _Monster:Update(dt)
     --body
 end 
 
-function _CollisionJudger:Draw(x,y)
+function _Monster:Draw(x,y)
     --body
 end
 
-return _CollisionJudger 
+return _Monster 

@@ -21,30 +21,27 @@ function _Obstacle:Ctor(_path)
 	self.property = {}
 
 	local _fileContent = LoadFile(_path)
-	-- print(_fileContent)
 	local _filePieces = split(_fileContent,"\n")
-
 	local _peiece
 
-----[[  load width position  ]]
+	for i=1,#_filePieces do	
+		if _filePieces[i] == "\r" or _filePieces[i] == "\n" then
+			table.remove(_filePieces, i)
+		end
+	end
+	
+    ----[[  load width position  ]]
 	for i=1,#_filePieces do
 
 		_filePieces[i] = string.gsub( _filePieces[i],"\r","") -- delete "\r" of every line
 
-		-- print("_filePiece:" .. _filePieces[i])
-
 		if _filePieces[i] == "[width]" then
-			
 			_peiece = split(_filePieces[i + 1],"\t")
-			-- _peiece[1] = string.gsub( _peiece[1],"\r","")
-			-- _peiece[2] = string.gsub( _peiece[2],"\r","")
 			self.property["[width]"] = {
 				[1] = tonumber(_peiece[1]), 
 				[2] = tonumber(_peiece[2]), 
 			}
-			
-			print("self.[width]:",self.property["[width]"][1],self.property["[width]"][2])
-
+			print("[width] has been read,i = ",i)
 		end
 
 		if _filePieces[i] == "[floating height]" then
@@ -53,6 +50,7 @@ function _Obstacle:Ctor(_path)
 			_peiece = string.gsub( _peiece,"\t","") 
 			_peiece = tonumber(_peiece)
 			self.property["[floating height]"] = _peiece
+			
 		end
 
 		if _filePieces[i] == "[layer]" then
@@ -79,7 +77,6 @@ function _Obstacle:Ctor(_path)
 			_filePieces[i + 1] = string.gsub( _filePieces[i + 1],"\t","")
 			_filePieces[i + 1] = string.lower(_filePieces[i + 1])
 			self.property["[basic motion]"] = _filePieces[i + 1]
-			
 		end
 		
 	end
@@ -87,6 +84,8 @@ function _Obstacle:Ctor(_path)
 		self:SetType("OBJECT")
 	end
 	
+	self.subType = "OBSTACLE"
+
 	self.anima = require(self.property["[basic motion]"])
 
 	if self.anima['[FRAME MAX]'] == 1 then
@@ -99,7 +98,8 @@ function _Obstacle:Ctor(_path)
 	
 	self.ani:SetFilter(true)
 
-	self.rect = _Rect.New(0,0,4,4)
+	self.rect = _Rect.New(0,0,self.property["[width]"][1],self.property["[width]"][2])
+	self.rect:SetCenter(self.property["[width]"][1] / 2, self.property["[width]"][2] / 2)
 
 	self.rect:SetDrawType(0)
 
@@ -133,54 +133,43 @@ function _Obstacle:Update(dt)
 	end
 end 
 
-function _Obstacle:Draw(x,y)
-    local _sx = self.ani:GetSpriteBox().position.x
-	local _sy = self.ani:GetSpriteBox().position.y
+function _Obstacle:Draw(cam_x, cam_y)
+    local _sx = self.ani:GetRect().vertex[1].x
+	local _sy = self.ani:GetRect().vertex[1].y
 	local _w = self.ani:GetWidth()
 	local _h = self.ani:GetHeight()
 	
-
-	if _sx + _w < -10 or
-		_sy + _h < -10 or
-		_sx > _GAMEINI.winSize.width + 10 or
-		_sy > _GAMEINI.winSize.height + 10 then
+	cam_x = - cam_x
+	cam_y = - cam_y
+	
+	if _sx + _w < cam_x or
+		_sy + _h < cam_y or
+		_sx > cam_x + _GAMEINI.winSize.width or
+		_sy > cam_y + _GAMEINI.winSize.height then
 		
 		self.display = 0
-
-		print(_sx,_sy)
+		print("_sx+w",_sx+_w," < cam_x",cam_x)
 	else 
 		self.display = 1
 	end
 
+	self.ani:SetPos(
+		math.floor(self.pos.x + self.offset.x),
+		math.floor(self.pos.y + self.offset.y)
+	)
+
 	if self.display == 1 then
-		self.ani:Draw(
-		math.floor(self.pos.x + self.offset.x + (x or 0)),
-		math.floor(self.pos.y + self.offset.y + (y or 0))
-		)
-		
+		self.ani:Draw()
 	end 
 	
+	self.rect:SetPos(
+		math.floor(self.pos.x + self.offset.x),
+		math.floor(self.pos.y + self.offset.y) + self.pos.z
+	)
+
 	if self.property["[layer]"] == "[normal]"  then
 		if self.debug then
-			
-
-			self.rect:SetSize(self.property["[width]"][1], self.property["[width]"][2])
-			self.rect:SetCenter(self.property["[width]"][1] / 2, self.property["[width]"][2] / 2)
-			self.rect:SetPos(
-				math.floor(self.pos.x + self.offset.x + (x or 0)),
-				math.floor(self.pos.y + self.offset.y + (y or 0)) + self.pos.z
-			)
 			self.rect:SetColor(255,255,0,100)
-			self.rect:Draw()
-
-
-			self.rect:SetSize(4, 4)
-			self.rect:SetCenter(4 / 2, 4 / 2)
-			self.rect:SetPos(
-				math.floor(self.pos.x + self.offset.x + (x or 0)),
-				math.floor(self.pos.y + self.offset.y + (y or 0)) + self.pos.z
-			)
-			self.rect:SetColor(0,255,0,255)
 			self.rect:Draw()
 		end
 	end

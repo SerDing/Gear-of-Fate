@@ -16,8 +16,7 @@ local _GAMEMGR = require "Src/GameManager"
 local _RESMGR = require "Src/ResManager"
 
 
-_RESMGR.Ctor()
-_GAMEMGR.Ctor()
+
 
 --[[ Key Note:
 
@@ -33,6 +32,9 @@ local _limit = 10
 _gamePause = false
 
 function love.load()
+
+	_RESMGR.Ctor()
+	_GAMEMGR.Ctor()
 
 	local bgm = _RESMGR.LoadSound("/Music/characterSelectStage.ogg")
 	-- bgm:play()

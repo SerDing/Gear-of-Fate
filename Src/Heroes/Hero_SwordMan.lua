@@ -74,18 +74,13 @@ local _name = {
 
 local _pakNum = 2
 
-local Scene_ = {} -- init a null Scene Pointer
-
-local ffi = require("ffi")
-local bit = require("bit")
-
-
-
+local scene_ = {} -- init a null Scene Pointer
 
 function Hero_SwordMan:Ctor(x,y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y}
-	self.spd = {x = 2.25, y = 2}
+	self.prePos = {x = x, y = y}
+	self.spd = {x = 2, y = 2}
 	self.dir = 1
 	self.Y = self.pos.y
 	self.camp = "HERO"
@@ -169,22 +164,20 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	
 	self.FSM = _FSM.New(self,"stay")
 
----- [[test ani file]] 
+	---- [[test ani file]] 
 	
 	-- for n = 1,_pakNum do
 	-- 	self.pakGrp[_name[n]]:SetPlayNum("summon2",-1)
 	-- 	self.pakGrp[_name[n]]:SetAnimation("summon2")
 	-- end
 	
-----
+	----
 	self:InitSkillKeyList()
 	self.extraEffects = {}
 end
 
-function Hero_SwordMan:Update(dt,screenOffset)
+function Hero_SwordMan:Update(dt)
 	
-	_screenOffset = screenOffset
-
 	self.FSM:Update(self)
 
 	for n=1,_pakNum do
@@ -210,43 +203,41 @@ function Hero_SwordMan:Update(dt,screenOffset)
 		end 
 	end 
 
-	
-
 end
 
-function Hero_SwordMan:Draw(screenOffset_x,screenOffset_y)
+function Hero_SwordMan:Draw()
 	
 	for n=1,#self.extraEffects do
 		if self.extraEffects[n].Draw and self.extraEffects[n].layer == 0 then
-			self.extraEffects[n]:Draw(screenOffset_x, screenOffset_y)
+			self.extraEffects[n]:Draw()
 		end 
 	end 
 	
 	for n=1,_pakNum do
 		self.pakGrp[_name[n]]:Draw(
-			self.pos.x + screenOffset_x,
-			self.pos.y + screenOffset_y + self.jumpOffset
+			self.pos.x ,
+			self.pos.y + self.jumpOffset
 		)
 	end
 
 	for k,v in pairs(self.buff) do
 		if v.switch then
 			v.ani:Draw(
-				self.pos.x + screenOffset_x,
-				self.pos.y + screenOffset_y + self.jumpOffset
+				self.pos.x ,
+				self.pos.y + self.jumpOffset
 			)
 		end 
 	end 
 
 	for n=1,#self.extraEffects do
 		if self.extraEffects[n].Draw and self.extraEffects[n].layer == 1 then
-			self.extraEffects[n]:Draw(screenOffset_x, screenOffset_y)
+			self.extraEffects[n]:Draw()
 		end 
 	end 
 	
+	love.graphics.circle("fill", self.pos.x, self.pos.y, 2.5, 10)
 
-
-	self.Y = self.pos.y + screenOffset_y
+	self.Y = self.pos.y
 end
 
 function Hero_SwordMan:UpdateAni()
@@ -259,24 +250,68 @@ end
 function Hero_SwordMan:X_Move(offset)
 	local _dt = love.timer.getDelta()
 	local _dir = (offset > 0) and -1 or 1
+	local _result
 
-	Scene_:CheckEvent(self.pos.x + offset, self.pos.y)
-
-	if Scene_:IsInMoveableArea(self.pos.x + offset, self.pos.y) and Scene_:CollideWithObstacles() == false then
-		self.pos.x = self.pos.x + offset
+	local _next = self.pos.x + offset
+	if scene_:IsInMoveableArea(_next, self.pos.y) then
+		
+		_result = scene_:CollideWithObstacles(_next, self.pos.y)
+		
+		if _result[1] then
+		
+			if offset > 0 then
+				_next = _result[2].vertex[1].x - 1
+			else
+				_next = _result[2].vertex[2].x + 1
+			end
+		end
+		
+	else
+		if offset > 0 then
+			_next = scene_.map["[virtual movable area]"][1] + scene_.map["[virtual movable area]"][3] - 1
+		else
+			_next = scene_.map["[virtual movable area]"][1] + 1
+		end
 	end
+
+	self.pos.x = _next
+
+	scene_:CheckEvent(self.pos.x, self.pos.y)
+	
 	
 end
 
 function Hero_SwordMan:Y_Move(offset)
 	local _dt = love.timer.getDelta()
 	local _dir = (offset > 0) and -1 or 1
-	
-	Scene_:CheckEvent(self.pos.x, self.pos.y + offset)
 
-	if Scene_:IsInMoveableArea(self.pos.x, self.pos.y + offset) and Scene_:CollideWithObstacles() == false then
-		self.pos.y = self.pos.y + offset
-	end 
+	local _result
+
+	local _next = self.pos.y + offset
+	if scene_:IsInMoveableArea(self.pos.x, _next) then
+		
+		_result = scene_:CollideWithObstacles(self.pos.x, _next)
+		
+		if _result[1] then
+		
+			if offset > 0 then
+				_next = _result[2].vertex[1].y - 1
+			elseif offset < 0 then
+				_next = _result[2].vertex[2].y + 1
+			end
+		end
+	
+	else
+		if offset > 0 then
+			_next = scene_.map["[virtual movable area]"][2] + 200 + scene_.map["[virtual movable area]"][4] - 1
+		else
+			_next = scene_.map["[virtual movable area]"][2] + 200 + 1
+		end
+	end
+
+	self.pos.y = _next
+
+	scene_:CheckEvent(self.pos.x, self.pos.y)
 
 end
 
@@ -294,7 +329,7 @@ end
 
 function Hero_SwordMan:SetScenePtr(ptr)
 	assert(ptr,"Err: SetScenePtr() scene pointer is nil!")
-	Scene_ = ptr
+	scene_ = ptr
 end
 
 function Hero_SwordMan:SetAttackMode(mode)

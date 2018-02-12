@@ -19,24 +19,18 @@ _sort = function (obj_a,obj_b)
 	)
 end
 
-
-
 function _ObjectMgr.Ctor()
 	_ObjectMgr.objects = {}
 	
 end 
 
-function _ObjectMgr.Update(dt, ...)
-	
-
-
-	
+function _ObjectMgr.Update(dt)
 
 	for n=1,#_ObjectMgr.objects do
 		
 		if _ObjectMgr.objects[n] and _ObjectMgr.objects[n].Update  then -- and _ObjectMgr.objects[n]:GetType() ~= "HERO"
 			if _ObjectMgr.objects[n]:GetType() == "HERO" then
-				_ObjectMgr.objects[n]:Update(dt, ...)
+				_ObjectMgr.objects[n]:Update(dt)
 			else 
 				_ObjectMgr.objects[n]:Update(dt)
 			end 
@@ -54,11 +48,11 @@ function _ObjectMgr.Update(dt, ...)
 
 end 
 
-function _ObjectMgr.Draw(offset_x, offset_y)
+function _ObjectMgr.Draw(cam_x, cam_y)
 	_ObjectMgr.Sort()
 	for n=1,#_ObjectMgr.objects do
 		if _ObjectMgr.objects[n].Draw then
-			_ObjectMgr.objects[n]:Draw(offset_x, offset_y)
+			_ObjectMgr.objects[n]:Draw(cam_x, cam_y)
 		end 
 	end 
 end

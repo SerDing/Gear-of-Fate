@@ -19,7 +19,7 @@ end
 
 function _PassiveObjMgr.LoadLstData()
 	
-	_PassiveObjMgr.pathHead = "Data/passiveobject/"
+	_PassiveObjMgr.pathHead = "/Data/passiveobject/"
 
 	_PassiveObjMgr.objDataArr = {}
 

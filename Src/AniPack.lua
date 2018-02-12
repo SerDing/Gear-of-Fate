@@ -20,11 +20,11 @@ local _Rect = require "Src.Core.Rect"
 function _AniPack:Ctor(_type) --initialize
 
 	self.type = _type or "HERO_ANI"
-
 	self.pos = {x = 0, y = 0}
 	self.center = {x = 0, y = 0}
-	self.size = {w = 1, h = 1}
 	self.offset = {x = 0, y = 0}
+	self.scale = {x = 1, y = 1}
+	self.angle = 0
 	self.dir = 1 -- direction
 
 	self.playNum = 1 	-- 播放次数
@@ -193,15 +193,18 @@ function _AniPack:Update(dt)
 
 end
 
-function _AniPack:Draw(x,y,r,w,h)
+function _AniPack:Draw(x,y,r,sx,sy)
 	
-	self.pos.x = x or self.pos.x
-	self.pos.y = y or self.pos.y
-	self.size.w = w or self.size.w
-	self.size.h = h or self.size.h
+	if x and y then
+		self:SetPos(x, y)
+	end
 
-	if (r == nil) then
-	    r = 0
+	if sx and sy then
+		self:SetScale(sx, sy)
+	end
+	
+	if r then
+		self:SetAngle(r)
 	end
 
 	if self.focus["focus"]  then --霸体状态下的外线效果
@@ -222,52 +225,41 @@ function _AniPack:Draw(x,y,r,w,h)
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x * self.dir ) - 1,
 			math.floor(self.pos.y + self.offset.y ) - 1,
-			r,
-			self.size.w * self.dir,
-			self.size.h)
+			self.angle,
+			self.scale.x * self.dir,
+			self.scale.y)
 
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x * self.dir ) + 1,
 			math.floor(self.pos.y + self.offset.y ) - 1,
-			r,
-			self.size.w * self.dir,
-			self.size.h)
+			self.angle,
+			self.scale.x * self.dir,
+			self.scale.y)
 
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x * self.dir ) + 1,
 			math.floor(self.pos.y + self.offset.y ) + 1,
-			r,
-			self.size.w * self.dir,
-			self.size.h)
+			self.angle,
+			self.scale.x * self.dir,
+			self.scale.y)
 
 		self.playingSprite:Draw(
 			math.floor(self.pos.x + self.offset.x * self.dir ) - 1,
 			math.floor(self.pos.y + self.offset.y ) + 1,
-			r,
-			self.size.w * self.dir,
-			self.size.h)
+			self.angle,
+			self.scale.x * self.dir,
+			self.scale.y)
 	end
-
-	self.playingSprite:SetCenter(self.center.x,self.center.y)
 	
-	if self.plusOffset then
-		self.playingSprite:Draw(
-			self.pos.x + self.offset.x * self.dir,
-			self.pos.y + self.offset.y,
-			r or 0, 		-- rotation 旋转参数
-			self.size.w * self.dir,
-			self.size.h
-		)
-	else 
-		self.playingSprite:Draw(
-			self.pos.x ,
-			self.pos.y ,
-			r or 0, 		-- rotation 旋转参数
-			self.size.w * self.dir,
-			self.size.h
-		)
-	end 
-
+	self.playingSprite:SetCenter(self.center.x,self.center.y)
+	self.playingSprite:Draw(
+		self.pos.x + self.offset.x * self.dir,
+		self.pos.y + self.offset.y,
+		self.angle or 0, 		-- rotation 旋转参数
+		self.scale.x * self.dir,
+		self.scale.y
+	)
+	
 	if self.debug then
 		self:DrawBox()
 		self.playingSprite.rect:Draw()
@@ -281,8 +273,8 @@ function _AniPack:DrawBox()
 	dmgBox:SetColor(0,255,0,100)
 	if (boxTab) then
 	    for n=1,#boxTab,6 do
-			dmgBox:SetPos(self.pos.x + boxTab[n] * self.size.w * self.dir,self.pos.y + - boxTab[n+2])
-			dmgBox:SetSize(boxTab[n+3] * self.size.w,-boxTab[n+5] * self.size.h)
+			dmgBox:SetPos(self.pos.x + boxTab[n] * self.scale.x * self.dir,self.pos.y + - boxTab[n+2])
+			dmgBox:SetSize(boxTab[n+3] * self.scale.x,-boxTab[n+5] * self.scale.y)
 			dmgBox:SetDir(self.dir)
 			dmgBox:Draw()
 	    end
@@ -294,8 +286,8 @@ function _AniPack:DrawBox()
 	atkBox:SetColor(255,0,180,150)
 	if (boxTab) then
 	    for n=1,#boxTab,6 do
-			atkBox:SetPos(self.pos.x + boxTab[n] * self.size.w * self.dir,self.pos.y + - boxTab[n+2])
-			atkBox:SetSize(boxTab[n+3] * self.size.w,-boxTab[n+5] * self.size.h)
+			atkBox:SetPos(self.pos.x + boxTab[n] * self.scale.x * self.dir,self.pos.y + - boxTab[n+2])
+			atkBox:SetSize(boxTab[n+3] * self.scale.x,-boxTab[n+5] * self.scale.y)
 			atkBox:SetDir(self.dir)
 			atkBox:Draw()
 	    end
@@ -374,6 +366,26 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 	end
 end
 
+function _AniPack:SetPos(x, y)
+	self.pos.x = x or self.pos.x
+	self.pos.y = y or self.pos.y
+	self.playingSprite:SetPos(
+		self.pos.x + self.offset.x * self.dir,
+		self.pos.y + self.offset.y
+	)
+end
+
+function _AniPack:SetScale(x, y)
+	self.scale.x = x or self.scale.x
+	self.scale.y = y or self.scale.y
+	self.playingSprite:SetScale(x, y)
+end
+
+function _AniPack:SetAngle(r)
+	self.angle = r or self.angle
+	self.playingSprite:SetAngle(r)
+end
+
 function _AniPack:SetPlayNum(id,num)
 	-- id	ani的对应动作(状态)名称
 	-- num	播放次数
@@ -426,8 +438,8 @@ function _AniPack:SetFileNum(num)
 	-- print("fileNum changed :" .. tostring(self.fileNum))
 end
 
-function _AniPack:SetDir(dir_)
-	self.dir = dir_
+function _AniPack:SetDir(dir)
+	self.dir = dir
 end
 
 function _AniPack:GetCount()
@@ -454,7 +466,6 @@ function _AniPack:GetCountTime()
 	return self.time
 end
 
-
 function _AniPack:GetSpriteBox()
 	return self.box
 end
@@ -463,7 +474,6 @@ function _AniPack:Destroy()
 	
 	self.pos = nil
 	self.center = nil
-	self.size = nil
 	self.offset = nil
 	self.dir = nil
 	

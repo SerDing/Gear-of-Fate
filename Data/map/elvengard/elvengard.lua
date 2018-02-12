@@ -1,10 +1,25 @@
 return  {
 	["[background pos]"] =80,
 	["[player number]"] ={2,8},
-	["[pvp start area]"] ={668,207,558,240,669,206,62,243,1152,204,67,247},
-	["[pvp practice start area]"] ={669,206,62,243,1152,204,67,247},
+	["[pvp start area]"] ={
+		668,207,558,240,
+		669,206,62,243,
+		1152,204,67,247
+	},
+	["[pvp practice start area]"] ={
+		669,206,62,243,
+		1152,204,67,247
+	},
 	["[type]"] ="[normal]",
-	["[tile]"] ={"tile/forestover.til","tile/forestover.til","tile/forestover.til","tile/forestover.til","tile/forestover.til","tile/forestover.til","tile/forestover.til"},
+	["[tile]"] ={
+		"tile/forestover.til",
+		"tile/forestover.til",
+		"tile/forestover.til",
+		"tile/forestover.til",
+		"tile/forestover.til",
+		"tile/forestover.til",
+		"tile/forestover.til"
+	},
 
 	["[far sight scroll]"] =50,
 	["[middle sight scroll]"] =90,
@@ -36,23 +51,25 @@ return  {
 
 	["[sound]"] ={"m_forest_town","amb_forest_01"},
 
-	["[animation]"] ={"animation/elvensgate.ani","[normal]",1094,359,0,
-	"animation/elvenlight1.ani","[normal]",1094,359,0,
-	"animation/elvenltw.ani","[normal]",126,192,0,
-	"animation/elvenrdg.ani","[normal]",1443,192,0,
-	"animation/flag0.ani","[normal]",495,177,0,
-	"animation/serialight01.ani","[bottom]",775,166,0,
-	"animation/serialight00.ani","[bottom]",775,166,0,
-	"animation/blacksmith.ani","[bottom]",382,187,0,
-	"animation/block1.ani","[bottom]",1235,278,0,
-	"animation/block1.ani","[bottom]",563,278,0,
-	"animation/block1.ani","[bottom]",339,278,0,
-	"animation/block1.ani","[bottom]",115,278,0,
-	"animation/block1.ani","[bottom]",787,278,0,
-	"animation/block1.ani","[bottom]",1011,278,0,
-	"animation/block1.ani","[bottom]",1459,279,0,
-	"animation/tree1.ani","[closeback]",1240,184,0,
-	"animation/gate.ani","[closeback]",776,52,0},
+	["[animation]"] ={
+		"animation/elvensgate.ani","[normal]",1094,359,0, --alfria door
+		"animation/elvenlight1.ani","[normal]",1094,359,0,
+		"animation/elvenltw.ani","[normal]",126,192,0,
+		"animation/elvenrdg.ani","[normal]",1443,192,0, -- right stone pillow
+		"animation/flag0.ani","[normal]",495,177,0,
+		"animation/serialight01.ani","[bottom]",775,166,0,
+		"animation/serialight00.ani","[bottom]",775,166,0,
+		"animation/blacksmith.ani","[bottom]",382,187,0,
+		"animation/block1.ani","[bottom]",1235,278,0,
+		"animation/block1.ani","[bottom]",563,278,0,
+		"animation/block1.ani","[bottom]",339,278,0,
+		"animation/block1.ani","[bottom]",115,278,0,
+		"animation/block1.ani","[bottom]",787,278,0,
+		"animation/block1.ani","[bottom]",1011,278,0,
+		"animation/block1.ani","[bottom]",1459,279,0,
+		"animation/tree1.ani","[closeback]",1240,184,0,
+		"animation/gate.ani","[closeback]",776,52,0
+	},
 
 	["[passive object]"] ={
 		5,150,150,0,
@@ -63,7 +80,10 @@ return  {
 		6,1330,250,500
 	},
 
-	["[NPC]"] ={8,"[left]",1335,173,0,1,"[left]",445,186,0},
+	["[NPC]"] ={
+		8,"[left]",1335,173,0,
+		1,"[left]",445,186,0
+	},
 
 	["[map name]"] ="elvengard",
 

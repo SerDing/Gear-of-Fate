@@ -23,18 +23,19 @@ function _Sprite:Ctor(path,x,y,w,h) --initialize
 	   self.texture = path
 	end
 
-
 	self.rect = _Rect.New(x,y,w,h)
 
 	self.x = x or 0
 	self.y = y or 0
 	self.size = {}
 	self.center = {}
-	self.pos = {}
+	self.pos = {x = x, y = y}
+	self.scale = {x = 1, y = 1}
 	self.size.w = w or 1
 	self.size.h = h or 1
 	self.center.x = 0
 	self.center.y = 0
+	self.angle = 0
 	self.color = {
 	r = 255,
 	g = 255,
@@ -48,13 +49,22 @@ function _Sprite:Ctor(path,x,y,w,h) --initialize
 
 	self.rect:SetSize(tmpWidth,tmpHeight)
 	self.rect:SetColor(0,0,255,50)
+	
 end
-
 
 function _Sprite:Draw(x,y,rotation,sx,sy)
 
-	self.pos.x = x or self.pos.x
-	self.pos.y = y or self.pos.y
+	if x and y then
+		self:SetPos(x, y)
+	end
+
+	if rotation then
+		self:SetAngle(rotation)
+	end
+
+	if sx and sy then
+		self:SetScale(sx, sy)
+	end
 
 	local r, g, b, a = love.graphics.getColor()
 	love.graphics.setColor(self.color.r,self.color.g,self.color.b,self.color.a)
@@ -65,9 +75,9 @@ function _Sprite:Draw(x,y,rotation,sx,sy)
 	love.graphics.draw(self.texture,
 		self.pos.x,
 		self.pos.y,
-		rotation, 		-- rotation 旋转参数
-		sx,
-		sy,
+		self.angle, 		-- rotation 旋转参数
+		self.size.w * self.scale.x ,
+		self.size.h * self.scale.y,
 		self.center.x,
 		self.center.y
 	)
@@ -75,7 +85,6 @@ function _Sprite:Draw(x,y,rotation,sx,sy)
 	love.graphics.setColor(r,g,b,a)
 	love.graphics.setBlendMode(_blendMode)
 
-	self.rect:SetDir(sx)
 	self.rect:SetPos(self.pos.x,self.pos.y)
 
 	-- self.rect:Draw()
@@ -92,6 +101,32 @@ function _Sprite:SetTexture(tex)
 	end
 
 	self.rect:SetSize(self.texture:getWidth(), self.texture:getHeight())
+end
+
+function _Sprite:SetPos(x, y)
+	self.pos.x = x or self.pos.x
+	self.pos.y = y or self.pos.y
+	self.rect:SetPos(x, y)
+end
+
+function _Sprite:SetSize(w, h)
+	self.size.w = sx or self.size.w
+	self.size.h = sy or self.size.h
+	self.rect:SetSize(sx, sy)
+end
+
+function _Sprite:SetScale(x, y)
+	self.scale.x = x or self.scale.x
+	self.scale.y = y or self.scale.y
+	self.rect:SetScale(x, y)
+end
+
+function _Sprite:SetDir(dir)
+	-- self.rect:SetDir(dir)
+end
+
+function _Sprite:SetAngle(r)
+	self.angle = r or self.angle
 end
 
 function _Sprite:SetCenter(x,y)

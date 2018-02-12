@@ -90,7 +90,16 @@ return {--[[ #PVF_File --]]
 		272,1173,359,0,
 	},
 	
-	["[monster]"]={1,1,0,350,191,0,0,1,"[fixed]","[normal]",1,1,0,192,193,0,0,1,"[fixed]","[normal]",1,1,0,446,249,0,0,1,"[fixed]","[normal]",1,1,0,93,263,0,0,1,"[fixed]","[normal]",1,1,0,355,315,0,0,1,"[fixed]","[normal]",1,1,0,183,319,0,0,1,"[fixed]","[normal]",5,0,6,560,214,0,1,1,"[fixed]","[normal]",5,0,6,552,328,0,1,1,"[fixed]","[normal]",},
+	["[monster]"]={
+		1,1,0,350,191,0,0,1,"[fixed]","[normal]",
+		1,1,0,192,193,0,0,1,"[fixed]","[normal]",
+		1,1,0,446,249,0,0,1,"[fixed]","[normal]",
+		1,1,0,93,263,0,0,1,"[fixed]","[normal]",
+		1,1,0,355,315,0,0,1,"[fixed]","[normal]",
+		1,1,0,183,319,0,0,1,"[fixed]","[normal]",
+		5,0,6,560,214,0,1,1,"[fixed]","[normal]",
+		5,0,6,552,328,0,1,1,"[fixed]","[normal]",
+	},
 	
 	["[monster specific AI]"]={"[normal]","[normal]","[normal]","[normal]","[normal]","[normal]","[normal]","[normal]",},
 	

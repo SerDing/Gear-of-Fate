@@ -96,14 +96,22 @@ function _ResPack:GetTexture(num)
 end
 
 function _ResPack:GetOffset(num)
-
-	local offset = {
-		x = self.pak_info[num].centre_x ,
-		y = self.pak_info[num].centre_y
-	}
+	
+	local offset
+	
+	if not self.pak_info then
+		offset = {
+			x = 0 ,
+			y = 0 ,
+		}
+	else
+		offset = {
+			x = self.pak_info[num].centre_x or 0 ,
+			y = self.pak_info[num].centre_y or 0 ,
+		}
+	end
 
 	return offset
-
 end
 
 function _ResPack:GetFrameNum() -- 获取帧数量

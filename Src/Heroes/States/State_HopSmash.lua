@@ -82,7 +82,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 			
 			
 
-			print("HopSmash moveSpeed", self.speed)
+			-- print("HopSmash moveSpeed", self.speed)
 
 			if self.jumpPower < 13 then
 				self.jumpPower = 13
@@ -93,10 +93,13 @@ function _State_HopSmash:Update(hero_,FSM_)
 				self.speed = 2.15
 			end
 
-			print("HopSmash jumpPower:", self.jumpPower)
+			-- print("HopSmash jumpPower:", self.jumpPower)
 
 			self.shake = true
 			self.start = true
+
+			print("HopSmash has began")
+
 		end
 
 		if self.start then

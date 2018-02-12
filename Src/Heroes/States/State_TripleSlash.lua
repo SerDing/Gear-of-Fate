@@ -145,7 +145,7 @@ function _State_TripleSlash:ChangeDir()
             if self.time_left > self.time_right then
                 self.nextDir = -1
             elseif self.time_left == self.time_right then
-                self.nextDir = hero_:GetDir()
+                self.nextDir = self.hero_:GetDir()
             else 
                 self.nextDir = 1
             end 

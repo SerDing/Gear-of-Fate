@@ -18,16 +18,21 @@ local _AniBlock = require "Src.Scene.Blocks.AniBlock"
 
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 
-local _PassiveObjMgr = require "Src.Scene.PassiveObjManager"
+local _Collider = require "Src.Scene.Collider"
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 local _GAMEINI = require "Src.Config.GameConfig" 
 
-local _screenOffset = {x = 0,y = 0}
+local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
+
+local _MonsterSpawner = require "Src.Monster.MonsterSpawner"
+
 local _sceneMgr = {} -- Initialize a null pointer of SceneManager
 
 _PassiveObjMgr.Ctor()
+
+_MonsterSpawner.Ctor()
 
 function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     
@@ -79,8 +84,10 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     self:LoadAnimations()
     self:LoadPassiveObjects()
     
-    self:Awake() -- Add objcets of normal layer into ObjcetMgr.objects
+    self:LoadMonster()
 
+    self:Awake() -- Add objcets of normal layer into ObjcetMgr.objects
+   
 end
 
 function _GameScene:LoadTiles()
@@ -94,7 +101,7 @@ function _GameScene:LoadTiles()
     for n=1,#self.map["[tile]"] do
         _tilePath = self.pathHead .. self.directory .. self.map["[tile]"][n]
         self.res["[tile]"][self.map["[tile]"][n]] = _TileBlock.New(_tilePath)
-        self.res["[tile]"][self.map["[tile]"][n]]:SetOffset_2(0, -(self.map["[background pos"] or 80) * 2 - 10)
+        self.res["[tile]"][self.map["[tile]"][n]]:SetOffset_2(0, (self.map["[background pos"] or 80))
     end 
 
 end
@@ -134,7 +141,7 @@ function _GameScene:LoadPassiveObjects()
             table.insert(self.layers[_tmpObj:GetLayer()]["[passive object]"],n)
         end
     end 
-    
+
 end
 
 function _GameScene:LoadBackGround()
@@ -159,11 +166,18 @@ function _GameScene:LoadBackGround()
                 self.res[ _bgLayer[n]][ _bgFileName] = _AniBlock.New(_bgAniPath)
                 self.res[ _bgLayer[n]][ _bgFileName]:SetOffset_2(0,self.map["[background pos"] or 80)
                 self.res[ _bgLayer[n]][ _bgFileName]:SetFilter(true)
+                self.res[ _bgLayer[n]][ _bgFileName]:SetSubType("MAP_ANI_BACK")
             end 
         end 
         
     end 
  
+end
+
+function _GameScene:LoadMonster()
+    if self.map["[monster]"] then
+        print(#self.map["[monster]"])
+    end
 end
 
 function _GameScene:Awake() -- ReAdd objects into ObjMgr
@@ -177,7 +191,7 @@ function _GameScene:Awake() -- ReAdd objects into ObjMgr
     
 end
 
-function _GameScene:Update(dt,screenOffset)
+function _GameScene:Update(dt)
     
     if _KEYBOARD.Press("f1") then
         if not self.debug then
@@ -185,9 +199,7 @@ function _GameScene:Update(dt,screenOffset)
         else 
             self.debug = false
         end 
-    end 
-
-    _screenOffset = screenOffset
+    end
 
     self:UpdateLayer("[bottom]",dt)
     self:UpdateLayer("[closeback]",dt)
@@ -208,29 +220,29 @@ function _GameScene:Update(dt,screenOffset)
 	end
 
 
-
-    _ObjectMgr.Update(dt,_sceneMgr.offset)
+    
+    _ObjectMgr.Update(dt)
 
 end
 
-function _GameScene:Draw()
+function _GameScene:Draw(cam_x,cam_y)
 
-    self:DrawBackGround("[far]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
-    self:DrawBackGround("[mid]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    self:DrawBackGround("[far]", cam_x,cam_y)
+    self:DrawBackGround("[mid]", cam_x,cam_y)
     
-    self:DrawTile(_screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    self:DrawTile(cam_x, cam_y)
 
-    self:DrawLayer("[closeback]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
-    self:DrawLayer("[bottom]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    self:DrawLayer("[closeback]",cam_x, cam_y)
+    self:DrawLayer("[bottom]",cam_x, cam_y)
 
-    _ObjectMgr.Draw(_screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    _ObjectMgr.Draw(cam_x, cam_y)
 
-    self:DrawLayer("[close]", _screenOffset.x + self.cameraOffset.x, _screenOffset.y + self.cameraOffset.y)
+    self:DrawLayer("[close]",cam_x, cam_y)
     
     
     if self.debug then
-        self:DrawSpecialArea("movable",_screenOffset.x + self.cameraOffset.x,_screenOffset.y + self.cameraOffset.y)
-        self:DrawSpecialArea("event",_screenOffset.x + self.cameraOffset.x,_screenOffset.y + self.cameraOffset.y)
+        self:DrawSpecialArea("movable")
+        self:DrawSpecialArea("event")
     end 
 
 end
@@ -244,13 +256,13 @@ function _GameScene:UpdateLayer(layer,dt)
     end 
 end
 
-function _GameScene:DrawLayer(layer,x,y)
+function _GameScene:DrawLayer(layer, x, y)
     for n=1,#self.layers[layer]["[animation]"] do
-        self.res["[animation]"][self.layers[layer]["[animation]"][n]]:Draw(x,y)
+        self.res["[animation]"][self.layers[layer]["[animation]"][n]]:Draw(x, y)
         
     end 
     for n=1,#self.layers[layer]["[passive object]"] do
-        self.res["[passive object]"][self.layers[layer]["[passive object]"][n]]:Draw(x,y)
+        self.res["[passive object]"][self.layers[layer]["[passive object]"][n]]:Draw(x, y)
     end 
 end
 
@@ -268,28 +280,32 @@ function _GameScene:DrawBackGround(type,ex,ey)
     if self.map["[background animation]"] then
         local _name = self.map["[background animation]"][_ani_info]["[filename]"]
         local _sprAni = self.res[type][_name]
-        local _x = ex * self.map[_scroll] / 100
-        local _y = ey
-        local _w = _sprAni:GetWidth()
-        _x = (_x% - _w)
-        while _x < _GAMEINI.winSize.width do
+        local _x = ex * (self.map[_scroll] - 100) / 100
+        local _y = 0
+        local _imageWidth = _sprAni:GetWidth()
+        _x = (_x % - _imageWidth)
+        
+        while _x < -ex + _GAMEINI.winSize.width do
 			_sprAni:Draw(_x,_y)
-			_x = _x + _w
+            -- print("_x:",_x,"ex...:",-ex + _GAMEINI.winSize.width)
+            _x = _x + _imageWidth
 		end
     end
 end
 
 function _GameScene:DrawTile(ex,ey)
+    
     local index = math.floor(math.abs(ex) / 224) +1
 	local num = math.ceil(_GAMEINI.winSize.width / 224)
-	local endl = (index + num > #self.map["[tile]"]) and ( #self.map["[tile]"]) or index + num
+    local endl = (index + num > #self.map["[tile]"]) and ( #self.map["[tile]"]) or index + num
+    -- print("index:",index,"endl:", endl)
     for n=index,endl do
-		self.res["[tile]"][self.map["[tile]"][n]]:Draw(math.floor(ex + (n - 1) * 224),math.floor(ey + 0))
+		self.res["[tile]"][self.map["[tile]"][n]]:Draw((n - 1) * 224,0)
 	end
 
 end
 
-function _GameScene:DrawSpecialArea(type,x,y)
+function _GameScene:DrawSpecialArea(type)
     local _head = ""
     local _count = 0
     if type == "movable" then
@@ -305,7 +321,7 @@ function _GameScene:DrawSpecialArea(type,x,y)
 		return false
     end
 	for n=1,#tab,_count do
-        self.rect:SetPos(x + tab[n],200+y + tab[n+1])
+        self.rect:SetPos(tab[n],200 + tab[n+1])
         self.rect:SetSize(tab[n+2],tab[n+3])
         if type == "movable" then
             self.rect:SetColor(255,255,255,80)
@@ -330,6 +346,7 @@ function _GameScene:GetHeight()
 end
 
 function _GameScene:IsInMoveableArea(x,y)
+    
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
         return false 
     end 
@@ -382,15 +399,24 @@ end
 
 function _GameScene:CollideWithObstacles(x,y)
     
-    for i=1,#self.res["[passive object]"] do
-        self.res["[passive object]"][n]
-    end
-    
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
-        return false 
+        return {false} 
+    end 
+    if #self.layers["[normal]"]["[passive object]"] == 0 then
+        return {false}
+    end
+
+    for n=1,#self.layers["[normal]"]["[passive object]"] do
+        if self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].subType == "OBSTACLE" then
+            if _Collider.Point_Rect(x, y, self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect) then
+                -- print("Rect:CheckPoint() x1:",x,"x2:",self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect.vertex[1].x)
+                return {true,self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect}
+            end
+        end
     end 
 
-    return self:IsInArea("movable",x,y)
+    return {false}
+
 end
 
 function _GameScene:SetCameraOffset(x,y)

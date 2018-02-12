@@ -9,8 +9,10 @@
 local _obj = require "Src.Scene.Object" 
 local _Effect = require("Src.Core.Class")(_obj)
 
+local _KEYBOARD = require "Src.Core.KeyBoard"
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
+local _GAMEINI = require "Src.Config.GameConfig" 
 
 function _Effect:Ctor(aniPath)
 	
@@ -37,9 +39,9 @@ function _Effect:Ctor(aniPath)
 
 	self:SetType("EFFECT")
 
-	self.rect = _Rect.New(0,0,20,20)
+	self.rect = _Rect.New(0,0,10,10)
 	
-	self.debug = true
+	self.debug = false
 	
 	self.display = 1
 
@@ -55,9 +57,9 @@ function _Effect:Ctor(aniPath)
 
 	-- self.ani.debug = true
 
-	self.ani.plusOffset = true
+	self.layer = 0 -- it's useful just when this effect entity is in hero class as an extra effect
 
-	self.layer = 0 -- it's useable just when this effect entity in hero class as an extra effect
+	self.display = 1
 
 end 
 
@@ -74,24 +76,32 @@ function _Effect:Update(dt)
 	end 
 
 	self.pos.x = self.pos.x + self.speed * self.dir
+	
+	if _KEYBOARD.Press("f1") then
+		if self.debug then
+			self.debug = false
+		else
+			self.debug = true
+		end
+	end
+	
 end 
 
-function _Effect:Draw(x,y)
+function _Effect:Draw()
 
-	self.ani:Draw(
-	math.floor( self.pos.x + self.offset.x + (x or 0)),
-	math.floor( self.pos.y + self.offset.y + (y or 0))
+	self.ani:SetPos(
+		math.floor( self.pos.x + self.offset.x),
+		math.floor( self.pos.y + self.offset.y)
 	)
-	
+	self.ani:Draw()
 	if self.debug then
-		self.rect:SetPos(
-			math.floor(self.pos.x  + (x or 0))-2,
-			math.floor(self.pos.y  + (y or 0))-2
-		)
+		self.rect:SetCenter(5,5)
+		self.rect:SetPos(self.pos.x,self.pos.y)
 		self.rect:SetColor(0,255,255,255)
 		self.rect:Draw()
 	end
 	
+
 end
 
 function _Effect:SetPos(x,y)
@@ -121,7 +131,6 @@ function _Effect:SetFilter(switch)
 end
 
 function _Effect:GetY()
-	
 	return  self.pos.y
 end
 

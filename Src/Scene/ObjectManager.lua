@@ -27,7 +27,6 @@ end
 function _ObjectMgr.Update(dt)
 
 	for n=1,#_ObjectMgr.objects do
-		
 		if _ObjectMgr.objects[n] and _ObjectMgr.objects[n].Update  then -- and _ObjectMgr.objects[n]:GetType() ~= "HERO"
 			if _ObjectMgr.objects[n]:GetType() == "HERO" then
 				_ObjectMgr.objects[n]:Update(dt)
@@ -35,7 +34,6 @@ function _ObjectMgr.Update(dt)
 				_ObjectMgr.objects[n]:Update(dt)
 			end 
 		end 
-		
 	end 
 
 	for n=#_ObjectMgr.objects,1,-1 do

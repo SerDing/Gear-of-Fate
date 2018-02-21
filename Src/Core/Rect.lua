@@ -117,6 +117,10 @@ function _Rect:SetDrawType(_type) -- _type: 0 --> fill  1 --> line
 	self.type = self.drawTypes[_type]
 end
 
+function _Rect:GetVertex()
+	return self.vertex
+end
+
 function _Rect:CheckPoint(x,y)
 	
 	self:Update()

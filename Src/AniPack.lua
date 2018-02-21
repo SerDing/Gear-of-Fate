@@ -265,6 +265,7 @@ function _AniPack:Draw(x,y,r,sx,sy)
 		self.playingSprite.rect:Draw()
 	end 
 	
+	
 end
 
 function _AniPack:DrawBox()
@@ -322,7 +323,7 @@ function _AniPack:SetAnimation(id,num)
 		self.frameData = id
 		self.playNum = num or -1
 	else 
-		print("Err:_AniPack:SetAnimation() -- id type is wrong")
+		error("Err:_AniPack:SetAnimation() -- id type is wrong")
 		return false 
 	end
 

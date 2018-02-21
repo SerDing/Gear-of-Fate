@@ -1,0 +1,8 @@
+return {--[[ #PVF_File --]]
+		["[FRAME MAX]"]=1,
+	["[FRAME000]"]={
+		["[IMAGE]"]={"Monster/Goblin/Event/Goblin.img",5},
+		["[IMAGE POS]"]={-91,-152},
+		["[DELAY]"]=10000,
+		["[DAMAGE BOX]"]={-9,-5,-1,31,10,59},}
+}

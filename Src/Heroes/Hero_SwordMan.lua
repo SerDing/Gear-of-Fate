@@ -79,7 +79,6 @@ local scene_ = {} -- init a null Scene Pointer
 function Hero_SwordMan:Ctor(x,y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y}
-	self.prePos = {x = x, y = y}
 	self.spd = {x = 2, y = 2}
 	self.dir = 1
 	self.Y = self.pos.y
@@ -89,7 +88,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 
 	self.jumpOffset = 0
 	
-	self.atkSpeed = 1.5
+	self.atkSpeed = 2.0
 
 	self.atkMode = "normal" -- or frenzy
 
@@ -180,15 +179,14 @@ function Hero_SwordMan:Update(dt)
 	
 	self.FSM:Update(self)
 
-	for n=1,_pakNum do
+	for n=1,_pakNum do 
 		self.pakGrp[_name[n]]:Update(dt)
 	end
 
-	for k,v in pairs(self.buff) do
+	for k,v in pairs(self.buff) do 
 		if v.switch then
 			v.ani:Update(dt)
 		end 
-		
 	end
 
 	for n = 1,#self.extraEffects do

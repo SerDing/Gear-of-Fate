@@ -80,7 +80,7 @@ function _GameCamera.LockPos()
 		end
 	
 		if _targetPos.y > win_h then
-			_GameCamera.pos.y = -_targetPos.y + 450
+			_GameCamera.pos.y = -_targetPos.y + 300
 		else
 			_GameCamera.pos.y = 0
 		end
@@ -109,11 +109,9 @@ function _GameCamera.Set()
 end
 
 function _GameCamera.Draw(drawFunc)
-	
 	_GameCamera.Set()
 	drawFunc(_GameCamera.pos.x, _GameCamera.pos.y)
 	_GameCamera.UnSet()
-	
 end
 
 function _GameCamera.UnSet()

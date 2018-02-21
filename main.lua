@@ -57,9 +57,11 @@ function love.update(dt)
 		return  
 	end 
 
+	
 	_GAMEMGR.Update(dt)
-	_RESMGR.Update(dt)
 	_KEYBOARD.Update(dt)
+	_RESMGR.Update(dt)
+	
 
 end
 

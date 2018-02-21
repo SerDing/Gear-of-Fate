@@ -15,6 +15,7 @@ function _State_Jump:Ctor()
     self.jumpPower = 0
 	self.jumpDir = ""
 	self.jumpAttack = false
+	self.dirLock = false
 end 
 
 function _State_Jump:Enter(hero_,FSM_,backJump)
@@ -39,8 +40,8 @@ function _State_Jump:Enter(hero_,FSM_,backJump)
 		self.backJump = false
 	end 
 	
-
-	
+	self.dirLock = false
+	self.jumpAtkTimes = 0
 end
 
 function _State_Jump:Update(hero_,FSM_)
@@ -52,7 +53,7 @@ function _State_Jump:Update(hero_,FSM_)
 	
 	if not self.jumpAttack then
 		if self.jumpDir ~= "up" and self.jumpDir ~= "down" then
-			if _body:GetCount() == 1 or _body:GetCount() == 8 then
+			if _body:GetCount() == 1 or self.backJump then
 				self.jumpDir = "up"
 			end 
 		end 
@@ -80,9 +81,7 @@ function _State_Jump:Update(hero_,FSM_)
 						end
 					end
 				end 
-
 			end
-
 		end
 
 		print("jump up:", hero_.jumpOffset)
@@ -105,11 +104,8 @@ function _State_Jump:Update(hero_,FSM_)
 						v:NextFrame()
 					end
 				end
-
 			end
-			
 		end
-		
 	end 
 
 ------[[	move logic in jump	]]
@@ -121,12 +117,12 @@ function _State_Jump:Update(hero_,FSM_)
 				k = 2
 			end 
 			if _KEYBOARD.Hold(hero_.KEY["LEFT"]) then
-				if not self.jumpAttack then
+				if not self.jumpAttack and not self.dirLock then
 					hero_:SetDir(-1)
 				end
 				hero_:X_Move(hero_.spd.x * k * -1)
 			elseif _KEYBOARD.Hold(hero_.KEY["RIGHT"]) then
-				if not self.jumpAttack then
+				if not self.jumpAttack and not self.dirLock then
 					hero_:SetDir(1)
 				end
 				hero_:X_Move(hero_.spd.x * k * 1)
@@ -157,7 +153,10 @@ function _State_Jump:Update(hero_,FSM_)
 				self.jumpAttack = true
 				hero_:GetBody():SetAnimation("jumpattack")
 				hero_:GetWeapon():SetAnimation("jumpattack")
-				-- FSM_:SetState("jumpattack",hero_)
+				self.dirLock = true
+
+				self.jumpAtkTimes = self.jumpAtkTimes + 1
+				print(self.jumpAtkTimes)
 			end 
 		end 
 	end
@@ -166,6 +165,8 @@ function _State_Jump:Update(hero_,FSM_)
 		if _body.playNum == 0 then
 			if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and hero_.jumpOffset < -2 then
 				_body.playNum = 1
+				self.jumpAtkTimes = self.jumpAtkTimes + 1
+				print(self.jumpAtkTimes)
 			else 
 				self.jumpAttack = false
 				if hero_.jumpOffset >= 0 then  --[[	hero has been on land  ]]

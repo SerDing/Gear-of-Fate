@@ -156,28 +156,18 @@ function _SCENEMGR.CreatScene(area,map,type)
 	
 	--[[	transform file form [*.map] to  [*.lua] 	]]
 	
-	local _path = string.sub(
-		_SCENEMGR.path .. 
-		_Area[type][area]["[area]"][map][1], 
-		1, 
-		- 4 - 1
-	)
+	local _path = string.sub(_SCENEMGR.path .. _Area[type][area]["[area]"][map][1], 1, - 4 - 1)
 	
 	if not _sceneList[type][area][map] then
 		
 		--[[	check whether the map file exits 	]]
 		if _SCENEMGR.IsMapFileExisting(_path .. ".lua") == false then
-			print(
-				"Err:_SCENEMGR.CreatScene() -- the map: " .. 
-				_path .. 
-				" is not existing!"
-				)
+			print("Err:_SCENEMGR.CreatScene() -- the map: " .. _path .. " is not existing!")
 			return false 
 		end
 		
 		_sceneList[type][area][map] = _Scene.New(_path,_res[area][map],_SCENEMGR) 
 	end 
-	
 	
 end
 

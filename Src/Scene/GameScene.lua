@@ -48,6 +48,7 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
         ["[normal]"] = {
             ["[animation]"] = {},
             ["[passive object]"] = {},
+            ["[monster]"] = {},
         },
         ["[bottom]"] = {
             ["[animation]"] = {},
@@ -76,9 +77,10 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     
     self.iterator = 0
     self.limit = 0
-
-    self.cameraOffset = {x = 0, y = 0}
     
+    self.isDgn = false
+    self.clear = false
+
     self:LoadBackGround()
     self:LoadTiles()
     self:LoadAnimations()
@@ -130,7 +132,6 @@ function _GameScene:LoadPassiveObjects()
     end 
     local _objDataArr = self.map["[passive object]"]
     local _tmpObj
-    local _ObjPath
     for n=1,#_objDataArr,4 do
         
         _tmpObj = _PassiveObjMgr.GeneratePassiveObj(_objDataArr[n]) 
@@ -175,8 +176,26 @@ function _GameScene:LoadBackGround()
 end
 
 function _GameScene:LoadMonster()
-    if self.map["[monster]"] then
-        print(#self.map["[monster]"])
+    local _mon
+    local _monDataArr = self.map["[monster]"]
+    if _monDataArr then
+        print(#_monDataArr / 10)
+
+        self.isDgn = true
+
+        for q=1,#_monDataArr,10 do
+            
+            _mon = _MonsterSpawner.Spawn(
+                _monDataArr[q], 
+                _monDataArr[q + 3], 
+                _monDataArr[q + 4]
+            )
+            _mon:SetPos(_monDataArr[q + 3], _monDataArr[q + 4] + 200)
+            if _mon ~= 0 then
+                table.insert(self.layers["[normal]"]["[monster]"], _mon)
+            end
+        end
+
     end
 end
 
@@ -188,6 +207,12 @@ function _GameScene:Awake() -- ReAdd objects into ObjMgr
     for n=1,#self.layers["[normal]"]["[passive object]"] do
         _ObjectMgr.AddObject(self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]])
     end 
+
+    if self.isDgn and self.clear == false then
+        for n=1,#self.layers["[normal]"]["[monster]"] do
+            _ObjectMgr.AddObject(self.layers["[normal]"]["[monster]"][n])
+        end
+    end
     
 end
 
@@ -417,10 +442,6 @@ function _GameScene:CollideWithObstacles(x,y)
 
     return {false}
 
-end
-
-function _GameScene:SetCameraOffset(x,y)
-    self.cameraOffset = {x = -x, y = -y}
 end
 
 return _GameScene

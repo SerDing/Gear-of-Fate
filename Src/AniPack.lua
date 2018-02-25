@@ -19,7 +19,7 @@ local _Rect = require "Src.Core.Rect"
 
 function _AniPack:Ctor(_type) --initialize
 
-	self.type = _type or "HERO_ANI"
+	self.type = _type or "NORMAL_ANI"
 	self.pos = {x = 0, y = 0}
 	self.center = {x = 0, y = 0}
 	self.offset = {x = 0, y = 0}
@@ -358,6 +358,13 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 	if(type(aniPath) == "string")then
 		local content = require(aniPath) -- content is a table
 		self.frameDataGrp[id] = {data = content, num = __num}
+		
+		if content["[LOOP]"] == 1 then
+			self.frameDataGrp[id].num = -1
+		else
+			self.frameDataGrp[id].num = 1
+		end
+
 	elseif (type(aniPath) == "table") then
 	    print("Err: _AniPack:AddAnimation() --> aniPath expect a string ,not a table.")
 	    return false

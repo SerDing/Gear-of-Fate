@@ -4,11 +4,11 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
-		* wrap the logic of Attack1 state in this class
+		* wrap the logic of frenzy attack state in this class
 ]]
 -- Remember to change _KEYBOARD.Hold() to Press() 
 
-local _State_AtkBase  = require "Src.Heroes.States.State_AtkBase"
+local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_FrenzyAttack = require("Src.Core.Class")(_State_AtkBase)
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
@@ -21,7 +21,7 @@ function _State_FrenzyAttack:Ctor()
         "frenzy2",
         "frenzy3",
         "frenzy4",
-    } 
+    }
     
     self.attackNum = 0
     self.KEYID = {}
@@ -52,6 +52,9 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
     local _rightHold = _KEYBOARD.Hold(hero_.KEY["RIGHT"])
     local _movable = true
 
+    -- local _keyCheck = _KEYBOARD.Press
+    local _keyCheck = _KEYBOARD.Hold
+
     if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
     (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
         _movable = false
@@ -59,7 +62,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
     if self.attackNum == 1 then
         
-        if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 4 then
+        if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 4 then
             self.attackNum = 2
             hero_:GetBody():SetAnimation(self.childName[self.attackNum])
             hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
@@ -93,7 +96,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
        
 
-        if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             hero_:GetBody():SetAnimation(self.childName[self.attackNum])
             hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
@@ -127,7 +130,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
             end
         end
 
-        if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 4
             hero_:GetBody():SetAnimation(self.childName[self.attackNum])
             hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
@@ -190,9 +193,6 @@ end
 
 function _State_FrenzyAttack:Exit(hero_)
     
-    -- for n=1,#self.effect do
-    --     self.effect[n]:GetAni():SetCurrentPlayNum(0)
-    -- end 
     for n=1,#self.effect do
         self.effect[n].over = true
     end 

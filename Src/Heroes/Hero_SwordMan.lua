@@ -12,7 +12,7 @@ local Hero_SwordMan = require("Src.Core.Class")(_obj)
 
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Heroes.Weapon"
-local _FSM = require "Src.Heroes.States.FSM"
+local _FSM = require "Src.FSM.FSM"
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 -- const
@@ -79,7 +79,7 @@ local scene_ = {} -- init a null Scene Pointer
 function Hero_SwordMan:Ctor(x,y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y}
-	self.spd = {x = 2, y = 2}
+	self.spd = {x = 2.25, y = 2}
 	self.dir = 1
 	self.Y = self.pos.y
 	self.camp = "HERO"
@@ -88,7 +88,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 
 	self.jumpOffset = 0
 	
-	self.atkSpeed = 2.0
+	self.atkSpeed = 1.8
 
 	self.atkMode = "normal" -- or frenzy
 
@@ -126,7 +126,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 
 	self.pakGrp = {
 		["body"] = _AniPack.New(),
-		["weapon"] = _Weapon.New()
+		["weapon"] = _Weapon.New(),
 	}
 
 	for n = 1,_pakNum do
@@ -135,17 +135,10 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		end
 		self.pakGrp[_name[n]]:SetBaseRate(self.atkSpeed)
 	end
----- [[ Set some special animation play nums to -1(loop) ]]
+	
+	---- [[ Set some special animation play nums to -1(loop) ]]
 	for n = 1,_pakNum do
-		
-		self.pakGrp[_name[n]]:SetPlayNum("rest",-1)
-		self.pakGrp[_name[n]]:SetPlayNum("stay",-1)
-		self.pakGrp[_name[n]]:SetPlayNum("dash",-1)
-
-		self.pakGrp[_name[n]]:SetPlayNum("move",-1)
-		self.pakGrp[_name[n]]:SetPlayNum("guard",-1)
-		self.pakGrp[_name[n]]:SetPlayNum("sit",-1)
-		
+		--
 	end
 	
 	
@@ -153,15 +146,15 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201b.img",1)
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201c.img",2)
 	
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004b.img",1)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004c.img",2)
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004b.img",1)
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004c.img",2)
 
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500b.img",1)
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500c.img",2)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500b.img",1)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500c.img",2)
 
 	-- self.pakGrp.weapon:SetSingle(true)
 	
-	self.FSM = _FSM.New(self,"stay")
+	self.FSM = _FSM.New(self,"stay",self.subType)
 
 	---- [[test ani file]] 
 	

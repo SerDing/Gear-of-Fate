@@ -1,6 +1,6 @@
 return {--[[ #PVF_File --]]
-		["[LOOP]"]=1,
-		["[FRAME MAX]"]=6,
+	["[LOOP]"]=1,
+	["[FRAME MAX]"]=6,
 	["[FRAME000]"]={
 		["[IMAGE]"]={"Monster/Goblin/Event/Goblin.img",11},
 		["[IMAGE POS]"]={-91,-152},

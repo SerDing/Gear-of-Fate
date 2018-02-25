@@ -4,8 +4,8 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
-		* Hold key "F2" to move camera toward left
-		* Hold key "F3" to move camera toward right
+		* Hold key "F2" to move camera toward left (when no target)
+		* Hold key "F3" to move camera toward right (when no target)
 		* You can use _GameCamera.Move() to serve for story telling
 		* Attention! You can't move the camera when it has a locking target
 ]]
@@ -84,6 +84,10 @@ function _GameCamera.LockPos()
 		else
 			_GameCamera.pos.y = 0
 		end
+
+		_GameCamera.pos.x = math.floor(_GameCamera.pos.x)
+		_GameCamera.pos.y = math.floor(_GameCamera.pos.y)
+
 	end
 end
 

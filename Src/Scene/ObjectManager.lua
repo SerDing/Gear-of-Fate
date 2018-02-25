@@ -25,7 +25,7 @@ function _ObjectMgr.Ctor()
 end 
 
 function _ObjectMgr.Update(dt)
-
+	
 	for n=1,#_ObjectMgr.objects do
 		if _ObjectMgr.objects[n] and _ObjectMgr.objects[n].Update  then -- and _ObjectMgr.objects[n]:GetType() ~= "HERO"
 			if _ObjectMgr.objects[n]:GetType() == "HERO" then
@@ -35,7 +35,7 @@ function _ObjectMgr.Update(dt)
 			end 
 		end 
 	end 
-
+	
 	for n=#_ObjectMgr.objects,1,-1 do
 		if _ObjectMgr.objects[n]:GetType() == "EFFECT" then
 			if _ObjectMgr.objects[n]:IsOver() then
@@ -75,6 +75,15 @@ end
 
 function _ObjectMgr.GetObjects()
     return _ObjectMgr.objects 
+end
+
+function _ObjectMgr.GetHero()
+	for n=1,#_ObjectMgr.objects do
+		if _ObjectMgr.objects[n]:GetType() == "HERO" then
+			return _ObjectMgr.objects[n]
+		end 
+	end
+	
 end
 
 return _ObjectMgr 

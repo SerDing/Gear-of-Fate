@@ -88,7 +88,7 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     
     self:LoadMonster()
 
-    self:Awake() -- Add objcets of normal layer into ObjcetMgr.objects
+    -- self:Awake() -- Add objcets of normal layer into ObjcetMgr.objects
    
 end
 
@@ -179,10 +179,7 @@ function _GameScene:LoadMonster()
     local _mon
     local _monDataArr = self.map["[monster]"]
     if _monDataArr then
-        print(#_monDataArr / 10)
-
         self.isDgn = true
-
         for q=1,#_monDataArr,10 do
             
             _mon = _MonsterSpawner.Spawn(
@@ -195,7 +192,7 @@ function _GameScene:LoadMonster()
                 table.insert(self.layers["[normal]"]["[monster]"], _mon)
             end
         end
-
+        print("LoadMonster: ",#_monDataArr / 10,"monsters")
     end
 end
 

@@ -41,7 +41,7 @@ function _MonsterSpawner.LoadLstData()
 end
 
 function _MonsterSpawner.Spawn(monId, x, y)
-	print("monster:",monId,_MonsterSpawner.monPathArr[monId])
+	-- print("monster:",monId,_MonsterSpawner.monPathArr[monId])
 	
 	local _mon
 	local _monPath = _MonsterSpawner.monPathArr[monId]

@@ -31,6 +31,8 @@ local _limit = 10
 
 _gamePause = false
 
+log = print
+
 function love.load()
 
 	_RESMGR.Ctor()

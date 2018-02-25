@@ -7,7 +7,7 @@
 		* wrap the logic of tmp state in this class
 ]]
 
-local _State_AtkBase  = require "Src.Heroes.States.State_AtkBase"
+local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_TripleSlash = require("Src.Core.Class")(_State_AtkBase)
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 

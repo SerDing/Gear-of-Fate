@@ -30,7 +30,7 @@ function _Obstacle:Ctor(_path)
 		end
 	end
 	
-    ----[[  load width position  ]]
+    ----[[  load obstacle data  ]]
 	for i=1,#_filePieces do
 
 		_filePieces[i] = string.gsub( _filePieces[i],"\r","") -- delete "\r" of every line
@@ -41,7 +41,7 @@ function _Obstacle:Ctor(_path)
 				[1] = tonumber(_peiece[1]), 
 				[2] = tonumber(_peiece[2]), 
 			}
-			print("[width] has been read,i = ",i)
+			-- print("[width] has been read,i = ",i)
 		end
 
 		if _filePieces[i] == "[floating height]" then

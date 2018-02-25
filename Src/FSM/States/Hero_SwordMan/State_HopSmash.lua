@@ -32,29 +32,15 @@ function _State_HopSmash:Enter(hero_)
 	hero_.pakGrp.body:SetAnimation("hopsmashready")
 	hero_.pakGrp.weapon:SetAnimation("hopsmashready")
 	
-	-- self.jumpPower = 11 * math.sqrt(hero_:GetAtkSpeed())
-	-- self.speed = 11 * 0.125
 	self.basePower = 130
 	self.period = 1
+	self.increment = 1.2
 	self.KEYID = ""
 	self.time = love.timer.getTime()
 
 	self.start = false
 	self.shake = false
-	-- self.time = 0.14
-	-- hero_.pakGrp.body:SetAnimation(self.name)
-	-- hero_.pakGrp.weapon:SetAnimation(self.name)
-	-- self.period = 2
-
-	-- self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/sword.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())	
-	-- self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 	
-	-- self.effect[2] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/smash.lua",hero_.pos.x,hero_.pos.y + 1,1,hero_:GetDir())
-	-- self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-
-	-- self.jumpPower = self.basePower* 0.75 * self.time  * math.sqrt(hero_:GetAtkSpeed())
-	-- self.speed = self.basePower * 0.9 * self.time * 0.175
-
 end
 
 function _State_HopSmash:Update(hero_,FSM_)
@@ -146,7 +132,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 			self.jumpPower = 0
 		end
 
-		hero_.jumpOffset = hero_.jumpOffset - self.jumpPower
+		hero_.jumpOffset = hero_.jumpOffset - self.jumpPower 
 
 		if self.jumpPower <= 0 then
 			self.jumpDir = "down"
@@ -157,7 +143,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 		self.jumpPower = self.jumpPower + _dt * self.basePower * 1 * hero_:GetAtkSpeed()
 		
 		if hero_.jumpOffset < 0 then
-			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower
+			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower * hero_:GetAtkSpeed()
 		end
 
 	end 

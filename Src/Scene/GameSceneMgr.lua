@@ -29,7 +29,7 @@ local _Index = {  -- Index = {area,map}
 	["elvengard"] = {1,0},
 	["d_elvengard"] = {1,2},
 	["gate"] = {1,1},
-
+	["lorien"] = {-1, 0},
 }
 
 local _res = {}
@@ -41,7 +41,7 @@ _ObjectMgr.Ctor()
 
 local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
 
-local _hero = _Hero_SwordMan.New(1400,460)
+local _hero = _Hero_SwordMan.New(400,460)
 
 _ObjectMgr.AddObject(_hero)
 
@@ -78,8 +78,9 @@ function _SCENEMGR.Ctor()
 
 	-- _SCENEMGR.CreatScene(_Index["elvengard"][1],_Index["elvengard"][2],"town")
 	
-	_SCENEMGR.LoadScene(_Index["elvengard"][1],_Index["elvengard"][2],_SCENEMGR.curType)
+	-- _SCENEMGR.LoadScene(_Index["elvengard"][1],_Index["elvengard"][2],_SCENEMGR.curType)
 
+	_SCENEMGR.LoadScene(_Index["lorien"][1],_Index["lorien"][2],_SCENEMGR.curType)
 	
 end 
 

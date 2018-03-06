@@ -38,12 +38,14 @@ function _State_AtkBase:AtkBase_Init()
 
 	self.EffectMgr = require "Src.Scene.EffectManager"
 	
+	
 end 
 
 function _State_AtkBase:AtkBase_Enter(hero_)
 	self.hero_ = hero_
 	self.heroBody = hero_:GetBody()
 	self.dt = 0 
+	self.atkJudger = hero_:GetAtkJudger()
 end 
 
 function _State_AtkBase:AtkBase_Update(hero_,FSM_)
@@ -86,7 +88,7 @@ function _State_AtkBase:Effect(path,layer,num,hero_)
 	
 	-- print("AtkBase_Effect() --> effect_num:",#self.effect)
 	self.effect[#self.effect]:GetAni():SetBaseRate(self.hero_:GetAtkSpeed())
-	self.effect[#self.effect]:SetLayer(1)
+	self.effect[#self.effect]:SetLayer(layer or 1)
 end
 
 return _State_AtkBase 

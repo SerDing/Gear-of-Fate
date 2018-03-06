@@ -18,7 +18,7 @@ local _AniBlock = require "Src.Scene.Blocks.AniBlock"
 
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 
-local _Collider = require "Src.Scene.Collider"
+local _Collider = require "Src.Core.Collider"
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
@@ -207,6 +207,7 @@ function _GameScene:Awake() -- ReAdd objects into ObjMgr
 
     if self.isDgn and self.clear == false then
         for n=1,#self.layers["[normal]"]["[monster]"] do
+            self.layers["[normal]"]["[monster]"][n]:SetScenePtr(self)
             _ObjectMgr.AddObject(self.layers["[normal]"]["[monster]"][n])
         end
     end

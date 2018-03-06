@@ -10,18 +10,21 @@
 local _State_Move = require("Src.Core.Class")()
 
 function _State_Move:Ctor()
-    --body
+	self.name = "move"
+	self.stopRange = 20
 end 
 
-function _State_Move:Enter(entity, FSM_, x, y)
-    self.name = "move"
-	entity.pakArr.body:SetAnimation("[move motion]")
+function _State_Move:Enter(entity, FSM_)
+    
+	entity:SetAnimation("[move motion]")
 	self.speed = entity:GetSpeed()
 	self.pos = entity:GetPos()
-	self.aim = {
-		x = x or 0,
-		y = y or 0,
-	}
+
+	-- self.speed = {
+	-- 	x = 10,
+	-- 	y = 7.5,
+	-- }
+
 end
 
 function _State_Move:Update(entity,FSM_)
@@ -31,16 +34,25 @@ function _State_Move:Update(entity,FSM_)
 	local dir_x = (self.pos.x < self.aim.x) and 1 or -1
 	local dir_y = (self.pos.y < self.aim.y) and 1 or -1	
 
-	entity:SetDir(dir_x)
-
 	if self.aim.x ~= 0 and self.aim.y ~= 0 then
-		if self.pos.x ~= self.aim.x then
-			entity:X_Move(self.speed.x * dir_x)
+		if math.abs(self.pos.x - self.aim.x) > self.stopRange then
+			local _xMoveResult = entity:X_Move(self.speed.x * dir_x)
+			if _xMoveResult == false then
+				FSM_:SetState("waiting", entity)
+			end
 		end
 		
-		if self.pos.y ~= self.aim.y then
-			entity:Y_Move(self.speed.y * dir_y)
+		if math.abs(self.pos.y - self.aim.y) > self.stopRange then
+			local _yMoveResult = entity:Y_Move(self.speed.y * dir_y)	
+			if _yMoveResult == false then
+				FSM_:SetState("waiting", entity)
+			end
 		end
+
+		if math.abs(self.pos.x - self.aim.x) <= self.stopRange and math.abs(self.pos.y - self.aim.y) <= self.stopRange then
+			FSM_:SetState("waiting", entity)
+		end
+
 	end
 	
 end 

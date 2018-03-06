@@ -11,7 +11,7 @@ local _State_HopSmash = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _EffectMgr = require "Src.Scene.EffectManager" 
-local _CAMERA = require "Src.GameCamera" 
+local _CAMERA = require "Src.Game.GameCamera" 
 
 function _State_HopSmash:Ctor()
     self.jumpPower = 0
@@ -23,16 +23,19 @@ function _State_HopSmash:Ctor()
 	self.time = 0
 	self.period = 0
 
+	self.attackNum = 3
+	
+
 	self.start = false
 	self.shake = false
 end 
 
 function _State_HopSmash:Enter(hero_)
     self.name = "hopsmash"
-	hero_.pakGrp.body:SetAnimation("hopsmashready")
-	hero_.pakGrp.weapon:SetAnimation("hopsmashready")
-	
-	self.basePower = 130
+	hero_:SetAnimation("hopsmashready",1,1)
+	self.oriAtkSpeed = hero_:GetAtkSpeed()
+	hero_:SetAtkSpeed(1.3)
+	self.basePower = 150
 	self.period = 1
 	self.increment = 1.2
 	self.KEYID = ""
@@ -41,6 +44,11 @@ function _State_HopSmash:Enter(hero_)
 	self.start = false
 	self.shake = false
 	
+	self.attackTimer = 0
+	self.attackTimes = 0
+
+	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger:ClearDamageArr()
 end
 
 function _State_HopSmash:Update(hero_,FSM_)
@@ -50,7 +58,6 @@ function _State_HopSmash:Update(hero_,FSM_)
 -----[[  HopSmash Ready period  ]]
 	if self.period == 1 then
 		
-			
 		self.KEYID = hero_:GetSkillKeyID("HopSmash")
 		
 		if _KEYBOARD.Release(hero_.KEY[self.KEYID]) or love.timer.getTime() - self.time >= self.timer then 
@@ -64,27 +71,16 @@ function _State_HopSmash:Update(hero_,FSM_)
 				self.speed = self.basePower * 0.9 * self.time * 0.2
 			end 
 			
-			-- print(self.time)
-			
-			
-
-			-- print("HopSmash moveSpeed", self.speed)
-
-			if self.jumpPower < 13 then
-				self.jumpPower = 13
-				
+			if self.jumpPower < 16 then
+				self.jumpPower = 16
 			end
 
 			if self.speed < 2.15 then
 				self.speed = 2.15
 			end
 
-			-- print("HopSmash jumpPower:", self.jumpPower)
-
 			self.shake = true
 			self.start = true
-
-			print("HopSmash has began")
 
 		end
 
@@ -93,11 +89,13 @@ function _State_HopSmash:Update(hero_,FSM_)
 			hero_.pakGrp.weapon:SetAnimation(self.name)
 			self.period = 2
 
-			self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/sword.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())	
+			self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/sword.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)	
 			self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+			self.effect[1]:SetLayer(1)
 			
-			self.effect[2] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/smash.lua",hero_.pos.x,hero_.pos.y + 1,1,hero_:GetDir())
+			self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/smash.lua",hero_.pos.x,hero_.pos.y + 1,1,hero_:GetDir(), hero_)
 			self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+			self.effect[2]:SetLayer(1)
 		end
 		
 		
@@ -126,7 +124,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 	
 	if self.jumpDir == "up" then
 		
-		self.jumpPower = self.jumpPower - _dt * self.basePower * 0.45  * hero_:GetAtkSpeed()
+		self.jumpPower = self.jumpPower - _dt * self.basePower * 0.5  * hero_:GetAtkSpeed()
 		
 		if self.jumpPower < 0 then
 			self.jumpPower = 0
@@ -140,13 +138,41 @@ function _State_HopSmash:Update(hero_,FSM_)
 		
 	elseif self.jumpDir == "down" then
 		
-		self.jumpPower = self.jumpPower + _dt * self.basePower * 1 * hero_:GetAtkSpeed()
+		self.jumpPower = self.jumpPower + _dt * self.basePower * hero_:GetAtkSpeed()
 		
 		if hero_.jumpOffset < 0 then
-			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower * hero_:GetAtkSpeed()
+			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower
 		end
 
 	end 
+
+------[[  attack judgement  ]]
+	-- 4 attack frames, total delay 480 
+	
+	if _body:GetCount() >= 3 and _body:GetCount() <= 6 then
+		
+		if self.attackTimes <= self.attackNum + 1 then
+			
+			self.attackTimer = self.attackTimer + _dt
+			
+			if self.attackTimer >= 480 / (1000 * hero_:GetAtkSpeed()) / self.attackNum then
+				-- log("self.attackTimer", self.attackTimer)
+				self.atkJudger:ClearDamageArr()
+				-- self.atkJudger:Judge(hero_, "MONSTER")
+				self.attackTimer = 0
+				self.attackTimes = self.attackTimes + 1
+
+			end
+		end
+
+		if hero_:GetAttackBox() then
+			-- log(_body:GetCount())
+			self.atkJudger:Judge(hero_, "MONSTER")
+		end
+
+	end
+
+	
 
 ------[[	Effect logic	]]
 
@@ -166,7 +192,8 @@ function _State_HopSmash:Update(hero_,FSM_)
 			-- self.effect[5]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 			-- self.effect[6]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 			if self.shake then
-				_CAMERA.Shake(self.time * 1.25 , -3, 3 * self.time, -20 * self.time, 20 * self.time) -- shake effect
+				-- log(self.time * 1.25)
+				_CAMERA.Shake(0.2 , -3, 3 * self.time, -20 * self.time, 20 * self.time) -- shake effect
 			end
 			
 		end
@@ -178,7 +205,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 		if self.jumpDir == "up" then
 			hero_:X_Move( self.speed * hero_:GetAtkSpeed() * hero_.spd.x * hero_:GetDir())
 		elseif self.jumpDir == "down" then
-			hero_:X_Move( self.speed * hero_:GetAtkSpeed() * hero_.spd.x * hero_:GetDir() * 0.125)
+			hero_:X_Move( self.speed * hero_:GetAtkSpeed() * hero_.spd.x * hero_:GetDir() * 0.25)
 		end
 	end 
 
@@ -204,6 +231,8 @@ function _State_HopSmash:Exit(hero_)
 	self.time = 0
 	self.period = 0
 	hero_.jumpOffset = 0
+
+	hero_:SetAtkSpeed(self.oriAtkSpeed)
 end
 
 return _State_HopSmash 

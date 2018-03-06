@@ -55,7 +55,7 @@ local _cover = {
 _cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png"))
 _cover.sprite:SetColor(0,0,0,255)
 
-_CAMERA = require "Src.GameCamera"
+_CAMERA = require "Src.Game.GameCamera"
 _CAMERA.Ctor(_SCENEMGR)
 
 function _SCENEMGR.Ctor()

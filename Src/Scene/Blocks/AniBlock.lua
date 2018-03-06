@@ -113,6 +113,8 @@ function _AniBlock:Draw(x, y)
 
 	if self.display == 1 then
 		self.ani:Draw()
+	else
+		-- print("ani block hidden")
 	end 
 	
 	if self.layer == "[normal]"  then

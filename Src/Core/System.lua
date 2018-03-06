@@ -29,3 +29,8 @@ string.split = function (str, delimiter)
 	end
 	return {}
 end
+
+function GetDistance(p1, p2) -- Get distance between two points
+	return math.sqrt(math.pow(math.abs(p1.x - p2.x),2) + math.pow(math.abs(p1.y - p2.y),2))
+end
+

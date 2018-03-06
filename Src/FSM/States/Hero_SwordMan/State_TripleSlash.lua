@@ -29,8 +29,7 @@ end
 
 function _State_TripleSlash:Enter(hero_)
     
-	hero_.pakGrp.body:SetAnimation(self.childName[1])
-	hero_.pakGrp.weapon:SetAnimation(self.childName[1])
+	hero_:SetAnimation(self.childName[1])
 	self.attackNum = 1
 
 	self.nextDir = hero_:GetDir()
@@ -41,7 +40,9 @@ function _State_TripleSlash:Enter(hero_)
 	self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash1.lua",0,1)
 	self:ReSetSpeed()
 
-
+	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger:ClearDamageArr()
+	self.attackName = self.childName[self.attackNum]
 end
 
 function _State_TripleSlash:Update(hero_,FSM_)
@@ -52,15 +53,22 @@ function _State_TripleSlash:Update(hero_,FSM_)
 
 	self:ChangeDir()
 
+	-- attack judgement
+	if hero_:GetAttackBox() then
+		self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
+	end
+
 	if self.attackNum == 1 then
 		if self.heroBody:GetCount() >= 3 then
 			if _KEYBOARD.Press(hero_.KEY[self.KEYID["TripleSlash"]]) then
 				self:ChangeDir()
 				self.hero_:SetDir(self.nextDir)
 				
-				hero_.pakGrp.body:SetAnimation(self.childName[2])
-				hero_.pakGrp.weapon:SetAnimation(self.childName[2])
+				hero_:SetAnimation(self.childName[2])
 				self.attackNum = 2
+
+				self.atkJudger:ClearDamageArr()
+				self.attackName = self.childName[self.attackNum]
 
 				for n=1,#self.effect do
 					self.effect[n].over = true
@@ -86,9 +94,12 @@ function _State_TripleSlash:Update(hero_,FSM_)
 				self:ChangeDir()
 				self.hero_:SetDir(self.nextDir)
 
-				hero_.pakGrp.body:SetAnimation(self.childName[3])
-				hero_.pakGrp.weapon:SetAnimation(self.childName[3])
+				hero_:SetAnimation(self.childName[3])
+				
 				self.attackNum = 3
+
+				self.atkJudger:ClearDamageArr()
+				self.attackName = self.childName[self.attackNum]
 
 				for n=1,#self.effect do
 					self.effect[n].over = true
@@ -122,7 +133,9 @@ function _State_TripleSlash:Update(hero_,FSM_)
         if self.effect[n] then
             self.effect[n].pos.x = hero_.pos.x
         end 
-    end 
+	end 
+	
+	
 
 end 
 

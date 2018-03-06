@@ -20,7 +20,8 @@ function _State_UpperSlash:Enter(hero_)
     self.name = "upperslash"
 	hero_:GetBody():SetAnimation("hitback")
 	hero_:GetWeapon():SetAnimation("hitback")
-	
+	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger:ClearDamageArr()
 end
 
 function _State_UpperSlash:Update(hero_,FSM_)
@@ -37,7 +38,7 @@ function _State_UpperSlash:Update(hero_,FSM_)
 	end 
 
 	if _body:GetCount() == 2 and not self.effect[1] then
-		self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "upperslash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())	
+		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "upperslash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)	
 		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		
 	end 
@@ -45,6 +46,10 @@ function _State_UpperSlash:Update(hero_,FSM_)
 	if self.effect[1] then
 		self.effect[1].pos.x = self.effect[1].pos.x + hero_.spd.x * 20 * _dt * hero_.dir
 	end 
+
+	if hero_:GetAttackBox() then
+		self.atkJudger:Judge(hero_, "MONSTER", self.name)
+	end
 
 end 
 

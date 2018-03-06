@@ -105,8 +105,8 @@ function _GameCamera.Set()
 		if _spaceTime >= _spaceTimer then
 			_spaceTime = 0
 			love.graphics.translate(
-				math.random(_shakeData.x_range[1],_shakeData.x_range[2]), 
-				math.random(_shakeData.y_range[1],_shakeData.y_range[2])
+				math.floor(math.random(_shakeData.x_range[1],_shakeData.x_range[2])), 
+				math.floor(math.random(_shakeData.y_range[1],_shakeData.y_range[2]))
 			)
 		end
 	end 

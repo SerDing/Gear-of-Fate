@@ -12,7 +12,7 @@ local _Object = require("Src.Core.Class")()
 function _Object:Ctor()
 	self.type = "OBJECT"
 	self.layerId = 1000
-
+	self.Y = 0
 end 
 
 function _Object:SetType(type)
@@ -27,8 +27,12 @@ function _Object:GetType()
     return self.type 
 end
 
+function _Object:GetId()
+    return self.layerId
+end
+
 function _Object:GetY()
-    return 0 
+    return self.Y 
 end
 
 return _Object 

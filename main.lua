@@ -12,7 +12,7 @@ require "Src.Core.FileSystem"
 require "Src.Core.System"
 local _KEYBOARD = require "Src.Core.KeyBoard"
 
-local _GAMEMGR = require "Src/GameManager"
+local _GAMEMGR = require "Src.Game.GameManager"
 local _RESMGR = require "Src/ResManager"
 
 
@@ -32,6 +32,7 @@ local _limit = 10
 _gamePause = false
 
 log = print
+math.randomseed(os.time())
 
 function love.load()
 
@@ -41,6 +42,8 @@ function love.load()
 	local bgm = _RESMGR.LoadSound("/Music/characterSelectStage.ogg")
 	-- bgm:play()
 	bgm:setLooping(true)
+
+	shape = love.physics.newRectangleShape(100, 100)
 end
 
 function love.update(dt)
@@ -61,16 +64,19 @@ function love.update(dt)
 
 	
 	_GAMEMGR.Update(dt)
-	_KEYBOARD.Update(dt)
 	_RESMGR.Update(dt)
-	
+
+	_KEYBOARD.Update(dt)
+
+	collectgarbage("collect")
 
 end
 
 function love.draw()
 	
 	_GAMEMGR.Draw()
-
+	
+	
 end
 
 function love.keypressed(key) --键盘检测回调函数，当键盘事件触发是调用

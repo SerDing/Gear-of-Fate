@@ -42,6 +42,9 @@ function _State_Jump:Enter(hero_,FSM_,backJump)
 	
 	self.dirLock = false
 	self.jumpAtkTimes = 0
+
+	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger:ClearDamageArr()
 end
 
 function _State_Jump:Update(hero_,FSM_)
@@ -84,7 +87,7 @@ function _State_Jump:Update(hero_,FSM_)
 			end
 		end
 
-		print("jump up:", hero_.jumpOffset)
+		-- print("jump up:", hero_.jumpOffset)
 
 	elseif self.jumpDir == "down" then
 		
@@ -94,7 +97,7 @@ function _State_Jump:Update(hero_,FSM_)
 			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower + _dt
 		end
 		
-		print("jump down:", hero_.jumpOffset)
+		-- print("jump down:", hero_.jumpOffset)
 
 		if hero_.jumpOffset >= 0 then
 			if not self.jumpAttack then
@@ -154,8 +157,10 @@ function _State_Jump:Update(hero_,FSM_)
 				hero_:GetBody():SetAnimation("jumpattack")
 				hero_:GetWeapon():SetAnimation("jumpattack")
 				self.dirLock = true
-
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
+
+				self.atkJudger:ClearDamageArr()
+
 				print(self.jumpAtkTimes)
 			end 
 		end 
@@ -167,6 +172,9 @@ function _State_Jump:Update(hero_,FSM_)
 				_body.playNum = 1
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
 				print(self.jumpAtkTimes)
+
+				self.atkJudger:ClearDamageArr()
+
 			else 
 				self.jumpAttack = false
 				if hero_.jumpOffset >= 0 then  --[[	hero has been on land  ]]
@@ -198,8 +206,10 @@ function _State_Jump:Update(hero_,FSM_)
 		
 	end 
 	
-
-	
+	--[[  attack judgement  ]]
+	if hero_:GetAttackBox() then
+		self.atkJudger:Judge(hero_, "MONSTER")
+	end
 	
 	
 end 

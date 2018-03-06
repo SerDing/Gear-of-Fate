@@ -11,17 +11,17 @@
 local _Rect = require("Src.Core.Class")()
 
 function _Rect:Ctor(x,y,w,h) --initialize
-	self.position = {x = 0.0, y = 0.0}
+	self.pos = {x = 0.0, y = 0.0}
 	self.size = {w = 0, h = 0}
 	self.scale = {x = 1, y = 1}
-	self.centerPos = {x = 0.0, y = 0.0}
+	self.cenPos = {x = 0.0, y = 0.0}
 	self.vertex = {
 		[1] = {x = 0, y = 0},
 		[2] = {x = 0, y = 0},
 	}
 	
-	self.position.x = x or 0.0
-	self.position.y = y or 0.0
+	self.pos.x = x or 0.0
+	self.pos.y = y or 0.0
 	self.size.w = w or 0
 	self.size.h = h or 0
 
@@ -47,14 +47,15 @@ end
 function _Rect:Update()
 	self.vertex = {
 		[1] = {
-			x = self.position.x - self.centerPos.x * self.scale.x * self.dir,
-			y = self.position.y - self.centerPos.y * self.scale.y,
+			x = self.pos.x - self.cenPos.x * self.scale.x * self.dir,
+			y = self.pos.y - self.cenPos.y * self.scale.y,
 		},
 		[2] = {
-			x = self.position.x - self.centerPos.x * self.scale.x * self.dir + self.size.w * self.scale.x * self.dir,
-			y = self.position.y - self.centerPos.y * self.scale.y + self.size.h * self.scale.y,
+			x = self.vertex[1].x + self.size.w * self.scale.x * self.dir,
+			y = self.vertex[1].y + self.size.h * self.scale.y,
 		},
 	}
+	
 end
 
 function _Rect:Draw()
@@ -76,8 +77,8 @@ function _Rect:Draw()
 end
 
 function _Rect:SetPos(x,y)
-	self.position.x = x
-	self.position.y = y
+	self.pos.x = x
+	self.pos.y = y
 	self:Update()
 end
 
@@ -94,8 +95,8 @@ function _Rect:SetScale(x, y)
 end
 
 function _Rect:SetCenter(x,y)
-	self.centerPos.x = x or self.centerPos.x
-	self.centerPos.y = y or self.centerPos.y
+	self.cenPos.x = x or self.cenPos.x
+	self.cenPos.y = y or self.cenPos.y
 	self:Update()
 end
 
@@ -118,7 +119,18 @@ function _Rect:SetDrawType(_type) -- _type: 0 --> fill  1 --> line
 end
 
 function _Rect:GetVertex()
-	return self.vertex
+	local _vertex = self.vertex
+	if _vertex[1].x > _vertex[2].x then
+		local t = _vertex[1].x
+		_vertex[1].x = _vertex[2].x
+		_vertex[2].x = t
+	elseif _vertex[1].y > _vertex[2].y then
+		local t = _vertex[1].y
+		_vertex[1].y = _vertex[2].y
+		_vertex[2].y = t
+	end
+	
+	return _vertex
 end
 
 function _Rect:CheckPoint(x,y)
@@ -135,9 +147,9 @@ end
 
 function _Rect:Destroy(x,y)
 	
-	self.position = nil
+	self.pos = nil
 	self.size = nil
-	self.centerPos = nil
+	self.cenPos = nil
 	self.color = nil
 	self.dir = nil
 	

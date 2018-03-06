@@ -46,7 +46,7 @@ return {--[[ #PVF_File ]]
 		560,348
 	},
 
-	["[virtual movable area]"] = {15,233 - 80,1105,226,},
+	["[virtual movable area]"] = {15,233 - 80,1105,226-20,},
 
 	["[dungeon start area]"]={775,314,119,50},
 
@@ -79,9 +79,9 @@ return {--[[ #PVF_File ]]
 
 	["[monster]"]={
 		1,1,0,372,184,0,1,1,"[fixed]","[normal]",
-		1,1,0,300,221,0,1,1,"[fixed]","[normal]",
-		1,1,0,241,328,0,1,1,"[fixed]","[normal]",
-		1,1,0,496,330,0,1,1,"[fixed]","[normal]",
+		-- 1,1,0,300,221,0,1,1,"[fixed]","[normal]",
+		-- 1,1,0,241,328,0,1,1,"[fixed]","[normal]",
+		-- 1,1,0,496,330,0,1,1,"[fixed]","[normal]",
 	},
 
 	["[monster specific AI]"]={"[normal]","[normal]","[normal]","[normal]",},

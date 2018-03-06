@@ -13,6 +13,7 @@ local Hero_SwordMan = require("Src.Core.Class")(_obj)
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Heroes.Weapon"
 local _FSM = require "Src.FSM.FSM"
+local _AttackJudger = require "Src.Game.AttackJudger"
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 -- const
@@ -79,18 +80,21 @@ local scene_ = {} -- init a null Scene Pointer
 function Hero_SwordMan:Ctor(x,y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y}
+	self.drawPos = {x = math.floor(x), y = math.floor(y)}
 	self.spd = {x = 2.25, y = 2}
 	self.dir = 1
 	self.Y = self.pos.y
 	self.camp = "HERO"
-
 	self.subType = "HERO_SWORDMAN"
 
 	self.jumpOffset = 0
 	
-	self.atkSpeed = 1.8
+	self.atkSpeed = 1.3
 
 	self.atkMode = "normal" -- or frenzy
+
+	self.hitRecovery = 30
+	self.hitTime = 0
 
 	self.KEY = {
 		["UP"] = "up",
@@ -156,6 +160,8 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	
 	self.FSM = _FSM.New(self,"stay",self.subType)
 
+	self.AttackJudger = _AttackJudger.New(self.subType)
+
 	---- [[test ani file]] 
 	
 	-- for n = 1,_pakNum do
@@ -170,6 +176,10 @@ end
 
 function Hero_SwordMan:Update(dt)
 	
+	if love.timer.getTime() - self.hitTime <= self.hitRecovery / 1000 then -- hit stop effect
+		return
+	end
+
 	self.FSM:Update(self)
 
 	for n=1,_pakNum do 
@@ -193,7 +203,8 @@ function Hero_SwordMan:Update(dt)
 			table.remove(self.extraEffects,n)
 		end 
 	end 
-
+	
+	self.Y = self.pos.y
 end
 
 function Hero_SwordMan:Draw()
@@ -206,16 +217,16 @@ function Hero_SwordMan:Draw()
 	
 	for n=1,_pakNum do
 		self.pakGrp[_name[n]]:Draw(
-			self.pos.x ,
-			self.pos.y + self.jumpOffset
+			self.drawPos.x ,
+			self.drawPos.y + self.jumpOffset
 		)
 	end
 
 	for k,v in pairs(self.buff) do
 		if v.switch then
 			v.ani:Draw(
-				self.pos.x ,
-				self.pos.y + self.jumpOffset
+				self.drawPos.x ,
+				self.drawPos.y + self.jumpOffset
 			)
 		end 
 	end 
@@ -226,9 +237,15 @@ function Hero_SwordMan:Draw()
 		end 
 	end 
 	
-	love.graphics.circle("fill", self.pos.x, self.pos.y, 2.5, 10)
+	-- love.graphics.circle("fill", self.drawPos.x, self.drawPos.y, 2.5, 10)
 
-	self.Y = self.pos.y
+	if self.jumpOffset < 0 then
+		-- love.graphics.circle("fill", self.drawPos.x, self.drawPos.y + self.jumpOffset, 2.5, 10)
+		-- love.graphics.line(self.pos.x - 200, self.pos.y - 151, self.pos.x + 200, self.pos.y - 151)
+	end
+
+	self.AttackJudger:Draw()
+	
 end
 
 function Hero_SwordMan:UpdateAni()
@@ -239,24 +256,21 @@ function Hero_SwordMan:UpdateAni()
 end
 
 function Hero_SwordMan:X_Move(offset)
-	local _dt = love.timer.getDelta()
-	local _dir = (offset > 0) and -1 or 1
+	
 	local _result
-
 	local _next = self.pos.x + offset
+
 	if scene_:IsInMoveableArea(_next, self.pos.y) then
 		
 		_result = scene_:CollideWithObstacles(_next, self.pos.y)
 		
 		if _result[1] then
-		
 			if offset > 0 then
 				_next = _result[2].vertex[1].x - 1
 			else
 				_next = _result[2].vertex[2].x + 1
 			end
 		end
-		
 	else
 		if offset > 0 then
 			_next = scene_.map["[virtual movable area]"][1] + scene_.map["[virtual movable area]"][3] - 1
@@ -266,19 +280,16 @@ function Hero_SwordMan:X_Move(offset)
 	end
 
 	self.pos.x = _next
-
+	self.drawPos.x = math.floor(self.pos.x)
 	scene_:CheckEvent(self.pos.x, self.pos.y)
-	
 	
 end
 
 function Hero_SwordMan:Y_Move(offset)
-	local _dt = love.timer.getDelta()
-	local _dir = (offset > 0) and -1 or 1
 
 	local _result
-
 	local _next = self.pos.y + offset
+
 	if scene_:IsInMoveableArea(self.pos.x, _next) then
 		
 		_result = scene_:CollideWithObstacles(self.pos.x, _next)
@@ -301,7 +312,7 @@ function Hero_SwordMan:Y_Move(offset)
 	end
 
 	self.pos.y = _next
-
+	self.drawPos.y = math.floor(self.pos.y)
 	scene_:CheckEvent(self.pos.x, self.pos.y)
 
 end
@@ -309,12 +320,26 @@ end
 function Hero_SwordMan:SetPosition(x,y)
 	self.pos.x = x or self.pos.x
 	self.pos.y = y or self.pos.y
+	self.drawPos.x = math.floor(self.pos.x)
+	self.drawPos.y = math.floor(self.pos.y)
 end
 
 function Hero_SwordMan:SetDir(dir_)
 	self.dir = dir_ 
 	for n=1,_pakNum do
 		self.pakGrp[_name[n]]:SetDir(dir_)
+	end
+end
+
+function Hero_SwordMan:SetAnimation(ani)
+	for n=1,_pakNum do
+		self.pakGrp[_name[n]]:SetAnimation(ani)
+	end
+end
+
+function Hero_SwordMan:NextFrame()
+	for n=1,_pakNum do
+		self.pakGrp[_name[n]]:NextFrame()
 	end
 end
 
@@ -325,11 +350,25 @@ end
 
 function Hero_SwordMan:SetAttackMode(mode)
 	self.atkMode = mode
+end
 
+function Hero_SwordMan:SetAtkSpeed(spd)
+	self.atkSpeed = spd
+	for n = 1,_pakNum do
+		self.pakGrp[_name[n]]:SetBaseRate(spd)
+	end	
+end
+
+function Hero_SwordMan:SetHitTime(time)
+	self.hitTime = time
 end
 
 function Hero_SwordMan:GetDir()
 	return self.dir
+end
+
+function Hero_SwordMan:GetPos()
+	return self.pos
 end
 
 function Hero_SwordMan:GetAtkSpeed()
@@ -350,6 +389,14 @@ end
 
 function Hero_SwordMan:GetAttackMode()
 	return self.atkMode
+end
+
+function Hero_SwordMan:GetAttackBox()
+	return self.pakGrp["weapon"]:GetAttackBox() or self.pakGrp["body"]:GetAttackBox()
+end
+
+function Hero_SwordMan:GetAtkJudger()
+	return self.AttackJudger
 end
 
 function Hero_SwordMan:InitSkillKeyList()

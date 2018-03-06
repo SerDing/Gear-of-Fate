@@ -12,16 +12,23 @@ local _ObjectMgr = {}
 local _sort
 _sort = function (obj_a,obj_b)
 	assert(obj_b:GetY(),obj_b.type)
-	return (
-		(obj_a:GetY() == obj_b:GetY()) and
-		(obj_a.layerId < obj_b.layerId) or
-		(obj_a:GetY() < obj_b:GetY())
-	)
+	-- return (
+	-- 	(math.floor(obj_a:GetY()) == math.floor(obj_b:GetY())) and
+	-- 	(obj_a.layerId < obj_b.layerId) or
+	-- 	(obj_a:GetY() < obj_b:GetY())
+	-- )
+
+	if math.floor(obj_a:GetY()) == math.floor(obj_b:GetY()) then
+		return obj_a.layerId < obj_b.layerId
+	else
+		return math.floor(obj_a:GetY()) < math.floor(obj_b:GetY())
+	end
+
 end
 
 function _ObjectMgr.Ctor()
 	_ObjectMgr.objects = {}
-	
+	_iterator = 0
 end 
 
 function _ObjectMgr.Update(dt)
@@ -62,7 +69,8 @@ end
 function _ObjectMgr.AddObject(obj)
 	assert(obj,"Warning: _ObjectMgr:AddObject() got a nil object!")
 	_ObjectMgr.objects[#_ObjectMgr.objects + 1] = obj
-	_ObjectMgr.objects[#_ObjectMgr.objects]:SetLayerId(1000 + #_ObjectMgr.objects)
+	_iterator = _iterator + 1
+	_ObjectMgr.objects[#_ObjectMgr.objects]:SetLayerId(_iterator)
 end
 
 function _ObjectMgr.RemoveObject(type)

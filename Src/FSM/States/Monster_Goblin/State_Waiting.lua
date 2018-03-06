@@ -15,7 +15,7 @@ end
 
 function _State_Waiting:Enter(entity)
     self.name = "waiting"
-	entity.pakArr.body:SetAnimation("[waiting motion]")
+	entity:SetAnimation("[waiting motion]")
 	
 end
 

@@ -36,6 +36,9 @@ function _State_FrenzyAttack:Enter(hero_)
 	hero_:GetWeapon():SetAnimation(self.childName[1])
 	self.attackNum = 1
     
+    self.atkJudger = hero_:GetAtkJudger()
+    self.atkJudger:ClearDamageArr()
+
 ----[[  Call base class function  ]]
     self:AtkBase_Enter(hero_)
     self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword1-1.lua",0,1,hero_)
@@ -64,6 +67,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         
         if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 4 then
             self.attackNum = 2
+            self.atkJudger:ClearDamageArr()
             hero_:GetBody():SetAnimation(self.childName[self.attackNum])
             hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
            
@@ -98,6 +102,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
         if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
+            self.atkJudger:ClearDamageArr()
             hero_:GetBody():SetAnimation(self.childName[self.attackNum])
             hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
             
@@ -132,6 +137,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
         if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 4
+            self.atkJudger:ClearDamageArr()
             hero_:GetBody():SetAnimation(self.childName[self.attackNum])
             hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
             
@@ -163,6 +169,10 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         end 
     end 
    
+    if hero_:GetAttackBox() then
+        self.atkJudger:Judge(hero_, "MONSTER")
+    end
+
     for n=1,#self.effect do
         if self.effect[n] then
             self.effect[n].pos.x = hero_.pos.x

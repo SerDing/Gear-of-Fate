@@ -33,7 +33,7 @@ function _FSM:Ctor(entity_,state_name,entityType)
     self.entityType = entityType
     self:InitStates(entityType)
 
-    self.oriState = "stay"
+    self.oriState = state_name
     self.preState = nil
     self.curState = self.state[state_name]
     self.curState:Enter(entity_,self)
@@ -41,23 +41,34 @@ function _FSM:Ctor(entity_,state_name,entityType)
 end
 
 function _FSM:Update(entity_)
+   
     self.curState:Update(entity_,self)
 
     if(entity_:GetBody():GetCurrentPlayNum() == 0)then
-        self:SetState(self.oriState,entity_)
-	end 
+        if entity_:GetBody():GetAniId() == "[down motion]" then
+            self:SetState("sit",entity_)
+        else
+            self:SetState(self.oriState,entity_)
+        end
+    end 
 
 end
 
-function _FSM:SetState(state_name,entity_,...)
+function _FSM:SetState(state_name,entity_, ...)
 
-    if self.curState.name == state_name then
-        return 
+    if self.curState.name ~= "damage" then
+        if self.curState.name == state_name then
+            return 
+        end
     end
- 
+
     self.preState = self.curState
     self.curState:Exit(entity_)
     self.curState = self.state[state_name]
+
+    if not self.curState then
+        log("_FSM:SetState() curState " .. state_name .. " nil" .. " entity.subType: " .. entity.subType)
+    end
     self.curState:Enter(entity_,self,...)
     
 end
@@ -81,8 +92,11 @@ function _FSM:InitStates(entityType)
             {"tripleslash","State_TripleSlash"},
         },
         ["MONSTER_GOBLIN"] = {
+            {"attack", "State_Attack"},
             {"move", "State_Move"},
             {"waiting", "State_Waiting"},
+            {"damage", "State_Damage"},
+            {"sit", "State_Sit"},
         },
         
     }
@@ -92,6 +106,14 @@ function _FSM:InitStates(entityType)
         self:RegisterState(v[1], v[2])
     end
 
+end
+
+function _FSM:SetOriState(state_name)
+    self.oriState = state_name
+end
+
+function _FSM:GetCurState()
+    return self.curState
 end
 
 

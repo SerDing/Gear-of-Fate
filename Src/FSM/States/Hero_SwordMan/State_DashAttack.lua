@@ -21,6 +21,9 @@ function _State_DashAttack:Enter(hero_)
 	hero_:GetBody():SetAnimation(self.name)
 	hero_:GetWeapon():SetAnimation(self.name)
 	self.attackCount = 1
+
+	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger:ClearDamageArr()
 end
 
 function _State_DashAttack:Update(hero_,FSM_)
@@ -51,7 +54,7 @@ function _State_DashAttack:Update(hero_,FSM_)
 			hero_:GetWeapon():SetFrame(0)
 			self.attackCount = self.attackCount + 1
 			
-			
+			self.atkJudger:ClearDamageArr()
 			
 		end 
 	end 
@@ -73,6 +76,9 @@ function _State_DashAttack:Update(hero_,FSM_)
 		end 
 	end 
 	
+	if hero_:GetAttackBox() then
+		self.atkJudger:Judge(hero_, "MONSTER")
+	end
 
 
 end 

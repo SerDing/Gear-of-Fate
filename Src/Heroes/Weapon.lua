@@ -110,9 +110,15 @@ end
 function _Weapon:SetSingle(bool)
 	self.single = bool or self.single
 end
+
 function _Weapon:SetDir(dir_)
 	self.dir = dir_
 	self.pak_b:SetDir(dir_)
 	self.pak_c:SetDir(dir_)
 end
+
+function _Weapon:GetAttackBox()
+	return self.pak_c:GetAttackBox()
+end
+
 return _Weapon

@@ -34,6 +34,8 @@ function _AniPack:Ctor(_type) --initialize
 	self.frameData = {} -- 从ani文件中读取出的帧数据
 	self.frameHead = "[FRAME000]" -- 每一帧的开头帧号
 
+	self.aniId = "" -- example: attack1 upperslash sit ...
+
 	if (not _RESMGR.imageNull) then
 		local _tmpImageData = love.image.newImageData(1, 1)
 	    _RESMGR.imageNull = love.graphics.newImage(_tmpImageData)
@@ -91,6 +93,7 @@ function _AniPack:NextFrame()
 		self.count = 0
 	else
 		self.count = self.count + 1
+		self.time = 0
 	end
 end
 
@@ -269,28 +272,27 @@ function _AniPack:Draw(x,y,r,sx,sy)
 end
 
 function _AniPack:DrawBox()
-	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
-	local dmgBox = _Rect.New(0,0,1,1)
-	dmgBox:SetColor(0,255,0,100)
-	if (boxTab) then
-	    for n=1,#boxTab,6 do
-			dmgBox:SetPos(self.pos.x + boxTab[n] * self.scale.x * self.dir,self.pos.y + - boxTab[n+2])
-			dmgBox:SetSize(boxTab[n+3] * self.scale.x,-boxTab[n+5] * self.scale.y)
-			dmgBox:SetDir(self.dir)
-			dmgBox:Draw()
-	    end
-	end
-
-
 	local boxTab = self.frameData[self.frameHead]["[ATTACK BOX]"]
 	local atkBox = _Rect.New(0,0,1,1)
 	atkBox:SetColor(255,0,180,150)
 	if (boxTab) then
 	    for n=1,#boxTab,6 do
-			atkBox:SetPos(self.pos.x + boxTab[n] * self.scale.x * self.dir,self.pos.y + - boxTab[n+2])
-			atkBox:SetSize(boxTab[n+3] * self.scale.x,-boxTab[n+5] * self.scale.y)
+			atkBox:SetPos(self.pos.x + boxTab[n] * self.dir,self.pos.y + - boxTab[n+2])
+			atkBox:SetSize(boxTab[n+3] * self.scale.x, - boxTab[n+5] * self.scale.y)
 			atkBox:SetDir(self.dir)
 			atkBox:Draw()
+	    end
+	end
+
+	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
+	local dmgBox = _Rect.New(0,0,1,1)
+	dmgBox:SetColor(0,255,0,100)
+	if (boxTab) then
+	    for n=1,#boxTab,6 do
+			dmgBox:SetPos(self.pos.x + boxTab[n] * self.dir,self.pos.y + - boxTab[n+2])
+			dmgBox:SetSize(boxTab[n+3] * self.scale.x,-boxTab[n+5] * self.scale.y)
+			dmgBox:SetDir(self.dir)
+			dmgBox:Draw()
 	    end
 	end
 end
@@ -299,11 +301,11 @@ function _AniPack:GetAttackBox()
 	return self.frameData[self.frameHead]["[ATTACK BOX]"] or nil
 end
 
-function _AniPack:GetAttackBox()
+function _AniPack:GetDamageBox()
 	return self.frameData[self.frameHead]["[DAMAGE BOX]"] or nil
 end
 
-function _AniPack:SetAnimation(id,num)
+function _AniPack:SetAnimation(id,num,rate)
 
 	local _idType = type(id)
 
@@ -318,7 +320,8 @@ function _AniPack:SetAnimation(id,num)
 		else 
 			self.frameData = self.frameDataGrp[id].data
 			self.playNum = self.frameDataGrp[id].num or 1
-		end 
+			self.aniId = id
+		end
 	elseif _idType == "table" then
 		self.frameData = id
 		self.playNum = num or -1
@@ -347,14 +350,14 @@ function _AniPack:SetAnimation(id,num)
 			self.frameData[self.frameHead]["[RGBA]"][3],
 			self.frameData[self.frameHead]["[RGBA]"][4])
 	end
+
 end
 
 function _AniPack:AddAnimation(aniPath,__num,id)
 	-- aniPath	ani文件的路径
 	-- __num	播放次数
 	-- id		ani的对应动作(状态)名称
-
-
+	
 	if(type(aniPath) == "string")then
 		local content = require(aniPath) -- content is a table
 		self.frameDataGrp[id] = {data = content, num = __num}
@@ -454,8 +457,16 @@ function _AniPack:GetCount()
 	return self.count or 0 
 end
 
+function _AniPack:GetAniId()
+	return self.aniId or "" 
+end
+
 function _AniPack:GetRect()
 	return self.playingSprite:GetRect()
+end
+
+function _AniPack:GetScale()
+	return self.scale
 end
 
 function _AniPack:GetWidth()

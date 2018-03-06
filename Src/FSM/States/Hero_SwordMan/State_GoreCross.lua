@@ -23,9 +23,13 @@ function _State_GoreCross:Enter(hero_)
     self.name = "gorecross"
 	hero_:GetBody():SetAnimation(self.name)
 	hero_:GetWeapon():SetAnimation(self.name)
+	
 	self.KEYID = ""
-
 	self.plusAtk = false
+
+	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger:ClearDamageArr()
+	self.attackName = "gorecross1"
 end
 
 function _State_GoreCross:Update(hero_,FSM_)
@@ -37,22 +41,30 @@ function _State_GoreCross:Update(hero_,FSM_)
 	-- 	_SoundMgr:PlaySound()
 	-- end 
 	
-	-- if _body:GetCount() >= 4 then
-	-- 	_AttackJudger:Judging()
-	-- end 
-	
-	if _body:GetCount() == 10 then -- jump the next frames
+	-- attack judgement
+	if _body:GetCount() == 6 then
+		self.atkJudger:ClearDamageArr()
+		self.attackName = "gorecross2"
+	end
+
+	if hero_:GetAttackBox() then
+		self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
+	end
+
+	-- jump the next frames
+	if _body:GetCount() == 10 then 
 		if self.effect[2] then
 			self.effect[2]:GetAni():SetCurrentPlayNum(0)
 		end 
 	end 
 	
+	-- effect generate
 	if _body:GetCount() == 1 and not self.effect[1] and not self.effect[2] then
 		
-		self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())
+		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)
 		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		
-		self.effect[2] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash2.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir()) 
+		self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash2.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_) 
 		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		
 	end 
@@ -70,14 +82,16 @@ function _State_GoreCross:Update(hero_,FSM_)
 		end 
 	end 
 	
+	
+	-- effect movement
 	for n=1,2 do
 		if self.effect[n + 2] then
 			self.effect[n + 2]:SetMoveSpeed(4)
 		end 
 	end 
 
-
-	if _body:GetCount() <= 10 then -- whether plusAtk check
+	-- whether plusAtk check
+	if _body:GetCount() >= 9 then 
 		
 		self.KEYID = hero_:GetSkillKeyID("GoreCross")
 		if _KEYBOARD.Press(hero_.KEY[self.KEYID]) then
@@ -86,6 +100,7 @@ function _State_GoreCross:Update(hero_,FSM_)
 	end
 
 	if _body:GetCount() == 10 then 
+	
 		if not self.plusAtk then -- jump the next frames
 			hero_:GetBody():SetCurrentPlayNum(0) 
 			hero_:GetWeapon():SetCurrentPlayNum(0)
@@ -98,6 +113,7 @@ function _State_GoreCross:Update(hero_,FSM_)
 			end
 		end
 	end
+
 end 
 
 function _State_GoreCross:Exit(hero_)

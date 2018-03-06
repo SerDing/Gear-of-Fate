@@ -23,20 +23,22 @@ function _State_Attack:Ctor()
     
     self.attackNum = 0
     self.KEYID = {}
-end 
+    self.atkJudger = {}
+end
 
 function _State_Attack:Enter(hero_,FSM_)
     
-	hero_:GetBody():SetAnimation(self.childName[1])
-	hero_:GetWeapon():SetAnimation(self.childName[1])
+	hero_:SetAnimation(self.childName[1])
 	self.attackNum = 1
+
+    self.atkJudger = hero_:GetAtkJudger()
+    self.atkJudger:ClearDamageArr()
+    self.attackName = self.childName[self.attackNum]
 
     if hero_:GetAttackMode() == "frenzy" then
         FSM_:SetState("frenzyattack",hero_)
         return  
-    end 
-    
-
+    end
 
 end
 
@@ -49,14 +51,22 @@ function _State_Attack:Update(hero_,FSM_)
 
     if self.attackNum == 1 then
         
+        
+
         if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 2
-            hero_:GetBody():SetAnimation(self.childName[self.attackNum])
-	        hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
+            self.atkJudger:ClearDamageArr()
+            self.attackName = self.childName[self.attackNum]
+            hero_:SetAnimation(self.childName[self.attackNum])
         end 
 
+
     elseif self.attackNum == 2 then
-       
+        
+        if hero_:GetAttackBox() then
+            self.atkJudger:Judge(hero_, "MONSTER")
+        end
+
         if _body:GetCount() <= 2 then
             hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
         end 
@@ -69,12 +79,16 @@ function _State_Attack:Update(hero_,FSM_)
 
         if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
-            hero_:GetBody():SetAnimation(self.childName[self.attackNum])
-	        hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
+            self.atkJudger:ClearDamageArr()
+            self.attackName = self.childName[self.attackNum]
+            hero_:SetAnimation(self.childName[self.attackNum])
         end 
 
     elseif self.attackNum == 3 then
-       
+        if hero_:GetAttackBox() then
+            self.atkJudger:Judge(hero_, "MONSTER")
+        end
+        
         if _body:GetCount() < 4 then
             
             hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
@@ -87,6 +101,12 @@ function _State_Attack:Update(hero_,FSM_)
         end 
 
     end 
+
+    -- attack judgement
+    if hero_:GetAttackBox() then
+        self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
+    end
+
     
     if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
 		FSM_:SetState("upperslash",hero_)

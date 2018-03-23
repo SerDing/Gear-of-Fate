@@ -18,8 +18,7 @@ function _State_Attack:Ctor()
         "attack1",
         "attack2",
         "attack3",
-
-    } 
+    }
     
     self.attackNum = 0
     self.KEYID = {}
@@ -48,58 +47,57 @@ function _State_Attack:Update(hero_,FSM_)
     
     local _leftHold = _KEYBOARD.Hold(hero_.KEY["LEFT"])
     local _rightHold = _KEYBOARD.Hold(hero_.KEY["RIGHT"])
+    local _movable = true
+
+    if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
+    (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
+        _movable = false
+    end
 
     if self.attackNum == 1 then
         
-        
-
         if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 2
-            self.atkJudger:ClearDamageArr()
             self.attackName = self.childName[self.attackNum]
+            self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
-        end 
-
+        end
 
     elseif self.attackNum == 2 then
         
-        if hero_:GetAttackBox() then
-            self.atkJudger:Judge(hero_, "MONSTER")
+        if _movable then
+            if _body:GetCount() <= 2 then
+                hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
+            end 
+    
+            if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
+            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+                
+                hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
+            end 
         end
-
-        if _body:GetCount() <= 2 then
-            hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
-        end 
-
-        if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-        (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
-            
-            hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
-        end 
 
         if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
-            self.atkJudger:ClearDamageArr()
             self.attackName = self.childName[self.attackNum]
+            self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
         end 
 
     elseif self.attackNum == 3 then
-        if hero_:GetAttackBox() then
-            self.atkJudger:Judge(hero_, "MONSTER")
-        end
         
-        if _body:GetCount() < 4 then
+        if _movable then
+            if _body:GetCount() <= 3 then
+                hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
+            end 
             
-            hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
-
             if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 ) then
                 
                 hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
             end 
-        end 
-
+        end
+        
     end 
 
     -- attack judgement

@@ -35,7 +35,6 @@ local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png")
 
 function _GAMEMGR.Ctor() --initialize
 	_SCENEMGR.Ctor()
-	
 end
 
 function _GAMEMGR.Update(dt)
@@ -47,6 +46,15 @@ function _GAMEMGR.Draw(x,y)
 	_SCENEMGR.Draw()
 
 	-- love.graphics.draw(_HUD, 0, 600-91)
+	
+	local r, g, b, a = love.graphics.getColor()
+	-- draw a mini panel for debug data
+	love.graphics.setColor(0, 0, 0, 180)
+	love.graphics.rectangle("fill", 0, 0, 300, 50)
+	love.graphics.setColor(r, g, b, a)
+	-- draw some data to monitor the status of game
+	love.graphics.print("FPS:" .. tostring(love.timer.getFPS()), 10, 10, 0, 1, 1)
+	love.graphics.print("lua memory:" .. tostring(collectgarbage("count")), 10, 20, 0, 1, 1)
 	
 end
 

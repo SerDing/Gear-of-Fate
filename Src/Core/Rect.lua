@@ -1,5 +1,5 @@
 --[[
-	Desc: An class used to check the hitting result
+	Desc: Rectangle (basic 2d shape)
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 11:37:50
@@ -45,17 +45,10 @@ function _Rect:Ctor(x,y,w,h) --initialize
 end
 
 function _Rect:Update()
-	self.vertex = {
-		[1] = {
-			x = self.pos.x - self.cenPos.x * self.scale.x * self.dir,
-			y = self.pos.y - self.cenPos.y * self.scale.y,
-		},
-		[2] = {
-			x = self.vertex[1].x + self.size.w * self.scale.x * self.dir,
-			y = self.vertex[1].y + self.size.h * self.scale.y,
-		},
-	}
-	
+	self.x1 = self.pos.x - self.cenPos.x * self.scale.x * self.dir
+	self.y1 = self.pos.y - self.cenPos.y * self.scale.y
+	self.x2 = self.x1 + self.size.w * self.scale.x * self.dir
+	self.y2 = self.y1 + self.size.h * self.scale.y
 end
 
 function _Rect:Draw()
@@ -66,8 +59,8 @@ function _Rect:Draw()
 	self:Update()
 
 	love.graphics.rectangle( self.type,
-		self.vertex[1].x,
-		self.vertex[1].y,
+		self.x1,
+		self.y1,
 		self.size.w * self.scale.x * self.dir ,
 		self.size.h * self.scale.y 
 	)
@@ -119,29 +112,35 @@ function _Rect:SetDrawType(_type) -- _type: 0 --> fill  1 --> line
 end
 
 function _Rect:GetVertex()
-	local _vertex = self.vertex
-	if _vertex[1].x > _vertex[2].x then
-		local t = _vertex[1].x
-		_vertex[1].x = _vertex[2].x
-		_vertex[2].x = t
-	elseif _vertex[1].y > _vertex[2].y then
-		local t = _vertex[1].y
-		_vertex[1].y = _vertex[2].y
-		_vertex[2].y = t
-	end
-	
+
+	local _vertex = {{x, y}, {x,y}}
+
+	_vertex[1].x = (self.x1 < self.x2) and self.x1 or self.x2
+	_vertex[1].y = (self.y1 < self.y2) and self.y1 or self.y2
+	_vertex[2].x = (self.x1 < self.x2) and self.x2 or self.x1
+	_vertex[2].y = (self.y1 < self.y2) and self.y2 or self.y1
+
 	return _vertex
+end
+
+function _Rect:GetWidth()
+	return self.size.w
+end
+
+function _Rect:GetHeight()
+	return self.size.h
 end
 
 function _Rect:CheckPoint(x,y)
 	
 	self:Update()
 
-	if x >= self.vertex[1].x and x <= self.vertex[2].x  then
-		if y >= self.vertex[1].y and y <= self.vertex[2].y then
+	if x >= self.x1 and x <= self.x2  then
+		if y >= self.y1 and y <= self.y2 then
 			return true
 		end 
 	end 
+	
 	return false 
 end
 

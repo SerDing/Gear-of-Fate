@@ -29,7 +29,7 @@ function _RESMGR.Ctor() --initialize
 
 	local _cacheNameList = {
 		"/ImagePacks/character/swordman/equipment/avatar/skin/sm_body0001.img/",
-		"/ImagePacks/character/swordman/equipment/avatar/weapon/sswd4200c.img/",
+		"/ImagePacks/character/swordman/equipment/avatar/weapon/sswd/sswd4200c.img/",
 		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana3201b.img/",
 		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana3201c.img/",
 		

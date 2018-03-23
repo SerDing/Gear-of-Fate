@@ -1,5 +1,5 @@
 --[[
-    Desc: 
+    Desc: Battle Scene
     Author: Night_Walker
     Since: Sat Sep 09 2017 18:35:30 GMT+0800 (CST)
     Alter: Sat Sep 09 2017 18:35:30 GMT+0800 (CST)
@@ -11,22 +11,17 @@
 local _GameScene = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
-
 local _TileBlock = require "Src.Scene.Blocks.TileBlock"
-
 local _AniBlock = require "Src.Scene.Blocks.AniBlock" 
-
 local _ObjectMgr = require "Src.Scene.ObjectManager"
-
 local _Collider = require "Src.Core.Collider"
-
 local _KEYBOARD = require "Src.Core.KeyBoard" 
-
 local _GAMEINI = require "Src.Config.GameConfig" 
 
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
-
 local _MonsterSpawner = require "Src.Monster.MonsterSpawner"
+
+local _Navigation = require "Src.Navigation.Navigation"
 
 local _sceneMgr = {} -- Initialize a null pointer of SceneManager
 
@@ -35,16 +30,14 @@ _PassiveObjMgr.Ctor()
 _MonsterSpawner.Ctor()
 
 function _GameScene:Ctor(path,res_,sceneMgr) --initialize
-    
+    -- ptr
     _sceneMgr = sceneMgr
 
+    -- data and structure
     self.pathHead = "../Data/map/"
-
     self.map = require(string.gsub(path,".lua",""))
-
     self.res = {}
-
-    self.layers = {         
+    self.layers = {
         ["[normal]"] = {
             ["[animation]"] = {},
             ["[passive object]"] = {},
@@ -67,29 +60,27 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
         updating and drawing layers equal to find 
         objects by id then update and draw them
     ]]
-
-    self.directory = string.split(path,"/")
-    self.directory = self.directory[#self.directory - 1] .. "/"
-    
-    self.rect = _Rect.New(0,0,1,1)
-
-    self.debug = false
-    
-    self.iterator = 0
-    self.limit = 0
-    
+    -- property
     self.isDgn = false
     self.clear = false
+    self.debug = false
+    self.iterator = 0
+    self.limit = 0
+
+    -- instance
+    self.rect = _Rect.New(0,0,1,1)
+    self.nav = _Navigation.New(self.map["[virtual movable area]"], self)
+
+    -- set directory for loading
+    self.directory = string.split(path,"/")
+    self.directory = self.directory[#self.directory - 1] .. "/"
 
     self:LoadBackGround()
     self:LoadTiles()
     self:LoadAnimations()
     self:LoadPassiveObjects()
-    
     self:LoadMonster()
 
-    -- self:Awake() -- Add objcets of normal layer into ObjcetMgr.objects
-   
 end
 
 function _GameScene:LoadTiles()
@@ -133,12 +124,11 @@ function _GameScene:LoadPassiveObjects()
     local _objDataArr = self.map["[passive object]"]
     local _tmpObj
     for n=1,#_objDataArr,4 do
-        
         _tmpObj = _PassiveObjMgr.GeneratePassiveObj(_objDataArr[n]) 
         if _tmpObj ~= 0 then
             self.res["[passive object]"][n] = _tmpObj
-            self.res["[passive object]"][n]:SetPos(_objDataArr[n+1], _objDataArr[n+2], _objDataArr[n+3])
             self.res["[passive object]"][n]:SetOffset(0, 200)
+            self.res["[passive object]"][n]:SetPos(_objDataArr[n+1], _objDataArr[n+2], _objDataArr[n+3])
             table.insert(self.layers[_tmpObj:GetLayer()]["[passive object]"],n)
         end
     end 
@@ -181,11 +171,11 @@ function _GameScene:LoadMonster()
     if _monDataArr then
         self.isDgn = true
         for q=1,#_monDataArr,10 do
-            
             _mon = _MonsterSpawner.Spawn(
                 _monDataArr[q], 
                 _monDataArr[q + 3], 
-                _monDataArr[q + 4]
+                _monDataArr[q + 4],
+                self.nav
             )
             _mon:SetPos(_monDataArr[q + 3], _monDataArr[q + 4] + 200)
             if _mon ~= 0 then
@@ -197,21 +187,27 @@ function _GameScene:LoadMonster()
 end
 
 function _GameScene:Awake() -- ReAdd objects into ObjMgr
-    for n=1,#self.layers["[normal]"]["[animation]"] do
-        _ObjectMgr.AddObject(self.res["[animation]"][self.layers["[normal]"]["[animation]"][n]])
+    
+    local _layer = self.layers["[normal]"]["[animation]"]
+    for n=1,#_layer do
+        _ObjectMgr.AddObject(self.res["[animation]"][_layer[n]])
     end 
     
-    for n=1,#self.layers["[normal]"]["[passive object]"] do
-        _ObjectMgr.AddObject(self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]])
+    _layer = self.layers["[normal]"]["[passive object]"]
+    for n=1,#_layer do
+        _ObjectMgr.AddObject(self.res["[passive object]"][_layer[n]])
     end 
 
+    _layer = self.layers["[normal]"]["[monster]"]
     if self.isDgn and self.clear == false then
-        for n=1,#self.layers["[normal]"]["[monster]"] do
-            self.layers["[normal]"]["[monster]"][n]:SetScenePtr(self)
-            _ObjectMgr.AddObject(self.layers["[normal]"]["[monster]"][n])
+        for n=1,#_layer do
+            _layer[n]:SetScenePtr(self)
+            _ObjectMgr.AddObject(_layer[n])
         end
     end
     
+    self.nav:BuildNavGraph()
+
 end
 
 function _GameScene:Update(dt)
@@ -258,6 +254,7 @@ function _GameScene:Draw(cam_x,cam_y)
     self:DrawLayer("[closeback]",cam_x, cam_y)
     self:DrawLayer("[bottom]",cam_x, cam_y)
 
+    
     _ObjectMgr.Draw(cam_x, cam_y)
 
     self:DrawLayer("[close]",cam_x, cam_y)
@@ -268,6 +265,9 @@ function _GameScene:Draw(cam_x,cam_y)
         self:DrawSpecialArea("event")
     end 
 
+    self.nav:Draw()
+
+    
 end
 
 function _GameScene:UpdateLayer(layer,dt)
@@ -420,25 +420,41 @@ function _GameScene:CheckEvent(x,y)
     end 
 end
 
-function _GameScene:CollideWithObstacles(x,y)
+function _GameScene:IsInObstacles(x,y)
     
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
-        return {false} 
+        return {false, "not in scene area"} 
     end 
     if #self.layers["[normal]"]["[passive object]"] == 0 then
-        return {false}
+        return {false, "no obstacles"}
     end
 
     for n=1,#self.layers["[normal]"]["[passive object]"] do
         if self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].subType == "OBSTACLE" then
             if _Collider.Point_Rect(x, y, self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect) then
-                -- print("Rect:CheckPoint() x1:",x,"x2:",self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect.vertex[1].x)
                 return {true,self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect}
             end
         end
     end 
 
-    return {false}
+    return {false, "no collision"}
+
+end
+
+function _GameScene:CollideWithObstacles(rect_a)
+    local _Layer = self.layers["[normal]"]["[passive object]"]
+    local _res = self.res["[passive object]"]
+    
+    for n=1,#_Layer do
+        if _res[_Layer[n]].subType == "OBSTACLE" then
+            local rect_b = _res[_Layer[n]]:GetRect()
+            if _Collider.Rect_Rect(rect_a, rect_b) then
+                return true
+            end
+        end
+    end 
+
+    return false
 
 end
 

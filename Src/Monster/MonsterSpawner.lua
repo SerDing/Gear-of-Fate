@@ -40,14 +40,14 @@ function _MonsterSpawner.LoadLstData()
 
 end
 
-function _MonsterSpawner.Spawn(monId, x, y)
+function _MonsterSpawner.Spawn(monId, x, y, nav)
 	-- print("monster:",monId,_MonsterSpawner.monPathArr[monId])
 	
 	local _mon
 	local _monPath = _MonsterSpawner.monPathArr[monId]
 
 	if _monPath then
-		_mon = _Monster.New(_monPath)
+		_mon = _Monster.New(_monPath, nav)
 		return _mon
 	else
 		print("Error:_MonsterSpawner.Spawn() \ncan not find monPath in monster.lst\n_monId:" .. tostring(monId))

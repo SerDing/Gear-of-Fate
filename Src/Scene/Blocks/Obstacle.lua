@@ -13,11 +13,58 @@ local _AniPack = require "Src.AniPack"
 local _Rect = require "Src.Core.Rect" 
 local _KEYBOARD = require "Src.Core.KeyBoard"
 local _GAMEINI = require "Src.Config.GameConfig" 
+local _ObjectMgr = require "Src.Scene.ObjectManager"
 
 function _Obstacle:Ctor(_path)
 	
+	self.hero_ = _ObjectMgr.GetHero()
+	
 	self.path = _path
 	
+	self:LoadData(_path)
+
+	if self.property["[layer]"] == "[normal]" then
+		self:SetType("OBJECT")
+	end
+	
+	self.subType = "OBSTACLE"
+
+	self.anima = require(self.property["[basic motion]"])
+
+	if self.anima['[FRAME MAX]'] == 1 then
+		self.ani = _AniPack.New("MAP_ANI_BLOCK")
+	else
+		self.ani = _AniPack.New()
+	end
+	
+	self.ani:SetAnimation(self.anima)
+	
+	self.ani:SetFilter(true)
+
+	self.rect = _Rect.New(0,0,self.property["[width]"][1],self.property["[width]"][2])
+	self.rect:SetCenter(self.property["[width]"][1] / 2, self.property["[width]"][2] / 2)
+
+	self.rect:SetDrawType(0)
+
+	self.pos = {
+		x = 0,
+		y = 0,
+		z = 0,
+	}
+
+	self.offset = {
+		x = 0,
+		y = 0,
+	}
+
+	self.debug = true
+	
+	self.display = 1
+	self.alpha = 255
+
+end 
+
+function _Obstacle:LoadData(_path)
 	self.property = {}
 
 	local _fileContent = LoadFile(_path)
@@ -80,45 +127,7 @@ function _Obstacle:Ctor(_path)
 		end
 		
 	end
-	if self.property["[layer]"] == "[normal]" then
-		self:SetType("OBJECT")
-	end
-	
-	self.subType = "OBSTACLE"
-
-	self.anima = require(self.property["[basic motion]"])
-
-	if self.anima['[FRAME MAX]'] == 1 then
-		self.ani = _AniPack.New("MAP_ANI_BLOCK")
-	else
-		self.ani = _AniPack.New()
-	end
-	
-	self.ani:SetAnimation(self.anima)
-	
-	self.ani:SetFilter(true)
-
-	self.rect = _Rect.New(0,0,self.property["[width]"][1],self.property["[width]"][2])
-	self.rect:SetCenter(self.property["[width]"][1] / 2, self.property["[width]"][2] / 2)
-
-	self.rect:SetDrawType(0)
-
-	self.pos = {
-		x = 0,
-		y = 0,
-		z = 0,
-	}
-
-	self.offset = {
-		x = 0,
-		y = 0,
-	}
-
-	self.debug = false
-	
-	self.display = 1
-
-end 
+end
 
 function _Obstacle:Update(dt)
 	
@@ -127,15 +136,27 @@ function _Obstacle:Update(dt)
 	if _KEYBOARD.Press("f1") then
 		if self.debug then
 			self.debug = false
+			log("obstacles debug = false")
 		else
 			self.debug = true
+			log("obstacles debug = true")
 		end
 	end
+
+	self.ani:SetPos(
+		math.floor(self.pos.x + self.offset.x),
+		math.floor(self.pos.y + self.offset.y)
+	)
+	self.rect:SetPos(
+		math.floor(self.pos.x + self.offset.x),
+		math.floor(self.pos.y + self.offset.y) + self.pos.z
+	)
+
 end 
 
 function _Obstacle:Draw(cam_x, cam_y)
-    local _sx = self.ani:GetRect().vertex[1].x
-	local _sy = self.ani:GetRect().vertex[1].y
+    local _sx = self.ani:GetRect():GetVertex()[1].x -- sprite x
+	local _sy = self.ani:GetRect():GetVertex()[1].y -- sprite y
 	local _w = self.ani:GetWidth()
 	local _h = self.ani:GetHeight()
 	
@@ -153,26 +174,43 @@ function _Obstacle:Draw(cam_x, cam_y)
 		self.display = 1
 	end
 
-	self.ani:SetPos(
-		math.floor(self.pos.x + self.offset.x),
-		math.floor(self.pos.y + self.offset.y)
-	)
-
 	if self.display == 1 then
+		self:AutoAlpha()
 		self.ani:Draw()
 	end 
-	
-	self.rect:SetPos(
-		math.floor(self.pos.x + self.offset.x),
-		math.floor(self.pos.y + self.offset.y) + self.pos.z
-	)
 
-	if self.property["[layer]"] == "[normal]"  then
-		if self.debug then
-			self.rect:SetColor(255,255,0,100)
-			self.rect:Draw()
+	self:Debug()
+
+end
+
+function _Obstacle:AutoAlpha()
+	local _heroPos = self.hero_:GetPos()
+	local _ObsVertex = self.rect:GetVertex()
+	if _heroPos.x >= _ObsVertex[1].x and _heroPos.x <= _ObsVertex[2].x and _heroPos.y <= _ObsVertex[1].y then
+		if self.alpha >= 100 then
+			self.alpha = self.alpha - 10
+			self.ani:SetColor(255, 255, 255, self.alpha)
+		end
+	else
+		if self.alpha <= 255 then
+			self.alpha = self.alpha + 10
+			self.ani:SetColor(255, 255, 255, self.alpha)
 		end
 	end
+end
+
+function _Obstacle:Debug()
+	-- if self.property["[layer]"] == "[normal]"  then
+		if self.debug then
+			self.rect:SetColor(255,255,0,200)
+			self.rect:Draw()
+			
+		end
+	-- end
+
+	local _vertex = self.rect:GetVertex()
+	love.graphics.circle("line", _vertex[1].x, _vertex[1].y, 3, 20)
+	love.graphics.circle("line", _vertex[2].x, _vertex[2].y, 3, 20)
 end
 
 function _Obstacle:SetPos(x, y, z)
@@ -181,6 +219,11 @@ function _Obstacle:SetPos(x, y, z)
 		y = y or 0,
 		z = z or 0,
 	}
+	self.rect:SetPos(
+		math.floor(self.pos.x + self.offset.x),
+		math.floor(self.pos.y + self.offset.y) + self.pos.z
+	)
+	-- print("obstacle vertex", self.rect:GetVertex()[1].x, self.rect:GetVertex()[1].y)
 end
 
 function _Obstacle:SetOffset(x, y)
@@ -196,6 +239,10 @@ end
 
 function _Obstacle:GetLayer()
     return self.property["[layer]"]
+end
+
+function _Obstacle:GetRect()
+	return self.rect
 end
 
 return _Obstacle 

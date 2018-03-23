@@ -69,19 +69,22 @@ function _State_GoreCross:Update(hero_,FSM_)
 		
 	end 
 	
-	if self.effect[2] and not self.effect[3] and not self.effect[4] then
+	if self.effect[2] and not self.effect[3] then
 		if  self.effect[2]:GetAni():GetCurrentPlayNum() == 0 then
-
-			self.effect[3] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/gorecross1.lua",hero_.pos.x ,hero_.pos.y,1,hero_:GetDir())
+			self.effect[3] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/gorecross2.lua",hero_.pos.x ,hero_.pos.y,1,hero_:GetDir())
 			self.effect[3]:SetOffset(70 * hero_:GetDir(),-85)
 			self.effect[3]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-
-			self.effect[4] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/gorecross2.lua",hero_.pos.x ,hero_.pos.y,1,hero_:GetDir())
-			self.effect[4]:SetOffset(70 * hero_:GetDir(),-85)
-			self.effect[4]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		end 
 	end 
 	
+	if self.effect[3] and not self.effect[4] then
+		print("self.effect[3]:GetAni():GetCount()", self.effect[3]:GetAni():GetCount())
+		if self.effect[3]:GetAni():GetCount() >= 0 then
+			self.effect[4] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/gorecross1.lua",hero_.pos.x ,hero_.pos.y,1,hero_:GetDir())
+			self.effect[4]:SetOffset(70 * hero_:GetDir(),-85)
+			self.effect[4]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+		end
+	end
 	
 	-- effect movement
 	for n=1,2 do

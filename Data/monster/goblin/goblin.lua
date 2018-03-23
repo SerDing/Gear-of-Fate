@@ -29,7 +29,7 @@ return {--[[ #PVF_File ]]
 
 	["[weight]"]={45000,45000},
 
-	["[sight]"]=1200,
+	["[sight]"]=600,
 
 	["[targeting nearest]"]=1,
 

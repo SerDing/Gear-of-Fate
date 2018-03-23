@@ -16,6 +16,7 @@ function _State_Jump:Ctor()
 	self.jumpDir = ""
 	self.jumpAttack = false
 	self.dirLock = false
+	self.g = 25
 end 
 
 function _State_Jump:Enter(hero_,FSM_,backJump)
@@ -26,9 +27,9 @@ function _State_Jump:Enter(hero_,FSM_,backJump)
 	self.jumpDir = ""
 
 	if FSM_.preState.name == "dash" then
-		self.jumpPower = 8 + 2
+		self.jumpPower = 12
 	else 
-		self.jumpPower = 7 + 2
+		self.jumpPower = 10
 	end 
 	
 	if backJump then
@@ -66,7 +67,7 @@ function _State_Jump:Update(hero_,FSM_)
 	
 	if self.jumpDir == "up" then
 		
-		self.jumpPower = self.jumpPower - _dt * 20
+		self.jumpPower = self.jumpPower - _dt * self.g
 		
 		if self.jumpPower < 0 then
 			self.jumpPower = 0
@@ -91,7 +92,7 @@ function _State_Jump:Update(hero_,FSM_)
 
 	elseif self.jumpDir == "down" then
 		
-		self.jumpPower = self.jumpPower + _dt * 25
+		self.jumpPower = self.jumpPower + _dt * self.g
 		
 		if hero_.jumpOffset < 0 then
 			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower + _dt
@@ -210,6 +211,28 @@ function _State_Jump:Update(hero_,FSM_)
 	if hero_:GetAttackBox() then
 		self.atkJudger:Judge(hero_, "MONSTER")
 	end
+	
+	--[[
+
+	void Update()
+	{
+	time_Gravity += Time.deltaTime;
+	tempY_Gravity = (v0 - gravity * time_Gravity * 0.5f) * time_Gravity;
+	mTransform.position = new Vector3(mTransform.position.x, originY_Gravity + tempY_Gravity, mTransform.position.z);
+			// v0：初速度
+			// gravity ：重力加速
+	}
+
+	private void Jump()
+	{
+			// height_Fly：跳跃的高度
+	v0 = Mathf.Sqrt(2 * gravity * height_Fly);
+	originY_Gravity = mTransform.position.y;
+	t = v0 / gravity;
+	time_Gravity = 0;
+	}
+
+]]
 	
 	
 end 

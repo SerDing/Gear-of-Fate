@@ -33,6 +33,8 @@ _gamePause = false
 
 log = print
 math.randomseed(os.time())
+love.graphics.setBlendMode("alpha")
+
 
 function love.load()
 
@@ -73,9 +75,14 @@ function love.update(dt)
 end
 
 function love.draw()
-	
+
 	_GAMEMGR.Draw()
 	
+	local _mousePos = {
+        x = love.mouse.getX(),
+        y = love.mouse.getY(),
+    }
+    love.graphics.print(tostring(_mousePos.x) .. "," .. tostring(_mousePos.y), _mousePos.x - 20, _mousePos.y - 10)
 	
 end
 
@@ -90,5 +97,7 @@ end
 function love.mousepressed(x,y,key) --回调函数释放鼠标按钮时触发。
 
 end
+
+
 
 	

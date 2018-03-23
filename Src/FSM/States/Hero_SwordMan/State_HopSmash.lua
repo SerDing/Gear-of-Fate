@@ -14,6 +14,13 @@ local _EffectMgr = require "Src.Scene.EffectManager"
 local _CAMERA = require "Src.Game.GameCamera" 
 
 function _State_HopSmash:Ctor()
+
+	self.attackName = {
+		"hopsmash1",
+		"hopsmash2",
+		"hopsmash3",
+	}
+
     self.jumpPower = 0
 	self.jumpDir = ""
 	self.jumpAttack = false
@@ -35,7 +42,7 @@ function _State_HopSmash:Enter(hero_)
 	hero_:SetAnimation("hopsmashready",1,1)
 	self.oriAtkSpeed = hero_:GetAtkSpeed()
 	hero_:SetAtkSpeed(1.3)
-	self.basePower = 150
+	self.basePower = 190
 	self.period = 1
 	self.increment = 1.2
 	self.KEYID = ""
@@ -68,16 +75,16 @@ function _State_HopSmash:Update(hero_,FSM_)
 				self.speed = self.basePower * 0.9 * 0.1 * 0.2
 			else
 				self.jumpPower = self.basePower * 0.75 * self.time  * math.sqrt(hero_:GetAtkSpeed())
-				self.speed = self.basePower * 0.9 * self.time * 0.2
+				self.speed = self.basePower * 0.8 * self.time * 0.2
 			end 
 			
-			if self.jumpPower < 16 then
-				self.jumpPower = 16
+			if self.jumpPower < 18 then
+				self.jumpPower = 18
 			end
 
-			if self.speed < 2.15 then
-				self.speed = 2.15
-			end
+			-- if self.speed < 2.15 then
+			-- 	self.speed = 2.15
+			-- end
 
 			self.shake = true
 			self.start = true
@@ -138,7 +145,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 		
 	elseif self.jumpDir == "down" then
 		
-		self.jumpPower = self.jumpPower + _dt * self.basePower * hero_:GetAtkSpeed()
+		self.jumpPower = self.jumpPower + _dt * self.basePower * 0.5 * hero_:GetAtkSpeed()
 		
 		if hero_.jumpOffset < 0 then
 			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower
@@ -166,8 +173,8 @@ function _State_HopSmash:Update(hero_,FSM_)
 		end
 
 		if hero_:GetAttackBox() then
-			-- log(_body:GetCount())
-			self.atkJudger:Judge(hero_, "MONSTER")
+			-- log(self.attackTimes + 1)
+			self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackTimes + 1])
 		end
 
 	end

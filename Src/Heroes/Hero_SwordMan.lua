@@ -89,11 +89,11 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 
 	self.jumpOffset = 0
 	
-	self.atkSpeed = 1.3
+	self.atkSpeed = 1.5
 
 	self.atkMode = "normal" -- or frenzy
 
-	self.hitRecovery = 30
+	self.hitRecovery = 45
 	self.hitTime = 0
 
 	self.KEY = {
@@ -140,22 +140,22 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		self.pakGrp[_name[n]]:SetBaseRate(self.atkSpeed)
 	end
 	
-	---- [[ Set some special animation play nums to -1(loop) ]]
-	for n = 1,_pakNum do
-		--
-	end
-	
-	
+
 	self.pakGrp.body:SetFileNum(0001)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana0001b.img",1)
+	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana0001c.img",2)
+
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201b.img",1)
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201c.img",2)
 	
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004b.img",1)
 	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004c.img",2)
 
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500b.img",1)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500c.img",2)
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500b.img",1)
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500c.img",2)
 
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd/sswd4200c.img",1)
+	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd/sswd4200c.img",2)
 	-- self.pakGrp.weapon:SetSingle(true)
 	
 	self.FSM = _FSM.New(self,"stay",self.subType)
@@ -237,7 +237,7 @@ function Hero_SwordMan:Draw()
 		end 
 	end 
 	
-	-- love.graphics.circle("fill", self.drawPos.x, self.drawPos.y, 2.5, 10)
+	love.graphics.circle("fill", self.drawPos.x, self.drawPos.y, 2.5, 10)
 
 	if self.jumpOffset < 0 then
 		-- love.graphics.circle("fill", self.drawPos.x, self.drawPos.y + self.jumpOffset, 2.5, 10)
@@ -256,20 +256,24 @@ function Hero_SwordMan:UpdateAni()
 end
 
 function Hero_SwordMan:X_Move(offset)
-	
+	local _pass
 	local _result
 	local _next = self.pos.x + offset
 
 	if scene_:IsInMoveableArea(_next, self.pos.y) then
 		
-		_result = scene_:CollideWithObstacles(_next, self.pos.y)
+		_result = scene_:IsInObstacles(_next, self.pos.y)
 		
 		if _result[1] then
+			self:Y_Move(offset)
 			if offset > 0 then
-				_next = _result[2].vertex[1].x - 1
+				_next = _result[2]:GetVertex()[1].x - 1
 			else
-				_next = _result[2].vertex[2].x + 1
+				_next = _result[2]:GetVertex()[2].x + 1
 			end
+			_pass = false
+		else
+			_pass = true
 		end
 	else
 		if offset > 0 then
@@ -277,6 +281,7 @@ function Hero_SwordMan:X_Move(offset)
 		else
 			_next = scene_.map["[virtual movable area]"][1] + 1
 		end
+		_pass = false
 	end
 
 	self.pos.x = _next
@@ -292,14 +297,13 @@ function Hero_SwordMan:Y_Move(offset)
 
 	if scene_:IsInMoveableArea(self.pos.x, _next) then
 		
-		_result = scene_:CollideWithObstacles(self.pos.x, _next)
+		_result = scene_:IsInObstacles(self.pos.x, _next)
 		
 		if _result[1] then
-		
 			if offset > 0 then
-				_next = _result[2].vertex[1].y - 1
+				_next = _result[2]:GetVertex()[1].y - 1
 			elseif offset < 0 then
-				_next = _result[2].vertex[2].y + 1
+				_next = _result[2]:GetVertex()[2].y + 1
 			end
 		end
 	

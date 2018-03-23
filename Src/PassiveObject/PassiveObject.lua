@@ -11,8 +11,6 @@ local _PassiveObj = require("Src.Core.Class")()
 
 function _PassiveObj:Ctor(_path)
 	
-	
-
 end 
 
 

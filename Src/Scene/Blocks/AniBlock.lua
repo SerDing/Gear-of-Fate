@@ -69,8 +69,8 @@ function _AniBlock:Draw(x, y)
 		* y: MAP_ANI_OBJ -- cam_y  |  MAP_ANI_BACK -- scroll offset y
     ]]
 	
-	local _sx = self.ani:GetRect().vertex[1].x
-	local _sy = self.ani:GetRect().vertex[1].y
+	local _sx = self.ani:GetRect():GetVertex()[1].x
+	local _sy = self.ani:GetRect():GetVertex()[1].y
 	local _w = self.ani:GetWidth()
 	local _h = self.ani:GetHeight()
 

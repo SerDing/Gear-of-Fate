@@ -17,7 +17,11 @@ function _State_DashAttack:Ctor()
 end 
 
 function _State_DashAttack:Enter(hero_)
-    self.name = "dashattack"
+	self.name = "dashattack"
+	self.attackName = {
+		"dashattack1",
+		"dashattack2",
+	}
 	hero_:GetBody():SetAnimation(self.name)
 	hero_:GetWeapon():SetAnimation(self.name)
 	self.attackCount = 1
@@ -48,10 +52,10 @@ function _State_DashAttack:Update(hero_,FSM_)
 		
 	end 
 
-	if _body:GetCount() > 4 then
+	if _body:GetCount() > 3 then
 		if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and self.attackCount <2 then
-			hero_:GetBody():SetFrame(0)
-			hero_:GetWeapon():SetFrame(0)
+			hero_:GetBody():SetFrame(2)
+			hero_:GetWeapon():SetFrame(2)
 			self.attackCount = self.attackCount + 1
 			
 			self.atkJudger:ClearDamageArr()
@@ -77,8 +81,9 @@ function _State_DashAttack:Update(hero_,FSM_)
 	end 
 	
 	if hero_:GetAttackBox() then
-		self.atkJudger:Judge(hero_, "MONSTER")
+		self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackCount])
 	end
+	
 
 
 end 

@@ -114,9 +114,9 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
                 table.remove(self.effect,n)
             end 
 
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-1.lua",-1,1,hero_)
+            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-1.lua",1,1,hero_)
             self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-2.lua",1,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-3.lua",0,1,hero_)
+            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-3.lua",1,1,hero_)
 
         end 
         
@@ -149,9 +149,9 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
                 table.remove(self.effect,n)
             end 
 
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-1.lua",0,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-2.lua",0,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-3.lua",0,1,hero_)        
+            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-1.lua",1,1,hero_)
+            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-2.lua",1,1,hero_)
+            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-3.lua",1,1,hero_)        
 
         end 
 

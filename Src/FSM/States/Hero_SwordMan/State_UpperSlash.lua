@@ -14,6 +14,7 @@ local _KEYBOARD = require "Src.Core.KeyBoard"
 
 function _State_UpperSlash:Ctor()
 	self.effect = {}
+	self.smooth = 60
 end 
 
 function _State_UpperSlash:Enter(hero_)
@@ -28,23 +29,31 @@ function _State_UpperSlash:Update(hero_,FSM_)
     local _body = hero_:GetBody()
 	local _dt = love.timer.getDelta()
 
-	if _body:GetCount() >= 2 and _body:GetCount() <=4 then
-		hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
+	local _movable = true
+
+    if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
+    (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
+        _movable = false
+    end
+
+	if _movable then
+		if _body:GetCount() >= 2 and _body:GetCount() <=4 then
+			hero_:X_Move(hero_.spd.x * self.smooth * _dt * hero_.dir )
+		end 
 		if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
 		(_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
 			
-			hero_:X_Move(hero_.spd.x * 50 * _dt * hero_.dir )
+			hero_:X_Move(hero_.spd.x * self.smooth * 0.5 * _dt * hero_.dir )
 		end 
-	end 
+	end
 
 	if _body:GetCount() == 2 and not self.effect[1] then
 		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "upperslash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)	
 		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-		
 	end 
 	
 	if self.effect[1] then
-		self.effect[1].pos.x = self.effect[1].pos.x + hero_.spd.x * 20 * _dt * hero_.dir
+		self.effect[1].pos.x = self.effect[1].pos.x + hero_.spd.x * self.smooth * _dt * hero_.dir
 	end 
 
 	if hero_:GetAttackBox() then

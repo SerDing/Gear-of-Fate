@@ -10,11 +10,11 @@
 local _PassiveObjMgr = {}
 
 local _Obstacle = require "Src.Scene.Blocks.Obstacle"
+local _AtkObj = require "Src.PassiveObject.AtkObj"
+local _ObjectMgr = require "Src.Scene.ObjectManager"
 
 function _PassiveObjMgr.Ctor()
-	
 	_PassiveObjMgr.LoadLstData()
-	
 end
 
 function _PassiveObjMgr.LoadLstData()
@@ -32,7 +32,6 @@ function _PassiveObjMgr.LoadLstData()
 	-- print(#_PassiveObjMgr.objList)
 
 	for i=1,#_PassiveObjMgr.objList do
-		
 		if i % 2 ~= 0 and _PassiveObjMgr.objList[i + 1] then
 			_PassiveObjMgr.objPathArr[tonumber(_PassiveObjMgr.objList[i])] = _PassiveObjMgr.pathHead .. string.gsub(string.lower(_PassiveObjMgr.objList[i + 1]), "`", "")
 		elseif i % 2 ~= 0 and not _PassiveObjMgr.objList[i + 1] then
@@ -45,20 +44,44 @@ end
 
 function _PassiveObjMgr.GeneratePassiveObj(_objId)
 	
-	local _obj
 	local _objPath
 
 	if _PassiveObjMgr.objPathArr[_objId] then
 		_objPath = _PassiveObjMgr.objPathArr[_objId]
 	else
-		print("Error:_PassiveObjMgr.GeneratePassiveObj() \ncan not find objPath in passive object list\n_objId:" .. tostring(_objId))
-		return 0 
+		error("_PassiveObjMgr.GeneratePassiveObj() \n* can not find objPath in passive object list\n* _objId:" .. tostring(_objId))
 	end
 
 	local _objPathPieces = CutText(_objPath,"/")
-
+	local _obj
 	if _objPathPieces[#_objPathPieces - 1] == "obstacle" then
 		_obj = _Obstacle.New(_objPath)
+		return _obj
+	elseif _objPathPieces[#_objPathPieces - 2] == "character" then
+		_obj = _AtkObj.New(_objPath)
+		_ObjectMgr.AddObject(_obj)
+		return _obj
+	else
+		return 0
+	end
+
+end 
+
+function _PassiveObjMgr.AtkObj(_objId, x, y, dir)
+	
+	local _objPath
+
+	if _PassiveObjMgr.objPathArr[_objId] then
+		_objPath = _PassiveObjMgr.objPathArr[_objId]
+	else
+		error("_PassiveObjMgr.GeneratePassiveObj() \n* can not find objPath in passive object list\n* _objId:" .. tostring(_objId))
+	end
+
+	local _objPathPieces = CutText(_objPath,"/")
+	local _obj
+	if _objPathPieces[#_objPathPieces - 2] == "character" then
+		_obj = _AtkObj.New(_objPath)
+		_ObjectMgr.AddObject(_obj)
 		return _obj
 	else
 		return 0

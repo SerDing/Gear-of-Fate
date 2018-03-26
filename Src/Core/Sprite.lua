@@ -17,7 +17,7 @@ function _Sprite:Ctor(path,x,y,w,h) --initialize
 
 	local tp = type(path)
 
-	if (tp == "string") then
+	if tp == "string" then
 	    self.texture = _RESMGR.LoadTexture(path)
 	else -- path为空纹理时
 	   self.texture = path
@@ -93,7 +93,7 @@ end
 
 function _Sprite:SetTexture(tex)
 
-	if (not tex) then
+	if not tex then
 	    print("Error:_Sprite:SetTexture() --> tex get nil")
 	    return
 	else

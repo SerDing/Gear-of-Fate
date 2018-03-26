@@ -36,8 +36,8 @@ function _State_TripleSlash:Enter(hero_)
 
 ----[[  Call base class function  ]]
     self:AtkBase_Enter(hero_)
-    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move1.lua",0,1)
-	self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash1.lua",0,1)
+    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move1.lua", 0, 1, hero_)
+	self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash1.lua", 0, 1, hero_)
 	self:ReSetSpeed()
 
 	self.atkJudger = hero_:GetAtkJudger()
@@ -78,8 +78,8 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua",0,1)
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash2.lua",0,1)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 0, 1, hero_)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash2.lua", 0, 1, hero_)
 				self:ReSetSpeed()
 			end 
 		end 
@@ -89,7 +89,7 @@ function _State_TripleSlash:Update(hero_,FSM_)
 		end 
 
 	elseif self.attackNum == 2 then
-		if self.heroBody:GetCount() >= 3 then
+		if self.heroBody:GetCount() >= 2 then
 			if _KEYBOARD.Press(hero_.KEY[self.KEYID["TripleSlash"]]) then
 				self:ChangeDir()
 				self.hero_:SetDir(self.nextDir)
@@ -109,8 +109,8 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua",0,1)
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash3.lua",0,1)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 0, 1, hero_)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash3.lua", 0, 1, hero_)
 				self:ReSetSpeed()
 			end 
 

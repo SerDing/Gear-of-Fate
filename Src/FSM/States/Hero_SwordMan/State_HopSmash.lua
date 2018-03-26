@@ -72,12 +72,12 @@ function _State_HopSmash:Update(hero_,FSM_)
 			
 			if self.time < 0.1 then
 				self.jumpPower = self.basePower * 0.75 * 0.1  * math.sqrt(hero_:GetAtkSpeed())
-				self.speed = self.basePower * 0.9 * 0.1 * 0.2
+				-- self.speed = self.basePower * 0.9 * self.time * 0.2
 			else
 				self.jumpPower = self.basePower * 0.75 * self.time  * math.sqrt(hero_:GetAtkSpeed())
-				self.speed = self.basePower * 0.8 * self.time * 0.2
+				
 			end 
-			
+			self.speed = self.basePower * 0.8 * self.time * 0.2
 			if self.jumpPower < 18 then
 				self.jumpPower = 18
 			end
@@ -158,23 +158,26 @@ function _State_HopSmash:Update(hero_,FSM_)
 	
 	if _body:GetCount() >= 3 and _body:GetCount() <= 6 then
 		
-		if self.attackTimes <= self.attackNum + 1 then
+		if self.attackTimes < self.attackNum then
 			
-			self.attackTimer = self.attackTimer + _dt
+			-- self.attackTimer = self.attackTimer + _dt
 			
-			if self.attackTimer >= 480 / (1000 * hero_:GetAtkSpeed()) / self.attackNum then
+			-- if self.attackTimer >= 480 / (1000 * hero_:GetAtkSpeed()) / self.attackNum then
 				-- log("self.attackTimer", self.attackTimer)
 				self.atkJudger:ClearDamageArr()
 				-- self.atkJudger:Judge(hero_, "MONSTER")
 				self.attackTimer = 0
-				self.attackTimes = self.attackTimes + 1
+				
 
-			end
+			-- end
 		end
 
 		if hero_:GetAttackBox() then
-			-- log(self.attackTimes + 1)
-			self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackTimes + 1])
+			log(self.attackTimes)
+			self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackTimes])
+			if self.attackTimes < self.attackNum then
+				self.attackTimes = self.attackTimes + 1
+			end
 		end
 
 	end
@@ -202,7 +205,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 				-- log(self.time * 1.25)
 				_CAMERA.Shake(0.2 , -3, 3 * self.time, -20 * self.time, 20 * self.time) -- shake effect
 			end
-			
+
 		end
 	end
 

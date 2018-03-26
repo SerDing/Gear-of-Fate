@@ -19,7 +19,7 @@ function _ResPack:Ctor(PakName) --initialize
 
 	-- self.fileNum,self.pakInfo = self.empak.GetPakInfo(self.real_path)
 
-	-- if(self.pakInfo == nil)then
+	-- if self.pakInfo == nil then
 	-- 	print("can not get pak infomation!" .. PakName)
 	-- 	-- 引擎:Log("can not get pak infomation" .. PakName)
 	-- 	return
@@ -31,22 +31,21 @@ function _ResPack:Ctor(PakName) --initialize
 	
 	local _offsetName = string.gsub(tmpArray[#tmpArray],".img",".txt")
 	
-	if(love.filesystem.exists(self.PakName .. "/offset.txt") == false
-	and love.filesystem.exists(self.PakName .. "/" .. _offsetName) == false
-	)then
+	if love.filesystem.exists(self.PakName .. "/offset.txt") == false
+	and love.filesystem.exists(self.PakName .. "/" .. _offsetName) == false then
 		print("The img pack is not existing:",self.PakName)
 		return
 	end
 
 	
 
-	if(love.filesystem.exists(self.PakName .. "/" .. _offsetName))then
+	if love.filesystem.exists(self.PakName .. "/" .. _offsetName) then
 		self.offset_text = LoadFile(self.PakName .. "/" .. _offsetName)
 	else 
 		self.offset_text = LoadFile(self.PakName .. "/offset.txt")
 	end 
 
-	if(self.offset_text == nil)then
+	if self.offset_text == nil then
 		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. self.PakName)
 		return
 	end
@@ -59,7 +58,7 @@ function _ResPack:Ctor(PakName) --initialize
 
 		local re_cut = CutText (first_cut[n]," ")
 
-		if (table.getn(re_cut) == 2) then
+		if table.getn(re_cut) == 2 then
 
 			self.pak_info[n]=
 			{
@@ -81,9 +80,9 @@ function _ResPack:GetTexture(num)
 	end 
 	
 
-	if (self.pak_info[num].texture == 0) then
+	if self.pak_info[num].texture == 0 then
 		local _path = self.PakName .. "/" .. tostring(num - 1) .. ".png"
-		if(love.filesystem.exists(_path))then
+		if love.filesystem.exists(_path)then
 			local tex = _RESMGR.LoadTexture(_path)
 			self.pak_info[num].texture = tex
 		else
@@ -121,7 +120,7 @@ end
 function _ResPack:Release()
 
 	for n=1,table.getn(self.pak_info) do
-		if (self.pak_info[n].texture ~= 0) then
+		if self.pak_info[n].texture ~= 0 then
 			self.pak_info[n].texture:release()
 		end
 	end

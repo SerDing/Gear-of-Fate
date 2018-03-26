@@ -15,22 +15,23 @@ local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _Collider = require "Src.Core.Collider"
 local _Rect = require "Src.Core.Rect"
 
-function _AttackJudger:Ctor(entityType)
+function _AttackJudger:Ctor(attacker, entityType)
 	self.damageArr = {}
-
+	self.attacker = attacker
+	self.Y = 0
 	self.box_a = _Rect.New(0,0,1,1)
 	self.box_b = _Rect.New(0,0,1,1)
 	
 	self:LoadAtkInfo(entityType)
-end 
+end
 
-function _AttackJudger:Judge(attacker, opponent, attackName) 
+function _AttackJudger:Judge(attacker, opponent, attackName, atkInfo) 
 	--[[
 		attacker: a pointer
 		opponent: a string
 		call example: Judge(hero_,"MONSTER")
 	]] 
-	
+	self.attacker = attacker
 	local _objArr =_ObjectMgr.GetObjects()
 	local _hit = false
 	local _atkInfo
@@ -42,34 +43,36 @@ function _AttackJudger:Judge(attacker, opponent, attackName)
 			_mon = _objArr[n]
 			
 			-- judge whether the monster is hit
-			if _mon:IsDead() == false and not self:IsInDamageArr(_mon:GetId(), attacker:GetBody():GetCount()) then
-				_hit = self:IsHit(attacker, _mon)
-			else
-				_hit = false
+			_hit = false
+			if _mon:IsDead() == false then
+				if self:IsInDamageArr(_mon:GetId()) == false then
+					if atkInfo then
+						_atkInfo = atkInfo
+						print(_atkInfo["Y"])
+					else
+						_atkInfo = (self.atkInfo[attackName]) and self.atkInfo[attackName] or self.atkInfo["default"]
+					end
+					
+					self.Y = _atkInfo["Y"] or self.atkInfo["default"]["Y"]
+					if self:IsInY(_mon) then
+						_hit = self:IsHit(attacker, _mon)
+					end
+				end
+			end
+
+			if self.attacker:GetType() == "ATKOBJ" then
+				print("atk obj hit :", _hit)
 			end
 
 			-- hit process
 			if _hit == true then
-				
-				-- hit state process
-				_atkInfo = (self.atkInfo[attackName]) and self.atkInfo[attackName] or self.atkInfo["default"]
-				-- _atkInfo = self.atkInfo["default"]
 				_mon:Damage(attacker, _atkInfo)
-				
-				
 				-- insert the opponent into hit array
-				self.damageArr[#self.damageArr + 1] = {
-					_mon:GetId(), 
-					attacker:GetBody():GetCount(), -- key frame
-				}
-
+				self.damageArr[#self.damageArr + 1] = _mon:GetId()
 				-- set hit time to start hitStop
 				attacker:SetHitTime(love.timer.getTime())
-				
 			end
-
 		end
-
 	end
 
 end 
@@ -125,12 +128,23 @@ end
 function _AttackJudger:Draw() 
 	-- self.box_a:Draw()
 	-- self.box_b:Draw()
+	local _atkPos = self.attacker:GetPos()
+	love.graphics.line(_atkPos.x, _atkPos.y, _atkPos.x, _atkPos.y - (self.Y / 2))
+	love.graphics.line(_atkPos.x, _atkPos.y, _atkPos.x, _atkPos.y + (self.Y / 2))
+
+end
+
+function _AttackJudger:IsInY(_mon)
+	if math.abs( _mon:GetPos().y - self.attacker:GetPos().y ) <= self.Y / 2 then
+		return true
+	end
+	return false
 end
 
 function _AttackJudger:IsInDamageArr(obj_id, frame)
 	
 	for i=1,#self.damageArr do
-		if self.damageArr[i][1] == obj_id then
+		if self.damageArr[i] == obj_id then
 			return true
 		end
 	end

@@ -70,7 +70,8 @@ function love.update(dt)
 
 	_KEYBOARD.Update(dt)
 
-	collectgarbage("collect")
+	-- collectgarbage("step", 200)
+
 
 end
 

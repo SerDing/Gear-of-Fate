@@ -59,8 +59,6 @@ function _Effect:Ctor(aniPath)
 
 	self.layer = 0 -- it's useful just when this effect entity is in hero class as an extra effect
 
-	self.display = 1
-
 end 
 
 function _Effect:Update(dt)
@@ -75,7 +73,9 @@ function _Effect:Update(dt)
 		self.over = true
 	end 
 
-	self.pos.x = self.pos.x + self.speed * self.dir
+	if self.speed ~= 0 then
+		self.pos.x = self.pos.x + self.speed * self.dir
+	end	
 	
 	if _KEYBOARD.Press("f1") then
 		if self.debug then
@@ -96,8 +96,8 @@ function _Effect:Draw()
 	self.ani:Draw()
 	if self.debug then
 		self.rect:SetCenter(5,5)
-		self.rect:SetPos(self.pos.x,self.pos.y)
-		self.rect:SetColor(0,255,255,255)
+		self.rect:SetPos(self.pos.x, self.pos.y)
+		self.rect:SetColor(0, 255, 255, 255)
 		self.rect:Draw()
 	end
 	
@@ -115,7 +115,7 @@ end
 
 function _Effect:SetDir(dir)
 	self.dir = dir
-	self.ani:SetDir(self.dir)
+	self.ani:SetDir(dir)
 end
 
 function _Effect:SetOffset(x,y)

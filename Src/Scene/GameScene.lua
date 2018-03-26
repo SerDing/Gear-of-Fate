@@ -122,14 +122,14 @@ function _GameScene:LoadPassiveObjects()
         self.res["[passive object]"] = {}
     end 
     local _objDataArr = self.map["[passive object]"]
-    local _tmpObj
     for n=1,#_objDataArr,4 do
-        _tmpObj = _PassiveObjMgr.GeneratePassiveObj(_objDataArr[n]) 
-        if _tmpObj ~= 0 then
-            self.res["[passive object]"][n] = _tmpObj
+        self.res["[passive object]"][n] = _PassiveObjMgr.GeneratePassiveObj(_objDataArr[n]) 
+        if self.res["[passive object]"][n] ~= 0 then
             self.res["[passive object]"][n]:SetOffset(0, 200)
             self.res["[passive object]"][n]:SetPos(_objDataArr[n+1], _objDataArr[n+2], _objDataArr[n+3])
-            table.insert(self.layers[_tmpObj:GetLayer()]["[passive object]"],n)
+            table.insert(self.layers[self.res["[passive object]"][n]:GetLayer()]["[passive object]"],n)
+        else
+            table.remove(self.res["[passive object]"], n)
         end
     end 
 

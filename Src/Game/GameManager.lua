@@ -33,6 +33,9 @@ local _SCENEMGR = require "Src.Scene.GameSceneMgr"
 
 local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
 
+local _time = 0
+local _memory = 0
+
 function _GAMEMGR.Ctor() --initialize
 	_SCENEMGR.Ctor()
 end
@@ -53,8 +56,14 @@ function _GAMEMGR.Draw(x,y)
 	love.graphics.rectangle("fill", 0, 0, 300, 50)
 	love.graphics.setColor(r, g, b, a)
 	-- draw some data to monitor the status of game
+	_time = _time + love.timer.getDelta()
+	
+	if _time >= 0.016 * 60 then
+		_time = 0
+		_memory = collectgarbage("count")
+	end
 	love.graphics.print("FPS:" .. tostring(love.timer.getFPS()), 10, 10, 0, 1, 1)
-	love.graphics.print("lua memory:" .. tostring(collectgarbage("count")), 10, 20, 0, 1, 1)
+	love.graphics.print("lua memory:" .. tostring(_memory), 10, 20, 0, 1, 1)
 	
 end
 

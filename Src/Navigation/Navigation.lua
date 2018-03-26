@@ -34,6 +34,12 @@ function _Navigation:Ctor(area, scene)
 
 end 
 
+function _Navigation:Init()
+    -- NEW jumper pathfinder
+    self.grid = _Grid(self.map) -- grid nodes table
+    self.pathFinder = _Pathfinder(self.grid, 'JPS', self.walkable) 
+end
+
 function _Navigation:BuildNavGraph()
     self.linearGraph = {}
     local _node = {}
@@ -68,9 +74,7 @@ function _Navigation:BuildNavGraph()
 
     print("build graph end")
 
-    -- NEW jumper pathfinder
-    self.grid = _Grid(self.map)-- Creates a grid object
-    self.pathFinder = _Pathfinder(self.grid, 'JPS', self.walkable)-- Creates a pathfinder object using Jump Point Search
+    self:Init()
     
 end 
 
@@ -93,11 +97,13 @@ function _Navigation:FindPath(entity, x, y)
 
     local _pathNodes = {}
     -- Calculates the path, and its length
+    local _startFindingTime = love.timer.getTime()
     local path = self.pathFinder:getPath(startIndex.x, startIndex.y, endIndex.x, endIndex.y)
     if path then
-        print(('Path found! Length: %.2f'):format(path:getLength()))
+        -- print("Path finding cost time:", love.timer.getTime() - _startFindingTime)
+        -- print(('Path found! Length: %.2f'):format(path:getLength()))
         for node, count in path:nodes() do
-            print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+            -- print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
             _pathNodes[count] = self:GetNodeByIndex(node:getY(), node:getX())
             _pathNodes[count]:SetColor(0, 150, 0, 100) -- set walkable nodes color to Green
             _pathNodes[count]:SetDrawType("fill")

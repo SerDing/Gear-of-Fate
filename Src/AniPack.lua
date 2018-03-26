@@ -36,7 +36,7 @@ function _AniPack:Ctor(_type) --initialize
 
 	self.aniId = "" -- example: attack1 upperslash sit ...
 
-	if (not _RESMGR.imageNull) then
+	if not _RESMGR.imageNull then
 		local _tmpImageData = love.image.newImageData(1, 1)
 	    _RESMGR.imageNull = love.graphics.newImage(_tmpImageData)
 	end
@@ -275,7 +275,7 @@ function _AniPack:DrawBox()
 	local boxTab = self.frameData[self.frameHead]["[ATTACK BOX]"]
 	local atkBox = _Rect.New(0,0,1,1)
 	atkBox:SetColor(255,0,180,150)
-	if (boxTab) then
+	if boxTab then
 	    for n=1,#boxTab,6 do
 			atkBox:SetPos(self.pos.x + boxTab[n] * self.dir,self.pos.y + - boxTab[n+2])
 			atkBox:SetSize(boxTab[n+3] * self.scale.x, - boxTab[n+5] * self.scale.y)
@@ -287,7 +287,7 @@ function _AniPack:DrawBox()
 	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
 	local dmgBox = _Rect.New(0,0,1,1)
 	dmgBox:SetColor(0,255,0,100)
-	if (boxTab) then
+	if boxTab then
 	    for n=1,#boxTab,6 do
 			dmgBox:SetPos(self.pos.x + boxTab[n] * self.dir,self.pos.y + - boxTab[n+2])
 			dmgBox:SetSize(boxTab[n+3] * self.scale.x,-boxTab[n+5] * self.scale.y)
@@ -358,7 +358,7 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 	-- __num	播放次数
 	-- id		ani的对应动作(状态)名称
 	
-	if(type(aniPath) == "string")then
+	if type(aniPath) == "string" then
 		local content = require(aniPath) -- content is a table
 		self.frameDataGrp[id] = {data = content, num = __num}
 		
@@ -368,7 +368,7 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 			self.frameDataGrp[id].num = 1
 		end
 
-	elseif (type(aniPath) == "table") then
+	elseif type(aniPath) == "table" then
 	    print("Err: _AniPack:AddAnimation() --> aniPath expect a string ,not a table.")
 	    return false
 	else

@@ -31,7 +31,7 @@ function _Monster:Ctor(path, nav)
 	self.drawPos = {x = 0, y = 0, z = 0}
 	self.aim = {x = 0, y = 0}
 	self.speed = {x = 2, y = 1.5}
-	
+	self.dead = false
 	self.speed = {
 		x = self.property["[move speed]"][1] / 1000 * 2, 
 		y = self.property["[move speed]"][2] / 1000 * 2
@@ -100,9 +100,9 @@ function _Monster:Draw(x,y)
 	end
 
 	-- move aim debug drawing
-	love.graphics.line(self.pos.x, self.pos.y, self.aim.x, self.aim.y)
-	love.graphics.circle("fill", self.pos.x, self.pos.y, 3, 20)
-	love.graphics.circle("fill", self.aim.x, self.aim.y, 3, 20)
+	-- love.graphics.line(self.pos.x, self.pos.y, self.aim.x, self.aim.y)
+	-- love.graphics.circle("fill", self.pos.x, self.pos.y, 3, 20)
+	-- love.graphics.circle("fill", self.aim.x, self.aim.y, 3, 20)
 end
 
 function _Monster:X_Move(offset)
@@ -181,22 +181,12 @@ function _Monster:Y_Move(offset)
 end
 
 function _Monster:Damage(obj, damageInfo)
-	
-
 	-- fix direction
-	if obj.pos.x > self.pos.x then
+	if obj:GetPos().x > self.pos.x then
 		self:SetDir(1)
 	else
 		self:SetDir(-1)
 	end
-
-	-- _damageInfo = {
-	-- 	["obj"] = obj,
-	-- 	["backPower"] = backPower,
-	-- 	["backSpeed"] = backSpeed or 1,
-	-- 	["float"] = float or 6,
-	-- 	["bounce"] = bounce,
-	-- }
 
 	self.FSM:SetState("damage", self, damageInfo)
 end
@@ -289,7 +279,7 @@ function _Monster:GetBody()
 end
 
 function _Monster:IsDead()
-	return false
+	return self.dead
 end
 
 function _Monster:GetDamageBox()

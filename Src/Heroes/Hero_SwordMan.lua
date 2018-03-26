@@ -139,7 +139,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		end
 		self.pakGrp[_name[n]]:SetBaseRate(self.atkSpeed)
 	end
-	
+
 
 	self.pakGrp.body:SetFileNum(0001)
 	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana0001b.img",1)
@@ -160,7 +160,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	
 	self.FSM = _FSM.New(self,"stay",self.subType)
 
-	self.AttackJudger = _AttackJudger.New(self.subType)
+	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
 	---- [[test ani file]] 
 	
@@ -200,6 +200,7 @@ function Hero_SwordMan:Update(dt)
 	
 	for n = #self.extraEffects,1,-1 do
 		if self.extraEffects[n]:IsOver() then
+			self.extraEffects[n] = nil
 			table.remove(self.extraEffects,n)
 		end 
 	end 
@@ -265,7 +266,7 @@ function Hero_SwordMan:X_Move(offset)
 		_result = scene_:IsInObstacles(_next, self.pos.y)
 		
 		if _result[1] then
-			self:Y_Move(offset)
+			-- self:Y_Move(offset)
 			if offset > 0 then
 				_next = _result[2]:GetVertex()[1].x - 1
 			else
@@ -401,6 +402,10 @@ end
 
 function Hero_SwordMan:GetAtkJudger()
 	return self.AttackJudger
+end
+
+function Hero_SwordMan:GetHitRecovery()
+	return self.hitRecovery
 end
 
 function Hero_SwordMan:InitSkillKeyList()

@@ -44,7 +44,8 @@ function _ObjectMgr.Update(dt)
 	end 
 	
 	for n=#_ObjectMgr.objects,1,-1 do
-		if _ObjectMgr.objects[n]:GetType() == "EFFECT" then
+		if _ObjectMgr.objects[n]:GetType() == "EFFECT" or 
+		   _ObjectMgr.objects[n]:GetType() == "ATKOBJ" then
 			if _ObjectMgr.objects[n]:IsOver() then
 				table.remove(_ObjectMgr.objects,n)
 			end 

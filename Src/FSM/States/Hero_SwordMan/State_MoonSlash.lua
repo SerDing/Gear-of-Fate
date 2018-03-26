@@ -26,10 +26,6 @@ function _State_MoonSlash:Enter(hero_)
 	hero_.pakGrp.body:SetAnimation(self.childName[1])
 	hero_.pakGrp.weapon:SetAnimation(self.childName[1])
 	self.atkNum = 1
-
-	
-	-- self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-	
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.attackName = self.childName[self.atkNum]
@@ -46,7 +42,8 @@ function _State_MoonSlash:Update(hero_,FSM_)
 	self.KEYID["MoonLightSlash"] = hero_:GetSkillKeyID("MoonLightSlash")
 
 	if _body:GetCount() == 2 and not self.effect[1] then
-		self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())
+		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)
+		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 	end
 	
 	if _body:GetCount() <= 3  and self.atkNum == 1 then
@@ -64,8 +61,8 @@ function _State_MoonSlash:Update(hero_,FSM_)
 			self.atkJudger:ClearDamageArr()
 			self.attackName = self.childName[self.atkNum]
 
-			self.effect[2] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash2.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())	
-			-- self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+			self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash2.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)
+			self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		end 
 		
 	end 

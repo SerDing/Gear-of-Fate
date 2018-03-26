@@ -21,9 +21,8 @@ function _FSMAIControl:Ctor(FSM_, entity, nav)
     -- property
     self.moveTerm = entity.property["[detination change term]"] or 5000
     self.attackDelay = entity.property["[attack delay]"] or 1000
-    self.attackDelay = 1000
     self.warLike = entity.property["[warlike]"] or 60
-    self.warLike = 100
+    -- self.warLike = 100
     self.range = {
         {320, 200}, -- observation area 
         {320, 400, 85, 150}, -- onlookers area
@@ -38,8 +37,8 @@ function _FSMAIControl:Ctor(FSM_, entity, nav)
     self.newAim = {}
 
     -- timer data
-    self.moveTimer = self.moveTerm
-    self.attackTimer = 0
+    self.moveTimer = math.random(0, self.moveTerm)
+    self.attackTimer = math.random(0, self.attackDelay)
 
     self.scene = {} -- null ptr
 
@@ -126,10 +125,7 @@ function _FSMAIControl:NavMove(x, y, entity)
     
     if self.pathNodes == false then
         print("End node cannot be pass, path finding finished.")
-        self.startFindPath = false
         return false
-    else
-        print("Path Found! __ Entity Move Start\n")
     end
 
     self.nodesNum = #self.pathNodes

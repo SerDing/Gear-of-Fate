@@ -86,7 +86,7 @@ end
 
 function _SCENEMGR.Update(dt)
 	
-	if _SCENEMGR.curScene then
+	if _SCENEMGR.curScene.Update then
 		_SCENEMGR.curScene:Update(dt)
 	else 
 		print("Err:SceneMgr.Update() --> curScene is not existing !")
@@ -101,7 +101,10 @@ function _SCENEMGR.Draw()
 	local drawFunc = function (x,y)
 		if _SCENEMGR.curScene then
 			if _cover.alpha <= 240 then --防止切换场景后 场景先于黑色封面显示
-				_SCENEMGR.curScene:Draw(x, y)
+				if _SCENEMGR.curScene.Draw then
+					_SCENEMGR.curScene:Draw(x, y)
+				end
+				
 			end 
 		else 
 			print("Err:SceneMgr.Draw() --> curScene is not existing !")
@@ -197,7 +200,7 @@ function _SCENEMGR.SwitchScene(area,map,posIndex)
 			_hero:SetPosition(_pos.x,_pos.y)
 		end 
 	else
-		error("Err: _SCENEMGR:SwitchScene() the objected AreaData is not Existing!","\narea:",area,"map:",map)
+		error("_SCENEMGR:SwitchScene() the objected AreaData is not Existing!","\n* area:",area,"* map:",map)
 		return false
 	end
 	

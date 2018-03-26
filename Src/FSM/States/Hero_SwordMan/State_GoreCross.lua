@@ -11,7 +11,7 @@ local _State_GoreCross = require("Src.Core.Class")()
 
 local _EffectMgr = require "Src.Scene.EffectManager" 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
-
+local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 
 function _State_GoreCross:Ctor() 
 	self.effect = {}
@@ -30,6 +30,7 @@ function _State_GoreCross:Enter(hero_)
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.attackName = "gorecross1"
+	self.atkObj = nil
 end
 
 function _State_GoreCross:Update(hero_,FSM_)
@@ -71,31 +72,27 @@ function _State_GoreCross:Update(hero_,FSM_)
 	
 	if self.effect[2] and not self.effect[3] then
 		if  self.effect[2]:GetAni():GetCurrentPlayNum() == 0 then
-			self.effect[3] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/gorecross2.lua",hero_.pos.x ,hero_.pos.y,1,hero_:GetDir())
-			self.effect[3]:SetOffset(70 * hero_:GetDir(),-85)
-			self.effect[3]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+			
+			if not self.atkObj then
+				self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20028)
+				self.atkObj:SetHost(hero_)
+				self.atkObj:SetPos(hero_:GetPos().x + 70 * hero_:GetDir(), hero_:GetPos().y, - 85)
+				self.atkObj:SetDir(hero_:GetDir())
+				self.atkObj:SetMoveSpeed(4)
+			end
+			-- self.effect[4]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		end 
 	end 
-	
-	if self.effect[3] and not self.effect[4] then
-		print("self.effect[3]:GetAni():GetCount()", self.effect[3]:GetAni():GetCount())
-		if self.effect[3]:GetAni():GetCount() >= 0 then
-			self.effect[4] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/gorecross1.lua",hero_.pos.x ,hero_.pos.y,1,hero_:GetDir())
-			self.effect[4]:SetOffset(70 * hero_:GetDir(),-85)
-			self.effect[4]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-		end
-	end
 	
 	-- effect movement
 	for n=1,2 do
 		if self.effect[n + 2] then
 			self.effect[n + 2]:SetMoveSpeed(4)
 		end 
-	end 
+	end
 
 	-- whether plusAtk check
 	if _body:GetCount() >= 9 then 
-		
 		self.KEYID = hero_:GetSkillKeyID("GoreCross")
 		if _KEYBOARD.Press(hero_.KEY[self.KEYID]) then
 			self.plusAtk = true
@@ -103,7 +100,6 @@ function _State_GoreCross:Update(hero_,FSM_)
 	end
 
 	if _body:GetCount() == 10 then 
-	
 		if not self.plusAtk then -- jump the next frames
 			hero_:GetBody():SetCurrentPlayNum(0) 
 			hero_:GetWeapon():SetCurrentPlayNum(0)

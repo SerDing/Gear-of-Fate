@@ -57,7 +57,7 @@ function _Obstacle:Ctor(_path)
 		y = 0,
 	}
 
-	self.debug = true
+	self.debug = false
 	
 	self.display = 1
 	self.alpha = 255
@@ -200,17 +200,13 @@ function _Obstacle:AutoAlpha()
 end
 
 function _Obstacle:Debug()
-	-- if self.property["[layer]"] == "[normal]"  then
+	if self.property["[layer]"] == "[normal]"  then
 		if self.debug then
 			self.rect:SetColor(255,255,0,200)
 			self.rect:Draw()
-			
 		end
-	-- end
+	end
 
-	local _vertex = self.rect:GetVertex()
-	love.graphics.circle("line", _vertex[1].x, _vertex[1].y, 3, 20)
-	love.graphics.circle("line", _vertex[2].x, _vertex[2].y, 3, 20)
 end
 
 function _Obstacle:SetPos(x, y, z)

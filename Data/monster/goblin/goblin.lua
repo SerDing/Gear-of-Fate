@@ -19,7 +19,9 @@ return {--[[ #PVF_File ]]
 
 	["[level]"]={1,6},
 
-	["[move speed]"]={1000,500}, -- 500 500
+	["detination change term"] = 1500,
+
+	["[move speed]"]={500,500}, -- 500 500
 
 	["[attack speed]"]={600,600},
 
@@ -35,7 +37,7 @@ return {--[[ #PVF_File ]]
 
 	["[warlike]"]=60,
 
-	["[attack delay]"]=50,
+	["[attack delay]"]=3000,
 
 	["[stuckbonus on damage]"]={0,0,0,0},
 

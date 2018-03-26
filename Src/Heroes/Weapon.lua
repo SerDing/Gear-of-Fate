@@ -100,7 +100,7 @@ function _Weapon:SetFileNum(cont,tp)
 	-- cont 	武器资源包路径
 	-- tp 		需更改的pak标记 如 1->b  2->c
 
-	if (tp == 1) then
+	if tp == 1 then
 	    self.pak_b:SetFileNum(cont)
 	else
 	    self.pak_c:SetFileNum(cont)

@@ -35,11 +35,11 @@ function _State_Stay:Update(hero_,FSM_)
 	local _right = hero_.KEY["RIGHT"]
 	
 
-	if(_KEYBOARD.Hold(_up) or _KEYBOARD.Hold(_down))then
+	if _KEYBOARD.Hold(_up) or _KEYBOARD.Hold(_down) then
 		FSM_:SetState("move",hero_)
 	end 
 	
-	if(_KEYBOARD.Hold(_left))then
+	if _KEYBOARD.Hold(_left) then
 		if love.timer.getTime() - self.keyPressTime.left <= _HOLD_SPACE then
 			FSM_:SetState("dash",hero_)
 		else
@@ -47,7 +47,7 @@ function _State_Stay:Update(hero_,FSM_)
 			hero_:SetDir(-1)
 			FSM_:SetState("move",hero_)
 		end 
-	elseif(_KEYBOARD.Hold(_right))then
+	elseif _KEYBOARD.Hold(_right) then
 		if love.timer.getTime() - self.keyPressTime.right <= _HOLD_SPACE then
 			FSM_:SetState("dash",hero_)
 		else 

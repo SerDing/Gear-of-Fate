@@ -44,7 +44,7 @@ function _FSM:Update(entity_)
    
     self.curState:Update(entity_,self)
 
-    if(entity_:GetBody():GetCurrentPlayNum() == 0)then
+    if entity_:GetBody():GetCurrentPlayNum() == 0 then
         if entity_:GetBody():GetAniId() == "[down motion]" then
             self:SetState("sit",entity_)
         else

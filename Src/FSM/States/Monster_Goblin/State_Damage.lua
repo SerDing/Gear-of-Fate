@@ -20,7 +20,7 @@ function _State_Damage:Ctor()
 end 
 
 function _State_Damage:Enter(entity, FSM_, damageInfo)
-	
+	print("monster damage")
 	local _hasDown
 	if entity:GetBody():GetAniId() == "[down motion]" and self.jumpDir == "default" then
 		_hasDown = true
@@ -48,7 +48,6 @@ function _State_Damage:Enter(entity, FSM_, damageInfo)
 
 		entity:SetAnimation("[down motion]")
 		self.bounce = true
-
 		if _hasDown then
 			self.flyPower = 2
 			entity:SetAnimation("[down motion]")

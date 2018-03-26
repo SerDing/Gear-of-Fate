@@ -58,7 +58,7 @@ function _RESMGR.LoadTexture(filePath,cache)
 	if not cache then
 		-- [[ find objected texture in imageCachePool ]]
 		for n = 1 , table.getn(_RESMGR.imageCachePool) do
-			if(_RESMGR.imageCachePool[n].filePath == filePath)then
+			if _RESMGR.imageCachePool[n].filePath == filePath then
 				return _RESMGR.imageCachePool[n].pointing
 			end
 		end
@@ -83,7 +83,7 @@ function _RESMGR.LoadSound(filePath,cache) -- cache : early caching resource
 	if not cache then
 		-- [[ find objected sound in imageCachePool ]]
 		for n = 1 , #_RESMGR.soundCachePool do
-			if(_RESMGR.soundCachePool[n].filePath == filePath)then
+			if _RESMGR.soundCachePool[n].filePath == filePath then
 				return _RESMGR.soundCachePool[n].pointing
 			end
 		end
@@ -108,22 +108,21 @@ function _RESMGR.LoadTextureByImg(filePath)
 	
 	local _offsetName = string.gsub(tmpArray[#tmpArray - 1],".img",".txt")
 	
-	if(love.filesystem.exists(filePath .. "offset.txt") == false
-	and love.filesystem.exists(filePath .. _offsetName) == false
-	)then
+	if love.filesystem.exists(filePath .. "offset.txt") == false
+	and love.filesystem.exists(filePath .. _offsetName) == false then
 		print("The img pack is not existing:",filePath)
 		return
 	end
 
 	local _offset_text
 
-	if(love.filesystem.exists(filePath  .. _offsetName))then
+	if love.filesystem.exists(filePath  .. _offsetName) then
 		_offset_text = LoadFile(filePath .. _offsetName)
 	else 
 		_offset_text = LoadFile(filePath .. "offset.txt")
 	end 
 
-	if(_offset_text == nil)then
+	if _offset_text == nil then
 		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. filePath)
 		return
 	end

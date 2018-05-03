@@ -4,6 +4,6 @@ return {--[[ #PVF_File --]]
 		["[IMAGE]"]={"Monster/Goblin/Event/Goblin.img",6},
 		["[IMAGE POS]"]={-91,-152},
 		["[DELAY]"]=10000,
-		["[DAMAGE BOX]"]={-32,-5,18,31,10,51},
-		["[DAMAGE BOX]"]={-13,-3,-1,21,5,28},}
+		["[DAMAGE BOX]"]={-32,-5,18,31,10,51,-13,-3,-1,21,5,28},
+	}
 }

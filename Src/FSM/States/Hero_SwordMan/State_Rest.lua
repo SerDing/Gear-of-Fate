@@ -16,12 +16,23 @@ local _HOLD_SPACE = 0.3
 function _State_Rest:Ctor()
 	self.keyPressTime = {left = 0, right = 0}
 	self.KEYID = {}
+	self.trans = {
+		{"NORMAL", "JUMP", "jump"}, 
+		{"NORMAL", "ATTACK", "attack"}, 
+		{"NORMAL", "UNIQUE", "upperslash"}, 
+		{"NORMAL", "BACK", "jump", true}, 
+		{"SKILL", "GoreCross", "gorecross"}, 
+		{"SKILL", "HopSmash", "hopsmash"}, 
+		{"SKILL", "Frenzy", "frenzy"}, 
+		{"SKILL", "MoonLightSlash", "moonslash"}, 
+		{"SKILL", "TripleSlash", "tripleslash"}, 
+	}
 end 
 
 function _State_Rest:Enter(hero_,_keyRlstime)
     self.name = "rest"
-	hero_:GetBody():SetAnimation(self.name)
-	hero_:GetWeapon():SetAnimation(self.name)
+	hero_:SetAnimation(self.name)
+	
 	
 end
 
@@ -54,50 +65,13 @@ function _State_Rest:Update(hero_,FSM_)
 			FSM_:SetState("move",hero_)
 		end
 	end
-	
-	self:UpdateSwitch(hero_,FSM_)
-	
 end 
 
 function _State_Rest:Exit(hero_)
-	
 end
 
-function _State_Rest:UpdateSwitch(hero_,FSM_)
-	
-----[[  Normal state switching  ]]
-
-	self:StateSwitch("JUMP","jump",hero_,FSM_)
-
-	self:StateSwitch("ATTACK","attack",hero_,FSM_)
-
-	self:StateSwitch("UNIQUE","upperslash",hero_,FSM_)
-
-	self:StateSwitch("BACK","jump",hero_,FSM_,true)
-
-----[[  Skill state switching  ]]
-
-	self:AtkStateSwitch("GoreCross","gorecross",hero_,FSM_)
-
-	self:AtkStateSwitch("HopSmash","hopsmash",hero_,FSM_)
-
-	self:AtkStateSwitch("Frenzy","frenzy",hero_,FSM_)
-
-	self:AtkStateSwitch("MoonLightSlash","moonslash",hero_,FSM_)
-end
-
-function _State_Rest:StateSwitch(keyID,stateName,hero_,FSM_,...)
-	if _KEYBOARD.Press(hero_.KEY[keyID]) then
-		FSM_:SetState(stateName,hero_,...)
-	end 
-end
-
-function _State_Rest:AtkStateSwitch(skillName,stateName,hero_,FSM_)
-	self.KEYID[skillName] = hero_:GetSkillKeyID(skillName)
-	
-	if _KEYBOARD.Press(hero_.KEY[self.KEYID[skillName]]) then
-		FSM_:SetState(stateName,hero_)
-	end 
+function _State_Rest:GetTrans()
+	return self.trans
 end
 
 return _State_Rest 

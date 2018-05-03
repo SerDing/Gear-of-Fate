@@ -15,71 +15,59 @@ local _Sprite = require "Src.Core.Sprite"
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _EffectMgr = require "Src.Scene.EffectManager"
 local _Scene = require "Src.Scene.GameScene"
-local _sendPos = require "Src.Scene.SendPosition" -- some position data
+local _sendPos = require "Src.Scene.SendPosition" -- new position in next scene
+local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
+local _CAMERA = require "Src.Game.GameCamera"
 
-local _NAME_LIST = {
-	town = require "./Data/town/town" ,
-	dungeon = {},
-}
+-- const
+local _res = {}
 local _Area = {town = {},dungeon = {}}
 local _sceneList = {town = {},dungeon = {}}
-
-local _Index = {  -- Index = {area,map}
-	
+local _Index = {-- Index = {area,map}
 	["elvengard"] = {1,0},
 	["d_elvengard"] = {1,2},
 	["gate"] = {1,1},
 	["lorien"] = {-1, 0},
 }
 
-local _res = {}
-
+-- extern data loading
 local _GAMEINI = require "Src.Config.GameConfig" 
-
-_EffectMgr.Ctor()
-_ObjectMgr.Ctor()
-
-local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
-
-local _hero = _Hero_SwordMan.New(400,460)
-
-_ObjectMgr.AddObject(_hero)
-
-local _cover = {
-	imageData = love.image.newImageData(800, 600),
-	sprite = {},
-	alpha = 240,
-	speed = 3,
+local _NAME_LIST = {
+	town = require "./Data/town/town" ,
+	dungeon = {},
 }
 
+-- init
+_EffectMgr.Ctor()
+_ObjectMgr.Ctor()
+_CAMERA.Ctor(_SCENEMGR)
+
+-- create hero
+local _hero = _Hero_SwordMan.New(400,460)
+_ObjectMgr.AddObject(_hero)
+
+-- black cover when switch scene
+local _cover = {imageData = love.image.newImageData(800, 600),sprite = {},alpha = 240,speed = 3,}
 _cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png"))
 _cover.sprite:SetColor(0,0,0,255)
-
-_CAMERA = require "Src.Game.GameCamera"
-_CAMERA.Ctor(_SCENEMGR)
 
 function _SCENEMGR.Ctor()
 
 	_SCENEMGR.path = "./Data/map/"
 	_SCENEMGR.preScene = {}
 	_SCENEMGR.curScene = {}
-
 	_SCENEMGR.offset = {x = 0, y = 0}
-
 	_SCENEMGR.curIndex = _Index["elvengard"]
+	_SCENEMGR.curType = "town"
 
 	for k,v in pairs(_NAME_LIST.town) do
 		_Area.town[k] = require ("./Data/town." .. v)
 	end 
 
-	_SCENEMGR.curType = "town"
-
   ----[[	test elvengard map	]]
 
 	-- _SCENEMGR.CreatScene(_Index["elvengard"][1],_Index["elvengard"][2],"town")
-	
 	-- _SCENEMGR.LoadScene(_Index["elvengard"][1],_Index["elvengard"][2],_SCENEMGR.curType)
-
 	_SCENEMGR.LoadScene(_Index["lorien"][1],_Index["lorien"][2],_SCENEMGR.curType)
 	
 end 
@@ -105,10 +93,10 @@ function _SCENEMGR.Draw()
 					_SCENEMGR.curScene:Draw(x, y)
 				end
 				
-			end 
-		else 
-			print("Err:SceneMgr.Draw() --> curScene is not existing !")
-		end 
+			end
+		else
+			print("Err:SceneMgr.Draw() --> curScene is not existing!")
+		end
 		
 		if _cover.alpha > 0 then
 			_cover.sprite:Draw(- x, - y)
@@ -119,7 +107,6 @@ function _SCENEMGR.Draw()
 
 	_CAMERA.Draw(drawFunc)
 
-	
 end
 
 function _SCENEMGR.LoadScene(area,map,type)

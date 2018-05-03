@@ -9,7 +9,7 @@
 
 local _ResPack = require("Src.Core.Class")()
 
-local _RESMGR = require "Src.ResManager"
+local _RESMGR = require "Src.Resource.ResManager"
 
 function _ResPack:Ctor(PakName) --initialize
 

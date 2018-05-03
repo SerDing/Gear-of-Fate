@@ -15,32 +15,31 @@ local _KEYBOARD = require "Src.Core.KeyBoard"
 
 function _State_FrenzyAttack:Ctor()
     self.name = "frenzyattack"
-
-    self.childName ={
-        "frenzy1",
-        "frenzy2",
-        "frenzy3",
-        "frenzy4",
-    }
+    self.childName ={"frenzy1", "frenzy2", "frenzy3", "frenzy4"}
+    self.trans = {
+		{"NORMAL", "UNIQUE", "upperslash"}, 
+		{"NORMAL", "BACK", "jump", true}, 
+		{"SKILL", "GoreCross", "gorecross"}, 
+		{"SKILL", "HopSmash", "hopsmash"}, 
+	}
     
     self.attackNum = 0
     self.KEYID = {}
 
-    self:AtkBase_Init()
+    self:_Init()
 
 end 
 
 function _State_FrenzyAttack:Enter(hero_)
     
-	hero_:GetBody():SetAnimation(self.childName[1])
-	hero_:GetWeapon():SetAnimation(self.childName[1])
+	hero_:SetAnimation(self.childName[1])
 	self.attackNum = 1
     
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
 
 ----[[  Call base class function  ]]
-    self:AtkBase_Enter(hero_)
+    self:_Enter(hero_)
     self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword1-1.lua",0,1,hero_)
     self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword1-3.lua",0,1,hero_)
     self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword1-4.lua",0,1,hero_)
@@ -68,8 +67,8 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 4 then
             self.attackNum = 2
             self.atkJudger:ClearDamageArr()
-            hero_:GetBody():SetAnimation(self.childName[self.attackNum])
-            hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
+            hero_:SetAnimation(self.childName[self.attackNum])
+            
            
             for n=1,#self.effect do
                 self.effect[n].over = true
@@ -103,8 +102,8 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.atkJudger:ClearDamageArr()
-            hero_:GetBody():SetAnimation(self.childName[self.attackNum])
-            hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
+            hero_:SetAnimation(self.childName[self.attackNum])
+            
             
             for n=1,#self.effect do
                 self.effect[n].over = true
@@ -138,8 +137,8 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 4
             self.atkJudger:ClearDamageArr()
-            hero_:GetBody():SetAnimation(self.childName[self.attackNum])
-            hero_:GetWeapon():SetAnimation(self.childName[self.attackNum])
+            hero_:SetAnimation(self.childName[self.attackNum])
+            
             
             for n=1,#self.effect do
                 self.effect[n].over = true
@@ -179,26 +178,6 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         end 
     end 
     
-    if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
-		FSM_:SetState("upperslash",hero_)
-    end 
-    
-    if _KEYBOARD.Press(hero_.KEY["BACK"]) then
-		FSM_:SetState("jump",hero_,true)
-	end
-
-    self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
-    
-    if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
-        FSM_:SetState("gorecross",hero_)
-    end 
-
-    self.KEYID["HopSmash"] = hero_:GetSkillKeyID("HopSmash")
-	
-	if _KEYBOARD.Press(hero_.KEY[self.KEYID["HopSmash"]]) then
-        FSM_:SetState("hopsmash",hero_)
-	end 
-
 end 
 
 function _State_FrenzyAttack:Exit(hero_)
@@ -206,7 +185,11 @@ function _State_FrenzyAttack:Exit(hero_)
     for n=1,#self.effect do
         self.effect[n].over = true
     end 
-    self:AtkBase_Exit()
+    self:_Exit()
+end
+
+function _State_FrenzyAttack:GetTrans()
+	return self.trans
 end
 
 return _State_FrenzyAttack 

@@ -18,14 +18,9 @@ end
 
 function _State_DashAttack:Enter(hero_)
 	self.name = "dashattack"
-	self.attackName = {
-		"dashattack1",
-		"dashattack2",
-	}
-	hero_:GetBody():SetAnimation(self.name)
-	hero_:GetWeapon():SetAnimation(self.name)
+	self.attackName = {"dashattack1","dashattack2"}
+	hero_:SetAnimation(self.name)
 	self.attackCount = 1
-
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 end
@@ -38,18 +33,15 @@ function _State_DashAttack:Update(hero_,FSM_)
 	-- 	_ATK_CHECK:CollisionDetection(_bodyAtkBox)
 	-- end 
 	
-
 	local _body = hero_:GetBody()
 	local _dt = love.timer.getDelta()
 	
 	if _body:GetCount() >= 2 and _body:GetCount() <= 4 then
-		
 		if self.attackCount == 1 then
 			hero_:X_Move(hero_.spd.x * 75 * _dt * hero_.dir )
 		elseif self.attackCount == 2 then
 			hero_:X_Move(hero_.spd.x * 225 * _dt * hero_.dir )
 		end 
-		
 	end 
 
 	if _body:GetCount() > 3 then
@@ -57,9 +49,7 @@ function _State_DashAttack:Update(hero_,FSM_)
 			hero_:GetBody():SetFrame(2)
 			hero_:GetWeapon():SetFrame(2)
 			self.attackCount = self.attackCount + 1
-			
 			self.atkJudger:ClearDamageArr()
-			
 		end 
 	end 
 
@@ -71,7 +61,6 @@ function _State_DashAttack:Update(hero_,FSM_)
 		self.effect[2] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "dashattackmultihit2.lua",hero_.pos.x,hero_.pos.y-1,1,hero_:GetDir())	
 		self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		-- self.effect[2]:SetOffset(-200 * hero_:GetDir(),-100)
-		
 	end 
 	
 	for n=1,#self.effect do
@@ -84,15 +73,12 @@ function _State_DashAttack:Update(hero_,FSM_)
 		self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackCount])
 	end
 	
-
-
 end 
 
 function _State_DashAttack:Exit(hero_)
     for n=1,#self.effect do
 		self.effect[n] = nil
 	end 
-	
 end
 
 return _State_DashAttack 

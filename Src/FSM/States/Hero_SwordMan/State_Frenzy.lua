@@ -37,8 +37,7 @@ function _State_Frenzy:Enter(hero_,FSM_)
 		return 
 	end 
 	
-	hero_.pakGrp.body:SetAnimation(self.name)
-	hero_.pakGrp.weapon:SetAnimation(self.name)
+	hero_:SetAnimation(self.name)
 	
 	hero_.pakGrp.body:SetColor(unpack(self.stateColor))
 	-- hero_.pakGrp.weapon:SetColor(unpack(self.stateColor))

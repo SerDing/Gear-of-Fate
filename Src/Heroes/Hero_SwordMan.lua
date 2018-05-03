@@ -12,9 +12,10 @@ local Hero_SwordMan = require("Src.Core.Class")(_obj)
 
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Heroes.Weapon"
-local _FSM = require "Src.FSM.FSM"
+local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Game.AttackJudger"
 local _KEYBOARD = require "Src.Core.KeyBoard" 
+local _Input = require "Src.Input.Input"
 
 -- const
 local _path = {
@@ -22,56 +23,14 @@ local _path = {
 "../Data/equipment/swordman/weapon/katana/"
 }
 
-local _aniName = {
-
-	"attack1",
-	"attack2",
-	"attack3",
-	
-	"frenzy1",
-	"frenzy2",
-	"frenzy3",
-	"frenzy4",
-	
-	"damage1",
-	"damage2",
-	"rest", -- idle stand calmly
-	"stay", -- stand for fight
-	"dash", -- run
-	"down", -- fall down
-	"move", -- walk
-	"guard", -- use weapon to defend
-	"jump",
-	"jumpattack",
-	"getitem", -- pick the item
-	"gorecross", -- skill: cross slash 
-	"grab", -- skill:use ghost_hand to pick an enemy and attack it
-
-	"dashattack", -- attack when hero ran
-	"sit",
-
-	"hitback",	-- up slash action hit back enemy when hero was damaged
-	"hardattack", -- use the sword with ghost attack enemy
-	"hopsmash",
-	"hopsmashready",
-
-	"moonlightslash1",
-	"moonlightslash2",
-
-	"tripleslash1",
-	"tripleslash2",
-	"tripleslash3",
-
-	"summon1", 
-	"summon2", -- reckless 
-
-	"upperslashafter",
+local _aniName = {"attack1", "attack2", "attack3","frenzy1","frenzy2","frenzy3","frenzy4",
+"damage1","damage2","rest", "stay", "dash", "down", "move", "guard", "jump","jumpattack",
+"getitem", "gorecross", "grab", "dashattack", "sit","hitback",	"hardattack", "hopsmash",
+"hopsmashready","moonlightslash1","moonlightslash2","tripleslash1","tripleslash2","tripleslash3",
+"summon1", "summon2", "upperslashafter", "flowmindtwoattack1",
 }
 
-local _name = {
-	"body",
-	"weapon"
-}
+local _name = {"body","weapon"}
 
 local _pakNum = 2
 
@@ -82,19 +41,19 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	self.pos = {x = x, y = y}
 	self.drawPos = {x = math.floor(x), y = math.floor(y)}
 	self.spd = {x = 2.25, y = 2}
+
+	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.camp = "HERO"
-	self.subType = "HERO_SWORDMAN"
-
 	self.jumpOffset = 0
-	
 	self.atkSpeed = 1.5
-
-	self.atkMode = "normal" -- or frenzy
-
 	self.hitRecovery = 45
 	self.hitTime = 0
+
+	-- string 
+	self.camp = "HERO"
+	self.subType = "HERO_SWORDMAN"
+	self.atkMode = "normal" -- or frenzy
 
 	self.KEY = {
 		["UP"] = "up",
@@ -123,64 +82,57 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		
 	}
 
-	self.buff = {
-		["frenzy"] = {switch = false,ani = nil},
+	self.AI = false
 
+	self.buff = {
+		["frenzy"] = {switch = false, ani = nil},
 	}
 
 	self.pakGrp = {
 		["body"] = _AniPack.New(),
-		["weapon"] = _Weapon.New(),
+		["weapon"] = _Weapon.New(self.subType),
 	}
 
 	for n = 1,_pakNum do
 		for k = 1,#_aniName do
-			self.pakGrp[_name[n]]:AddAnimation(_path[n] .. _aniName[k],1,_aniName[k])
+			self.pakGrp[_name[n]]:AddAnimation(_path[n] .. _aniName[k], 1, _aniName[k])
 		end
 		self.pakGrp[_name[n]]:SetBaseRate(self.atkSpeed)
 	end
 
 
 	self.pakGrp.body:SetFileNum(0001)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana0001b.img",1)
-	self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana0001c.img",2)
-
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201b.img",1)
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/katana/katana3201c.img",2)
-	
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004b.img",1)
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lkatana/lkatana0004c.img",2)
-
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500b.img",1)
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/lswd/lswd0500c.img",2)
-
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd/sswd4200c.img",1)
-	-- self.pakGrp.weapon:SetFileNum("character/swordman/equipment/avatar/weapon/sswd/sswd4200c.img",2)
+	self.pakGrp.weapon:SetRes("katana", 3201)
+	-- katana	0001
+	-- katana	3201
+	-- lkatana	0004
+	-- lswd		0500
+	-- sswd		4200c
 	-- self.pakGrp.weapon:SetSingle(true)
-	
+	self.input = _Input.New(self)
 	self.FSM = _FSM.New(self,"stay",self.subType)
 
 	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
 	---- [[test ani file]] 
-	
 	-- for n = 1,_pakNum do
 	-- 	self.pakGrp[_name[n]]:SetPlayNum("summon2",-1)
 	-- 	self.pakGrp[_name[n]]:SetAnimation("summon2")
 	-- end
-	
-	----
+	--**********************
 	self:InitSkillKeyList()
 	self.extraEffects = {}
 end
 
 function Hero_SwordMan:Update(dt)
-	
+
 	if love.timer.getTime() - self.hitTime <= self.hitRecovery / 1000 then -- hit stop effect
 		return
 	end
-
+	
 	self.FSM:Update(self)
+
+	self.input:Update(dt)
 
 	for n=1,_pakNum do 
 		self.pakGrp[_name[n]]:Update(dt)
@@ -384,6 +336,10 @@ function Hero_SwordMan:GetY()
 	return self.Y
 end
 
+function Hero_SwordMan:GetInput()
+	return self.input
+end
+
 function Hero_SwordMan:GetBody()
 	return self.pakGrp.body
 end
@@ -417,8 +373,8 @@ function Hero_SwordMan:InitSkillKeyList()
 		{"F","TripleSlash"},
 		{"G","ReckLess"},
 		{"H", "Frenzy"},
-		
 		{"E", "MoonLightSlash"},
+		{"R", "Ashenfork"},
 	}
 	
 end
@@ -437,6 +393,14 @@ function Hero_SwordMan:AddExtraEffect(effect)
 	assert(effect,"Warning: Hero_SwordMan:AddExtraEffect() got a nil effect!")
 	self.extraEffects[#self.extraEffects + 1] = effect
 	self.extraEffects[#self.extraEffects]:SetLayerId(1000 + #self.extraEffects)
+end
+
+function Hero_SwordMan:GetSubType()
+	return self.subType
+end
+
+function Hero_SwordMan:IsAI()
+	return self.AI
 end
 
 return Hero_SwordMan

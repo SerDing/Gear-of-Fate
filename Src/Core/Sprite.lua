@@ -11,7 +11,7 @@
 local _Sprite = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
-local _RESMGR = require "Src.ResManager" 
+local _RESMGR = require "Src.Resource.ResManager" 
 
 function _Sprite:Ctor(path,x,y,w,h) --initialize
 

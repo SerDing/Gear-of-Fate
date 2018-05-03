@@ -21,6 +21,7 @@ local _targetPos = {x = 0, y = 0}
 local _shakeData = {
 	time = 2,
 	timer = 2,
+	
 	x_range = {0,6},
 	y_range = {0,6},
 }
@@ -58,7 +59,7 @@ function _GameCamera.Update(dt)
 	end 
 
 	if _KEYBOADR.Hold("lalt") then
-		_GameCamera.Shake(0.12,-1,1,-2,2)
+		_GameCamera.Shake(0.12,-2,2,-2,2)
 		
 	end 
 
@@ -98,15 +99,21 @@ function _GameCamera.Set()
 	love.graphics.push()
 	love.graphics.translate(_GameCamera.pos.x,_GameCamera.pos.y)
 
-	----[[  shaking effect  ]]
+	_GameCamera.ShakingSet()
+end
+
+function _GameCamera.ShakingSet()
+	
+	-- local _percent = 1 - (_shakeData.time / _shakeData.timer)
+	
 	if _shakeData.time < _shakeData.timer then
 		_shakeData.time = _shakeData.time + love.timer.getDelta()
 		_spaceTime = _spaceTime + love.timer.getDelta()
 		if _spaceTime >= _spaceTimer then
 			_spaceTime = 0
 			love.graphics.translate(
-				math.floor(math.random(_shakeData.x_range[1],_shakeData.x_range[2])), 
-				math.floor(math.random(_shakeData.y_range[1],_shakeData.y_range[2]))
+				math.floor(math.random(_shakeData.x_range[1], _shakeData.x_range[2])), 
+				math.floor(math.random(_shakeData.y_range[1], _shakeData.y_range[2]))
 			)
 		end
 	end 

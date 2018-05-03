@@ -23,8 +23,7 @@ function _State_MoonSlash:Ctor()
 end 
 
 function _State_MoonSlash:Enter(hero_)
-	hero_.pakGrp.body:SetAnimation(self.childName[1])
-	hero_.pakGrp.weapon:SetAnimation(self.childName[1])
+	hero_:SetAnimation(self.childName[1])
 	self.atkNum = 1
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
@@ -54,10 +53,8 @@ function _State_MoonSlash:Update(hero_,FSM_)
 
 	if _body:GetCount() >= 2 and self.atkNum == 1 then
 		if _KEYBOARD.Press(hero_.KEY[self.KEYID["MoonLightSlash"]]) then
-			hero_.pakGrp.body:SetAnimation(self.childName[2])
-			hero_.pakGrp.weapon:SetAnimation(self.childName[2])
+			hero_:SetAnimation(self.childName[2])
 			self.atkNum = 2
-			
 			self.atkJudger:ClearDamageArr()
 			self.attackName = self.childName[self.atkNum]
 

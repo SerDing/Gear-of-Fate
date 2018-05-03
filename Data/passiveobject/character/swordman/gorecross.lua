@@ -14,7 +14,7 @@ return {--[[ #PVF_File --]]
 	["[attack info]"]="AttackInfo/GoreCross.atk",
 	
 	["[add object effect]"]={"Animation/GoreCross2.ani",-1,0,},
-
+	
 	["[object destroy condition]"]={"[destroy condition]","[on end of animation]",},
 	
 	["[etc motion]"]={"Animation/GoreCross3.ani","Animation/GoreCross4.ani",},

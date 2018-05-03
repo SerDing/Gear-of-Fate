@@ -11,11 +11,17 @@ local _Weapon = require("Src.Core.Class")()
 
 local _AniPack = require "Src.AniPack"
 
-function _Weapon:Ctor() --initialize
+function _Weapon:Ctor(heroType) --initialize
+
+	self.pathHeads = {
+		["HERO_SWORDMAN"] = "character/swordman/equipment/avatar/weapon/",
+	}
+
+	self.pathHead = self.pathHeads[heroType]
+	self.dir = 1
 
 	self.pak_b = _AniPack.New()
 	self.pak_c = _AniPack.New()
-	self.dir = 1
 end
 
 function _Weapon:NextFrame()
@@ -86,9 +92,9 @@ end
 
 function _Weapon:SetColor(r,g,b,a)
 	
-		self.pak_b:SetColor(r,g,b,a)
-		self.pak_c:SetColor(r,g,b,a)
-	end
+	self.pak_b:SetColor(r,g,b,a)
+	self.pak_c:SetColor(r,g,b,a)
+end
 
 function _Weapon:SetBaseRate(rate)
 	
@@ -96,15 +102,11 @@ function _Weapon:SetBaseRate(rate)
 	self.pak_c:SetBaseRate(rate)
 end
 
-function _Weapon:SetFileNum(cont,tp)
-	-- cont 	武器资源包路径
-	-- tp 		需更改的pak标记 如 1->b  2->c
-
-	if tp == 1 then
-	    self.pak_b:SetFileNum(cont)
-	else
-	    self.pak_c:SetFileNum(cont)
-	end
+function _Weapon:SetRes(weaponType, fileNum)
+	local _resPathHead = self.pathHead .. weaponType .. "/" .. weaponType .. string.format("%04d", fileNum)
+	local _resPathEnd = ".img"
+	self.pak_b:SetFileNum(_resPathHead .. "b" .. _resPathEnd)
+	self.pak_c:SetFileNum(_resPathHead .. "c" .. _resPathEnd)
 end
 
 function _Weapon:SetSingle(bool)

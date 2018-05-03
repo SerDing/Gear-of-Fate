@@ -10,12 +10,14 @@
 local _FSMAIControl = require("Src.Core.Class")()
 
 local _ObjectMgr = require "Src.Scene.ObjectManager"
+local _GDB = require "Src.Game.GameDataBoard"
 
-function _FSMAIControl:Ctor(FSM_, entity, nav)
+function _FSMAIControl:Ctor(FSM_, entity, nav, input)
     
     -- instance pointer
     self.FSM = FSM_
     self.nav = nav
+    self.input = input
     self.hero_ = _ObjectMgr.GetHero()
     
     -- property
@@ -29,8 +31,11 @@ function _FSMAIControl:Ctor(FSM_, entity, nav)
         {30, 30}, -- attack area
     }
     self.pos = {x = 0, y = 0}
+    self.move = false
+    self.lastDistanceDir = {x = 0, y = 0}
+    self.distanceDir = {x = 0, y = 0}
 
-    -- perceptions init
+    -- perceptions data init
     self.aim = entity:GetAim()
     self.dir = 1
     self.heroPos = {}
@@ -53,9 +58,9 @@ function _FSMAIControl:Update(dt, entity)
         
         self:Action(entity)
         self:SelectDestination(entity)
-        self:MoveMethod(entity)
+        self:MoveMethod(entity)    
         self:SetDir(entity, self.heroPos)
-
+        
     else
         -- idle
         self:SetDir(entity, self.newAim)
@@ -65,7 +70,7 @@ function _FSMAIControl:Update(dt, entity)
         
     end
 
-end 
+end
 
 function _FSMAIControl:Action(entity)
     -- attack
@@ -77,12 +82,12 @@ function _FSMAIControl:Action(entity)
                     self.FSM:SetState("attack", entity)
                 end
             end
-        end 
+        end
     end
 end
 
 function _FSMAIControl:SelectDestination(entity)
-    if self.FSM.curState.name == "waiting" then
+    if self.FSM:GetCurState().name == "waiting" then
         if self.moveTimer >= self.moveTerm / 1000 then
             self.moveTimer = 0
             
@@ -95,17 +100,61 @@ function _FSMAIControl:SelectDestination(entity)
                 }
                 -- print("repeat calc aim")
             until self.scene:IsInMoveableArea(self.newAim.x, self.newAim.y) and self.scene:IsInObstacles(self.newAim.x, self.newAim.y)[1] == false
-            
-            -- self.FSM:SetState("move", entity)
-            -- entity:SetAim(self.newAim.x, self.newAim.y)
             self:NavMove(self.newAim.x, self.newAim.y, entity)
-
+            
         end
     end
 end
 
 function _FSMAIControl:MoveMethod(entity)
     
+    -- if self.move then -- move stage
+    --     if self.distanceDir.x == self.lastDistanceDir.x then
+    --         if entity:GetPos().x < self.pathNodes[self.nodeIndex]:GetPos().x then
+    --             self.input:Press(_GDB.GetKey("RIGHT"))
+    --         end
+
+    --         if entity:GetPos().x > self.pathNodes[self.nodeIndex]:GetPos().x then
+    --             self.input:Press(_GDB.GetKey("LEFT"))
+    --         end
+    --     end
+
+    --     if self.distanceDir.y == self.lastDistanceDir.y then
+    --         if entity:GetPos().y < self.pathNodes[self.nodeIndex]:GetPos().y then
+    --             self.input:Press(_GDB.GetKey("DOWN"))
+    --         end
+            
+    --         if entity:GetPos().y > self.pathNodes[self.nodeIndex]:GetPos().y then
+    --             self.input:Press(_GDB.GetKey("UP"))
+    --         end
+    --     end
+
+    --     self.distanceDir = {
+    --         x = (entity:GetPos().x - self.pathNodes[self.nodeIndex]:GetPos().x > 0) and 1 or -1 , 
+    --         y = (entity:GetPos().y - self.pathNodes[self.nodeIndex]:GetPos().y > 0) and 1 or -1
+    --     }
+
+    --     if self.distanceDir.x == - self.lastDistanceDir.x and 
+    --        self.distanceDir.y == - self.lastDistanceDir.y then -- outride goal node, switch goal to next node
+    --         if self.nodeIndex < self.nodesNum then
+    --             self.nodeIndex = self.nodeIndex + 1
+    --             entity:SetAimNode(self.pathNodes[self.nodeIndex])
+    --             self.lastDistanceDir = {
+    --                 x = (entity:GetPos().x - self.pathNodes[self.nodeIndex]:GetPos().x > 0) and 1 or -1 , 
+    --                 y = (entity:GetPos().y - self.pathNodes[self.nodeIndex]:GetPos().y > 0) and 1 or -1
+    --             }
+    --         else
+    --             self.FSM:SetState("waiting", entity)
+    --             self.move = false
+    --         end
+    --         self.input:Release(_GDB.GetKey("RIGHT"))
+    --         self.input:Release(_GDB.GetKey("LEFT"))
+    --         self.input:Release(_GDB.GetKey("UP"))
+    --         self.input:Release(_GDB.GetKey("DOWN")) 
+    --     end
+    -- end
+
+    -- old move stop logic
     if self.FSM:GetCurState().name == "move" then -- move state control
         local _stopRange = self.FSM:GetCurState():GetStopRange()
         if self.pathNodes[self.nodeIndex]:IsInNode(entity:GetPos().x, entity:GetPos().y) then -- math.abs(self.pos.x - self.aim.x) <= _stopRange
@@ -117,13 +166,14 @@ function _FSMAIControl:MoveMethod(entity)
             end
         end
     end
+
 end
 
 function _FSMAIControl:NavMove(x, y, entity)
 
     self.pathNodes = self.nav:FindPath(entity, x, y)
     
-    if self.pathNodes == false then
+    if not self.pathNodes then
         print("End node cannot be pass, path finding finished.")
         return false
     end
@@ -132,6 +182,14 @@ function _FSMAIControl:NavMove(x, y, entity)
     self.nodeIndex = 1
     entity:SetAimNode(self.pathNodes[self.nodeIndex])
     self.FSM:SetState("move", entity)
+    
+    -- self.lastDistanceDir = {
+    --     x = (entity:GetPos().x - self.pathNodes[self.nodeIndex]:GetPos().x > 0) and 1 or -1 , 
+    --     y = (entity:GetPos().y - self.pathNodes[self.nodeIndex]:GetPos().y > 0) and 1 or -1
+    -- }
+
+    -- self.move = true
+    print("monster start move")
 	self.FSM:GetCurState():SetStopRange(self.nav:GetNodeSize() / 2)
 end
 
@@ -162,6 +220,9 @@ function _FSMAIControl:IsInAttackArea(obj, entity, range)
 end
 
 function _FSMAIControl:SetDir(entity, aim)
+    if self.FSM:GetCurState().name == "damage" then
+        return
+    end
     local _dir = (math.floor(aim.x) > math.floor(entity.pos.x)) and 1 or -1
     entity:SetDir(_dir)
 end

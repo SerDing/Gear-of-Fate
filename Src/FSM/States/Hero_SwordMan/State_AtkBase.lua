@@ -1,10 +1,10 @@
 --[[
-	Desc: Tmp state 
+	Desc: attack base class
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
-		* wrap the logic of tmp state in this class
+		* base logic for attack state
 ]]
 
 --[[
@@ -30,63 +30,72 @@
 
 local _State_AtkBase = require("Src.Core.Class")()
 
-function _State_AtkBase:AtkBase_Init()
+function _State_AtkBase:_Init()
 
-	-- self.SoundMgr = require "Src.SoundManager"
+	
 	self.atkBaseInit = true
 	self.effect = {}
+	self.effectInfo = {}
 
 	self.EffectMgr = require "Src.Scene.EffectManager"
-	
-	
+	-- self.SoundMgr = require "Src.SoundManager"
 end 
 
-function _State_AtkBase:AtkBase_Enter(hero_)
+function _State_AtkBase:_Enter(hero_)
 	self.hero_ = hero_
 	self.heroBody = hero_:GetBody()
 	self.dt = 0 
 	self.atkJudger = hero_:GetAtkJudger()
+	self.heroType = hero_:GetSubType()
 end 
 
-function _State_AtkBase:AtkBase_Update(hero_,FSM_)
-    self.dt = love.timer.getDelta()
+function _State_AtkBase:_Update(FSM_)
+	self.dt = love.timer.getDelta()
+	-- Add effects by info
+	for i=1,#self.effectInfo do
+		if self.effectInfo[i].born == false then
+			print("atk base effect generate:", self.EffectMgr.pathHead[self.heroType] .. self.effectInfo[i].subPath)
+			self:Effect(self.EffectMgr.pathHead[self.heroType] .. self.effectInfo[i].subPath, 1, 1, self.hero_)
+			self.effectInfo[i].born = true
+		end
+	end
 end 
 
-function _State_AtkBase:AtkBase_Exit()
+function _State_AtkBase:_Exit()
 	for n=1,#self.effect do
 		self.effect[n] = nil
-    end 
+	end 
+	for i=1,#self.effectInfo do -- Reset born state of effects
+		self.effectInfo[i].born = false
+	end
 end
 
-function _State_AtkBase:SetEffectKeyFrame()
-    -- statements
+function _State_AtkBase:SetEffectKeyFrame(frame, subPath)
+    self.effectInfo[#self.effectInfo + 1] = {frame = frame, subPath = subPath, born = false}
 end
 
-function _State_AtkBase:SetAtkKeyFrame() -- attack judge key frame
-    -- statements
-end
-
-function _State_AtkBase:Effect(path,layer,num,hero_)
+function _State_AtkBase:Effect(path, layer, num)
 	
-	if hero_ then
+	if self.hero_ then
 		self.effect[#self.effect + 1] = self.EffectMgr.ExtraEffect(path, 
 			self.hero_.pos.x, 
-			self.hero_.pos.y + layer, 
+			self.hero_.pos.y, 
 			num, 
 			self.hero_:GetDir(),
-			hero_
+			self.hero_
 		)
 	else
-		self.effect[#self.effect + 1] = self.EffectMgr.GenerateEffect(path, 
-			self.hero_.pos.x, 
-			self.hero_.pos.y + layer, 
-			num, 
-			self.hero_:GetDir()
-		)
+		error("_State_AtkBase:Effect() hero_ ptr is nil!")
+		-- self.effect[#self.effect + 1] = self.EffectMgr.GenerateEffect(path, 
+		-- 	self.hero_.pos.x, 
+		-- 	self.hero_.pos.y + layer, 
+		-- 	num, 
+		-- 	self.hero_:GetDir()
+		-- )
 	end
 	
 	
-	-- print("AtkBase_Effect() --> effect_num:",#self.effect)
+	-- print("_State_AtkBase:Effect() --> effect_num:",#self.effect)
 	self.effect[#self.effect]:GetAni():SetBaseRate(self.hero_:GetAtkSpeed())
 	self.effect[#self.effect]:SetLayer(layer or 1)
 end

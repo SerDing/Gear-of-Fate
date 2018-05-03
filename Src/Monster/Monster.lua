@@ -1,5 +1,5 @@
 --[[
-	Desc: A new lua class
+	Desc: Monster class
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
@@ -10,7 +10,7 @@ local _obj = require "Src.Scene.Object"
 local _Monster = require("Src.Core.Class")(_obj)
 
 local _AniPack = require "Src.AniPack"
-local _KEYBOARD = require "Src.Core.KeyBoard" 
+local _Input = require "Src.Input.Input"
 local _FSM = require "Src.FSM.FSM"
 local _FSMAIControl = require "Src.FSM.FSMAIControl"
 
@@ -31,15 +31,14 @@ function _Monster:Ctor(path, nav)
 	self.drawPos = {x = 0, y = 0, z = 0}
 	self.aim = {x = 0, y = 0}
 	self.speed = {x = 2, y = 1.5}
-	self.dead = false
 	self.speed = {
 		x = self.property["[move speed]"][1] / 1000 * 2, 
 		y = self.property["[move speed]"][2] / 1000 * 2
 	}
-
 	self.dir = 1
 	self.Y = 0
-
+	self.dead = false
+	self.AI = true
 	self.debug = false
 
 	self.pakArr = {
@@ -73,9 +72,11 @@ function _Monster:Ctor(path, nav)
 
 	self.pakArr["body"]:SetAnimation("[move motion]")
 
+	self.input = _Input.New(self)
+
 	self.FSM = _FSM.New(self, "waiting", self.subType)
 
-	self.AI_Control = _FSMAIControl.New(self.FSM, self, nav)
+	self.AI_Control = _FSMAIControl.New(self.FSM, self, nav, self.input)
 
 end 
 
@@ -84,10 +85,12 @@ function _Monster:Update(dt)
 	for k,v in pairs(self.pakArr) do
 		v:Update(dt)
 	end
-
+	
 	self.FSM:Update(self)
 
 	self.AI_Control:Update(dt,self)	
+
+	self.input:Update(dt)
 
 	self.Y = self.pos.y
 end 
@@ -100,9 +103,13 @@ function _Monster:Draw(x,y)
 	end
 
 	-- move aim debug drawing
-	-- love.graphics.line(self.pos.x, self.pos.y, self.aim.x, self.aim.y)
-	-- love.graphics.circle("fill", self.pos.x, self.pos.y, 3, 20)
-	-- love.graphics.circle("fill", self.aim.x, self.aim.y, 3, 20)
+	love.graphics.line(self.pos.x, self.pos.y, self.aim.x, self.aim.y)
+	love.graphics.circle("fill", self.pos.x, self.pos.y, 3, 20)
+	local r, g, b, a = love.graphics.getColor()
+	love.graphics.setColor(200, 0, 0, 255)
+	love.graphics.circle("fill", self.aim.x, self.aim.y, 5, 20)
+	love.graphics.setColor(r, g, b, a)
+	
 end
 
 function _Monster:X_Move(offset)
@@ -181,13 +188,15 @@ function _Monster:Y_Move(offset)
 end
 
 function _Monster:Damage(obj, damageInfo)
-	-- fix direction
-	if obj:GetPos().x > self.pos.x then
-		self:SetDir(1)
-	else
-		self:SetDir(-1)
+	local d = (obj:GetPos().x - self.pos.x > 0) and 1 or -1
+	
+	if obj:GetType() == "ATKOBJ" and obj:GetAtkObjType() == "MOV_OBJ" then
+		if obj:GetDir() == d then
+			d = -obj:GetDir()
+		end
 	end
-
+	
+	self:SetDir(d)-- fix direction
 	self.FSM:SetState("damage", self, damageInfo)
 end
 
@@ -270,6 +279,10 @@ function _Monster:GetY()
 	return self.Y
 end
 
+function _Monster:GetInput()
+	return self.input
+end
+
 function _Monster:GetSpeed()
 	return self.speed
 end
@@ -284,6 +297,10 @@ end
 
 function _Monster:GetDamageBox()
 	return self.pakArr["body"]:GetDamageBox()
+end
+
+function _Monster:IsAI()
+	return self.AI
 end
 
 return _Monster 

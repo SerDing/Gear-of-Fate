@@ -14,11 +14,15 @@ local _KEYBOARD = require "Src.Core.KeyBoard"
 function _State_Attack:Ctor()
     self.name = "attack"
 
-    self.childName ={
-        "attack1",
-        "attack2",
-        "attack3",
-    }
+    self.childName = {"attack1", "attack2", "attack3"}
+    self.trans = {
+		{"NORMAL", "UNIQUE", "upperslash"}, 
+		{"NORMAL", "BACK", "jump", true}, 
+		{"SKILL", "GoreCross", "gorecross"}, 
+		{"SKILL", "HopSmash", "hopsmash"}, 
+		{"SKILL", "MoonLightSlash", "moonslash"}, 
+		{"SKILL", "TripleSlash", "tripleslash"}, 
+	}
     
     self.attackNum = 0
     self.KEYID = {}
@@ -27,12 +31,13 @@ end
 
 function _State_Attack:Enter(hero_,FSM_)
     
-	hero_:SetAnimation(self.childName[1])
-	self.attackNum = 1
+    self.attackNum = 1
+    self.attackName = self.childName[self.attackNum]
 
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
-    self.attackName = self.childName[self.attackNum]
+
+    hero_:SetAnimation(self.attackName)
 
     if hero_:GetAttackMode() == "frenzy" then
         FSM_:SetState("frenzyattack",hero_)
@@ -64,7 +69,7 @@ function _State_Attack:Update(hero_,FSM_)
         end
 
     elseif self.attackNum == 2 then
-        
+
         if _movable then
             if _body:GetCount() <= 2 then
                 hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
@@ -105,31 +110,14 @@ function _State_Attack:Update(hero_,FSM_)
         self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
     end
 
-    
-    if _KEYBOARD.Press(hero_.KEY["UNIQUE"]) then
-		FSM_:SetState("upperslash",hero_)
-    end 
-    
-    if _KEYBOARD.Press(hero_.KEY["BACK"]) then
-		FSM_:SetState("jump",hero_,true)
-	end
-
-    self.KEYID["GoreCross"] = hero_:GetSkillKeyID("GoreCross")
-    
-    if _KEYBOARD.Press(hero_.KEY[self.KEYID["GoreCross"]]) then
-        FSM_:SetState("gorecross",hero_)
-    end 
-
-    self.KEYID["HopSmash"] = hero_:GetSkillKeyID("HopSmash")
-	
-	if _KEYBOARD.Press(hero_.KEY[self.KEYID["HopSmash"]]) then
-		FSM_:SetState("hopsmash",hero_)
-	end 
-
 end 
 
 function _State_Attack:Exit(hero_)
     --body
+end
+
+function _State_Attack:GetTrans()
+	return self.trans
 end
 
 return _State_Attack 

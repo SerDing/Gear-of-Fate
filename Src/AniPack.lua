@@ -13,8 +13,8 @@ local _AniPack = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _Sprite = require "Src.Core.Sprite"
-local _ResPack = require "Src.ResPack"
-local _RESMGR = require "Src.ResManager"
+local _ResPack = require "Src.Resource.ResPack"
+local _RESMGR = require "Src.Resource.ResManager"
 local _Rect = require "Src.Core.Rect"
 
 function _AniPack:Ctor(_type) --initialize
@@ -133,7 +133,7 @@ function _AniPack:Update(dt)
 	self.time = self.time + (dt or 0)
 
 	-- print("self.time:" .. tostring(self.time))
-
+	
 	if self.time >= (self.frameData[self.frameHead]["[DELAY]"] or 100) / (1000 * self.baseRate)  then
 		self.time = 0-- self.time - self.frameData[self.frameHead]["[DELAY]"] / 1000
 		if self.playNum ~= 0 then
@@ -188,7 +188,8 @@ function _AniPack:Update(dt)
 			self:SetColor(self.frameData[self.frameHead]["[RGBA]"][1],
 				self.frameData[self.frameHead]["[RGBA]"][2],
 				self.frameData[self.frameHead]["[RGBA]"][3],
-				self.frameData[self.frameHead]["[RGBA]"][4])
+				self.frameData[self.frameHead]["[RGBA]"][4]
+			)
 		end
 	end
 
@@ -286,7 +287,7 @@ function _AniPack:DrawBox()
 
 	local boxTab = self.frameData[self.frameHead]["[DAMAGE BOX]"]
 	local dmgBox = _Rect.New(0,0,1,1)
-	dmgBox:SetColor(0,255,0,100)
+	dmgBox:SetColor(0,255,0,150)
 	if boxTab then
 	    for n=1,#boxTab,6 do
 			dmgBox:SetPos(self.pos.x + boxTab[n] * self.dir,self.pos.y + - boxTab[n+2])

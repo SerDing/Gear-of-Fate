@@ -21,7 +21,7 @@ function _State_TripleSlash:Ctor()
 	} 
 	self.attackNum = 0
 	self.KEYID = {}
-	self:AtkBase_Init()
+	self:_Init()
 	
 	self.time_left = 0
 	self.time_right = 0
@@ -34,10 +34,10 @@ function _State_TripleSlash:Enter(hero_)
 
 	self.nextDir = hero_:GetDir()
 
-----[[  Call base class function  ]]
-    self:AtkBase_Enter(hero_)
-    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move1.lua", 0, 1, hero_)
-	self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash1.lua", 0, 1, hero_)
+----[[  Call base class function  ]] 
+    self:_Enter(hero_)
+    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move1.lua", 1, 1, hero_)
+	self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash1.lua", 1, 1, hero_)
 	self:ReSetSpeed()
 
 	self.atkJudger = hero_:GetAtkJudger()
@@ -47,7 +47,7 @@ end
 
 function _State_TripleSlash:Update(hero_,FSM_)
 
-	self:AtkBase_Update()
+	self:_Update(FSM_) -- super class update
 
 	self.KEYID["TripleSlash"] = hero_:GetSkillKeyID("TripleSlash")
 
@@ -78,8 +78,8 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 0, 1, hero_)
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash2.lua", 0, 1, hero_)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 1, 1, hero_)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash2.lua", 1, 1, hero_)
 				self:ReSetSpeed()
 			end 
 		end 
@@ -109,8 +109,8 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 0, 1, hero_)
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash3.lua", 0, 1, hero_)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 1, 1, hero_)
+				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash3.lua", 1, 1, hero_)
 				self:ReSetSpeed()
 			end 
 
@@ -135,12 +135,10 @@ function _State_TripleSlash:Update(hero_,FSM_)
         end 
 	end 
 	
-	
-
 end 
 
 function _State_TripleSlash:Exit(hero_)
-	self:AtkBase_Exit()
+	self:_Exit()
 	self:ReSetSpeed()
 end
 

@@ -7,13 +7,7 @@
 		* its instance belongs to an entity and it manage states of the entity
 ]]
 
-
 local _FSM = require("Src.Core.Class")()
-
-local _pathHeads = {
-    ["HERO_SWORDMAN"] = "Src.FSM.States.Hero_SwordMan.",
-    ["MONSTER_GOBLIN"] = "Src.FSM.States.Monster_Goblin.",
-}
 
 function _FSM:RegisterState(state_name,class_name)
     
@@ -22,7 +16,7 @@ function _FSM:RegisterState(state_name,class_name)
         return  
     end 
 
-    local _tmpState = require (_pathHeads[self.entityType] .. class_name).New()
+    local _tmpState = require (self.pathHeads[self.entityType] .. class_name).New()
     self.state[state_name] = _tmpState
 
 end
@@ -38,11 +32,15 @@ function _FSM:Ctor(entity_,state_name,entityType)
     self.curState = self.state[state_name]
     self.curState:Enter(entity_,self)
 
+    self.KEYID = {}
+    self.input = entity_:GetInput()
 end
 
 function _FSM:Update(entity_)
    
     self.curState:Update(entity_,self)
+
+    self:LateUpdate(entity_)
 
     if entity_:GetBody():GetCurrentPlayNum() == 0 then
         if entity_:GetBody():GetAniId() == "[down motion]" then
@@ -52,6 +50,9 @@ function _FSM:Update(entity_)
         end
     end 
 
+end
+
+function _FSM:LateUpdate(entity_)
 end
 
 function _FSM:SetState(state_name,entity_, ...)
@@ -74,6 +75,12 @@ function _FSM:SetState(state_name,entity_, ...)
 end
 
 function _FSM:InitStates(entityType)
+    
+    self.pathHeads = {
+        ["HERO_SWORDMAN"] = "Src.FSM.States.Hero_SwordMan.",
+        ["MONSTER_GOBLIN"] = "Src.FSM.States.Monster_Goblin.",
+    }
+
     self.loadingLst = {
         ["HERO_SWORDMAN"] = {
             {"rest","State_Rest"},
@@ -90,6 +97,7 @@ function _FSM:InitStates(entityType)
             {"frenzyattack","State_FrenzyAttack"},
             {"moonslash","State_MoonSlash"},
             {"tripleslash","State_TripleSlash"},
+            {"ashenfork","State_Ashenfork"},
         },
         ["MONSTER_GOBLIN"] = {
             {"attack", "State_Attack"},

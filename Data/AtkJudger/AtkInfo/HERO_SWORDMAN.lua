@@ -1,147 +1,239 @@
 return { --  Hero SwordMan attack info 
-    ["default"] = {
-        ["backPower"] = 5,
+    ["default"] = { -- template
+        ["Y"] = 40,
+        ["push"] = { -- on land
+            ["backPower"] = 5,
             ["backSpeed"] = 1,
             ["float"] = 0,
-            ["bounce"] = false,
-        ["Y"] = 40,
-        -- ["push"] = {
-        --     ["backPower"] = 5,
-        --     ["backSpeed"] = 1,
-        --     ["float"] = 0,
-        --     ["bounce"] = false,
-        -- },
-        -- ["float"] = {
-        --     ["backPower"] = 5,
-        --     ["backSpeed"] = 1,
-        --     ["float"] = 0,
-        --     ["bounce"] = false,
-        -- },
+        },
+        ["lift"] = { -- in air floating
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
     },
-    
+
     ["attack1"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = false,
-        ["Y"] = 30,
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 0.75,
+            ["float"] = 2.5,
+        },
+        ["Y"] = 38,
     },
+
     ["attack2"] = {
-        ["backPower"] = 6,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = false,
-        ["Y"] = 40,
+        ["push"] = {
+            ["backPower"] = 6,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 0.75,
+            ["float"] = 2.5,
+        },
+        ["Y"] = 38,
     },
+
     ["attack3"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 5.5,
-        ["bounce"] = true,
-        ["Y"] = 28,
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 5.5,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 0.75,
+            ["float"] = 5.5,
+        },
+        ["Y"] = 38,
     },
+
+    ["jumpattack"] = {
+        ["push"] = {
+            ["backPower"] = 3,
+            ["backSpeed"] = 1,
+            ["float"] = 2,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 3,
+        },
+        ["Y"] = 38,
+    },   
+
     ["dashattack1"] = {
-        ["backPower"] = 9,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = true,
-        ["Y"] = 28,
+        ["push"] = {
+            ["backPower"] = 9,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 3.5,
+        },
+        ["Y"] = 38,
     },
+
     ["dashattack2"] = {
-        ["backPower"] = 10,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = true,
-        ["Y"] = 28,
+        ["push"] = {
+            ["backPower"] = 10,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 3.5,
+        },
+        ["Y"] = 38,
     },
+
     ["upperslash"] = {
-        ["backPower"] = 1.5,
-        ["backSpeed"] = 1,
-        ["float"] = 7.5,
-        ["bounce"] = true,
-        ["Y"] = 34,
+        ["push"] = {
+            ["backPower"] = 1.5,
+            ["backSpeed"] = 1,
+            ["float"] = 7.5,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 7.5,
+        },
+        ["Y"] = 38,
     },
 
     ["gorecross1"] = {
-        ["backPower"] = 3,
-        ["backSpeed"] = 0.5,
-        ["float"] = 0,
-        ["bounce"] = false,
+        ["push"] = {
+            ["backPower"] = 3,
+            ["backSpeed"] = 0.5,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 0.5,
+            ["float"] = 2.5,
+        },
         ["Y"] = 50,
     },
 
     ["gorecross2"] = {
-        ["backPower"] = 3,
-        ["backSpeed"] = 0.5,
-        ["float"] = 0,
-        ["bounce"] = false,
-        ["Y"] = 34,
+        ["push"] = {
+            ["backPower"] = 3,
+            ["backSpeed"] = 0.5,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 0.5,
+            ["float"] = 2.5,
+        },
+        ["Y"] = 40,
     },
 
     ["moonlightslash1"] = {
-        ["backPower"] = 6,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = false,
-        ["Y"] = 40,
+        ["push"] = {
+            ["backPower"] = 6,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 5/0.9,
+        },
+        ["Y"] = 50,
     },
 
     ["moonlightslash2"] = {
-        ["backPower"] = 3,
-        ["backSpeed"] = 1,
-        ["float"] = 6,
-        ["bounce"] = true,
-        ["Y"] = 40,
+        ["push"] = {
+            ["backPower"] = 3,
+            ["backSpeed"] = 1,
+            ["float"] = 6,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 6,
+        },
+        ["Y"] = 50,
     },
 
     ["tripleslash1"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = false,
-        ["Y"] = 34,
-    },
-    ["tripleslash2"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = false,
-        ["Y"] = 34,
-    },
-    ["tripleslash3"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 2,
-        ["bounce"] = false,
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 2,
+        },
         ["Y"] = 34,
     },
 
-    ["hopsmash1"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 0,
-        ["bounce"] = false,
+    ["tripleslash2"] = {
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 2,
+        },
+        ["Y"] = 34,
+    },
+
+    ["tripleslash3"] = {
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 2,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 2,
+        },
+        ["Y"] = 34,
+    },
+
+    ["hopsmash_normal"] = {
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 3,
+        },
         ["Y"] = 30,
     },
-    ["hopsmash2"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 3,
-        ["bounce"] = true,
-        ["Y"] = 30,
-    },
-    ["hopsmash3"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 3,
-        ["bounce"] = true,
-        ["Y"] = 30,
-    },
-    ["hopsmash4"] = {
-        ["backPower"] = 5,
-        ["backSpeed"] = 1,
-        ["float"] = 3,
-        ["bounce"] = true,
+
+    ["hopsmash_float"] = {
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 5,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 3,
+        },
         ["Y"] = 30,
     },
 

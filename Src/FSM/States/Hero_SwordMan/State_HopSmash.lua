@@ -1,5 +1,5 @@
 --[[
-	Desc: Tmp state 
+	Desc: skill state: hopsmash
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
@@ -11,15 +11,14 @@ local _State_HopSmash = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _EffectMgr = require "Src.Scene.EffectManager" 
+local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 local _CAMERA = require "Src.Game.GameCamera" 
 
 function _State_HopSmash:Ctor()
 
-	self.attackName = {
-		"hopsmash1",
-		"hopsmash2",
-		"hopsmash3",
-	}
+	self.attackName = {"hopsmash1", "hopsmash2", "hopsmash3"}
+
+	self.judgeEvents = {[3] = false, [4] = false, [5] = false, [6] = false}
 
     self.jumpPower = 0
 	self.jumpDir = ""
@@ -30,19 +29,17 @@ function _State_HopSmash:Ctor()
 	self.time = 0
 	self.period = 0
 
-	self.attackNum = 3
-	
-
 	self.start = false
 	self.shake = false
+
 end 
 
 function _State_HopSmash:Enter(hero_)
     self.name = "hopsmash"
 	hero_:SetAnimation("hopsmashready",1,1)
 	self.oriAtkSpeed = hero_:GetAtkSpeed()
-	hero_:SetAtkSpeed(1.3)
-	self.basePower = 190
+	-- hero_:SetAtkSpeed(1.3)
+	self.basePower = 200
 	self.period = 1
 	self.increment = 1.2
 	self.KEYID = ""
@@ -52,10 +49,13 @@ function _State_HopSmash:Enter(hero_)
 	self.shake = false
 	
 	self.attackTimer = 0
-	self.attackTimes = 0
+	self.attackTimes = 1
 
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
+	self.atkObj = nil
+	self.judgeEvents = {[3] = false, [4] = false, [5] = false, [6] = false}
+	
 end
 
 function _State_HopSmash:Update(hero_,FSM_)
@@ -68,14 +68,22 @@ function _State_HopSmash:Update(hero_,FSM_)
 		self.KEYID = hero_:GetSkillKeyID("HopSmash")
 		
 		if _KEYBOARD.Release(hero_.KEY[self.KEYID]) or love.timer.getTime() - self.time >= self.timer then 
-			self.time = love.timer.getTime() - self.time
+
+			local t
 			
+			if love.timer.getTime() - self.time < self.timer and _KEYBOARD.Release(hero_.KEY[self.KEYID]) then
+				t = 0.9
+			else
+				t = 0.75
+			end
+
+			self.time = love.timer.getTime() - self.time
+
 			if self.time < 0.1 then
-				self.jumpPower = self.basePower * 0.75 * 0.1  * math.sqrt(hero_:GetAtkSpeed())
+				self.jumpPower = self.basePower * t * 0.1  * math.sqrt(hero_:GetAtkSpeed())
 				-- self.speed = self.basePower * 0.9 * self.time * 0.2
 			else
-				self.jumpPower = self.basePower * 0.75 * self.time  * math.sqrt(hero_:GetAtkSpeed())
-				
+				self.jumpPower = self.basePower * t * self.time  * math.sqrt(hero_:GetAtkSpeed())
 			end 
 			self.speed = self.basePower * 0.8 * self.time * 0.2
 			if self.jumpPower < 18 then
@@ -92,8 +100,7 @@ function _State_HopSmash:Update(hero_,FSM_)
 		end
 
 		if self.start then
-			hero_.pakGrp.body:SetAnimation(self.name)
-			hero_.pakGrp.weapon:SetAnimation(self.name)
+			hero_:SetAnimation(self.name)
 			self.period = 2
 
 			self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/sword.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)	
@@ -104,8 +111,6 @@ function _State_HopSmash:Update(hero_,FSM_)
 			self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 			self.effect[2]:SetLayer(1)
 		end
-		
-		
 	end 
 	
 	if self.period == 1 then
@@ -145,72 +150,67 @@ function _State_HopSmash:Update(hero_,FSM_)
 		
 	elseif self.jumpDir == "down" then
 		
-		self.jumpPower = self.jumpPower + _dt * self.basePower * 0.5 * hero_:GetAtkSpeed()
+		self.jumpPower = self.jumpPower + _dt * self.basePower * 0.8 * hero_:GetAtkSpeed()
 		
 		if hero_.jumpOffset < 0 then
 			hero_.jumpOffset = hero_.jumpOffset + self.jumpPower
 		end
 
+		if hero_.jumpOffset >= 0 then
+			hero_.jumpOffset = hero_.jumpOffset / 10000
+		end
+
 	end 
 
-------[[  attack judgement  ]]
-	-- 4 attack frames, total delay 480 
-	
-	if _body:GetCount() >= 3 and _body:GetCount() <= 6 then
-		
-		if self.attackTimes < self.attackNum then
-			
-			-- self.attackTimer = self.attackTimer + _dt
-			
-			-- if self.attackTimer >= 480 / (1000 * hero_:GetAtkSpeed()) / self.attackNum then
-				-- log("self.attackTimer", self.attackTimer)
+	self:AttackJudgement(hero_, _body, _dt)
+
+	self:SmashEffect(hero_, _body)
+
+	self:Movement(hero_)
+
+end 
+
+function _State_HopSmash:AttackJudgement(hero_, _body, _dt)
+	if hero_:GetAttackBox() then
+		if _body:GetCount() >= 3 and _body:GetCount() <= 5 then
+			local _judgeName = (_body:GetCount() == 5) and "hopsmash_float" or "hopsmash_normal"
+			if not self.judgeEvents[_body:GetCount()] then
 				self.atkJudger:ClearDamageArr()
-				-- self.atkJudger:Judge(hero_, "MONSTER")
-				self.attackTimer = 0
-				
-
-			-- end
-		end
-
-		if hero_:GetAttackBox() then
-			log(self.attackTimes)
-			self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackTimes])
-			if self.attackTimes < self.attackNum then
-				self.attackTimes = self.attackTimes + 1
+				self.atkJudger:Judge(hero_, "MONSTER", _judgeName)
+				self.judgeEvents[_body:GetCount()] = true
 			end
 		end
-
 	end
+end
 
-	
-
-------[[	Effect logic	]]
-
+function _State_HopSmash:SmashEffect(hero_, _body)
 	if self.jumpDir == "down" then
 		if hero_.jumpOffset >= 0 and not self.effect[3] and not self.effect[4]  then
-			hero_.jumpOffset = hero_.jumpOffset / 10000
+			
 			-- add blood smash
 			self.effect[3] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/hopsmashsubback1.lua",hero_.pos.x + 140 * hero_:GetDir(),hero_.pos.y - 1,1,hero_:GetDir())
-			self.effect[4] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/hopsmashsubfront1.lua",hero_.pos.x + 140 * hero_:GetDir(),hero_.pos.y + 1,1,hero_:GetDir())
+			self.effect[4] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/hopsmashsubback2.lua",hero_.pos.x + 140 * hero_:GetDir(),hero_.pos.y - 1,1,hero_:GetDir())
 			
-			-- self.effect[3]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-			-- self.effect[4]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+			-- self.effect[5] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/hopsmashsubfront1.lua",hero_.pos.x + 140 * hero_:GetDir(),hero_.pos.y + 1,1,hero_:GetDir())
+			-- self.effect[6] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/hopsmashsubfront2.lua",hero_.pos.x + 140 * hero_:GetDir(),hero_.pos.y + 1,1,hero_:GetDir())
 
-			self.effect[5] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/hopsmashsubback2.lua",hero_.pos.x + 140 * hero_:GetDir(),hero_.pos.y - 1,1,hero_:GetDir())
-			self.effect[6] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "hopsmash/hopsmashsubfront2.lua",hero_.pos.x + 140 * hero_:GetDir(),hero_.pos.y + 1,1,hero_:GetDir())
-			
-			-- self.effect[5]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-			-- self.effect[6]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+			if not self.atkObj then
+				self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20050)
+				self.atkObj:SetHost(hero_)
+				self.atkObj:SetPos(hero_:GetPos().x + 140 * hero_:GetDir(), hero_:GetPos().y)
+				self.atkObj:SetDir(hero_:GetDir())
+			end
+
 			if self.shake then
 				-- log(self.time * 1.25)
-				_CAMERA.Shake(0.2 , -3, 3 * self.time, -20 * self.time, 20 * self.time) -- shake effect
+				_CAMERA.Shake(0.2 , -20 * self.time, 20 * self.time, -30 * self.time, 30 * self.time) -- shake effect
 			end
 
 		end
 	end
+end
 
-------[[	move logic in jump	]]
-	
+function _State_HopSmash:Movement(hero_)
 	if hero_.jumpOffset < 0 then
 		if self.jumpDir == "up" then
 			hero_:X_Move( self.speed * hero_:GetAtkSpeed() * hero_.spd.x * hero_:GetDir())
@@ -218,19 +218,15 @@ function _State_HopSmash:Update(hero_,FSM_)
 			hero_:X_Move( self.speed * hero_:GetAtkSpeed() * hero_.spd.x * hero_:GetDir() * 0.25)
 		end
 	end 
-
-
-------[[	Effect offset	]]
-
+	-- effect movement
 	for n=1,2 do
 		if self.effect[n] then
 			self.effect[n].pos.x = hero_.pos.x
-			self.effect[n].pos.y = hero_.pos.y + 1 -- plus 1 to make it be in front of hero's weapon
+			self.effect[n].pos.y = hero_.pos.y -- plus 1 to make it be in front of hero's weapon
 			self.effect[n]:SetOffset(0, hero_.jumpOffset)
 		end 
 	end 
-	
-end 
+end
 
 function _State_HopSmash:Exit(hero_)
     self.jumpDir = ""

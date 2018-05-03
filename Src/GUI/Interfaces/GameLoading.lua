@@ -9,7 +9,7 @@
 
 local _GameLoading = require("Src.Core.Class")()
 
-local _RESMGR = require "Src.ResManager"
+local _RESMGR = require "Src.Resource.ResManager"
 
 
 function _GameLoading:Ctor()

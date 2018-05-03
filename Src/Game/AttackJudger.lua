@@ -44,11 +44,10 @@ function _AttackJudger:Judge(attacker, opponent, attackName, atkInfo)
 			
 			-- judge whether the monster is hit
 			_hit = false
-			if _mon:IsDead() == false then
-				if self:IsInDamageArr(_mon:GetId()) == false then
+			if not _mon:IsDead() then
+				if not self:IsInDamageArr(_mon:GetId()) then
 					if atkInfo then
 						_atkInfo = atkInfo
-						print(_atkInfo["Y"])
 					else
 						_atkInfo = (self.atkInfo[attackName]) and self.atkInfo[attackName] or self.atkInfo["default"]
 					end
@@ -60,18 +59,20 @@ function _AttackJudger:Judge(attacker, opponent, attackName, atkInfo)
 				end
 			end
 
-			if self.attacker:GetType() == "ATKOBJ" then
-				print("atk obj hit :", _hit)
-			end
+			-- if self.attacker:GetType() == "ATKOBJ" then
+			-- 	print("atk obj hit :", _hit)
+			-- end
 
 			-- hit process
-			if _hit == true then
+			if _hit then
 				_mon:Damage(attacker, _atkInfo)
 				-- insert the opponent into hit array
 				self.damageArr[#self.damageArr + 1] = _mon:GetId()
 				-- set hit time to start hitStop
 				attacker:SetHitTime(love.timer.getTime())
 			end
+
+			
 		end
 	end
 

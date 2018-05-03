@@ -37,7 +37,7 @@ end
 function _Navigation:Init()
     -- NEW jumper pathfinder
     self.grid = _Grid(self.map) -- grid nodes table
-    self.pathFinder = _Pathfinder(self.grid, 'JPS', self.walkable) 
+    self.pathFinder = _Pathfinder(self.grid, 'ASTAR', self.walkable) 
 end
 
 function _Navigation:BuildNavGraph()
@@ -72,7 +72,7 @@ function _Navigation:BuildNavGraph()
         end
     end
 
-    print("build graph end")
+    -- print("build graph end")
 
     self:Init()
     
@@ -105,7 +105,7 @@ function _Navigation:FindPath(entity, x, y)
         for node, count in path:nodes() do
             -- print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
             _pathNodes[count] = self:GetNodeByIndex(node:getY(), node:getX())
-            _pathNodes[count]:SetColor(0, 150, 0, 100) -- set walkable nodes color to Green
+            _pathNodes[count]:SetColor(0, 200, 0, 255) -- set walkable nodes color to Green
             _pathNodes[count]:SetDrawType("fill")
         end
         

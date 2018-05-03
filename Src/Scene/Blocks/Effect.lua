@@ -28,7 +28,7 @@ function _Effect:Ctor(aniPath)
 	-- self.name = tmpArr[#tmpArr]
 	
 	self.ani = _AniPack.New()
-	self.ani:SetAnimation(self.animas[1])
+	self.ani:SetAnimation(self.animas[1], 1)
 
 	self.pos = {x = 0,y = 0}
 

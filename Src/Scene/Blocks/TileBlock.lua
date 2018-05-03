@@ -11,8 +11,8 @@ local _TileBlock = require("Src.Core.Class")()
 
 local _Sprite = require "Src.Core.Sprite" 
 local _Rect = require "Src.Core.Rect" 
-local _RESMGR = require "Src.ResManager" 
-local _ResPack = require "Src.ResPack"
+local _RESMGR = require "Src.Resource.ResManager" 
+local _ResPack = require "Src.Resource.ResPack"
 
 function _TileBlock:Ctor(path)
     

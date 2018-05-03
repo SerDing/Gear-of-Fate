@@ -1,5 +1,5 @@
 --[[
-	Desc: Tmp state 
+	Desc: gorecross
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
@@ -21,9 +21,8 @@ end
 
 function _State_GoreCross:Enter(hero_)
     self.name = "gorecross"
-	hero_:GetBody():SetAnimation(self.name)
-	hero_:GetWeapon():SetAnimation(self.name)
-	
+	hero_:SetAnimation(self.name)
+
 	self.KEYID = ""
 	self.plusAtk = false
 
@@ -72,7 +71,6 @@ function _State_GoreCross:Update(hero_,FSM_)
 	
 	if self.effect[2] and not self.effect[3] then
 		if  self.effect[2]:GetAni():GetCurrentPlayNum() == 0 then
-			
 			if not self.atkObj then
 				self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20028)
 				self.atkObj:SetHost(hero_)
@@ -80,17 +78,9 @@ function _State_GoreCross:Update(hero_,FSM_)
 				self.atkObj:SetDir(hero_:GetDir())
 				self.atkObj:SetMoveSpeed(4)
 			end
-			-- self.effect[4]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		end 
 	end 
 	
-	-- effect movement
-	for n=1,2 do
-		if self.effect[n + 2] then
-			self.effect[n + 2]:SetMoveSpeed(4)
-		end 
-	end
-
 	-- whether plusAtk check
 	if _body:GetCount() >= 9 then 
 		self.KEYID = hero_:GetSkillKeyID("GoreCross")

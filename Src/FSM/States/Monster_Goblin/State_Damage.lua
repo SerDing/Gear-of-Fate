@@ -15,6 +15,7 @@ function _State_Damage:Ctor()
 	self.backSpeed = 0
 	
 	self.flyPower = 0
+	self.float = 0
 	self.jumpDir = "default"
 	self.bounce = false
 end 
@@ -33,10 +34,12 @@ function _State_Damage:Enter(entity, FSM_, damageInfo)
 	-- self.hit_recovery = 800
 	self.timer = 0
 
-	
-	self.backSpeed = damageInfo["backSpeed"] or 1
-	self.bounce = damageInfo["bounce"] or self.bounce
-	self.float = damageInfo["float"] or 6
+	local _info = (self.flyPower > 0) and damageInfo["lift"] or damageInfo["push"] 
+
+	self.backSpeed = _info["backSpeed"] or 1
+	-- self.bounce = _info["bounce"] or self.bounce
+	self.bounce = (_info["float"] > 0) and true or false
+	self.float = _info["float"] or 0
 
 	if self.float > 0 then
 		if self.jumpDir == "up" or self.jumpDir == "down" then
@@ -47,9 +50,9 @@ function _State_Damage:Enter(entity, FSM_, damageInfo)
 		self.jumpDir = "up"
 
 		entity:SetAnimation("[down motion]")
-		self.bounce = true
+		-- self.bounce = true
 		if _hasDown then
-			self.flyPower = 2
+			self.flyPower = self.float * 0.2
 			entity:SetAnimation("[down motion]")
 			entity:NextFrame()
 			entity:NextFrame()
@@ -57,7 +60,7 @@ function _State_Damage:Enter(entity, FSM_, damageInfo)
 		end
 
 	else
-		self.backPower = damageInfo["backPower"]
+		self.backPower = _info["backPower"]
 		if self.jumpDir == "up" or self.jumpDir == "down" then
 			self.flyPower = 2
 			self.jumpDir = "up"
@@ -76,10 +79,6 @@ function _State_Damage:Update(entity, FSM_)
 	self:HitRecovery(entity, FSM_, _dt)
 	
 end 
-
-function _State_Damage:Exit(entity)
-    --body
-end
 
 function _State_Damage:BackEffect(entity)
 	if self.backPower > 0 then
@@ -126,6 +125,8 @@ function _State_Damage:HitFlyEffect(entity, _dt)
 			entity:X_Move( - entity:GetDir() * self.backSpeed)
 		end
 
+		-- print("flypower:", self.flyPower)
+
 	elseif self.jumpDir == "default" and entity:GetBody():GetAniId() == "[down motion]" then
 		while entity:GetBody():GetCount() < 4 do
 			entity:NextFrame()
@@ -141,6 +142,10 @@ function _State_Damage:HitRecovery(entity, FSM_, _dt)
 			FSM_:SetState(FSM_.oriState, entity)
 		end 
 	end
+end
+
+function _State_Damage:Exit(entity)
+    --body
 end
 
 return _State_Damage 

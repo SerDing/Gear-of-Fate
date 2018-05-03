@@ -24,7 +24,7 @@ function _Object:SetLayerId(id)
 end
 
 function _Object:GetType()
-    return self.type 
+    return self.type
 end
 
 function _Object:GetId()

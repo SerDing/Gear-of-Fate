@@ -19,8 +19,8 @@ end
 
 function _State_UpperSlash:Enter(hero_)
     self.name = "upperslash"
-	hero_:GetBody():SetAnimation("hitback")
-	hero_:GetWeapon():SetAnimation("hitback")
+	hero_:SetAnimation("hitback")
+	
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 end

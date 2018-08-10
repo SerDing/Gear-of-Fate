@@ -47,6 +47,7 @@ return {
 		['[DAMAGE TYPE]'] = "superarmor",
 		['[IMAGE POS]'] = {-232,-333,},
 		['[DAMAGE BOX]'] = {61,-5,1,24,10,76,37,-5,28,27,10,51,15,-3,2,22,7,39,},
+		['[PLAY SOUND]'] = "SM_UPPER_SLASH",
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",53,},
 	},
 	['[FRAME000]'] = {

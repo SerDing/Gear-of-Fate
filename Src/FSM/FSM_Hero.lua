@@ -9,6 +9,8 @@
 local _FSM = require "Src.FSM.FSM"
 local _FSM_Hero = require("Src.Core.Class")(_FSM)
 
+-- 引用SkillSystem
+
 function _FSM_Hero:LateUpdate(entity)
 	if self.curState.GetTrans then
 		self:Transition(entity)
@@ -25,14 +27,18 @@ function _FSM_Hero:Transition(entity)
 				self:SwitchSkillState(_trans[i][2], _trans[i][3], entity, _trans[i][4] or nil)
 			end
 		end
-	else
-		-- error("_trans not found in state:" .. self.curState.name)
 	end
 end 
 
 function _FSM_Hero:SwitchSkillState(skillName, stateName, hero_, ...)
-    self.KEYID[skillName] = hero_:GetSkillKeyID(skillName)
-	self:SwitchState(self.KEYID[skillName], stateName, hero_, ...)
+	self.KEYID[skillName] = hero_:GetSkillKeyID(skillName)
+	
+	if self.input:IsPressed(hero_.KEY[self.KEYID[skillName]]) then
+		-- 检测技能是否满足释放条件：1.冷却完成否？ 2.heroMP足够否？
+		self:SetState(stateName, hero_, ...)
+	end 
+
+	-- self:SwitchState(self.KEYID[skillName], stateName, hero_, ...)
 end 
 
 function _FSM_Hero:SwitchState(keyID, stateName, hero_, ...)

@@ -16,7 +16,7 @@ function _FSM:RegisterState(state_name,class_name)
         return  
     end 
 
-    local _tmpState = require (self.pathHeads[self.entityType] .. class_name).New()
+    local _tmpState = require (strcat(self.pathHeads[self.entityType], class_name)).New()
     self.state[state_name] = _tmpState
 
 end
@@ -68,9 +68,9 @@ function _FSM:SetState(state_name,entity_, ...)
     self.curState = self.state[state_name]
 
     if not self.curState then
-        log("_FSM:SetState() curState " .. state_name .. " nil" .. " entity.subType: " .. entity.subType)
+        print(strcat("_FSM:SetState() curState ", state_name, " nil", " entity.subType: ", entity.subType))
     end
-    self.curState:Enter(entity_,self,...)
+    self.curState:Enter(entity_, self, ...)
     
 end
 
@@ -123,7 +123,5 @@ end
 function _FSM:GetCurState()
     return self.curState
 end
-
-
 
 return _FSM 

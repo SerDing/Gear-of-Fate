@@ -13,10 +13,11 @@ return {
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",127,},
 	},
 	['[FRAME002]'] = {
-		['[DELAY]'] = 60,
+		['[DELAY]'] = 60, -- 60
 		['[DAMAGE TYPE]'] = "superarmor",
 		['[IMAGE POS]'] = {-232,-333,},
 		['[DAMAGE BOX]'] = {-16,-5,0,44,10,98,},
+		['[PLAY SOUND]'] = "SM_BOONGSAN",
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",204,},
 	},
 	['[FRAME003]'] = {

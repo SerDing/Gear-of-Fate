@@ -13,9 +13,11 @@ local _AniPack = require("Src.Core.Class")()
 
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _Sprite = require "Src.Core.Sprite"
+local _Rect = require "Src.Core.Rect"
 local _ResPack = require "Src.Resource.ResPack"
 local _RESMGR = require "Src.Resource.ResManager"
-local _Rect = require "Src.Core.Rect"
+local _AUDIOMGR = require "Src.Audio.AudioManager"
+
 
 function _AniPack:Ctor(_type) --initialize
 
@@ -26,6 +28,7 @@ function _AniPack:Ctor(_type) --initialize
 	self.scale = {x = 1, y = 1}
 	self.angle = 0
 	self.dir = 1 -- direction
+	self.soundPlayFinished = false
 
 	self.playNum = 1 	-- 播放次数
 	self.fileNum = 0000
@@ -117,13 +120,16 @@ function _AniPack:Update(dt)
 	if self.type == "MAP_ANI_BLOCK" then
 		if self.num <= 1 then 
 			if self.updateCount >= 1 then
-				return 0
+				return 
 			end 
 		end 	
 	end
 
-
-	self.frameHead = string.format("[FRAME%03d]", self.count)
+	local _frameHead = string.format("[FRAME%03d]", self.count)
+	if self.frameHead ~= _frameHead then
+		self.frameHead = _frameHead
+		self.soundPlayFinished = false
+	end
 
 	if not  self.frameHead then
 		print("Error:_AniPack:Update() --> frameHead is null")
@@ -131,14 +137,13 @@ function _AniPack:Update(dt)
 	end
 
 	self.time = self.time + (dt or 0)
-
-	-- print("self.time:" .. tostring(self.time))
 	
 	if self.time >= (self.frameData[self.frameHead]["[DELAY]"] or 100) / (1000 * self.baseRate)  then
 		self.time = 0-- self.time - self.frameData[self.frameHead]["[DELAY]"] / 1000
 		if self.playNum ~= 0 then
 			self.count = self.count + 1
 		end
+		
 
 		if self.count >= self.num then
 			if self.playNum == -1 then
@@ -158,11 +163,11 @@ function _AniPack:Update(dt)
 		--local img = require "sys/img"(string.format("playingSpriteite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
 		local tmpStr = string.format(string.lower(self.frameData[self.frameHead]["[IMAGE]"][1]),self.fileNum)
 		
-		local img = _ResPack.New(_RESMGR.pathHead .. tmpStr)
+		local img = _ResPack.New(strcat(_RESMGR.pathHead, tmpStr))
 		
 		if not img then
 			print("Error:_AniPack:Update() --> load imgPack failed. " )
-			print("    " .. self.frameData[self.frameHead]["[IMAGE]"][1])
+			print(strcat("    ", self.frameData[self.frameHead]["[IMAGE]"][1]))
 			return self
 		end
 
@@ -193,6 +198,12 @@ function _AniPack:Update(dt)
 		end
 	end
 
+	if self.frameData[self.frameHead]["[PLAY SOUND]"] and not self.soundPlayFinished then
+		_AUDIOMGR.PlaySound(self.frameData[self.frameHead]["[PLAY SOUND]"])
+		-- print("frameHead", self.frameHead, "frame", self.count, "PlayFinished", self.soundPlayFinished)
+		self.soundPlayFinished = true
+	end
+	
 	self.updateCount = self.updateCount + 1
 
 end
@@ -312,10 +323,11 @@ function _AniPack:SetAnimation(id,num,rate)
 
 	if _idType == "string" then
 	    if not self.frameDataGrp[id] then
-			print(
-				"Err:_AniPack:SetAnimation() -- cannot find ani：" .. 
-				id .. 
+			print(strcat(
+				"Err:_AniPack:SetAnimation() -- cannot find ani：", 
+				id, 
 				"in frameDataGrp"
+				)
 			)
 			return false 
 		else 
@@ -331,7 +343,6 @@ function _AniPack:SetAnimation(id,num,rate)
 		return false 
 	end
 
-	
 	self.count = 0
 	self.time = 0
 	self.num = self.frameData["[FRAME MAX]"]
@@ -349,7 +360,8 @@ function _AniPack:SetAnimation(id,num,rate)
 		self:SetColor(self.frameData[self.frameHead]["[RGBA]"][1],
 			self.frameData[self.frameHead]["[RGBA]"][2],
 			self.frameData[self.frameHead]["[RGBA]"][3],
-			self.frameData[self.frameHead]["[RGBA]"][4])
+			self.frameData[self.frameHead]["[RGBA]"][4]
+		)
 	end
 
 end
@@ -447,7 +459,7 @@ end
 
 function _AniPack:SetFileNum(num)
 	self.fileNum = num
-	-- print("fileNum changed :" .. tostring(self.fileNum))
+	-- print(strcat("fileNum changed :", tostring(self.fileNum)))
 end
 
 function _AniPack:SetDir(dir)

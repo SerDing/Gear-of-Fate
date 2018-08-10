@@ -29,7 +29,7 @@ return  {
 
 	["[virtual movable area]"] ={7,192,871,128,},
 
-	["[sound]"] ={"m_forest_town","amb_forest_01",},
+	["[sound]"] ={"amb_forest_01", "m_forest_town"},
 
 	["[animation]"] ={"animation/elvenrdg.ani","[normal]",774,180,0,"animation/stonehead.ani","[normal]",308,171,0,"animation/block1.ani","[bottom]",787,278,0,"animation/block1.ani","[bottom]",563,278,0,"animation/block1.ani","[bottom]",339,278,0,"animation/block1.ani","[bottom]",115,278,0,"animation/tree1.ani","[closeback]",175,164,0,},
 

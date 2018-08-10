@@ -18,6 +18,7 @@ local _Collider = require "Src.Core.Collider"
 local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _GAMEINI = require "Src.Config.GameConfig" 
 
+local _AUDIOMGR = require "Src.Audio.AudioManager"
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 local _MonsterSpawner = require "Src.Monster.MonsterSpawner"
 
@@ -34,7 +35,7 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     _sceneMgr = sceneMgr
 
     -- data and structure
-    self.pathHead = "../Data/map/"
+    self.pathHead = "/Data/map/"
     self.map = require(string.gsub(path,".lua",""))
     self.res = {}
     self.layers = {
@@ -66,6 +67,7 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     self.debug = false
     self.iterator = 0
     self.limit = 0
+    self.warmSpd = 2.25
 
     -- instance
     self.rect = _Rect.New(0,0,1,1)
@@ -92,7 +94,7 @@ function _GameScene:LoadTiles()
     local _tilePath
 
     for n=1,#self.map["[tile]"] do
-        _tilePath = self.pathHead .. self.directory .. self.map["[tile]"][n]
+        _tilePath = strcat(self.pathHead, self.directory, self.map["[tile]"][n])
         self.res["[tile]"][self.map["[tile]"][n]] = _TileBlock.New(_tilePath)
         self.res["[tile]"][self.map["[tile]"][n]]:SetOffset_2(0, (self.map["[background pos"] or 80))
     end 
@@ -206,6 +208,8 @@ function _GameScene:Awake() -- ReAdd objects into ObjMgr
         end
     end
     
+    _AUDIOMGR.PlaySceneMusic(self.map["[sound]"])
+
     self.nav:BuildNavGraph()
 
 end
@@ -235,7 +239,7 @@ function _GameScene:Update(dt)
 		return  
 	else 
 		self.iterator = 0
-		self.limit = self.limit - 2.5
+		self.limit = self.limit - self.warmSpd
 	end
 
 
@@ -248,25 +252,18 @@ function _GameScene:Draw(cam_x,cam_y)
 
     self:DrawBackGround("[far]", cam_x,cam_y)
     self:DrawBackGround("[mid]", cam_x,cam_y)
-    
     self:DrawTile(cam_x, cam_y)
-
     self:DrawLayer("[closeback]",cam_x, cam_y)
     self:DrawLayer("[bottom]",cam_x, cam_y)
 
-    
-    _ObjectMgr.Draw(cam_x, cam_y)
-
-    self:DrawLayer("[close]",cam_x, cam_y)
-    
-    
     if self.debug then
         self:DrawSpecialArea("movable")
         self:DrawSpecialArea("event")
     end 
 
     self.nav:Draw()
-
+    _ObjectMgr.Draw(cam_x, cam_y)
+    self:DrawLayer("[close]",cam_x, cam_y)
     
 end
 
@@ -374,7 +371,10 @@ function _GameScene:IsInMoveableArea(x,y)
         return false 
     end 
 
-    return self:IsInArea("movable",x,y)
+    if self.map["[virtual movable area]"] then -- town
+        return self:IsInArea("movable",x,y)
+    end
+    
 end
 
 function _GameScene:IsInArea(areaType,x,y)

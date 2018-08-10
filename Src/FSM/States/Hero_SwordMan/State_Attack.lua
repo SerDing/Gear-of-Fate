@@ -9,8 +9,6 @@
 
 local _State_Attack = require("Src.Core.Class")()
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
-
 function _State_Attack:Ctor()
     self.name = "attack"
 
@@ -27,6 +25,7 @@ function _State_Attack:Ctor()
     self.attackNum = 0
     self.KEYID = {}
     self.atkJudger = {}
+    self.input = {}
 end
 
 function _State_Attack:Enter(hero_,FSM_)
@@ -36,6 +35,7 @@ function _State_Attack:Enter(hero_,FSM_)
 
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
+    self.input = hero_:GetInput()
 
     hero_:SetAnimation(self.attackName)
 
@@ -43,25 +43,24 @@ function _State_Attack:Enter(hero_,FSM_)
         FSM_:SetState("frenzyattack",hero_)
         return  
     end
-
 end
 
 function _State_Attack:Update(hero_,FSM_)
     local _body = hero_:GetBody()
     local _dt = love.timer.getDelta()
     
-    local _leftHold = _KEYBOARD.Hold(hero_.KEY["LEFT"])
-    local _rightHold = _KEYBOARD.Hold(hero_.KEY["RIGHT"])
+    local _leftHold = self.input:IsHold(hero_.KEY["LEFT"])
+    local _rightHold = self.input:IsHold(hero_.KEY["RIGHT"])
     local _movable = true
 
-    if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
-    (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
+    if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
+    (self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
         _movable = false
     end
 
     if self.attackNum == 1 then
         
-        if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 2
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
@@ -69,41 +68,27 @@ function _State_Attack:Update(hero_,FSM_)
         end
 
     elseif self.attackNum == 2 then
-
-        if _movable then
-            if _body:GetCount() <= 2 then
-                hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
-            end 
-    
-            if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
-                
-                hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
-            end 
-        end
-
-        if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
         end 
-
-    elseif self.attackNum == 3 then
-        
+    end 
+    if self.attackNum == 2 or self.attackNum == 3 then
         if _movable then
-            if _body:GetCount() <= 3 then
-                hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
+            if _body:GetCount() <= self.attackNum then
+                hero_:X_Move(hero_.spd.x * 0.75 * hero_.dir )
             end 
             
-            if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 ) then
+            if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
+            (self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == 1 ) then
                 
-                hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
+                hero_:X_Move(hero_.spd.x * 0.33 * hero_.dir )
             end 
         end
-        
-    end 
+    end
+    
 
     -- attack judgement
     if hero_:GetAttackBox() then
@@ -119,5 +104,7 @@ end
 function _State_Attack:GetTrans()
 	return self.trans
 end
+
+
 
 return _State_Attack 

@@ -11,7 +11,11 @@ local _MonsterSpawner = {}
 
 local _Monster = require "Src.Monster.Monster"
 
-local _mobDataArr = {}
+local _mobDataArr = {
+	pathHead = "",
+	monPathArr = {},
+	monsterList = "",
+}
 
 function _MonsterSpawner.Ctor()
 	_MonsterSpawner.LoadLstData()
@@ -19,22 +23,18 @@ end
 
 function _MonsterSpawner.LoadLstData()
     _MonsterSpawner.pathHead = "/Data/monster/"
-
 	_MonsterSpawner.monPathArr = {}
-
 	_MonsterSpawner.monsterList = LoadFile("/Data/monster/monster.lst")
-	
 	_MonsterSpawner.monsterList = CutText(_MonsterSpawner.monsterList,"\n")
-	
 	_MonsterSpawner.monsterList = CutText(_MonsterSpawner.monsterList[2],"\t")
-
+	
 	for i=1,#_MonsterSpawner.monsterList do
 		
 		if i % 2 ~= 0 and _MonsterSpawner.monsterList[i + 1] then
-			_MonsterSpawner.monPathArr[tonumber(_MonsterSpawner.monsterList[i])] = _MonsterSpawner.pathHead .. string.gsub(string.lower(_MonsterSpawner.monsterList[i + 1]), "`", "")
+			local _tmpStr = string.gsub(string.lower(_MonsterSpawner.monsterList[i + 1]), "`", "")
+			_MonsterSpawner.monPathArr[tonumber(_MonsterSpawner.monsterList[i])] = strcat(_MonsterSpawner.pathHead, _tmpStr)
 		elseif i % 2 ~= 0 and not _MonsterSpawner.monsterList[i + 1] then
 			print("Error. _MonsterSpawner.LoadLstData() --> ending data error (no string data)")
-		
 		end
 	end
 

@@ -12,6 +12,7 @@ return {
 		['[IMAGE POS]'] = {-243,-333,},
 		['[DAMAGE BOX]'] = {-6,-5,0,45,10,50,},
 		['[ATTACK BOX]'] = {-2,-15,25,170,30,120,},
+		['[PLAY SOUND]'] = "SM_MOON_ATK",
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",196,},
 	},
 	['[FRAME MAX]'] = 5,

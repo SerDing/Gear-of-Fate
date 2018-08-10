@@ -75,10 +75,10 @@ if (...) then
 	
   -- Dependancies
   local _PATH = (...):gsub('%.pathfinder$','')
-  local Heap      = require (_PATH .. '.core.bheap')
-  local Heuristic = require (_PATH .. '.core.heuristics')
-  local Grid      = require (_PATH .. '.grid')
-  local Path      = require (_PATH .. '.core.path')
+  local Heap      = require (strcat(_PATH, '.core.bheap'))
+  local Heuristic = require (strcat(_PATH, '.core.heuristics'))
+  local Grid      = require (strcat(_PATH, '.grid'))
+  local Path      = require (strcat(_PATH, '.core.path'))
 
   -- Is arg a grid object
   local function isAGrid(grid)
@@ -87,11 +87,11 @@ if (...) then
 
   -- Available search algorithms
   local Finders = {
-    ['ASTAR']     = require (_PATH .. '.search.astar'),	
-    ['DIJKSTRA']  = require (_PATH .. '.search.dijkstra'),
-    ['BFS']       = require (_PATH .. '.search.bfs'),
-    ['DFS']       = require (_PATH .. '.search.dfs'),
-    ['JPS']       = require (_PATH .. '.search.jps'),
+    ['ASTAR']     = require (strcat(_PATH, '.search.astar')),	
+    ['DIJKSTRA']  = require (strcat(_PATH, '.search.dijkstra')),
+    ['BFS']       = require (strcat(_PATH, '.search.bfs')),
+    ['DFS']       = require (strcat(_PATH, '.search.dfs')),
+    ['JPS']       = require (strcat(_PATH, '.search.jps')),
   }
 
   -- Collect keys in an array

@@ -42,11 +42,12 @@ function _State_AtkBase:_Init()
 end 
 
 function _State_AtkBase:_Enter(hero_)
+	self.dt = 0 
 	self.hero_ = hero_
 	self.heroBody = hero_:GetBody()
-	self.dt = 0 
-	self.atkJudger = hero_:GetAtkJudger()
 	self.heroType = hero_:GetSubType()
+	self.atkJudger = hero_:GetAtkJudger()
+	self.input = hero_:GetInput()
 end 
 
 function _State_AtkBase:_Update(FSM_)
@@ -54,8 +55,8 @@ function _State_AtkBase:_Update(FSM_)
 	-- Add effects by info
 	for i=1,#self.effectInfo do
 		if self.effectInfo[i].born == false then
-			print("atk base effect generate:", self.EffectMgr.pathHead[self.heroType] .. self.effectInfo[i].subPath)
-			self:Effect(self.EffectMgr.pathHead[self.heroType] .. self.effectInfo[i].subPath, 1, 1, self.hero_)
+			-- print(strcat("atk base effect generate:", self.EffectMgr.pathHead[self.heroType], self.effectInfo[i].subPath))
+			self:Effect(self.effectInfo[i].subPath, 1, 1, self.hero_)
 			self.effectInfo[i].born = true
 		end
 	end
@@ -77,7 +78,8 @@ end
 function _State_AtkBase:Effect(path, layer, num)
 	
 	if self.hero_ then
-		self.effect[#self.effect + 1] = self.EffectMgr.ExtraEffect(path, 
+		self.effect[#self.effect + 1] = self.EffectMgr.ExtraEffect(
+			strcat(self.EffectMgr.pathHead[self.heroType], path), 
 			self.hero_.pos.x, 
 			self.hero_.pos.y, 
 			num, 

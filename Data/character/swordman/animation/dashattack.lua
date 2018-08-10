@@ -31,6 +31,7 @@ return {
 		['[DELAY]'] = 100,
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",116,},
 		['[IMAGE POS]'] = {-232,-333,},
+		['[PLAY SOUND]'] = "SQUARESWDB",
 		['[DAMAGE BOX]'] = {48,-5,1,28,10,77,77,-4,58,20,7,11,4,-4,-1,43,8,29,17,-3,25,33,7,24,},
 		['[ATTACK BOX]'] = {82,-13,51,85,26,27,},
 	},

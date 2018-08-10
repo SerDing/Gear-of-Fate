@@ -32,8 +32,8 @@ function _Monster:Ctor(path, nav)
 	self.aim = {x = 0, y = 0}
 	self.speed = {x = 2, y = 1.5}
 	self.speed = {
-		x = self.property["[move speed]"][1] / 1000 * 2, 
-		y = self.property["[move speed]"][2] / 1000 * 2
+		x = self.property["[move speed]"][1] / 7.5, 
+		y = self.property["[move speed]"][2] / 7.5
 	}
 	self.dir = 1
 	self.Y = 0
@@ -41,13 +41,14 @@ function _Monster:Ctor(path, nav)
 	self.AI = true
 	self.debug = false
 
-	self.pakArr = {
+	self.aniArr = {
 		["body"] = _AniPack.New(),
 	}
+	self.extraEffects = {}
 
 	local _pathHead = "Data/monster/"
 	local _pathMid = split(path, "/")
-	_pathMid = _pathMid[#_pathMid - 1] .. "/"
+	_pathMid = strcat(_pathMid[#_pathMid - 1], "/")
 
 	local _motions = {
 		"[waiting motion]",
@@ -59,18 +60,18 @@ function _Monster:Ctor(path, nav)
 		"[overturn motion]",
 	}
 
-	for k,v in pairs(self.pakArr) do
+	for k,v in pairs(self.aniArr) do
 		for i=1,#_motions do
 			self.property[_motions[i]] = string.gsub(self.property[_motions[i]], ".ani","")
-			v:AddAnimation(_pathHead .. _pathMid .. self.property[_motions[i]], 1, _motions[i])
+			v:AddAnimation(strcat(_pathHead, _pathMid, self.property[_motions[i]]), 1, _motions[i])
 		end
 		for j=1,#self.property["[attack motion]"] do
 			self.property["[attack motion]"][j] = string.gsub(self.property["[attack motion]"][j], ".ani","")
-			v:AddAnimation(_pathHead .. _pathMid .. self.property["[attack motion]"][j], 1, "[attack motion " .. tostring(j) .. "]")
+			v:AddAnimation(strcat(_pathHead, _pathMid, self.property["[attack motion]"][j]), 1, strcat("[attack motion ", tostring(j), "]"))
 		end
 	end
 
-	self.pakArr["body"]:SetAnimation("[move motion]")
+	self.aniArr["body"]:SetAnimation("[move motion]")
 
 	self.input = _Input.New(self)
 
@@ -82,13 +83,26 @@ end
 
 function _Monster:Update(dt)
 	
-	for k,v in pairs(self.pakArr) do
+	for k,v in pairs(self.aniArr) do
 		v:Update(dt)
 	end
 	
+	for n = 1,#self.extraEffects do
+		if self.extraEffects[n] and self.extraEffects[n].Update  then
+			self.extraEffects[n]:Update(dt)
+		end 
+	end 
+	
+	for n = #self.extraEffects,1,-1 do
+		if self.extraEffects[n]:IsOver() then
+			self.extraEffects[n] = nil
+			table.remove(self.extraEffects,n)
+		end 
+	end 
+
 	self.FSM:Update(self)
 
-	self.AI_Control:Update(dt,self)	
+	self.AI_Control:Update(dt,self)
 
 	self.input:Update(dt)
 
@@ -98,21 +112,34 @@ end
 function _Monster:Draw(x,y)
 	-- love.graphics.rectangle("line", self.pos.x - 320, self.pos.y - 150, 320 * 2, 150 * 2)
 	-- love.graphics.rectangle("line", self.pos.x - 400, self.pos.y - 85, 400 * 2, 85 * 2)
-	for k,v in pairs(self.pakArr) do
+	for n=1,#self.extraEffects do
+		if self.extraEffects[n] and self.extraEffects[n].Draw and self.extraEffects[n].layer == 0 then
+			self.extraEffects[n]:Draw()
+		end 
+	end 
+	
+	for k,v in pairs(self.aniArr) do
 		v:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z)
 	end
 
+	for n=1,#self.extraEffects do
+		if self.extraEffects[n] and self.extraEffects[n].Draw and self.extraEffects[n].layer == 1 then
+			self.extraEffects[n]:Draw()
+		end 
+	end 
+
 	-- move aim debug drawing
-	love.graphics.line(self.pos.x, self.pos.y, self.aim.x, self.aim.y)
-	love.graphics.circle("fill", self.pos.x, self.pos.y, 3, 20)
-	local r, g, b, a = love.graphics.getColor()
-	love.graphics.setColor(200, 0, 0, 255)
-	love.graphics.circle("fill", self.aim.x, self.aim.y, 5, 20)
-	love.graphics.setColor(r, g, b, a)
+	-- love.graphics.line(self.pos.x, self.pos.y, self.aim.x, self.aim.y)
+	-- love.graphics.circle("fill", self.pos.x, self.pos.y, 3, 20)
+	-- local r, g, b, a = love.graphics.getColor()
+	-- love.graphics.setColor(200, 0, 0, 255)
+	-- love.graphics.circle("fill", self.aim.x, self.aim.y, 5, 20)
+	-- love.graphics.setColor(r, g, b, a)
 	
 end
 
 function _Monster:X_Move(offset)
+	offset = offset * love.timer.getDelta()
 	local _result
 	local _pass
 	local _next = self.pos.x + offset
@@ -150,7 +177,7 @@ function _Monster:X_Move(offset)
 end
 
 function _Monster:Y_Move(offset)
-	
+	offset = offset * love.timer.getDelta()
 	local _result
 	local _pass
 	local _next = self.pos.y + offset
@@ -197,7 +224,7 @@ function _Monster:Damage(obj, damageInfo)
 	end
 	
 	self:SetDir(d)-- fix direction
-	self.FSM:SetState("damage", self, damageInfo)
+	self.FSM:SetState("damage", self, damageInfo, obj)
 end
 
 function _Monster:SetPos(x,y)
@@ -228,19 +255,19 @@ end
 
 function _Monster:SetDir(dir)
 	self.dir = dir or self.dir
-	for k,v in pairs(self.pakArr) do
+	for k,v in pairs(self.aniArr) do
 		v:SetDir(dir)
 	end
 end
 
 function _Monster:SetAnimation(aniName)
-	for k,v in pairs(self.pakArr) do
+	for k,v in pairs(self.aniArr) do
 		v:SetAnimation(aniName)
 	end
 end
 
 function _Monster:NextFrame()
-	for k,v in pairs(self.pakArr) do
+	for k,v in pairs(self.aniArr) do
 		v:NextFrame()
 	end
 end
@@ -288,7 +315,7 @@ function _Monster:GetSpeed()
 end
 
 function _Monster:GetBody()
-	return self.pakArr["body"]
+	return self.aniArr["body"]
 end
 
 function _Monster:IsDead()
@@ -296,11 +323,21 @@ function _Monster:IsDead()
 end
 
 function _Monster:GetDamageBox()
-	return self.pakArr["body"]:GetDamageBox()
+	return self.aniArr["body"]:GetDamageBox()
 end
 
 function _Monster:IsAI()
 	return self.AI
+end
+
+function _Monster:GetProperty(index)
+	return self.property[index]
+end
+
+function _Monster:AddExtraEffect(effect)
+	assert(effect,"Warning: Hero_SwordMan:AddExtraEffect() got a nil effect!")
+	self.extraEffects[#self.extraEffects + 1] = effect
+	self.extraEffects[#self.extraEffects]:SetLayerId(1000 + #self.extraEffects)
 end
 
 return _Monster 

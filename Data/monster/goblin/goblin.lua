@@ -1,8 +1,8 @@
 return {--[[ #PVF_File ]]
 
-	["[width]"]={40,10},
+	["[width]"] = {40,10},
 
-	["[ability category]"]={
+	["[ability category]"] = {
 		"[HP MAX]","*",100,
 		"[EQUIPMENT_PHYSICAL_ATTACK]","*",150,
 		"[EQUIPMENT_PHYSICAL_DEFENSE]","*",100,
@@ -10,46 +10,52 @@ return {--[[ #PVF_File ]]
 		"[EQUIPMENT_MAGICAL_DEFENSE]","*",100,
 	},
 
-	["[category]"]={
+	["[category]"] = {
 		"[human]",
 		"[goblin]",
 		"[melee combat]",
 		"[close-passive]",
 	},
 
-	["[level]"]={1,6},
+	["[level]"] = {1,6},
 
-	["detination change term"] = 1500,
+	["detination change term"]  =  1500,
 
-	["[move speed]"]={500,500}, -- 500 500
+	["[move speed]"] = {500,500}, -- 500 500
 
-	["[attack speed]"]={600,600},
+	["[attack speed]"] = {600,600},
 
-	["[cast speed]"]={700,790},
+	["[cast speed]"] = {700,790},
 
-	["[hit recovery]"]={1000,1000},
+	["[hit recovery]"] = {1000,1000},
 
-	["[weight]"]={45000,45000},
+	["[weight]"] = {45000,45000},
 
-	["[sight]"]=600,
+	["[sight]"] = 600,
 
-	["[targeting nearest]"]=1,
+	["[targeting nearest]"] = 1,
 
-	["[warlike]"]=60,
+	["[warlike]"] = 60,
 
-	["[attack delay]"]=3000,
+	["[attack delay]"] = 3000,
 
-	["[stuckbonus on damage]"]={0,0,0,0},
+	["[stuckbonus on damage]"] = {0,0,0,0},
 
-	["[item]"]={
+	["[ambient sound]"] = '',
+	["[attack sound]"] = '',
+	["[appear sound]"] = '',
+	["[damage sound]"] = 'R_GOBLIN_DMG',
+	["[die sound]"] = '',
+
+	["[item]"] = {
 		1000,50,
 		1047,200,
 		1004,100,
 	},
 
-	["[common champion drop item]"]={},
+	["[common champion drop item]"] = {},
 
-	["[attack kind]"]={
+	["[attack kind]"] = {
 		15.00,1.00,1.00,1,
 		0,0,0,0,
 		0,0,0,0,
@@ -58,31 +64,31 @@ return {--[[ #PVF_File ]]
 		50,0,50,0,
 	},
 
-	["[die effect]"]={0,1,0},
+	["[die effect]"] = {0,1,0},
 
-	["[face image]"]={"Monster/MonsterFace.img",0},
+	["[face image]"] = {"Monster/MonsterFace.img",0},
 
-	["[waiting motion]"]="Animation_Goblin2/Stay.ani",
+	["[waiting motion]"] = "Animation_Goblin2/Stay.ani",
 
-	["[move motion]"]="Animation_Goblin2/Move.ani",
+	["[move motion]"] = "Animation_Goblin2/Move.ani",
 
-	["[sit motion]"]="Animation_Goblin2/Sit.ani",
+	["[sit motion]"] = "Animation_Goblin2/Sit.ani",
 
-	["[damage motion 1]"]="Animation_Goblin2/Damage1.ani",
+	["[damage motion 1]"] = "Animation_Goblin2/Damage1.ani",
 
-	["[damage motion 2]"]="Animation_Goblin2/Damage2.ani",
+	["[damage motion 2]"] = "Animation_Goblin2/Damage2.ani",
 
-	["[down motion]"]="Animation_Goblin2/Down.ani",
+	["[down motion]"] = "Animation_Goblin2/Down.ani",
 
-	["[overturn motion]"]="Animation_Goblin2/Overturn.ani",
+	["[overturn motion]"] = "Animation_Goblin2/Overturn.ani",
 
-	["[attack motion]"]={"Animation_Goblin2/Attack1.ani","Animation_Goblin2/Stay.ani"},
+	["[attack motion]"] = {"Animation_Goblin2/Attack1.ani","Animation_Goblin2/Stay.ani"},
 
-	["[attack info]"]={"AttackInfo/Attack1.atk",""},
+	["[attack info]"] = {"AttackInfo/Attack1.atk",""},
 
-	["[name]"]="哥布林",
+	["[name]"] = "哥布林",
 
-	["[speech on situation]"]={
+	["[speech on situation]"] = {
 		"[on revenge]","有人砸场子啦！！",0,
 		"[on revenge]","兄弟们抄家伙啊！",0,
 		"[on etc]","哼！好哥布林不吃眼前亏！",0,

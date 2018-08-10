@@ -6,7 +6,7 @@ return { --  Hero SwordMan attack info
             ["backSpeed"] = 1,
             ["float"] = 0,
         },
-        ["lift"] = { -- in air floating
+        ["lift"] = { -- on air floating
             ["backPower"] = 5,
             ["backSpeed"] = 1,
             ["float"] = 0,
@@ -15,7 +15,7 @@ return { --  Hero SwordMan attack info
 
     ["attack1"] = {
         ["push"] = {
-            ["backPower"] = 5,
+            ["backPower"] = 4,
             ["backSpeed"] = 1,
             ["float"] = 0,
         },
@@ -29,7 +29,7 @@ return { --  Hero SwordMan attack info
 
     ["attack2"] = {
         ["push"] = {
-            ["backPower"] = 6,
+            ["backPower"] = 4,
             ["backSpeed"] = 1,
             ["float"] = 0,
         },
@@ -45,12 +45,26 @@ return { --  Hero SwordMan attack info
         ["push"] = {
             ["backPower"] = 5,
             ["backSpeed"] = 1,
-            ["float"] = 5.5,
+            ["float"] = 5,
         },
         ["lift"] = {
             ["backPower"] = 0,
             ["backSpeed"] = 0.75,
-            ["float"] = 5.5,
+            ["float"] = 5,
+        },
+        ["Y"] = 38,
+    },
+
+    ["upperslash"] = {
+        ["push"] = {
+            ["backPower"] = 1.5,
+            ["backSpeed"] = 1,
+            ["float"] = 7.5, -- 7.5 * 60 = 450
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 7.5,
         },
         ["Y"] = 38,
     },
@@ -77,8 +91,8 @@ return { --  Hero SwordMan attack info
         },
         ["lift"] = {
             ["backPower"] = 0,
-            ["backSpeed"] = 1,
-            ["float"] = 3.5,
+            ["backSpeed"] = 1.2,
+            ["float"] = 3.3 / 0.9,
         },
         ["Y"] = 38,
     },
@@ -91,22 +105,8 @@ return { --  Hero SwordMan attack info
         },
         ["lift"] = {
             ["backPower"] = 0,
-            ["backSpeed"] = 1,
-            ["float"] = 3.5,
-        },
-        ["Y"] = 38,
-    },
-
-    ["upperslash"] = {
-        ["push"] = {
-            ["backPower"] = 1.5,
-            ["backSpeed"] = 1,
-            ["float"] = 7.5,
-        },
-        ["lift"] = {
-            ["backPower"] = 0,
-            ["backSpeed"] = 1,
-            ["float"] = 7.5,
+            ["backSpeed"] = 1.2,
+            ["float"] = 3.3 / 0.9,
         },
         ["Y"] = 38,
     },
@@ -120,7 +120,7 @@ return { --  Hero SwordMan attack info
         ["lift"] = {
             ["backPower"] = 0,
             ["backSpeed"] = 0.5,
-            ["float"] = 2.5,
+            ["float"] = 1.6,
         },
         ["Y"] = 50,
     },
@@ -134,7 +134,7 @@ return { --  Hero SwordMan attack info
         ["lift"] = {
             ["backPower"] = 0,
             ["backSpeed"] = 0.5,
-            ["float"] = 2.5,
+            ["float"] = 3.3,
         },
         ["Y"] = 40,
     },
@@ -220,21 +220,92 @@ return { --  Hero SwordMan attack info
             ["backSpeed"] = 1,
             ["float"] = 3,
         },
-        ["Y"] = 30,
+        ["Y"] = 42,
     },
 
     ["hopsmash_float"] = {
         ["push"] = {
             ["backPower"] = 5,
             ["backSpeed"] = 1,
-            ["float"] = 5,
+            ["float"] = 0,
         },
         ["lift"] = {
             ["backPower"] = 0,
             ["backSpeed"] = 1,
-            ["float"] = 3,
+            ["float"] = 1 / 0.9,
+        },
+        ["Y"] = 42,
+    },
+
+    ["ashenfork"] = {
+        ["push"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 0,
+            ["float"] = 2,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 0,
+            ["float"] = 1 / 0.9,
         },
         ["Y"] = 30,
     },
+
+    ["frenzy1"] = {
+        ["push"] = {
+            ["backPower"] = 7,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1,
+            ["float"] = 2.5,
+        },
+        ["Y"] = 38,
+    },
+
+    ["frenzy2"] = {
+        ["push"] = {
+            ["backPower"] = 7,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1.1,
+            ["float"] = 2.5,
+        },
+        ["Y"] = 38,
+    },
+
+    ["frenzy3"] = {
+        ["push"] = {
+            ["backPower"] = 7,
+            ["backSpeed"] = 1,
+            ["float"] = 0,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1.1,
+            ["float"] = 2.5,
+        },
+        ["Y"] = 38,
+    },
+
+    ["frenzy4"] = {
+        ["push"] = {
+            ["backPower"] = 5,
+            ["backSpeed"] = 1,
+            ["float"] = 1 / 0.9,
+        },
+        ["lift"] = {
+            ["backPower"] = 0,
+            ["backSpeed"] = 1.1,
+            ["float"] = 2.5,
+        },
+        ["Y"] = 38,
+    },
+    
 
 }

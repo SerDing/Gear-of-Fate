@@ -4,7 +4,7 @@
     Since: Sat Sep 02 2017 21:36:10 GMT+0800 (CST)
     Alter: Sat Sep 02 2017 21:36:10 GMT+0800 (CST)
     Docs: 
-        * the table is map structure
+        * 
 ]]
 
 
@@ -41,5 +41,10 @@ return {
 
 	SM_YEOLPA_DOWN="sounds/char/swordman/sm_yeolpa_down.ogg",
 	SM_YEOLPA_UP="sounds/char/swordman/sm_yeolpa_up.ogg",
+
+
+	-- Map music
+
+	
 
 } 

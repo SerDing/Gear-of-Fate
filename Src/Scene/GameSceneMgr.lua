@@ -10,7 +10,7 @@
 
 local _SCENEMGR = {}
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
+-- local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _Sprite = require "Src.Core.Sprite"
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _EffectMgr = require "Src.Scene.EffectManager"
@@ -33,7 +33,7 @@ local _Index = {-- Index = {area,map}
 -- extern data loading
 local _GAMEINI = require "Src.Config.GameConfig" 
 local _NAME_LIST = {
-	town = require "./Data/town/town" ,
+	town = require "Data/town/town" ,
 	dungeon = {},
 }
 
@@ -48,12 +48,14 @@ _ObjectMgr.AddObject(_hero)
 
 -- black cover when switch scene
 local _cover = {imageData = love.image.newImageData(800, 600),sprite = {},alpha = 240,speed = 3,}
-_cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png"))
+_cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png")) --     love.graphics.newImage(_cover.imageData)
 _cover.sprite:SetColor(0,0,0,255)
 
+-- _cover.imageData = love.image.newImageData("/Dat/backgroundpic.png")
+-- print(_cover.imageData:getString())
 function _SCENEMGR.Ctor()
 
-	_SCENEMGR.path = "./Data/map/"
+	_SCENEMGR.path = "Data/map/"
 	_SCENEMGR.preScene = {}
 	_SCENEMGR.curScene = {}
 	_SCENEMGR.offset = {x = 0, y = 0}
@@ -61,14 +63,14 @@ function _SCENEMGR.Ctor()
 	_SCENEMGR.curType = "town"
 
 	for k,v in pairs(_NAME_LIST.town) do
-		_Area.town[k] = require ("./Data/town." .. v)
+		_Area.town[k] = require ("Data/town." .. v)
 	end 
 
-  ----[[	test elvengard map	]]
-
-	-- _SCENEMGR.CreatScene(_Index["elvengard"][1],_Index["elvengard"][2],"town")
-	-- _SCENEMGR.LoadScene(_Index["elvengard"][1],_Index["elvengard"][2],_SCENEMGR.curType)
-	_SCENEMGR.LoadScene(_Index["lorien"][1],_Index["lorien"][2],_SCENEMGR.curType)
+    ----[[	test elvengard map	]]
+	-- _SCENEMGR.CreatScene(_Index["elvengard"][1], _Index["elvengard"][2], "town")
+	_SCENEMGR.LoadScene(_Index["lorien"][1], _Index["lorien"][2], _SCENEMGR.curType)
+	-- _SCENEMGR.LoadScene(_Index["elvengard"][1], _Index["elvengard"][2], _SCENEMGR.curType)
+	
 	
 end 
 
@@ -77,8 +79,11 @@ function _SCENEMGR.Update(dt)
 	if _SCENEMGR.curScene.Update then
 		_SCENEMGR.curScene:Update(dt)
 	else 
-		print("Err:SceneMgr.Update() --> curScene is not existing !")
+		error("Err:SceneMgr.Update() --> curScene is not existing !")
 	end
+
+	-- _hero:Update(dt)
+
 	_CAMERA.Update(dt)
 	_CAMERA.LookAt(_hero.pos.x, _hero.pos.y)
 
@@ -97,6 +102,8 @@ function _SCENEMGR.Draw()
 		else
 			print("Err:SceneMgr.Draw() --> curScene is not existing!")
 		end
+
+		-- _hero:Draw()
 		
 		if _cover.alpha > 0 then
 			_cover.sprite:Draw(- x, - y)
@@ -133,7 +140,7 @@ function _SCENEMGR.LoadScene(area,map,type)
 		_SCENEMGR.curIndex = {area,map}
 		_SCENEMGR.curScene:Awake()
 		_hero:SetScenePtr(_SCENEMGR.curScene)
-		return true 
+		return true
 	end 
 	
 end

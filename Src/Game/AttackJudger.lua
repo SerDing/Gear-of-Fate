@@ -14,62 +14,97 @@ local _AttackJudger = require("Src.Core.Class")()
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _Collider = require "Src.Core.Collider"
 local _Rect = require "Src.Core.Rect"
+local _AUDIOMGR = require "Src.Audio.AudioManager"
+local _EffectMgr = require "Src.Scene.EffectManager"
 
-function _AttackJudger:Ctor(attacker, entityType)
+local _specialList = {"ATK_OBJ",} -- storage some entities with special types that do not need load AtkInfo
+
+function _AttackJudger:Ctor(atker, entityType)
 	self.damageArr = {}
-	self.attacker = attacker
+	self.atker = atker
 	self.Y = 0
 	self.box_a = _Rect.New(0,0,1,1)
 	self.box_b = _Rect.New(0,0,1,1)
-	
+	self.atkInfoArr = {}
 	self:LoadAtkInfo(entityType)
+	self.debug = false
 end
 
-function _AttackJudger:Judge(attacker, opponent, attackName, atkInfo) 
+function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo) 
 	--[[
-		attacker: a pointer
-		opponent: a string
-		call example: Judge(hero_,"MONSTER")
+		objPointer      atker
+		string 	        enemyType
+		call example    Judge(hero_,"MONSTER")
 	]] 
-	self.attacker = attacker
+	self.atker = atker
 	local _objArr =_ObjectMgr.GetObjects()
 	local _hit = false
 	local _atkInfo
-	local _mon
+	local _enemy
+	local _weaponSoundArr
+	local _weaponHitInfo
+
+	if atker:GetType() == "HERO" then
+		local _WpMainType, _WpSubType = atker:GetWeapon():GetType()
+		_weaponSoundArr = atker:GetProperty("weapon wav")
+		_weaponSoundArr = _weaponSoundArr[_WpMainType]
+		_weaponHitInfo = atker:GetProperty("weapon hit info")
+		_weaponHitInfo = _weaponHitInfo[_WpMainType]
+	end
 
 	for n=1,#_objArr do
-		if _objArr[n] and _objArr[n]:GetType() == opponent then
+		if _objArr[n] and _objArr[n]:GetType() == enemyType then
 			-- get pointer
-			_mon = _objArr[n]
+			_enemy = _objArr[n]
 			
 			-- judge whether the monster is hit
 			_hit = false
-			if not _mon:IsDead() then
-				if not self:IsInDamageArr(_mon:GetId()) then
+			if not _enemy:IsDead() then
+				if not self:IsInDamageArr(_enemy:GetId()) then
 					if atkInfo then
 						_atkInfo = atkInfo
 					else
-						_atkInfo = (self.atkInfo[attackName]) and self.atkInfo[attackName] or self.atkInfo["default"]
+						_atkInfo = (self.atkInfoArr[attackName]) and self.atkInfoArr[attackName] or self.atkInfoArr["attack1"]
 					end
 					
-					self.Y = _atkInfo["Y"] or self.atkInfo["default"]["Y"]
-					if self:IsInY(_mon) then
-						_hit = self:IsHit(attacker, _mon)
+					self.Y = _atkInfo["Y"] or self.atkY["default"]["Y"]
+					if self:IsInY(_enemy) then
+						_hit = self:IsHit(atker, _enemy)
 					end
 				end
 			end
 
-			-- if self.attacker:GetType() == "ATKOBJ" then
-			-- 	print("atk obj hit :", _hit)
-			-- end
-
 			-- hit process
 			if _hit then
-				_mon:Damage(attacker, _atkInfo)
-				-- insert the opponent into hit array
-				self.damageArr[#self.damageArr + 1] = _mon:GetId()
-				-- set hit time to start hitStop
-				attacker:SetHitTime(love.timer.getTime())
+				-- print(attackName)
+				_enemy:Damage(atker.host or atker, _atkInfo)
+				self.damageArr[#self.damageArr + 1] = _enemy:GetId() -- insert the enemy into hit array
+				atker:SetHitTime(love.timer.getTime()) -- set hit time to start hitStop
+
+				if atker:GetType() == "HERO" then
+					local _hitWav = _atkInfo["[hit wav]"]
+					if not _hitWav then
+						_hitWav = _weaponSoundArr[3]
+					end
+					_AUDIOMGR.PlaySound(_hitWav)
+				end
+
+				local _aniPath = ""
+				local _enemyBodyCenter = {x = 0, y = 0}
+				local _effect = {}
+				if _weaponHitInfo then
+					_aniPath = self:RandomEffectPath(_weaponHitInfo[1])
+				elseif _atkInfo["[hit info]"] then
+					_aniPath = self:RandomEffectPath(_atkInfo["[hit info]"])
+				end
+
+				if _weaponHitInfo or _atkInfo["[hit info]"] then
+					_enemyBodyCenter.x = _enemy:GetPos().x
+					_enemyBodyCenter.y = _enemy:GetPos().y + _enemy:GetZ() - _enemy:GetBody():GetHeight() / 2
+					_effect = _EffectMgr.ExtraEffect(_aniPath, _enemyBodyCenter.x, _enemyBodyCenter.y, 1, _enemy:GetDir(), _enemy)
+					_effect:SetLayer(1)
+				end
+
 			end
 
 			
@@ -78,7 +113,7 @@ function _AttackJudger:Judge(attacker, opponent, attackName, atkInfo)
 
 end 
 
-function _AttackJudger:IsHit(attacker, _mon)
+function _AttackJudger:IsHit(atker, _enemy)
 	
 	local _damageBoxs
 	local _attackBoxs
@@ -89,28 +124,28 @@ function _AttackJudger:IsHit(attacker, _mon)
 	local _oppScale
 
 	-- get boxs data
-	_attackBoxs = attacker:GetAttackBox()
-	_damageBoxs = _mon:GetDamageBox()
+	_attackBoxs = atker:GetAttackBox()
+	_damageBoxs = _enemy:GetDamageBox()
 	
 	if _damageBoxs then
 		-- get position scale data of both sides
-		_atkPos = attacker:GetPos()
-		_oppPos = _mon:GetPos()
-		_atkScale = attacker:GetBody():GetScale()
-		_oppScale = _mon:GetBody():GetScale()
+		_atkPos = atker:GetPos()
+		_oppPos = _enemy:GetPos()
+		_atkScale = atker:GetBody():GetScale()
+		_oppScale = _enemy:GetBody():GetScale()
 		
 		-- collision detection
 		for q=1, #_attackBoxs, 6 do
 			
-			self.box_a:SetPos(_atkPos.x + _attackBoxs[q] * attacker:GetDir(), _atkPos.y + - _attackBoxs[q+2])
+			self.box_a:SetPos(_atkPos.x + _attackBoxs[q] * atker:GetDir(), _atkPos.y + _atkPos.z + - _attackBoxs[q+2])
 			self.box_a:SetSize(_attackBoxs[q+3] * _atkScale.x, -_attackBoxs[q+5] * _atkScale.y)
-			self.box_a:SetDir(attacker:GetDir())
+			self.box_a:SetDir(atker:GetDir())
 			
 			for w=1, #_damageBoxs, 6 do
 				
-				self.box_b:SetPos(_oppPos.x + _damageBoxs[w] * _mon:GetDir(),_oppPos.y + - _damageBoxs[w+2] + _oppPos.z)
+				self.box_b:SetPos(_oppPos.x + _damageBoxs[w] * _enemy:GetDir(),_oppPos.y + - _damageBoxs[w+2] + _oppPos.z)
 				self.box_b:SetSize(_damageBoxs[w+3] * _oppScale.x, -_damageBoxs[w+5] * _oppScale.y)
-				self.box_b:SetDir(_mon:GetDir())
+				self.box_b:SetDir(_enemy:GetDir())
 
 				if _Collider.Rect_Rect(self.box_a, self.box_b) then
 					return true
@@ -127,16 +162,21 @@ function _AttackJudger:IsHit(attacker, _mon)
 end
 
 function _AttackJudger:Draw() 
-	-- self.box_a:Draw()
-	-- self.box_b:Draw()
-	local _atkPos = self.attacker:GetPos()
+	
+	if not self.debug then
+		return
+	end
+
+	self.box_a:Draw()
+	self.box_b:Draw()
+	local _atkPos = self.atker:GetPos()
 	love.graphics.line(_atkPos.x, _atkPos.y, _atkPos.x, _atkPos.y - (self.Y / 2))
 	love.graphics.line(_atkPos.x, _atkPos.y, _atkPos.x, _atkPos.y + (self.Y / 2))
 
 end
 
-function _AttackJudger:IsInY(_mon)
-	if math.abs( _mon:GetPos().y - self.attacker:GetPos().y ) <= self.Y / 2 then
+function _AttackJudger:IsInY(_enemy)
+	if math.abs( _enemy:GetPos().y - self.atker:GetPos().y ) <= self.Y / 2 then
 		return true
 	end
 	return false
@@ -156,8 +196,51 @@ function _AttackJudger:ClearDamageArr()
 	self.damageArr = {}
 end
 
+local function NeedLoadAtkInfo(entityType)
+	for i,v in ipairs(_specialList) do
+		if entityType == v then
+			print(v)
+			return true
+		end
+	end
+	return false
+end
+
 function _AttackJudger:LoadAtkInfo(entityType)
-	self.atkInfo = require("Data.AtkJudger.AtkInfo." .. entityType)
+	
+	if NeedLoadAtkInfo(entityType) then
+		return
+	end
+
+	local _heroJob = ""
+	local _filesPath = ""
+	local _fileNameArr = {}
+	if self.atker:GetType() == "HERO" then
+		_heroJob = self.atker.property["[job]"]
+		_heroJob = string.sub(_heroJob, 2, string.len(_heroJob) - 1)
+		_filesPath = "Data/character/" .. _heroJob .. "/attackinfo/"
+		_filesPath2 = "Data/character/" .. _heroJob .. "/attackinfo/"
+		_fileNameArr = love.filesystem.getDirectoryItems(_filesPath2)
+	end
+
+	local k = ""
+	for i,v in ipairs(_fileNameArr) do
+		k = string.gsub(v, ".lua", "")
+		self.atkInfoArr[k] = dofile(_filesPath .. v)
+	end
+	
+	self.atkY = require(strcat("Data.AtkJudger.AtkInfo.", entityType))
+end
+
+function _AttackJudger:RandomEffectPath(hitType)
+	local _path_1 = "Data/common/hiteffect/animation/"
+	local _size = {"small", "large"}
+	if hitType == "[cut]" then
+		return strcat(_path_1, "slash", _size[math.random(1, 2)], tostring(math.random(1, 3)), ".lua")
+	elseif hitType == "[blow]" then 
+		return strcat(_path_1, "knock", _size[math.random(1, 1)], ".lua") -- math.random(1, 2)
+	end
+	
 end
 
 return _AttackJudger 

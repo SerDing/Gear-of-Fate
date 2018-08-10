@@ -39,6 +39,8 @@ function _GameCamera.Ctor(scenemgr)
 	_GameCamera.smooth = 10
 
 	_GameCamera.pos = {x = 0, y = 0}
+	_GameCamera.scale = {x = 800 / 800, y = 600 / 600}
+	-- _GameCamera.scale = {x = 1280 / 800, y = (800 + 55) / 600}
 
 end 
 
@@ -69,19 +71,21 @@ function _GameCamera.LockPos()
 
 	local win_w = love.graphics.getWidth()
 	local win_h = love.graphics.getHeight()
+	local _range_left = win_w / 2 / _GameCamera.scale.x
+	local _range_right = SCENEMGR_.curScene:GetWidth() - win_w / 2 / _GameCamera.scale.x
 
 	if _targetPos.x ~= 0 and _targetPos.y ~= 0 then -- there is a target need to lock
 		
-		if _targetPos.x > win_w / 2 and _targetPos.x < SCENEMGR_.curScene:GetWidth() - win_w / 2 then
-			_GameCamera.pos.x = -_targetPos.x + win_w / 2
-		elseif _targetPos.x <= win_w / 2 then
+		if _targetPos.x > _range_left and _targetPos.x < _range_right then -- target in midlle area
+			_GameCamera.pos.x = -_targetPos.x + win_w / 2 / _GameCamera.scale.x
+		elseif _targetPos.x <= _range_left then -- target in left area
 			_GameCamera.pos.x = 0
-		elseif _targetPos.x >= SCENEMGR_.curScene:GetWidth() - win_w / 2 then
-			_GameCamera.pos.x = -SCENEMGR_.curScene:GetWidth() + win_w
+		elseif _targetPos.x >= _range_right then -- target in right area
+			_GameCamera.pos.x = (- SCENEMGR_.curScene:GetWidth() + win_w / _GameCamera.scale.x) 
 		end
 	
 		if _targetPos.y > win_h then
-			_GameCamera.pos.y = -_targetPos.y + 300
+			_GameCamera.pos.y = -_targetPos.y + win_h / 2
 		else
 			_GameCamera.pos.y = 0
 		end
@@ -93,12 +97,11 @@ function _GameCamera.LockPos()
 end
 
 function _GameCamera.Set()
-	
+	love.graphics.scale(_GameCamera.scale.x, _GameCamera.scale.y)
 	_GameCamera.LockPos()
-
 	love.graphics.push()
 	love.graphics.translate(_GameCamera.pos.x,_GameCamera.pos.y)
-
+	
 	_GameCamera.ShakingSet()
 end
 

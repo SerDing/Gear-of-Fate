@@ -6,33 +6,28 @@
 	Docs:
 		* wrap the logic of DashAttack state in this class
 ]]
-
-local _State_DashAttack = require("Src.Core.Class")()
+local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_DashAttack = require("Src.Core.Class")(_State_AtkBase)
 
 local _KEYBOARD = require "Src.Core.KeyBoard"
-local _EffectMgr = require "Src.Scene.EffectManager" 
 
 function _State_DashAttack:Ctor()
-    self.effect = {}
+	self.effect = {}
+	self:_Init()
 end 
 
 function _State_DashAttack:Enter(hero_)
 	self.name = "dashattack"
-	self.attackName = {"dashattack1","dashattack2"}
+	self.attackName = {"dashattack","dashattackmultihit"}
 	hero_:SetAnimation(self.name)
 	self.attackCount = 1
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
+	self:_Enter(hero_)
 end
 
 function _State_DashAttack:Update(hero_,FSM_)
-    
-	--AttackCheck()
-	-- local _bodyAtkBox = _body:GetAttackBox()
-	-- if _bodyAtkBox then
-	-- 	_ATK_CHECK:CollisionDetection(_bodyAtkBox)
-	-- end 
-	
+
 	local _body = hero_:GetBody()
 	local _dt = love.timer.getDelta()
 	
@@ -54,13 +49,8 @@ function _State_DashAttack:Update(hero_,FSM_)
 	end 
 
 	if _body:GetCount() == 2 and not self.effect[1] and self.attackCount > 1 then
-		self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "dashattackmultihit1.lua",hero_.pos.x,hero_.pos.y-1,1,hero_:GetDir())	
-		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-		-- self.effect[1]:SetOffset(-150 * hero_:GetDir(),-160)
-
-		self.effect[2] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "dashattackmultihit2.lua",hero_.pos.x,hero_.pos.y-1,1,hero_:GetDir())	
-		self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
-		-- self.effect[2]:SetOffset(-200 * hero_:GetDir(),-100)
+		self.effect[1] = self:Effect("dashattackmultihit1.lua", 0, 1)	
+		self.effect[2] = self:Effect("dashattackmultihit2.lua", 0, 1)	
 	end 
 	
 	for n=1,#self.effect do

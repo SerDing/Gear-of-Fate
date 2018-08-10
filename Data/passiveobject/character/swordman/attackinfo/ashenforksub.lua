@@ -6,7 +6,7 @@ return {--[[ #PVF_File --]]
 		},
 		["lift"] = {
 			["backPower"] = 0,
-			["backSpeed"] = 1,
+			["backSpeed"] = 0.75,
 			["float"] = 4.8/0.9,
 		},
 		["Y"] = 100,
@@ -19,6 +19,8 @@ return {--[[ #PVF_File --]]
 		
 		["[damage reaction]"] = "[down]",
 		
+		["[push aside]"] = 20,
+
 		["[lift up]"] = 300,
 		
 		["[hit wav]"] = "R_SHOCKWAVE_HIT",

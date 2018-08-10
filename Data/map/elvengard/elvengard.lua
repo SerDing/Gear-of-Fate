@@ -49,7 +49,7 @@ return  {
 		1048,322,89,33
 	},
 
-	["[sound]"] ={"m_forest_town","amb_forest_01"},
+	["[sound]"] ={"AMB_FOREST_01", "M_FOREST_TOWN"},
 
 	["[animation]"] ={
 		"animation/elvensgate.ani","[normal]",1094,359,0, --alfria door

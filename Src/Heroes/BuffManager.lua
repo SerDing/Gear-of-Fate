@@ -12,18 +12,10 @@ local _BuffMgr = {}
 local _AniPack = require "Src.AniPack" 
 
 _buffAnis = {
-	["frenzy"] = "../Data/character/swordman/effect/animation/frenzy/buff"
+	["frenzy"] = "/Data/character/swordman/effect/animation/frenzy/buff", 
 
 }
 function _BuffMgr.Ctor()
-    --body
-end 
-
-function _BuffMgr.Update(dt)
-    --body
-end 
-
-function _BuffMgr.Draw(x,y)
     --body
 end
 

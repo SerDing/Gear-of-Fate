@@ -35,11 +35,6 @@ end
 function _State_GoreCross:Update(hero_,FSM_)
     local _body = hero_:GetBody()
 	local _dt = love.timer.getDelta()
-
-	-- if _body:GetCount() == 4 then
-	-- 	_EffectMgr:ProduceEffect()
-	-- 	_SoundMgr:PlaySound()
-	-- end 
 	
 	-- attack judgement
 	if _body:GetCount() == 6 then
@@ -95,10 +90,10 @@ function _State_GoreCross:Update(hero_,FSM_)
 			hero_:GetWeapon():SetCurrentPlayNum(0)
 		else
 			if self.effect[3] and self.effect[4] then
-				hero_:GetBody():NextFrame() 
-				hero_:GetWeapon():NextFrame()
-				hero_:GetBody():NextFrame() 
-				hero_:GetWeapon():NextFrame()
+				-- hero_:GetBody():NextFrame() 
+				-- hero_:GetWeapon():NextFrame()
+				-- hero_:GetBody():NextFrame() 
+				-- hero_:GetWeapon():NextFrame()
 			end
 		end
 	end

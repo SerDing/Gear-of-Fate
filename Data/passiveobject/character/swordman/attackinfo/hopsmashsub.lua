@@ -3,14 +3,14 @@ return {--[[ #PVF_File --]]
 	["push"] = {
 		["backPower"] = 0,
 		["backSpeed"] = 1,
-		["float"] = 4.5,
+		["float"] = 6,
 	},
 	["lift"] = {
 		["backPower"] = 0,
 		["backSpeed"] = 1,
-		["float"] = 4.5,
+		["float"] = 6,
 	},
-	["Y"] = 100,
+	["Y"] = 120,
 
 	["[attack type]"] = "[physic]",
 	
@@ -20,7 +20,7 @@ return {--[[ #PVF_File --]]
 	
 	["[damage reaction]"] = "[down]",
 	
-	["[push aside]"] = 0,
+	["[push aside]"] = 30, -- 0
 	
 	["[lift up]"] = 300,
 

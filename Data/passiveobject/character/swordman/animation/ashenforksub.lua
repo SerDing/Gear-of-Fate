@@ -6,6 +6,7 @@ return {--[[ #PVF_File --]]
 		["[IMAGE POS]"]={-260,-370},
 		["[GRAPHIC EFFECT]"]="LINEARDODGE",
 		["[DELAY]"]=55,
+		['[PLAY SOUND]'] = "SAJAHU_SPREAD",
 		["[ATTACK BOX]"]={-94,-33,-17,188,66,35},
 	},
 	["[FRAME001]"]={

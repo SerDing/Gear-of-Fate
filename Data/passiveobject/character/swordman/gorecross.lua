@@ -17,7 +17,10 @@ return {--[[ #PVF_File --]]
 	
 	["[object destroy condition]"]={"[destroy condition]","[on end of animation]",},
 	
-	["[etc motion]"]={"Animation/GoreCross3.ani","Animation/GoreCross4.ani",},
+	-- ["[etc motion]"]={
+	-- 	"Animation/GoreCross3.ani",
+	-- 	"Animation/GoreCross4.ani",
+	-- },
 	
 	["[etc attack info]"]={"AttackInfo/GoreCrossAdd.atk",},
 }

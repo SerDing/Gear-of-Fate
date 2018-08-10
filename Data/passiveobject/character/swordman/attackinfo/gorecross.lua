@@ -9,7 +9,12 @@ return {
         ["backSpeed"] = 1,
         ["float"] = 3,
     },
+    
     ["Y"] = 100,
+
+    ["[push aside]"] = 30,
+
+    ["[lift up]"] = 30,
 
     ["[elemental property]"] = "[no element]",
 

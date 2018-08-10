@@ -8,6 +8,7 @@
 ]]
 local _obj = require "Src.Scene.Object" 
 local _AtkObj = require("Src.Core.Class")(_obj)
+local _AttackJudger = require "Src.Game.AttackJudger"
 
 local _AniPack = require "Src.AniPack" 
 
@@ -19,21 +20,41 @@ function _AtkObj:Ctor(path)
 	local _rootPath = string.gsub(path, _pathArr[#_pathArr], "")
 
 	self.data = require(string.sub(path, 1, string.len(path) - 4))
-	self.pathInfo = {}
+	self.pathInfo = {} -- storage path which is getn in data
 	self.aniFiles = {}
 	self.aniArr = {}
+	self.etcAniArr = {}
 
-	self.pathInfo["[attack info]"] = _rootPath .. string.sub(self.data["[attack info]"], 1, string.len(self.data["[attack info]"]) - 4)
+	-- load attack info by paths
+	self.pathInfo["[attack info]"] = strcat(_rootPath, string.sub(self.data["[attack info]"], 1, string.len(self.data["[attack info]"]) - 4))
 	self.atkInfo = require(self.pathInfo["[attack info]"])
 
+	-- init add object effect
 	if self.data["[add object effect]"] then
-		self.pathInfo["[add object effect]"] = _rootPath .. string.sub(self.data["[add object effect]"][1], 1, string.len(self.data["[add object effect]"][1]) - 4)
+		self.pathInfo["[add object effect]"] = strcat(_rootPath, string.sub(self.data["[add object effect]"][1], 1, string.len(self.data["[add object effect]"][1]) - 4))
 		self.aniFiles["[add object effect]"] = require(self.pathInfo["[add object effect]"])
 		self.aniArr["addAni"] = _AniPack.New()
 		self.aniArr["addAni"]:SetAnimation(self.aniFiles["[add object effect]"], 1)
 	end
 
-	self.pathInfo["[basic motion]"] = _rootPath .. string.sub(self.data["[basic motion]"], 1, string.len(self.data["[basic motion]"]) - 4)
+	-- init etc motion
+	
+	if self.data["[etc motion]"] then
+		self.pathInfo["[etc motion]"] = {}
+		self.aniFiles["[etc motion]"] = {}
+		local _str, count
+		for i,v in ipairs(self.data["[etc motion]"]) do
+			_str, count = string.gsub(v, ".ani", "")
+			self.pathInfo["[etc motion]"][i] = strcat(_rootPath, _str) -- delete suffixv
+			self.aniFiles["[etc motion]"][i] = require(self.pathInfo["[etc motion]"][i])
+			self.etcAniArr[i] = _AniPack.New()
+			self.etcAniArr[i]:SetAnimation(self.aniFiles["[etc motion]"][i], 1)
+		end
+		
+	end
+
+	-- init basic motion
+	self.pathInfo["[basic motion]"] = strcat(_rootPath, string.sub(self.data["[basic motion]"], 1, string.len(self.data["[basic motion]"]) - 4))
 	self.aniFiles["[basic motion]"] = require(self.pathInfo["[basic motion]"])
 	self.aniArr["basicAni"] = _AniPack.New()
 	self.aniArr["basicAni"]:SetAnimation(self.aniFiles["[basic motion]"], 1)
@@ -50,9 +71,13 @@ function _AtkObj:Ctor(path)
 
 	self.pos = {x = 0, y = 0, z = 0}
 	self.speed = 0
+	self.stableFPS = 60
 	self.hitTime = 0
+	self.hitRecovery = 40
 	self.dir = 1
 	self.over = false
+
+	self.attackJudger = _AttackJudger.New(self, "ATK_OBJ")
 end 
 
 function _AtkObj:Update(dt)
@@ -62,7 +87,11 @@ function _AtkObj:Update(dt)
 	end
 
 	for _,v in pairs(self.aniArr) do
-		v:Update(dt)
+		v:Update(dt)	
+	end
+
+	for _,etc in pairs(self.etcAniArr) do
+		etc:Update(dt)
 	end
 
 	local _overNum = 0
@@ -79,7 +108,7 @@ function _AtkObj:Update(dt)
 	end
 
 	if self.speed ~= 0 then
-		self.pos.x = self.pos.x + self.speed * self.dir
+		self.pos.x = self.pos.x + self.speed * self.stableFPS * dt * self.dir
 	end	
 
 	local _atkBoxExists = false
@@ -99,18 +128,24 @@ function _AtkObj:Draw(x,y)
    
 	for _,v in pairs(self.aniArr) do
 		v:SetPos(math.floor(self.pos.x), math.floor(self.pos.y) + math.floor(self.pos.z))
-		v:Draw()
+		v:Draw()	
 	end
 
-	love.graphics.circle("line", self.pos.x, self.pos.y, 3, 50)
-	love.graphics.circle("line", self.pos.x, self.pos.y + self.pos.z, 3, 50)
+	for _,etc in pairs(self.etcAniArr) do
+		etc:SetPos(math.floor(self.pos.x), math.floor(self.pos.y) + math.floor(self.pos.z))
+		etc:Draw()
+	end
+
+	-- love.graphics.circle("line", self.pos.x, self.pos.y, 3, 50)
+	-- love.graphics.circle("line", self.pos.x, self.pos.y + self.pos.z, 3, 50)
+	-- love.graphics.line(self.pos.x, self.pos.y - self.atkInfo["Y"] / 2, self.pos.x, self.pos.y + self.atkInfo["Y"] / 2)
 
 end
 
 function _AtkObj:SetHost(host)
 	self.host = host
-	self:SetAtkJudger(host:GetAtkJudger())
-	self:SetHitRecovery(host:GetHitRecovery())
+	-- self:SetAtkJudger(host:GetAtkJudger())
+	-- self:SetHitRecovery(host:GetHitRecovery())
 	self.attackJudger:ClearDamageArr()
 	for _,v in pairs(self.aniArr) do
 		v:SetBaseRate(host:GetAtkSpeed())
@@ -187,4 +222,44 @@ function _AtkObj:GetAtkObjType()
 	return self.objType
 end
 
+function _AtkObj:Destroy()
+	self.attackJudger = nil
+	self.data = nil
+
+	for k,v in pairs(self.aniArr) do
+		v:Destroy()
+	end
+
+	self.aniArr = nil
+
+	for _,etc in pairs(self.etcAniArr) do
+		etc:Destroy()
+	end
+
+	self.etcAniArr = nil
+
+	for k,v in pairs(self.pathInfo) do
+		if type(v) == "table" then
+			for i,v2 in ipairs(v) do
+				v2 = nil
+			end
+		else
+			v = nil
+		end
+	end
+
+	self.pathInfo = nil
+
+	for k,v in pairs(self.aniFiles) do
+		if type(v) == "table" then
+			for i,v2 in ipairs(v) do
+				v2 = nil
+			end
+		else
+			v = nil
+		end
+	end
+
+	self.aniFiles = nil
+end
 return _AtkObj 

@@ -31,22 +31,22 @@ function _ResPack:Ctor(PakName) --initialize
 	
 	local _offsetName = string.gsub(tmpArray[#tmpArray],".img",".txt")
 	
-	if love.filesystem.exists(self.PakName .. "/offset.txt") == false
-	and love.filesystem.exists(self.PakName .. "/" .. _offsetName) == false then
+	if love.filesystem.exists(strcat(self.PakName, "/offset.txt")) == false
+	and love.filesystem.exists(strcat(self.PakName, "/", _offsetName)) == false then
 		print("The img pack is not existing:",self.PakName)
 		return
 	end
 
 	
 
-	if love.filesystem.exists(self.PakName .. "/" .. _offsetName) then
-		self.offset_text = LoadFile(self.PakName .. "/" .. _offsetName)
+	if love.filesystem.exists(strcat(self.PakName, "/", _offsetName)) then
+		self.offset_text = LoadFile(strcat(self.PakName, "/", _offsetName))
 	else 
-		self.offset_text = LoadFile(self.PakName .. "/offset.txt")
+		self.offset_text = LoadFile(strcat(self.PakName, "/offset.txt"))
 	end 
 
 	if self.offset_text == nil then
-		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. self.PakName)
+		print("Error:_ResPack:Ctor() --> Can not get offset data!", self.PakName)
 		return
 	end
 	
@@ -79,9 +79,8 @@ function _ResPack:GetTexture(num)
 		return 
 	end 
 	
-
 	if self.pak_info[num].texture == 0 then
-		local _path = self.PakName .. "/" .. tostring(num - 1) .. ".png"
+		local _path = strcat(self.PakName, "/", tostring(num - 1), ".png")
 		if love.filesystem.exists(_path)then
 			local tex = _RESMGR.LoadTexture(_path)
 			self.pak_info[num].texture = tex
@@ -90,8 +89,8 @@ function _ResPack:GetTexture(num)
 			return
 		end
 	end
-	return self.pak_info[num].texture
 
+	return self.pak_info[num].texture
 end
 
 function _ResPack:GetOffset(num)

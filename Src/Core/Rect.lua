@@ -10,7 +10,7 @@
 
 local _Rect = require("Src.Core.Class")()
 
-function _Rect:Ctor(x,y,w,h) --initialize
+function _Rect:Ctor(x, y, w, h) --initialize
 	self.pos = {x = 0.0, y = 0.0}
 	self.size = {w = 0, h = 0}
 	self.scale = {x = 1, y = 1}
@@ -69,13 +69,13 @@ function _Rect:Draw()
 
 end
 
-function _Rect:SetPos(x,y)
+function _Rect:SetPos(x, y)
 	self.pos.x = x
 	self.pos.y = y
 	self:Update()
 end
 
-function _Rect:SetSize(w,h)
+function _Rect:SetSize(w, h)
 	self.size.w = w or 0
 	self.size.h = h or 0
 	self:Update()
@@ -87,7 +87,7 @@ function _Rect:SetScale(x, y)
 	self:Update()
 end
 
-function _Rect:SetCenter(x,y)
+function _Rect:SetCenter(x, y)
 	self.cenPos.x = x or self.cenPos.x
 	self.cenPos.y = y or self.cenPos.y
 	self:Update()
@@ -98,7 +98,7 @@ function _Rect:SetDir(dir)
 	self:Update()
 end
 
-function _Rect:SetColor(r,g,b,a)
+function _Rect:SetColor(r, g, b, a)
 	self.color = {
 		r = r,
 		g = g,
@@ -131,7 +131,7 @@ function _Rect:GetHeight()
 	return self.size.h
 end
 
-function _Rect:CheckPoint(x,y)
+function _Rect:CheckPoint(x, y)
 	
 	self:Update()
 
@@ -144,7 +144,7 @@ function _Rect:CheckPoint(x,y)
 	return false 
 end
 
-function _Rect:Destroy(x,y)
+function _Rect:Destroy(x, y)
 	
 	self.pos = nil
 	self.size = nil

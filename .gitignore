@@ -1,0 +1,11 @@
+# game pack files
+*.love
+
+# image resource
+ImagePacks/
+
+# sound files
+SoundPacks/
+
+# music files
+Music/

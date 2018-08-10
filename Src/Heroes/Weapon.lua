@@ -4,7 +4,7 @@
 	Since: 2017-08-08 17:30:16
 	Alter: 2017-08-09 02:21:38
 	Docs:
-		* the class contain "b" and "c" two pack animation
+		* weapon component
 ]]
 
 local _Weapon = require("Src.Core.Class")()
@@ -19,6 +19,8 @@ function _Weapon:Ctor(heroType) --initialize
 
 	self.pathHead = self.pathHeads[heroType]
 	self.dir = 1
+	self.mainType = ""
+	self.subType = ""
 
 	self.pak_b = _AniPack.New()
 	self.pak_c = _AniPack.New()
@@ -61,7 +63,6 @@ function _Weapon:Clear()
 end
 
 function _Weapon:AddAnimation(aniPath,__num,id)
-
 	self.pak_b:AddAnimation(aniPath,__num,id)
 	self.pak_c:AddAnimation(aniPath,__num,id)
 end
@@ -103,10 +104,14 @@ function _Weapon:SetBaseRate(rate)
 end
 
 function _Weapon:SetRes(weaponType, fileNum)
-	local _resPathHead = self.pathHead .. weaponType .. "/" .. weaponType .. string.format("%04d", fileNum)
+	local _resPathHead = strcat(self.pathHead, weaponType, "/", weaponType, string.format("%04d", fileNum))
 	local _resPathEnd = ".img"
-	self.pak_b:SetFileNum(_resPathHead .. "b" .. _resPathEnd)
-	self.pak_c:SetFileNum(_resPathHead .. "c" .. _resPathEnd)
+	self.pak_b:SetFileNum(strcat(_resPathHead, "b", _resPathEnd))
+	self.pak_c:SetFileNum(strcat(_resPathHead, "c", _resPathEnd))
+end
+
+function _Weapon:SetType(mainType, subType)
+	self.mainType, self.subType = mainType, subType
 end
 
 function _Weapon:SetSingle(bool)
@@ -121,6 +126,10 @@ end
 
 function _Weapon:GetAttackBox()
 	return self.pak_c:GetAttackBox()
+end
+
+function _Weapon:GetType()
+	return self.mainType, self.subType
 end
 
 return _Weapon

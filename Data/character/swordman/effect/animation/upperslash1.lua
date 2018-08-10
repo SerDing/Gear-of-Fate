@@ -1,5 +1,4 @@
 return {
-
 	['[SHADOW]'] = 0,
 	['[FRAME MAX]'] = 4,
 	['[FRAME000]'] = {
@@ -12,6 +11,7 @@ return {
 		['[IMAGE POS]'] = {-134,-240,},
 		['[DELAY]'] = 50,
 		['[GRAPHIC EFFECT]'] = "lineardodge",
+		['[PLAY SOUND]'] = "UPPER_SLASH_01",
 		['[IMAGE]'] = {"character/swordman/effect/upperslash.img",1,},
 	},
 	['[FRAME002]'] = {

@@ -12,7 +12,7 @@ local _GameDataBoard = {}
 local _KEY = {}
 
 function _GameDataBoard.Load()
-    _KEY = dofile("Config/Key.cfg")
+    _KEY = require("Config/Key")
 end
 
 function _GameDataBoard.GetKey(id)

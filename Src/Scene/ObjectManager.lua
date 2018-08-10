@@ -4,13 +4,13 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
+		* This class just manage all visual entity objects in scene
 		* You can change code in update() to process some special needs 
 ]]
 
 local _ObjectMgr = {}
 
-local _sort
-_sort = function (obj_a,obj_b)
+local _sort = function (obj_a,obj_b)
 	assert(obj_b:GetY(),obj_b.type)
 	-- return (
 	-- 	(math.floor(obj_a:GetY()) == math.floor(obj_b:GetY())) and
@@ -47,6 +47,9 @@ function _ObjectMgr.Update(dt)
 		if _ObjectMgr.objects[n]:GetType() == "EFFECT" or 
 		   _ObjectMgr.objects[n]:GetType() == "ATKOBJ" then
 			if _ObjectMgr.objects[n]:IsOver() then
+				if _ObjectMgr.objects[n].Destroy then
+					_ObjectMgr.objects[n]:Destroy()
+				end
 				table.remove(_ObjectMgr.objects,n)
 			end 
 		end 

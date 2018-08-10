@@ -19,11 +19,9 @@ function _EffectMgr.Ctor()
 	}
 end 
 
-function _EffectMgr.Update(dt)
-	
-end 
-
-function _EffectMgr.GenerateEffect(_aniPath,x,y,playNum,dir)
+-- _EffectMgr.GenerateEffect(_aniPath,x,y,playNum,dir)
+-- _aniPath must contain the suffix".lua" 
+function _EffectMgr.GenerateEffect(_aniPath, x, y, playNum, dir)
 	
 	local _tmpEffect = _Effect.New(_aniPath)
 	
@@ -38,7 +36,7 @@ function _EffectMgr.GenerateEffect(_aniPath,x,y,playNum,dir)
 	return _tmpEffect
 end
 
-function _EffectMgr.ExtraEffect(_aniPath,x,y,playNum,dir,hero_)  -- generate an extra effect to hero class
+function _EffectMgr.ExtraEffect(_aniPath, x, y, playNum, dir, entity_)  -- generate an extra effect to hero class
 	
 	local _tmpEffect = _Effect.New(_aniPath)
 	
@@ -48,7 +46,7 @@ function _EffectMgr.ExtraEffect(_aniPath,x,y,playNum,dir,hero_)  -- generate an 
 	
 	_tmpEffect:GetAni():SetCurrentPlayNum(playNum) 
 	
-	hero_:AddExtraEffect(_tmpEffect)
+	entity_:AddExtraEffect(_tmpEffect)
 
 	return _tmpEffect
 end

@@ -25,19 +25,20 @@ function _State_TripleSlash:Ctor()
 	
 	self.time_left = 0
 	self.time_right = 0
+	self.a = 255
+	self.slideX = 0 -- slide x distance accumulation
 end 
 
 function _State_TripleSlash:Enter(hero_)
     
 	hero_:SetAnimation(self.childName[1])
 	self.attackNum = 1
-
 	self.nextDir = hero_:GetDir()
 
 ----[[  Call base class function  ]] 
     self:_Enter(hero_)
-    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move1.lua", 1, 1, hero_)
-	self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash1.lua", 1, 1, hero_)
+    self:Effect("tripleslash/move1.lua", 1, 1, hero_)
+	self:Effect("tripleslash/slash1.lua", 1, 1, hero_)
 	self:ReSetSpeed()
 
 	self.atkJudger = hero_:GetAtkJudger()
@@ -78,15 +79,13 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 1, 1, hero_)
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash2.lua", 1, 1, hero_)
+				self:Effect("tripleslash/move2.lua", 1, 1, hero_)
+				self:Effect("tripleslash/slash2.lua", 1, 1, hero_)
 				self:ReSetSpeed()
 			end 
 		end 
-		hero_:X_Move(hero_.spd.x * self.speed * self.dt * hero_.dir )
-		if self.heroBody:GetCount() >= 3 and self.speed >= 50 then
-			self.speed = self.speed - 50 * hero_:GetAtkSpeed() / 1.5
-		end 
+		
+
 
 	elseif self.attackNum == 2 then
 		if self.heroBody:GetCount() >= 2 then
@@ -109,25 +108,25 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/move2.lua", 1, 1, hero_)
-				self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "tripleslash/slash3.lua", 1, 1, hero_)
+				self:Effect("tripleslash/move2.lua", 1, 1, hero_)
+				self:Effect("tripleslash/slash3.lua", 1, 1, hero_)
 				self:ReSetSpeed()
 			end 
 
 		end 
 		
-		hero_:X_Move(hero_.spd.x * self.speed * self.dt * hero_.dir )
-		
-		if self.heroBody:GetCount() >= 3 and self.speed >= 50 then
-			self.speed = self.speed - 50 * hero_:GetAtkSpeed() / 1.5
-		end 
+		-- if self.heroBody:GetCount() >= 3 and self.speed >= self.a then
+		-- 	self.speed = self.speed - self.a * self.dt --* hero_:GetAtkSpeed() / 1.5
+		-- end 
+
 	elseif self.attackNum == 3 then
-		hero_:X_Move(hero_.spd.x * self.speed * self.dt * hero_.dir )
-		
-		if self.heroBody:GetCount() >= 3 and self.speed >= 50 then
-			self.speed = self.speed - 50 * hero_:GetAtkSpeed() / 1.5
-		end 
+
+		-- if self.heroBody:GetCount() >= 3 and self.speed >= self.a then
+		-- 	self.speed = self.speed - self.a * self.dt  --* hero_:GetAtkSpeed() / 1.5
+		-- end 
 	end 
+
+	self:Movement(hero_)
 
 	for n=1,#self.effect do
         if self.effect[n] then
@@ -138,12 +137,31 @@ function _State_TripleSlash:Update(hero_,FSM_)
 end 
 
 function _State_TripleSlash:Exit(hero_)
+	-- print("TripleSlash Slide X", self.slideX)
 	self:_Exit()
-	self:ReSetSpeed()
+end
+
+function _State_TripleSlash:Movement(hero_)
+	hero_:X_Move(self.speed * hero_.dir)
+	self.slideX = self.slideX + self.speed * self.dt
+	if self.heroBody:GetCount() >= 3 then -- and self.speed > self.a
+		self.speed = self.speed - self.a * self.dt * hero_:GetAtkSpeed() / 1.5
+		if self.speed < 0 then
+			self.speed = 0
+		end
+		if self.slideX >= 80 then
+			self.a = self.a * 0.85
+		end
+	end 
 end
 
 function _State_TripleSlash:ReSetSpeed()
-	self.speed = 200 * self.hero_:GetAtkSpeed()
+	self.speed = 255 * self.hero_:GetAtkSpeed() * (self.hero_:GetMovSpeed().x / 100 + 1)
+	self.a = self.speed / self.hero_:GetAtkSpeed() / 4 * 60
+	self.slideX = 0
+	
+	-- print("TripSlash Movement Args:")
+	-- print("speed * dt =", self.speed * self.dt, "a =", self.a)
 end
 
 function _State_TripleSlash:ChangeDir()

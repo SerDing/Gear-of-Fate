@@ -16,28 +16,29 @@ function _State_Ashenfork:Ctor()
 	self:_Init()
 	self.jumpPower = 0
 	self.g = 130
-	self.speed = 2.5
+	self.speed = 140 * 1.3
 	self.landed = false
 	self.enoughHeight = false
 	self:SetEffectKeyFrame(0, "jumpattackhold.lua")
 end 
 
 function _State_Ashenfork:Enter(hero_)
-    self.name = "ashenfork"
+	self.name = "ashenfork"
+	self.attackName = "ashenfork"
 	hero_:SetAnimation("flowmindtwoattack1") -- waiting for change a right one
-	
 	for i=1,3 do
 		hero_:NextFrame()
 	end
 
 	self.jumpPower = 0
 	self.landed = false
-	self.enoughHeight = (hero_.jumpOffset < -100) and true or false
+	self.enoughHeight = (hero_:GetZ() < -120) and true or false
 
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.atkObj = nil
 	self:_Enter(hero_)
+	hero_:SetActionStopTime(love.timer.getTime())
 end
 
 function _State_Ashenfork:Update(hero_,FSM_)
@@ -50,51 +51,56 @@ function _State_Ashenfork:Update(hero_,FSM_)
 	self:X_Move()
 	self:EffectPosFix()
 	
+	-- attack judgement
+    if hero_:GetAttackBox() then
+        self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
+    end
 end 
 
 function _State_Ashenfork:Gravity()
-    self.jumpPower = self.jumpPower + self.dt * self.g
 	
-	if self.hero_.jumpOffset < 0 then
-		self.hero_.jumpOffset = self.hero_.jumpOffset + self.jumpPower
+	self.jumpPower = self.jumpPower + self.dt * self.g * self.hero_:GetAtkSpeed()
+	
+	if self.hero_:GetZ() < 0 then
+		self.hero_:SetZ(self.hero_:GetZ() + self.jumpPower)
 	end
 
-	if not self.landed and self.hero_.jumpOffset >= 0 then 
+	if not self.landed and self.hero_:GetZ() >= 0 then 
 		self.hero_:SetAnimation("sit")
-		self.hero_.jumpOffset = 0
+		self.hero_:SetZ(0)
 		self.landed = true
 	end
 end
 
 function _State_Ashenfork:X_Move()
-    if self.hero_.jumpOffset < 0 then
-		self.hero_:X_Move( self.speed * self.hero_.spd.x * self.hero_:GetDir())
+    if self.hero_:GetZ() < 0 then
+		self.hero_:X_Move( self.speed * self.hero_:GetDir())
 	end 
 end
 
 function _State_Ashenfork:EffectPosFix()
     for n=1,2 do
 		if self.effect[n] then
-			self.effect[n].pos.x = self.hero_.pos.x
+			self.effect[n].pos.x = self.hero_.pos.x  - self.hero_:GetDir() * 9
 			self.effect[n].pos.y = self.hero_.pos.y
-			self.effect[n]:SetOffset(0, self.hero_.jumpOffset)
+			self.effect[n]:SetOffset(0, self.hero_:GetZ())
 		end 
 	end 
 end
 
 function _State_Ashenfork:AtkObjBorn()
-	if self.hero_.jumpOffset >= 0 then
+	if self.hero_:GetZ() >= 0 then
 		if not self.atkObj and self.enoughHeight then
 			self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20016)
 			self.atkObj:SetHost(self.hero_)
-			self.atkObj:SetPos(self.hero_:GetPos().x + 0 * self.hero_:GetDir(), self.hero_:GetPos().y, 0)
+			self.atkObj:SetPos(self.hero_:GetPos().x + 0 * self.hero_:GetDir(), self.hero_:GetPos().y - 1, 0)
 			self.atkObj:SetDir(self.hero_:GetDir())
-			
 		end
 	end
 end
 
 function _State_Ashenfork:Exit(hero_)
+	-- print("self.hero_:GetZ()", self.hero_:GetZ())
     self:_Exit()
 end
 

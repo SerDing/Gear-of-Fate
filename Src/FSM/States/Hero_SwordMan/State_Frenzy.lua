@@ -25,12 +25,12 @@ function _State_Frenzy:Enter(hero_,FSM_)
 		
 		self.switch = false
 		
-		hero_.pakGrp.body:SetColor(255,255,255,255)
-		hero_.pakGrp.weapon:SetColor(255,255,255,255)
+		hero_.pakGrp.body:SetColor(255, 255, 255, 255)
+		hero_.pakGrp.weapon:SetColor(255, 255, 255, 255)
 		
-		_BuffMgr.OffBuff(hero_,"frenzy")
+		_BuffMgr.OffBuff(hero_, "frenzy")
 		
-		FSM_:SetState(FSM_.oriState,hero_)
+		FSM_:SetState(FSM_.oriState, hero_)
 		
 		hero_:SetAttackMode("normal")
 
@@ -42,7 +42,7 @@ function _State_Frenzy:Enter(hero_,FSM_)
 	hero_.pakGrp.body:SetColor(unpack(self.stateColor))
 	-- hero_.pakGrp.weapon:SetColor(unpack(self.stateColor))
 
-	self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/cast.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())	
+	self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/cast.lua", hero_.pos.x, hero_.pos.y, 1, hero_:GetDir())	
 	self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 
 

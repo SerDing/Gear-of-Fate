@@ -10,21 +10,21 @@
 
 local _RESMGR = {
 	imageCachePool = {},
-	resPool = {},
 	soundCachePool = {},
+	count = 0,
 	pathHead = "/ImagePacks/"
 }
 
-
+local _time = 0
 function _RESMGR.Ctor() --initialize
-	_RESMGR.soundList = require "./Config.SoundPack" 
-	-- print(_RESMGR.soundList.SM_ATK_01)
+	_RESMGR.soundPathList = require "Config.SoundPack" 
+	-- print(_RESMGR.soundPathList.SM_ATK_01) -- OK
 
 	-- [[ caching texture in some img packages advanced ]]
 	
 	-- for n=0, 209 do
 	-- 	local _tmpPath = "/ImagePacks/character/swordman/equipment/avatar/skin/sm_body0001.img/"
-	-- 	_RESMGR.LoadTexture(_tmpPath .. tostring(n) .. ".png",true)
+	-- 	_RESMGR.LoadTexture(strcat(_tmpPath, tostring(n), ".png"),true)
 	-- end 
 
 	local _cacheNameList = {
@@ -51,53 +51,60 @@ end
 function _RESMGR.Update(dt)
 
 	-- Display the amount of the resource poll
-	-- print( "ResCachePool_Number:"  .. tostring(table.getn(_RESMGR.imageCachePool)) )
+	-- _time = _time + dt
+	-- if _time > 0.016 * 60 then
+	-- 	_time = 0
+	-- 	print(strcat("ResPool_Count:", tostring(table.getn(_RESMGR.imageCachePool))))
+	-- end
+	
 end
 
 function _RESMGR.LoadTexture(filePath,cache)
 	if not cache then
 		-- [[ find objected texture in imageCachePool ]]
-		for n = 1 , table.getn(_RESMGR.imageCachePool) do
+		for n = 1, table.getn(_RESMGR.imageCachePool) do
 			if _RESMGR.imageCachePool[n].filePath == filePath then
-				return _RESMGR.imageCachePool[n].pointing
+				return _RESMGR.imageCachePool[n].ptr
 			end
 		end
 	end 
 	
-	-- [[ find nothing then create objceted texture ]]
-	local _tmpImage = {pointing = 0, filePath = filePath}
-    _tmpImage.pointing =  love.graphics.newImage(filePath)
-    _RESMGR.imageCachePool[#_RESMGR.imageCachePool + 1] = _tmpImage
+	-- [[ find nothing then create objective texture ]]
+	local _tmpImage = {ptr = 0, filePath = filePath}
+    _tmpImage.ptr =  love.graphics.newImage(filePath)
+    _RESMGR.Insert("IMAGE", _tmpImage)
 	
 	if cache then
 		_tmpImage = nil
 	else 
-		return _tmpImage.pointing 
+		return _tmpImage.ptr 
 	end 
 	
 end
-
 
 function _RESMGR.LoadSound(filePath,cache) -- cache : early caching resource
 
 	if not cache then
 		-- [[ find objected sound in imageCachePool ]]
-		for n = 1 , #_RESMGR.soundCachePool do
+		for n = 1, #_RESMGR.soundCachePool do
 			if _RESMGR.soundCachePool[n].filePath == filePath then
-				return _RESMGR.soundCachePool[n].pointing
+				-- print("ResMgr.LoadSound() has found ", filePath)
+				return _RESMGR.soundCachePool[n].ptr
 			end
 		end
 	end
 
-	-- [[ find nothing then create objceted texture ]]
-	local _tmpSound = {pointing = 0, filePath = filePath}
-    _tmpSound.pointing = love.audio.newSource(filePath)
-    _RESMGR.soundCachePool[ #_RESMGR.soundCachePool + 1] = _tmpSound
+	-- [[ find nothing then create objective texture ]]
+	local _tmpSound = {ptr = 0, filePath = filePath}
+	-- local _tmpMemory = collectgarbage("count")
+	_tmpSound.ptr = love.audio.newSource(filePath)
+	-- print("one audio source memory:", collectgarbage("count") - _tmpMemory)
+    _RESMGR.Insert("SOUND", _tmpSound)
 	
 	if cache then
 		_tmpSound = nil
 	else 
-		return _tmpSound.pointing 
+		return _tmpSound.ptr 
 	end 
 	
 end
@@ -108,18 +115,18 @@ function _RESMGR.LoadTextureByImg(filePath)
 	
 	local _offsetName = string.gsub(tmpArray[#tmpArray - 1],".img",".txt")
 	
-	if love.filesystem.exists(filePath .. "offset.txt") == false
-	and love.filesystem.exists(filePath .. _offsetName) == false then
+	if love.filesystem.exists(strcat(filePath,"offset.txt")) == false
+	and love.filesystem.exists(strcat(filePath,_offsetName)) == false then
 		print("The img pack is not existing:",filePath)
 		return
 	end
 
 	local _offset_text
 
-	if love.filesystem.exists(filePath  .. _offsetName) then
-		_offset_text = LoadFile(filePath .. _offsetName)
+	if love.filesystem.exists(strcat(filePath , _offsetName)) then
+		_offset_text = LoadFile(strcat(filePath, _offsetName))
 	else 
-		_offset_text = LoadFile(filePath .. "offset.txt")
+		_offset_text = LoadFile(strcat(filePath, "offset.txt"))
 	end 
 
 	if _offset_text == nil then
@@ -136,9 +143,18 @@ function _RESMGR.LoadTextureByImg(filePath)
 	end 
 	
 	for n=0,_num - 1 do
-		_RESMGR.LoadTexture(filePath .. tostring(n) .. ".png",true)
+		_RESMGR.LoadTexture(strcat(filePath, tostring(n), ".png"),true)
 	end 
 
+end
+
+function _RESMGR.Insert(pool, element)
+	if pool == "IMAGE" then
+		_RESMGR.imageCachePool[#_RESMGR.imageCachePool + 1] = element
+	elseif pool == "SOUND" then
+		_RESMGR.soundCachePool[ #_RESMGR.soundCachePool + 1] = element
+	end
+	_RESMGR.count = _RESMGR.count + 1
 end
 
 return _RESMGR

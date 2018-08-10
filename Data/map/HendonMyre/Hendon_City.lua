@@ -1,12 +1,18 @@
 return  {
 	["[player number]"] ={2,8},
+	
 	["[pvp start area]"] ={1410,230,447,216,1413,230,89,217,1860,231,91,216},
+	
 	["[type]"] ="[normal]",
+	
 	["[tile]"] ={"tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til","tile/hm01.til",},
 
 	["[far sight scroll]"] =50,
+	
 	["[middle sight scroll]"] =90,
+	
 	["[near sight scroll]"] =110,
+	
 	["[background animation]"] ={
 		["[ani info]"] ={
 			["[filename]"] ="animation/far00.ani",
@@ -20,9 +26,13 @@ return  {
 	},
 
 	["[town movable area]"] ={1855,163,106,18,2,0,3777,219,20,117,1,0,4,224,21,107,2,7,2510,146,124,15,18,0,},
-		["[quest condition]"] ={4652},
+	
+	["[quest condition]"] ={4652},
+	
 	["[virtual movable area]"] ={13,223,3774,108,1856,171,107,59,2549,158,91,70,},
-		["[quest condition]"] ={4652},
+	
+	["[quest condition]"] ={4652},
+	
 	["[sound]"] ={"m_hendonmyre","amb_town_03",},
 
 	["[animation]"] ={"animation/post00.ani","[normal]",2457,222,0,"animation/brpost00.ani","[normal]",68,199,0,"animation/hendonrtw.ani","[normal]",3676,188,0,"animation/hmlight02.ani","[normal]",1890,16,0,"animation/warfaregate.ani","[normal]",375,5,0,"animation/hmbgbox05.ani","[normal]",174,175,0,"animation/hmbgbox04.ani","[normal]",118,175,0,"animation/hmbgbox05.ani","[normal]",25,175,0,"animation/hmbgbox05.ani","[normal]",3794,170,0,"animation/hmbgbox04.ani","[normal]",3737,170,0,"animation/hmbggrass01.ani","[normal]",16,195,0,"animation/hmbggrass01.ani","[normal]",583,174,0,"animation/hmbggrass01.ani","[normal]",1833,174,0,"animation/hmbggrass01.ani","[normal]",2715,231,0,"animation/hmbggrass01.ani","[normal]",3719,193,0,"animation/hmbggrass02.ani","[normal]",30,200,0,"animation/hmbggrass02.ani","[normal]",209,183,0,"animation/hmbggrass02.ani","[normal]",1688,203,0,"animation/hmbggrass02.ani","[normal]",2165,220,0,"animation/hmbggrass02.ani","[normal]",3150,198,0,"animation/wall00.ani","[closeback]",139,219,0,"animation/wall00.ani","[closeback]",363,219,0,"animation/wall00.ani","[closeback]",587,219,0,"animation/wall00.ani","[closeback]",811,219,0,"animation/wall00.ani","[closeback]",1035,219,0,"animation/wall00.ani","[closeback]",1259,219,0,"animation/wall00.ani","[closeback]",1483,219,0,"animation/wall00.ani","[closeback]",1707,219,0,"animation/wall00.ani","[closeback]",2153,219,0,"animation/wall00.ani","[closeback]",2377,219,0,"animation/wall00.ani","[closeback]",2601,219,0,"animation/wall00.ani","[closeback]",2825,219,0,"animation/wall00.ani","[closeback]",3049,219,0,"animation/wall00.ani","[closeback]",3273,219,0,"animation/wall00.ani","[closeback]",3497,219,0,"animation/wall00.ani","[closeback]",3721,219,0,"animation/wall00.ani","[closeback]",3945,219,0,"animation/gate02.ani","[closeback]",1941,165,0,"animation/str00-1.ani","[closeback]",2466,196,0,"animation/str00-2.ani","[closeback]",2787,197,0,"animation/wall00.ani","[closeback]",3275,219,0,"animation/wall00.ani","[closeback]",3499,219,0,"animation/wall00.ani","[closeback]",3723,219,0,"animation/str04.ani","[closeback]",3279,114,0,"animation/basilica.ani","[closeback]",1359,166,0,},
@@ -34,6 +44,7 @@ return  {
 	["[IGA animation]"] ={"animation/iga_hendon_roton.ani","[normal]",1102,214,0,},
 
 	["[map name]"] ="pvp无名",
+	
 	["[specific attacked monster info]"] ={
 		1,30,30,0,65439,500,280,0,500,20021,180,0,80,
 		1,30,30,0,65438,1000,280,0,500,20043,180,0,80,

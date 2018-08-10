@@ -6,7 +6,7 @@
 	Docs:
 		* wrap the logic of frenzy attack state in this class
 ]]
--- Remember to change _KEYBOARD.Hold() to Press() 
+-- Remember to change self.input:IsHold() to Press() 
 
 local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_FrenzyAttack = require("Src.Core.Class")(_State_AtkBase)
@@ -25,9 +25,8 @@ function _State_FrenzyAttack:Ctor()
     
     self.attackNum = 0
     self.KEYID = {}
-
+    self.spdRate = 0.55
     self:_Init()
-
 end 
 
 function _State_FrenzyAttack:Enter(hero_)
@@ -40,9 +39,9 @@ function _State_FrenzyAttack:Enter(hero_)
 
 ----[[  Call base class function  ]]
     self:_Enter(hero_)
-    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword1-1.lua",0,1,hero_)
-    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword1-3.lua",0,1,hero_)
-    self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword1-4.lua",0,1,hero_)
+    self:Effect("frenzy/sword1-1.lua", 0, 1)
+    self:Effect("frenzy/sword1-3.lua", 0, 1)
+    self:Effect("frenzy/sword1-4.lua", 0, 1)
     
 end
 
@@ -50,21 +49,18 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
     local _body = hero_:GetBody()
     local _dt = love.timer.getDelta()
     
-    local _leftHold = _KEYBOARD.Hold(hero_.KEY["LEFT"])
-    local _rightHold = _KEYBOARD.Hold(hero_.KEY["RIGHT"])
+    local _leftHold = self.input:IsHold(hero_.KEY["LEFT"])
+    local _rightHold = self.input:IsHold(hero_.KEY["RIGHT"])
     local _movable = true
 
-    -- local _keyCheck = _KEYBOARD.Press
-    local _keyCheck = _KEYBOARD.Hold
-
-    if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
-    (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
+    if (_leftHold and hero_.dir == 1) or
+    (_rightHold and hero_.dir == -1) then
         _movable = false
     end
 
     if self.attackNum == 1 then
         
-        if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 4 then
+        if self.input:IsHold(hero_.KEY["ATTACK"]) and _body:GetCount() > 4 then
             self.attackNum = 2
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
@@ -78,9 +74,9 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
                 table.remove(self.effect,n)
             end 
 
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword2-1.lua",1,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword2-3.lua",1,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword2-4.lua",1,1,hero_)
+            self:Effect("frenzy/sword2-1.lua", 1, 1)
+            self:Effect("frenzy/sword2-3.lua", 1, 1)
+            self:Effect("frenzy/sword2-4.lua", 1, 1)
            
         end 
         
@@ -88,18 +84,16 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         
         if _movable then
             if _body:GetCount() <= 2 then
-                hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
+                hero_:X_Move(hero_.spd.x * hero_.dir )
             end 
     
-            if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then  
-                hero_:X_Move(hero_.spd.x * 50 * _dt * hero_.dir )
+            if (_leftHold and hero_.dir == -1 ) or 
+            (_rightHold and hero_.dir == 1 )   then  
+                hero_:X_Move(hero_.spd.x * self.spdRate * hero_.dir )
             end 
         end
 
-       
-
-        if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
@@ -113,9 +107,9 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
                 table.remove(self.effect,n)
             end 
 
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-1.lua",1,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-2.lua",1,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword3-3.lua",1,1,hero_)
+            self:Effect("frenzy/sword3-1.lua", 1, 1)
+            self:Effect("frenzy/sword3-2.lua", 1, 1)
+            self:Effect("frenzy/sword3-3.lua", 1, 1)
 
         end 
         
@@ -123,18 +117,17 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
         if _movable then
             if _body:GetCount() < 4 then
-                hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
+                hero_:X_Move(hero_.spd.x * hero_.dir )
             end 
             
-            if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+            if (_leftHold and hero_.dir == -1 ) or 
+            (_rightHold and hero_.dir == 1 )   then
                 
-                hero_:X_Move(hero_.spd.x * 50 * _dt * hero_.dir )
-                
+                hero_:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
             end
         end
 
-        if _keyCheck(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 4
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
@@ -148,28 +141,28 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
                 table.remove(self.effect,n)
             end 
 
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-1.lua",1,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-2.lua",1,1,hero_)
-            self:Effect(self.EffectMgr.pathHead["SwordMan"] .. "frenzy/sword4-3.lua",1,1,hero_)        
+            self:Effect("frenzy/sword4-1.lua", 1, 1)
+            self:Effect("frenzy/sword4-2.lua", 1, 1)
+            self:Effect("frenzy/sword4-3.lua", 1, 1)        
 
         end 
 
     elseif self.attackNum == 4 then
         if _body:GetCount() < 3 then
             if _movable then
-                hero_:X_Move(hero_.spd.x * 30 * _dt * hero_.dir )
+                hero_:X_Move(hero_.spd.x * hero_.dir )
                 
-                if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-                (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+                if (_leftHold and hero_.dir == -1 ) or 
+                (_rightHold and hero_.dir == 1 )   then
                     
-                    hero_:X_Move(hero_.spd.x * 50 * _dt * hero_.dir )
+                    hero_:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
                 end
             end
         end 
     end 
    
     if hero_:GetAttackBox() then
-        self.atkJudger:Judge(hero_, "MONSTER")
+        self.atkJudger:Judge(hero_, "MONSTER", self.childName[self.attackNum])
     end
 
     for n=1,#self.effect do

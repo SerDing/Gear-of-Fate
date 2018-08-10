@@ -16,6 +16,7 @@ return {
 		['[IMAGE POS]'] = {-232,-333,},
 		['[DAMAGE BOX]'] = {22,-5,-1,30,10,86,46,-2,49,20,5,20,4,-3,16,20,8,42,-16,-1,-2,20,6,33,-25,-1,-7,20,5,20,},
 		['[DELAY]'] = 50,
+		['[PLAY SOUND]'] = "SM_GORECROSS", 
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",12,},
 	},
 	['[FRAME003]'] = {

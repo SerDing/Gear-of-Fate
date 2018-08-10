@@ -13,7 +13,6 @@ local _AniBlock = require("Src.Core.Class")(_obj)
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
 local _KEYBOARD = require "Src.Core.KeyBoard"
-local _GAMEINI = require "Src.Config.GameConfig" 
 
 function _AniBlock:Ctor(aniPath,layer)
 	
@@ -91,14 +90,14 @@ function _AniBlock:Draw(x, y)
 			-- print("AniBlock disappeared ","_sy+h",_sy+_h," < cam_y",y)
 		end
 
-		if _sx > x + _GAMEINI.winSize.width then
+		if _sx > x + love.graphics.getWidth() then
 			self.display = 0
-			-- print("AniBlock disappeared ","_sx",_sx," > cam_x+width",x + _GAMEINI.winSize.width)
+			-- print("AniBlock disappeared ","_sx",_sx," > cam_x+width",x + love.graphics.getWidth())
 		end
 		
-		if _sy > y + _GAMEINI.winSize.height then
+		if _sy > y + love.graphics.getHeight() then
 			self.display = 0
-			-- print("AniBlock disappeared ","_sy",_sy," > cam_y+height",y + _GAMEINI.winSize.height)
+			-- print("AniBlock disappeared ","_sy",_sy," > cam_y+height",y + love.graphics.getHeight())
 		end
 
 		-- MAP_ANI_OBJ does not need camera position which is just used to decide whether draw itself

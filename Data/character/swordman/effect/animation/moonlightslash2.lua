@@ -6,7 +6,9 @@ return {--[[ #PVF_File --]]
 	["[IMAGE POS]"]={-114,-237},
 	["[INTERPOLATION]"]=1,
 	["[GRAPHIC EFFECT]"]="LINEARDODGE",
-	["[DELAY]"]=80,},
+	['[PLAY SOUND]'] = "MOON_ATK_02",
+	["[DELAY]"]=80,
+},
 ["[FRAME001]"]={
 	["[IMAGE]"]={"Character/Swordman/Effect/slash-2.img",1},
 	["[IMAGE POS]"]={-114,-237},

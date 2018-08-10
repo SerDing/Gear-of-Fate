@@ -12,7 +12,6 @@ local _Obstacle = require("Src.Core.Class")(_obj)
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
 local _KEYBOARD = require "Src.Core.KeyBoard"
-local _GAMEINI = require "Src.Config.GameConfig" 
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 
 function _Obstacle:Ctor(_path)
@@ -165,8 +164,8 @@ function _Obstacle:Draw(cam_x, cam_y)
 	
 	if _sx + _w < cam_x or
 		_sy + _h < cam_y or
-		_sx > cam_x + _GAMEINI.winSize.width or
-		_sy > cam_y + _GAMEINI.winSize.height then
+		_sx > cam_x + love.graphics.getWidth() or
+		_sy > cam_y + love.graphics.getHeight() then
 		
 		self.display = 0
 		print("_sx+w",_sx+_w," < cam_x",cam_x)

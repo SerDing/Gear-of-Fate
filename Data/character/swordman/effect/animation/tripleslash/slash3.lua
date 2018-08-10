@@ -14,6 +14,7 @@ return {
 ,
 	["[DELAY]"]=70,
 	["[GRAPHIC EFFECT]"]="lineardodge",
+	['[PLAY SOUND]'] = "TSLASH_03",
 	["[IMAGE]"]={"character/swordman/effect/tripleslash/03.img",0}
 ,
 },

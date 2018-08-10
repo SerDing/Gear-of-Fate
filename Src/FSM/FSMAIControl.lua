@@ -174,7 +174,7 @@ function _FSMAIControl:NavMove(x, y, entity)
     self.pathNodes = self.nav:FindPath(entity, x, y)
     
     if not self.pathNodes then
-        print("End node cannot be pass, path finding finished.")
+        -- print("End node cannot be pass, path finding finished.")
         return false
     end
 
@@ -189,7 +189,7 @@ function _FSMAIControl:NavMove(x, y, entity)
     -- }
 
     -- self.move = true
-    print("monster start move")
+    -- print("monster start move")
 	self.FSM:GetCurState():SetStopRange(self.nav:GetNodeSize() / 2)
 end
 

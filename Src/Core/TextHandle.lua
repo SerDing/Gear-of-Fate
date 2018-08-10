@@ -36,3 +36,18 @@ function split(str, delimiter)
 	end
 	return {}
 end
+
+function strcat(str_1, str_2, ...)
+	local _strs = {str_1, str_2}
+	local _newStr = ""
+	local args = {...} -- use this solution to package multiple parameters because of luajit does not support arg which is supported by native lua(stop support after 5.2)
+	
+	if #args > 0 then
+		for i,v in ipairs(args) do
+			_strs[#_strs + 1] = v
+		end
+	end
+	
+	_newStr = table.concat(_strs, "") -- table.concat(table tab, string separator)
+	return _newStr
+end

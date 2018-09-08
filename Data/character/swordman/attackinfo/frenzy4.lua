@@ -3,7 +3,7 @@ return {
 	["push"] = {
 		["backPower"] = 5,
 		["backSpeed"] = 1,
-		["float"] = 1 / 0.9,
+		["float"] = 1 ,
 	},
 	["lift"] = {
 		["backPower"] = 0,

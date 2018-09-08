@@ -105,9 +105,10 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 					_effect:SetLayer(1)
 				end
 
+				
 			end
 
-			
+			return _hit
 		end
 	end
 

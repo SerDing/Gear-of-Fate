@@ -27,7 +27,8 @@ end
 
 function _State_Dash:Enter(hero_)
     self.name = "dash"
-	hero_:SetAnimation(self.name)
+    hero_:SetAnimation(self.name)
+    self.movement = hero_:GetComponent('Movement')
 end
 
 function _State_Dash:Update(hero_,FSM_)
@@ -38,16 +39,16 @@ function _State_Dash:Update(hero_,FSM_)
 	local right = _KEYBOARD.Hold("right")
 	
     if up then
-        hero_:Y_Move(- hero_.spd.y * 1.5 )
+        self.movement:Y_Move(- hero_.spd.y * 1.5 )
     elseif down then
-        hero_:Y_Move( hero_.spd.y * 1.5 )
+        self.movement:Y_Move( hero_.spd.y * 1.5 )
     end 
            
     if left then
-        hero_:X_Move(- hero_.spd.x * 2)
+        self.movement:X_Move(- hero_.spd.x * 2)
         hero_:SetDir(-1)
     elseif right then
-        hero_:X_Move( hero_.spd.x * 2)
+        self.movement:X_Move( hero_.spd.x * 2)
         hero_:SetDir(1)
     end 
 

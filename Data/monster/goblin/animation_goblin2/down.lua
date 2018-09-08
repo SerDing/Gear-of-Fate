@@ -24,6 +24,6 @@ return {--[[ #PVF_File --]]
 	["[FRAME004]"]={
 		["[IMAGE]"]={"Monster/Goblin/Event/Goblin.img",9},
 		["[IMAGE POS]"]={-91,-152},
-		["[DELAY]"]=700, -- 500  倒地时间
+		["[DELAY]"]=500, -- 500  倒地时间
 		["[DAMAGE BOX]"]={-43,-5,-1,65,10,13},}
 }

@@ -12,7 +12,6 @@ local _State_DashAttack = require("Src.Core.Class")(_State_AtkBase)
 local _KEYBOARD = require "Src.Core.KeyBoard"
 
 function _State_DashAttack:Ctor()
-	self.effect = {}
 	self:_Init()
 end 
 
@@ -23,6 +22,7 @@ function _State_DashAttack:Enter(hero_)
 	self.attackCount = 1
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
+	self.movement = hero_:GetComponent('Movement')
 	self:_Enter(hero_)
 end
 
@@ -33,14 +33,14 @@ function _State_DashAttack:Update(hero_,FSM_)
 	
 	if _body:GetCount() >= 2 and _body:GetCount() <= 4 then
 		if self.attackCount == 1 then
-			hero_:X_Move(hero_.spd.x * 75 * _dt * hero_.dir )
+			self.movement:X_Move(hero_.spd.x * 2 * hero_.dir )
 		elseif self.attackCount == 2 then
-			hero_:X_Move(hero_.spd.x * 225 * _dt * hero_.dir )
+			self.movement:X_Move(hero_.spd.x * 4 * hero_.dir )
 		end 
 	end 
 
-	if _body:GetCount() > 3 then
-		if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and self.attackCount <2 then
+	if _body:GetCount() > 3 and _body:GetCount() < 8 then -- 
+		if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and self.attackCount == 1 then
 			hero_:GetBody():SetFrame(2)
 			hero_:GetWeapon():SetFrame(2)
 			self.attackCount = self.attackCount + 1
@@ -49,15 +49,14 @@ function _State_DashAttack:Update(hero_,FSM_)
 	end 
 
 	if _body:GetCount() == 2 and not self.effect[1] and self.attackCount > 1 then
-		self.effect[1] = self:Effect("dashattackmultihit1.lua", 0, 1)	
-		self.effect[2] = self:Effect("dashattackmultihit2.lua", 0, 1)	
+		self:Effect("dashattackmultihit1.lua", 0, 1)
+		self:Effect("dashattackmultihit2.lua", 0, 1)
 	end 
-	
-	for n=1,#self.effect do
-		if self.effect[n] then
-			self.effect[n].pos.x = self.effect[n].pos.x + hero_.spd.x * 225 * _dt * hero_.dir
-		end 
-	end 
+
+	for i,v in ipairs(self.effect) do
+		v.pos.x = hero_.pos.x
+	end
+
 	
 	if hero_:GetAttackBox() then
 		self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackCount])

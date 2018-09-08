@@ -83,6 +83,7 @@ function _FSM:InitStates(entityType)
 
     self.loadingLst = {
         ["HERO_SWORDMAN"] = {
+            -- {state_name, state_file_name},
             {"rest","State_Rest"},
             {"stay","State_Stay"},
             {"move","State_Move"},

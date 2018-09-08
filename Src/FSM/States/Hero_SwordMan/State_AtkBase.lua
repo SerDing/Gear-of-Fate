@@ -29,6 +29,7 @@
 ]]
 
 local _State_AtkBase = require("Src.Core.Class")()
+local _EffectMgr = require "Src.Scene.EffectManager"
 
 function _State_AtkBase:_Init()
 
@@ -38,6 +39,7 @@ function _State_AtkBase:_Init()
 	self.effectInfo = {}
 
 	self.EffectMgr = require "Src.Scene.EffectManager"
+	_EffectMgr = require "Src.Scene.EffectManager"
 	-- self.SoundMgr = require "Src.SoundManager"
 end 
 
@@ -56,7 +58,7 @@ function _State_AtkBase:_Update(FSM_)
 	for i=1,#self.effectInfo do
 		if self.effectInfo[i].born == false then
 			-- print(strcat("atk base effect generate:", self.EffectMgr.pathHead[self.heroType], self.effectInfo[i].subPath))
-			self:Effect(self.effectInfo[i].subPath, 1, 1, self.hero_)
+			self:Effect(self.effectInfo[i].subPath, 1, 1)
 			self.effectInfo[i].born = true
 		end
 	end
@@ -75,11 +77,11 @@ function _State_AtkBase:SetEffectKeyFrame(frame, subPath)
     self.effectInfo[#self.effectInfo + 1] = {frame = frame, subPath = subPath, born = false}
 end
 
-function _State_AtkBase:Effect(path, layer, num)
+function _State_AtkBase:Effect(path, layer, num, atkSpdPercent)
 	
 	if self.hero_ then
-		self.effect[#self.effect + 1] = self.EffectMgr.ExtraEffect(
-			strcat(self.EffectMgr.pathHead[self.heroType], path), 
+		self.effect[#self.effect + 1] = _EffectMgr.ExtraEffect(
+			strcat(_EffectMgr.pathHead[self.heroType], path), 
 			self.hero_.pos.x, 
 			self.hero_.pos.y, 
 			num, 
@@ -98,7 +100,8 @@ function _State_AtkBase:Effect(path, layer, num)
 	
 	
 	-- print("_State_AtkBase:Effect() --> effect_num:",#self.effect)
-	self.effect[#self.effect]:GetAni():SetBaseRate(self.hero_:GetAtkSpeed())
+	atkSpdPercent = atkSpdPercent or 1.00
+	self.effect[#self.effect]:GetAni():SetBaseRate(self.hero_:GetAtkSpeed() * atkSpdPercent)
 	self.effect[#self.effect]:SetLayer(layer or 1)
 end
 

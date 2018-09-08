@@ -11,6 +11,8 @@ local _Weapon = require("Src.Core.Class")()
 
 local _AniPack = require "Src.AniPack"
 
+local _RESMGR = require "Src.Resource.ResManager"
+
 function _Weapon:Ctor(heroType) --initialize
 
 	self.pathHeads = {
@@ -24,12 +26,13 @@ function _Weapon:Ctor(heroType) --initialize
 
 	self.pak_b = _AniPack.New()
 	self.pak_c = _AniPack.New()
+	self.singlePak = self.pak_b
 end
 
 function _Weapon:NextFrame()
 
 	if self.single then
-		self.pak_b:NextFrame()
+		self.singlePak:NextFrame()
 	else
 		self.pak_b:NextFrame()
 		self.pak_c:NextFrame()
@@ -40,20 +43,20 @@ end
 function _Weapon:Update(dt)
 
 	if self.single then
-		self.pak_b:Update(dt)
+		self.singlePak:Update(dt)
 	else
 		self.pak_b:Update(dt)
 		self.pak_c:Update(dt)
 	end
 end
 
-function _Weapon:Draw(x,y)
+function _Weapon:Draw(x, y, r, sx, sy)
 
 	if self.single then
-		self.pak_b:Draw(x,y)
+		self.singlePak:Draw(x, y, r, sx, sy)
 	else
-		self.pak_b:Draw(x,y)
-		self.pak_c:Draw(x,y)
+		self.pak_b:Draw(x, y, r, sx, sy)
+		self.pak_c:Draw(x, y, r, sx, sy)
 	end
 end
 
@@ -104,10 +107,26 @@ function _Weapon:SetBaseRate(rate)
 end
 
 function _Weapon:SetRes(weaponType, fileNum)
-	local _resPathHead = strcat(self.pathHead, weaponType, "/", weaponType, string.format("%04d", fileNum))
+	local _resPathHead = self.pathHead .. weaponType .. "/" .. weaponType .. string.format("%04d", fileNum)
 	local _resPathEnd = ".img"
-	self.pak_b:SetFileNum(strcat(_resPathHead, "b", _resPathEnd))
-	self.pak_c:SetFileNum(strcat(_resPathHead, "c", _resPathEnd))
+	local _path_b = _resPathHead .. "b" .. _resPathEnd
+	local _path_c = _resPathHead .. "c" .. _resPathEnd
+	if self.single then
+		if love.filesystem.exists(_RESMGR.pathHead .. _path_b) then
+			self.pak_b:SetFileNum(_path_b)
+			self.singlePak = self.pak_b
+		elseif love.filesystem.exists(_RESMGR.pathHead .. _path_c) then
+			self.pak_c:SetFileNum(_path_c)
+			self.singlePak = self.pak_c
+		else
+			print(_path_b)
+			print(_path_c)
+			error("_Weapon:SetRes()  no useable file path")
+		end
+	else
+		self.pak_b:SetFileNum(_path_b)
+		self.pak_c:SetFileNum(_path_c)
+	end
 end
 
 function _Weapon:SetType(mainType, subType)

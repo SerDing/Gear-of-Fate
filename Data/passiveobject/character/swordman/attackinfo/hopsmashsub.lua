@@ -2,12 +2,12 @@ return {--[[ #PVF_File --]]
 	
 	["push"] = {
 		["backPower"] = 0,
-		["backSpeed"] = 1,
+		["backSpeed"] = 0.5,
 		["float"] = 6,
 	},
 	["lift"] = {
 		["backPower"] = 0,
-		["backSpeed"] = 1,
+		["backSpeed"] = 0.5,
 		["float"] = 6,
 	},
 	["Y"] = 120,

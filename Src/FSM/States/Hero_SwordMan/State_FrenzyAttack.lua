@@ -36,8 +36,9 @@ function _State_FrenzyAttack:Enter(hero_)
     
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
+    self.movement = hero_:GetComponent('Movement')
 
-----[[  Call base class function  ]]
+    ----[[  Call base class function  ]]
     self:_Enter(hero_)
     self:Effect("frenzy/sword1-1.lua", 0, 1)
     self:Effect("frenzy/sword1-3.lua", 0, 1)
@@ -84,12 +85,12 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         
         if _movable then
             if _body:GetCount() <= 2 then
-                hero_:X_Move(hero_.spd.x * hero_.dir )
+                self.movement:X_Move(hero_.spd.x * hero_.dir )
             end 
     
             if (_leftHold and hero_.dir == -1 ) or 
             (_rightHold and hero_.dir == 1 )   then  
-                hero_:X_Move(hero_.spd.x * self.spdRate * hero_.dir )
+                self.movement:X_Move(hero_.spd.x * self.spdRate * hero_.dir )
             end 
         end
 
@@ -117,13 +118,13 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
         if _movable then
             if _body:GetCount() < 4 then
-                hero_:X_Move(hero_.spd.x * hero_.dir )
+                self.movement:X_Move(hero_.spd.x * hero_.dir )
             end 
             
             if (_leftHold and hero_.dir == -1 ) or 
             (_rightHold and hero_.dir == 1 )   then
                 
-                hero_:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
+                self.movement:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
             end
         end
 
@@ -150,12 +151,12 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
     elseif self.attackNum == 4 then
         if _body:GetCount() < 3 then
             if _movable then
-                hero_:X_Move(hero_.spd.x * hero_.dir )
+                self.movement:X_Move(hero_.spd.x * hero_.dir )
                 
                 if (_leftHold and hero_.dir == -1 ) or 
                 (_rightHold and hero_.dir == 1 )   then
                     
-                    hero_:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
+                    self.movement:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
                 end
             end
         end 

@@ -23,6 +23,7 @@ function _State_UpperSlash:Enter(hero_)
 	
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
+	self.movement = hero_:GetComponent('Movement')
 end
 
 function _State_UpperSlash:Update(hero_,FSM_)
@@ -38,12 +39,12 @@ function _State_UpperSlash:Update(hero_,FSM_)
 
 	if _movable then
 		if _body:GetCount() >= 2 and _body:GetCount() <=4 then
-			hero_:X_Move(hero_.spd.x * self.smooth * hero_.dir )
+			self.movement:X_Move(hero_.spd.x * self.smooth * hero_.dir )
 		end 
 		if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
 		(_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
 			
-			hero_:X_Move(hero_.spd.x * self.smooth * 0.5 * hero_.dir )
+			self.movement:X_Move(hero_.spd.x * self.smooth * 0.5 * hero_.dir )
 		end 
 		if self.effect[1] then
 			self.effect[1].pos.x = self.effect[1].pos.x + _dt * hero_.spd.x * self.smooth * hero_.dir

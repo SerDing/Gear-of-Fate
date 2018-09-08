@@ -2,12 +2,12 @@ return {
 
 	["push"] = {
 		["backPower"] = 3,
-		["backSpeed"] = 1,
+		["backSpeed"] = 0.25,
 		["float"] = 6,
 	},
 	["lift"] = {
 		["backPower"] = 0,
-		["backSpeed"] = 1,
+		["backSpeed"] = 0.25,
 		["float"] = 6,
 	},
 	["Y"] = 50,

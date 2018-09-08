@@ -18,6 +18,7 @@ local _Scene = require "Src.Scene.GameScene"
 local _sendPos = require "Src.Scene.SendPosition" -- new position in next scene
 local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
 local _CAMERA = require "Src.Game.GameCamera"
+local _RESMGR = require("Src.Resource.ResManager")
 
 -- const
 local _res = {}
@@ -47,12 +48,15 @@ local _hero = _Hero_SwordMan.New(400,460)
 _ObjectMgr.AddObject(_hero)
 
 -- black cover when switch scene
-local _cover = {imageData = love.image.newImageData(800, 600),sprite = {},alpha = 240,speed = 3,}
-_cover.sprite = _Sprite.New(love.graphics.newImage("/Dat/backgroundpic.png")) --     love.graphics.newImage(_cover.imageData)
+local _cover = {
+	imageData = love.image.newImageData(love.graphics.getWidth(), love.graphics.getHeight()), 
+	sprite = {}, alpha = 240, speed = 3
+}
+-- _RESMGR.InstantiateImageData(_cover.imageData)
+_cover.sprite = _Sprite.New(love.graphics.newImage(_cover.imageData)) -- love.graphics.newImage() "/Dat/backgroundpic.png"
+_cover.sprite:SetColorEx(0,0,0,255)
 _cover.sprite:SetColor(0,0,0,255)
 
--- _cover.imageData = love.image.newImageData("/Dat/backgroundpic.png")
--- print(_cover.imageData:getString())
 function _SCENEMGR.Ctor()
 
 	_SCENEMGR.path = "Data/map/"
@@ -68,6 +72,7 @@ function _SCENEMGR.Ctor()
 
     ----[[	test elvengard map	]]
 	-- _SCENEMGR.CreatScene(_Index["elvengard"][1], _Index["elvengard"][2], "town")
+	
 	_SCENEMGR.LoadScene(_Index["lorien"][1], _Index["lorien"][2], _SCENEMGR.curType)
 	-- _SCENEMGR.LoadScene(_Index["elvengard"][1], _Index["elvengard"][2], _SCENEMGR.curType)
 	
@@ -207,6 +212,10 @@ end
 function _SCENEMGR.GetHero_()
 	return _hero 
 end 
+
+function _SCENEMGR.GetCurScene()
+	return _SCENEMGR.curScene
+end
 
 return _SCENEMGR 
 

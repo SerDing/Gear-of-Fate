@@ -58,7 +58,9 @@ function _AudioMgr.PlaySound(id)
     end
 
     if sound_.source:isPlaying() then
-        sound_.source:rewind() -- replay
+        -- sound_.source:rewind() -- replay
+        sound_.source = _RESMGR.LoadSound(_PATH, true)
+        sound_.source:play()
     else
         sound_.source:play()
     end
@@ -73,8 +75,8 @@ function _AudioMgr.PlaySceneMusic(id_table) -- play map music
 end
 
 function _AudioMgr.PlayBGM(id) -- play background music
-    _AudioMgr.PlayMusic("BGM", id)
-    music_["BGM"].source:setVolume(0.2)
+    -- _AudioMgr.PlayMusic("BGM", id)
+    -- music_["BGM"].source:setVolume(0.5)
 end
 
 function _AudioMgr.PlayEVM(id) -- play enviroment music

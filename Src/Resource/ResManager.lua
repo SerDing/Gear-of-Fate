@@ -94,18 +94,15 @@ function _RESMGR.LoadSound(filePath,cache) -- cache : early caching resource
 		end
 	end
 
-	-- [[ find nothing then create objective texture ]]
 	local _tmpSound = {ptr = 0, filePath = filePath}
-	-- local _tmpMemory = collectgarbage("count")
 	_tmpSound.ptr = love.audio.newSource(filePath)
-	-- print("one audio source memory:", collectgarbage("count") - _tmpMemory)
     _RESMGR.Insert("SOUND", _tmpSound)
 	
-	if cache then
-		_tmpSound = nil
-	else 
+	-- if cache then
+	-- 	_tmpSound = nil
+	-- else 
 		return _tmpSound.ptr 
-	end 
+	-- end 
 	
 end
 
@@ -155,6 +152,23 @@ function _RESMGR.Insert(pool, element)
 		_RESMGR.soundCachePool[ #_RESMGR.soundCachePool + 1] = element
 	end
 	_RESMGR.count = _RESMGR.count + 1
+end
+
+function _RESMGR.InstantiateImageData(imagedata)
+	--[[
+		all of pixel value in imagedata are zero, 
+		this method will set them to a non-zero value to 
+		make them can be visible when they are draw
+	]]
+
+	local w = imagedata:getWidth()
+	local h = imagedata:getHeight()
+
+	for x = 0, w - 1 do
+        for y = 0, h - 1 do
+			imagedata:setPixel(x, y, 255, 255, 255, 255) -- set color of pixel to white
+		end
+    end
 end
 
 return _RESMGR

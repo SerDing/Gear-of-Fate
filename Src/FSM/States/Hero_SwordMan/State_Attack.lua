@@ -36,6 +36,7 @@ function _State_Attack:Enter(hero_,FSM_)
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
     self.input = hero_:GetInput()
+    self.movement = hero_:GetComponent('Movement')
 
     hero_:SetAnimation(self.attackName)
 
@@ -59,14 +60,12 @@ function _State_Attack:Update(hero_,FSM_)
     end
 
     if self.attackNum == 1 then
-        
         if self.input:IsPressed(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 2
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
         end
-
     elseif self.attackNum == 2 then
         if self.input:IsPressed(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
@@ -78,13 +77,13 @@ function _State_Attack:Update(hero_,FSM_)
     if self.attackNum == 2 or self.attackNum == 3 then
         if _movable then
             if _body:GetCount() <= self.attackNum then
-                hero_:X_Move(hero_.spd.x * 0.75 * hero_.dir )
+                self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
             end 
             
             if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
             (self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == 1 ) then
                 
-                hero_:X_Move(hero_.spd.x * 0.33 * hero_.dir )
+                self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
             end 
         end
     end
@@ -95,6 +94,17 @@ function _State_Attack:Update(hero_,FSM_)
         self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
     end
 
+
+
+    -- memory release
+
+    _body = nil
+    _dt = nil
+    
+    _leftHold = nil
+    _rightHold = nil
+    _movable = nil
+    
 end 
 
 function _State_Attack:Exit(hero_)
@@ -105,6 +115,6 @@ function _State_Attack:GetTrans()
 	return self.trans
 end
 
-
-
 return _State_Attack 
+
+

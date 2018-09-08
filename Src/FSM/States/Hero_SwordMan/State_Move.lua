@@ -37,7 +37,7 @@ function _State_Move:Enter(hero_)
     self.time_left = 0
     self.time_right = 0
 
-    
+    self.movement = hero_:GetComponent('Movement')
 end
 
 function _State_Move:Update(hero_,FSM_)
@@ -49,33 +49,33 @@ function _State_Move:Update(hero_,FSM_)
     if up or down then
         if up and down then
             if self.time_up > self.time_down then
-                hero_:Y_Move(-hero_.spd.y )
+                self.movement:Y_Move(-hero_.spd.y )
             else 
-                hero_:Y_Move(hero_.spd.y )
+                self.movement:Y_Move(hero_.spd.y )
             end 
         elseif up then
-            hero_:Y_Move(-hero_.spd.y )
+            self.movement:Y_Move(-hero_.spd.y )
         else 
-            hero_:Y_Move(hero_.spd.y )
+            self.movement:Y_Move(hero_.spd.y )
         end 
     end 
     
     if left or right then
         if left and right then
             if self.time_left > self.time_right then
-                hero_:X_Move(- hero_.spd.x)
+                self.movement:X_Move(- hero_.spd.x)
                 hero_:SetDir(-1)
             elseif self.time_left == self.time_right then
-                hero_:X_Move(hero_.spd.x * hero_:GetDir())
+                self.movement:X_Move(hero_.spd.x * hero_:GetDir())
             else 
-                hero_:X_Move(hero_.spd.x)
+                self.movement:X_Move(hero_.spd.x)
                 hero_:SetDir(1)
             end 
         elseif left then
-            hero_:X_Move(- hero_.spd.x)
+            self.movement:X_Move(- hero_.spd.x)
 			hero_:SetDir(-1)
         else 
-            hero_:X_Move(hero_.spd.x)
+            self.movement:X_Move(hero_.spd.x)
             hero_:SetDir(1)
         end
     end

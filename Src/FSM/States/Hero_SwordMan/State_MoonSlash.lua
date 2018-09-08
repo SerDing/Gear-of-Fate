@@ -25,9 +25,11 @@ end
 function _State_MoonSlash:Enter(hero_)
 	hero_:SetAnimation(self.childName[1])
 	self.atkNum = 1
+	self.attackName = self.childName[self.atkNum]
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.attackName = self.childName[self.atkNum]
+	
+	self.movement = hero_:GetComponent('Movement')
 end
 
 function _State_MoonSlash:Update(hero_,FSM_)
@@ -41,14 +43,14 @@ function _State_MoonSlash:Update(hero_,FSM_)
 	self.KEYID["MoonLightSlash"] = hero_:GetSkillKeyID("MoonLightSlash")
 
 	if _body:GetCount() == 2 and not self.effect[1] then
-		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)
+		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash1.lua", hero_.pos.x, hero_.pos.y + 1, 1, hero_:GetDir(), hero_)
 		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 	end
 	
 	if _body:GetCount() <= 3  and self.atkNum == 1 then
-		hero_:X_Move(hero_.spd.x * 40 * _dt * hero_.dir )	
+		self.movement:X_Move(hero_.spd.x * 40 * _dt * hero_.dir )
 	elseif _body:GetCount() <= 3  and self.atkNum == 2 then
-		hero_:X_Move(hero_.spd.x * 40 * _dt * hero_.dir )
+		self.movement:X_Move(hero_.spd.x * 40 * _dt * hero_.dir )
 	end 
 
 	if _body:GetCount() >= 2 and self.atkNum == 1 then
@@ -58,7 +60,7 @@ function _State_MoonSlash:Update(hero_,FSM_)
 			self.atkJudger:ClearDamageArr()
 			self.attackName = self.childName[self.atkNum]
 
-			self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash2.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)
+			self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash2.lua",hero_.pos.x, hero_.pos.y + 1, 1, hero_:GetDir(), hero_)
 			self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		end 
 		
@@ -66,8 +68,7 @@ function _State_MoonSlash:Update(hero_,FSM_)
 	
 	if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
 	(_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
-		
-		hero_:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
+		self.movement:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
 	end
 
 end 

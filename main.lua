@@ -29,12 +29,16 @@ function love.keyreleased(key) --键盘检测回调函数，当键盘事件触�
 	_GAMEMGR.KeyReleased(key)
 end
 
-function love.mousepressed(x,y,key, istouch) --回调函数释放鼠标按钮时触发。
-	_GAMEMGR.MousePressed(key)
+function love.mousepressed(x, y, key, istouch) --回调函数释放鼠标按钮时触发。
+	_GAMEMGR.MousePressed(x, y, key, istouch)
 end
 
-function love.mousereleased(x,y,key, istouch) --回调函数释放鼠标按钮时触发。
-	_GAMEMGR.MousePressed(key)
+function love.mousereleased(x, y, key, istouch) --回调函数释放鼠标按钮时触发。
+	_GAMEMGR.MouseReleased(x, y, key, istouch)
+end
+
+function love.mousemoved(x, y, dx, dy)
+	_GAMEMGR.MouseMoved(x, y, key, istouch)
 end
 
 function love.run()

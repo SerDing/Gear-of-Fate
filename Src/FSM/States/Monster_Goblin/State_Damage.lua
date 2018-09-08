@@ -36,7 +36,7 @@ function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
 	self.hit_recovery = entity.property["hit recovery"] or 1000
 	self.hit_recovery = 800
 	self.timer = 0
-	self.timer2 = 0.7
+	self.timer2 = 0
 
 
 	local _info = (self.lift_V > 0) and damageInfo["lift"] or damageInfo["push"]
@@ -56,14 +56,7 @@ function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
 		self.dir_Y = "up"
 
 		entity:SetAnimation("[down motion]")
-		-- self.bounce = true
-		if _hasDown then
-			self.lift_V = self.liftPower * 0.2
-			entity:SetAnimation("[down motion]")
-			entity:NextFrame()
-			entity:NextFrame()
-			self.bounce = false
-		end
+		self.bounce = true
 
 	else -- no float effect
 		self.push_V = _info["backPower"] * self.stableFPS
@@ -77,7 +70,13 @@ function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
 		end
 	end
 
-
+	if _hasDown then
+		self.lift_V = self.liftPower * 0.2
+		entity:SetAnimation("[down motion]")
+		entity:NextFrame()
+		entity:NextFrame()
+		self.bounce = false
+	end
 
 
 	-- self.push_A = 5
@@ -186,8 +185,9 @@ function _State_Damage:HitFlyEffect(entity, _dt)
 		end
 
 	elseif self.dir_Y == "down" then
-		self.lift_V = self.lift_V + _dt * 18 * self.stableFPS
+		self.lift_V = self.lift_V + _dt * 15 * self.stableFPS
 		if entity:GetZ() < 0 then -- on air
+			
 			entity:SetZ(entity:GetZ() + self.lift_V * 1.2  * _dt) -- fall down
 			if entity:GetZ() >= 0 then -- on land 
 				entity:SetZ(0) -- fix z to right boundary
@@ -200,23 +200,26 @@ function _State_Damage:HitFlyEffect(entity, _dt)
 					self.dir_Y = "default"
 					self.lift_V = 0
 				end
-				-- print("self.bounce", self.bounce)
 			end
 			entity:X_Move( - entity:GetDir() * self.push_A * self.stableFPS) --* self.push_V / 30 * self.stableFPS 
+		else -- has been on land then change entity to lying stage
+			self.dir_Y = "default"
+			self.lift_V = 0
+			-- print("monster damage [dir_Y == down], entity:GetZ() >= 0")
 		end
-
-		-- print("lift_V:", self.lift_V, "entity:GetZ()", entity:GetZ())
 
 	elseif self.dir_Y == "default" and entity:GetBody():GetAniId() == "[down motion]" then
 		while entity:GetBody():GetCount() < 4 do
 			entity:NextFrame()
-			self.timer = 0
+			-- self.timer = 0
 		end
 	end
+
+	-- print("monster damage dir", self.dir_Y)
 end
 
 function _State_Damage:HitRecovery(entity, FSM_, _dt)
-	if self.lift_V == 0 then  --  self.liftPower == 0
+	if self.lift_V == 0 and entity:GetBody():GetAniId() ~= "[down motion]" then  --  self.liftPower == 0  
 		self.timer = self.timer + _dt
 		if self.timer >= self.hit_recovery / 1000 then 
 			FSM_:SetState(FSM_.oriState, entity)

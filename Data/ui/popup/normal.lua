@@ -1,0 +1,21 @@
+return {
+    "interface/windowcommon.img/0.png",
+    "interface/windowcommon.img/1.png",
+    "interface/windowcommon.img/2.png",
+    "interface/windowcommon.img/3.png",
+    "interface/windowcommon.img/4.png",
+    "interface/windowcommon.img/5.png",
+    "interface/windowcommon.img/6.png",
+    "interface/windowcommon.img/7.png",
+    "interface/windowcommon.img/8.png",
+
+    -- "interface/windowcommon.img/97.png",
+    -- "interface/windowcommon.img/98.png",
+    -- "interface/windowcommon.img/99.png",
+    -- "interface/windowcommon.img/100.png",
+    -- "interface/windowcommon.img/101.png",
+    -- "interface/windowcommon.img/102.png",
+    -- "interface/windowcommon.img/103.png",
+    -- "interface/windowcommon.img/104.png",
+    -- "interface/windowcommon.img/105.png",
+}

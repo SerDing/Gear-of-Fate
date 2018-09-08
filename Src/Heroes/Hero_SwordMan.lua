@@ -10,12 +10,18 @@
 local _obj = require "Src.Scene.Object" 
 local Hero_SwordMan = require("Src.Core.Class")(_obj)
 
+-- Components
 local _AniPack = require "Src.AniPack"
 local _Weapon = require "Src.Heroes.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Game.AttackJudger"
-local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _Input = require "Src.Input.Input"
+local _Movement = require "Src.Components.Movement"
+
+-- Models
+local _HP_Model = require "Src.Components.Model.HP"
+
+local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
 
 -- const
 local _aniPath = {
@@ -27,38 +33,27 @@ local _aniName = {"attack1", "attack2", "attack3","frenzy1","frenzy2","frenzy3",
 "damage1","damage2","rest", "stay", "dash", "down", "move", "guard", "jump","jumpattack",
 "getitem", "gorecross", "grab", "dashattack", "sit","hitback",	"hardattack", "hopsmash",
 "hopsmashready","moonlightslash1","moonlightslash2","tripleslash1","tripleslash2","tripleslash3",
-"summon1", "summon2", "upperslashafter", "flowmindtwoattack1",
+"summon1", "summon2", "upperslashafter", "flowmindtwoattack1", "outragebreakready", "outragebreakslash", 
 }
 
 local _name = {"body","weapon"}
-
 local _pakNum = 2
 
-local scene_ = {} -- init a null Scene Pointer
-
-function Hero_SwordMan:Ctor(x,y) --initialize
+function Hero_SwordMan:Ctor(x, y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y, z = 0}
 	self.drawPos = {x = math.floor(x), y = math.floor(y), z = 0}
-	self.spd = {x = 60 * 2, y = 60 * 2} -- 125 125
+	self.spd = {x = 60 * 2.5, y = 35 * 2} -- 125 125
 
 	--property
 	self.property = require("Data/character/swordman/swordman")
 
-
-	self.weaponSound = {
-		['hsword'] = {"R_SQUARESWDA","SQUARESWDB","R_SQUARESWDA_HIT","SQUARESWDB_HIT",},
-		["mswd"] = {"R_MINERALSWDA","MINERALSWDB","R_MINERALSWDA_HIT","MINERAL_SWDB_HIT",},
-		["katana"] = {"R_KATANAA","KATANAB","R_KATANAA_HIT","KATANAB_HIT",},
-		["bswd"] = {"R_BEAMSWDA","BEAMSWDB","R_BEAMSWDA_HIT","BEAMSWDB_HIT",},
-		["stick"] = {"R_STICKA","STICKB_01","R_STICKA_HIT","STICKB_HIT_01",},
-	}
-
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.25
-	self.hitRecovery = 65 -- 45
+	self.atkSpeed = 1.0 + 0.26
+	self.hitRecovery = 22.5 -- 45 65
+	self.hitRecovery = 55 -- 45 65
 	self.hitTime = 0
 	self.actionStop = 170
 	self.actionStopTime = 0
@@ -109,29 +104,20 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 		["weapon"] = _Weapon.New(self.subType),
 	}
 
-	--[[
-		"/Data/character/swordman/animation/",
-		"/Data/equipment/swordman/weapon/katana/"
-	]]
-	-- for n = 1,_pakNum do
-	-- 	for k = 1,#_aniName do
-	-- 		self.pakGrp[_name[n]]:AddAnimation(strcat(_aniPath[n], _aniName[k]), 1, _aniName[k])
-	-- 	end
-	-- 	self.pakGrp[_name[n]]:SetBaseRate(self.atkSpeed)
-	-- end
-
 	self.pakGrp.body:SetFileNum(0001)
 	local darkDepth = 50
 	-- self.pakGrp.body:SetColor(darkDepth, darkDepth, darkDepth, 255)
-	-- self.pakGrp.weapon:SetColor(darkDepth, darkDepth, darkDepth, 255)
-	self.pakGrp.weapon:SetRes("lswd", 0100)
-	self.pakGrp.weapon:SetType("hsword", "lswd")
-	-- katana	0001
-	-- katana	3201
-	-- lkatana	0004
-	-- lswd		0500
-	-- sswd		4200c
+	-- self.pakGrp.weapon:SetColor (darkDepth, darkDepth, darkDepth, 255)
+
 	-- self.pakGrp.weapon:SetSingle(true)
+	self.pakGrp.weapon:SetRes("lswd", 0500) -- subType, fileNum
+	self.pakGrp.weapon:SetType("hsword", "lswd")  -- mainType, subType
+	-- katana	katana	0001
+	-- katana	katana	3201
+	-- katana	lkatana	0004	0002
+	-- hsword	lswd	0500	0100
+	-- ssword	sswd	4200c	
+	
 
 	for i = 1,#_aniName do
 		self.pakGrp.body:AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
@@ -141,7 +127,7 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 	for i = 1,#_aniName do
 		self.pakGrp.weapon:AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
-	
+
 	self.pakGrp.body:SetBaseRate(self.atkSpeed)
 	self.pakGrp.weapon:SetBaseRate(self.atkSpeed)
 
@@ -150,11 +136,20 @@ function Hero_SwordMan:Ctor(x,y) --initialize
 
 	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
+	self.Models = {}
+	self.Models['HP'] = _HP_Model.New(120, 120)
+	self.Models['MP'] = _HP_Model.New(120, 120)
+	self.Components = {}
+	self.Components['Movement'] = _Movement.New(self)
 	--------------- test ani file
-	-- for n = 1,_pakNum do
-	-- 	self.pakGrp[_name[n]]:SetPlayNum("summon2",-1)
-	-- 	self.pakGrp[_name[n]]:SetAnimation("summon2")
-	-- end
+	for n = 1,_pakNum do
+		-- self.pakGrp[_name[n]]:SetPlayNum("outragebreakslash",-1)
+		-- self.pakGrp[_name[n]]:SetAnimation("outragebreakslash")
+		-- self.pakGrp[_name[n]]:SetPlayNum("down",-1)
+		-- self.pakGrp[_name[n]]:SetAnimation("down")
+		-- self.pakGrp[_name[n]]:NextFrame()
+		-- self.pakGrp[_name[n]]:NextFrame()
+	end
 	-----------------------------
 	self:InitSkillKeyList()
 	self.extraEffects = {}
@@ -196,12 +191,18 @@ function Hero_SwordMan:Update(dt)
 	
 	for n = #self.extraEffects,1,-1 do
 		if self.extraEffects[n]:IsOver() then
+			if self.extraEffects[n].Destroy then
+				self.extraEffects[n]:Destroy()
+			end
 			self.extraEffects[n] = nil
 			table.remove(self.extraEffects,n)
 		end 
 	end 
 	
 	self.Y = self.pos.y
+
+	-- HP_Model Unit Test
+	-- HP_ModelUnitTest(self)
 end
 
 function Hero_SwordMan:Draw()
@@ -213,10 +214,7 @@ function Hero_SwordMan:Draw()
 	end 
 	
 	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:Draw(
-			self.drawPos.x ,
-			self.drawPos.y + self.drawPos.z
-		)
+		self.pakGrp[_name[n]]:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z, 0, 1, 1)
 	end
 
 	for k,v in pairs(self.buff) do
@@ -241,6 +239,11 @@ function Hero_SwordMan:Draw()
 		-- love.graphics.line(self.pos.x - 200, self.pos.y - 151, self.pos.x + 200, self.pos.y - 151)
 	-- end
 
+	local r, g, b, a = love.graphics.getColor()
+	love.graphics.setColor(255, 255, 0, 255)
+	-- love.graphics.print("初夏流光", self.drawPos.x, self.drawPos.y, 0, 1.5, 1.5) 
+	love.graphics.setColor(r, g, b, a)
+	
 	self.AttackJudger:Draw()
 	
 end
@@ -252,70 +255,8 @@ function Hero_SwordMan:UpdateAni()
 	
 end
 
-function Hero_SwordMan:X_Move(offset)
-	offset = offset * love.timer.getDelta()
-	local _pass, _result
-	local _next = self.pos.x + offset
-
-	if scene_:IsInMoveableArea(_next, self.pos.y) then
-		
-		_result = scene_:IsInObstacles(_next, self.pos.y)
-		
-		if _result[1] then
-			-- self:Y_Move(offset)
-			if offset > 0 then
-				_next = _result[2]:GetVertex()[1].x - 1
-			else
-				_next = _result[2]:GetVertex()[2].x + 1
-			end
-			_pass = false
-		else
-			_pass = true
-		end
-	else
-		if offset > 0 then
-			_next = scene_.map["[virtual movable area]"][1] + scene_.map["[virtual movable area]"][3] - 1
-		else
-			_next = scene_.map["[virtual movable area]"][1] + 1
-		end
-		_pass = false
-	end
-
-	self.pos.x = _next
-	self.drawPos.x = math.floor(self.pos.x)
-	scene_:CheckEvent(self.pos.x, self.pos.y)
-	
-end
-
-function Hero_SwordMan:Y_Move(offset)
-	offset = offset * love.timer.getDelta()
-	local _result
-	local _next = self.pos.y + offset
-
-	if scene_:IsInMoveableArea(self.pos.x, _next) then
-		
-		_result = scene_:IsInObstacles(self.pos.x, _next)
-		
-		if _result[1] then
-			if offset > 0 then
-				_next = _result[2]:GetVertex()[1].y - 1
-			elseif offset < 0 then
-				_next = _result[2]:GetVertex()[2].y + 1
-			end
-		end
-	
-	else
-		if offset > 0 then
-			_next = scene_.map["[virtual movable area]"][2] + 200 + scene_.map["[virtual movable area]"][4] - 1
-		else
-			_next = scene_.map["[virtual movable area]"][2] + 200 + 1
-		end
-	end
-
-	self.pos.y = _next
-	self.drawPos.y = math.floor(self.pos.y)
-	scene_:CheckEvent(self.pos.x, self.pos.y)
-
+function Hero_SwordMan:Damage()
+	self.Models['HP']:Decrease(0.05)
 end
 
 function Hero_SwordMan:SetPosition(x,y)
@@ -355,7 +296,7 @@ end
 
 function Hero_SwordMan:SetScenePtr(ptr)
 	assert(ptr,"Err: SetScenePtr() scene pointer is nil!")
-	scene_ = ptr
+	self.Components['Movement']:SetSceneRef(ptr)
 end
 
 function Hero_SwordMan:SetAttackMode(mode)
@@ -384,6 +325,10 @@ end
 
 function Hero_SwordMan:GetPos()
 	return self.pos
+end
+
+function Hero_SwordMan:GetDrawPos()
+	return self.drawPos
 end
 
 function Hero_SwordMan:GetAtkSpeed()
@@ -431,10 +376,9 @@ function Hero_SwordMan:GetProperty(key)
 end
 
 function Hero_SwordMan:InitSkillKeyList()
-	
 	self.skillKeyList = {
-		{"A", "HopSmash"}, 
-		{"S", "GoreCross"}, 
+		{"A", "HopSmash"},
+		{"S", "GoreCross"},
 		{"D", "Grab"},
 		{"F","TripleSlash"},
 		{"G","ReckLess"},
@@ -442,17 +386,14 @@ function Hero_SwordMan:InitSkillKeyList()
 		{"E", "MoonLightSlash"},
 		{"R", "Ashenfork"},
 	}
-	
 end
 
 function Hero_SwordMan:GetSkillKeyID(skillName)
-	
 	for n=1,#self.skillKeyList do
 		if self.skillKeyList[n][2] == skillName then
 			return self.skillKeyList[n][1] 
 		end 
 	end 
-	
 end
 
 function Hero_SwordMan:AddExtraEffect(effect)
@@ -471,6 +412,16 @@ end
 
 function Hero_SwordMan:IsHitStop()
 	return self.hitStop
+end
+
+function Hero_SwordMan:GetModel(tag)
+	assert(self.Models[tag], "Hero_SwordMan:GetModel()  no model: " .. tag)
+	return self.Models[tag]
+end
+
+function Hero_SwordMan:GetComponent(tag)
+	assert(self.Components[tag], "Hero_SwordMan:GetComponent()  no component: " .. tag)
+	return self.Components[tag]
 end
 
 return Hero_SwordMan

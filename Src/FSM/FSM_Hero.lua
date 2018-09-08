@@ -33,8 +33,8 @@ end
 function _FSM_Hero:SwitchSkillState(skillName, stateName, hero_, ...)
 	self.KEYID[skillName] = hero_:GetSkillKeyID(skillName)
 	
-	if self.input:IsPressed(hero_.KEY[self.KEYID[skillName]]) then
-		-- 检测技能是否满足释放条件：1.冷却完成否？ 2.heroMP足够否？
+	if self.input:IsPressed(hero_.KEY[self.KEYID[skillName]]) then -- IsPressed
+		-- 检测技能是否满足释放条件：1.技能是否学习？ 2.冷却是否完成？ 2.heroMP是否足够？
 		self:SetState(stateName, hero_, ...)
 	end 
 
@@ -42,7 +42,7 @@ function _FSM_Hero:SwitchSkillState(skillName, stateName, hero_, ...)
 end 
 
 function _FSM_Hero:SwitchState(keyID, stateName, hero_, ...)
-    if self.input:IsPressed(hero_.KEY[keyID]) then
+    if self.input:IsPressed(hero_.KEY[keyID]) then -- IsPressed
 		self:SetState(stateName, hero_, ...)
 	end 
 end 

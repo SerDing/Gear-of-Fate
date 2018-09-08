@@ -7,7 +7,7 @@ return {
 	},
 	["lift"] = {
 		["backPower"] = 0,
-		["backSpeed"] = 1.2,
+		["backSpeed"] = 2.4,
 		["float"] = 3.3 / 0.9,
 	},
 	["Y"] = 38,

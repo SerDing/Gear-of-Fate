@@ -1,10 +1,10 @@
 --[[
-	Desc: A new lua class
+	Desc: Effect
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
-		*Write notes here even more
+		* 
 ]]
 local _obj = require "Src.Scene.Object" 
 local _Effect = require("Src.Core.Class")(_obj)

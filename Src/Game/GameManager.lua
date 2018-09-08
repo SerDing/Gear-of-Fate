@@ -36,6 +36,7 @@ local _KEYBOARD = require "Src.Core.KeyBoard"
 local _INPUTHANDLER = require "Src.Input.InputHandler"
 local _GDBOARD = require "Src.Game.GameDataBoard"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
+local _UIMGR = require "Src.GUI.UI_Manager"
 
 local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
 
@@ -57,32 +58,35 @@ log = print
 -- collectgarbage("collect")
 -- mri.m_cMethods.DumpMemorySnapshot("./", "1-Before", -1)
 
+local function _InitGUI()
+	require("Src.GUI.Init")
+end
+
 function _GAMEMGR.Ctor() --initialize
 	_RESMGR.Ctor()
 	_AUDIOMGR.Init()
 	_GDBOARD.Load()
-
 	_SCENEMGR.Ctor()
+	_InitGUI()
+
+	-- collectgarbage("stop")
 
 	-- local bgm = _RESMGR.LoadSound("/Music/character_stage.ogg")
 	-- bgm:play()
 	-- bgm:setLooping(true)
-	-- love.window.setFullscreen(true)
-	-- print(strcat("hello, ", "world", "!"))
-
 	-- love.graphics.setDefaultFilter( 'nearest', 'nearest' )
 
 end
 
 function _GAMEMGR.Update(dt)
 
-	if _KEYBOARD.Press("lctrl") then
-		_gamePause = true
-	end
+	-- if _KEYBOARD.Press("lctrl") then
+	-- 	_gamePause = true
+	-- end
 
-	if _KEYBOARD.Press("rctrl") then
-		_gamePause = false
-	end
+	-- if _KEYBOARD.Press("rctrl") then
+	-- 	_gamePause = false
+	-- end
 
 	if _KEYBOARD.Press("ralt") then
 		print("collectgarbage")
@@ -104,49 +108,55 @@ function _GAMEMGR.Update(dt)
 	end 
 
 	_SCENEMGR.Update(dt)
-	_RESMGR.Update(dt)
+	-- _RESMGR.Update(dt)
 	_KEYBOARD.Update(dt)
 end
 
-function _GAMEMGR.Draw(x,y)																																																																																																																																																				
+function _GAMEMGR.Draw(x,y)																																																																																																																																																		
 	
 	_SCENEMGR.Draw()
 
-	love.graphics.draw(_HUD, (love.graphics.getWidth() - 800) / 2, love.graphics.getHeight() - 91) -- 91
+	-- love.graphics.draw(_HUD, (love.graphics.getWidth() - 800) / 2, love.graphics.getHeight() - 91) -- 91
 	
 	-- draw a mini panel for debug data
 	local r, g, b, a = love.graphics.getColor()
 	love.graphics.setColor(0, 0, 0, 180)
-	love.graphics.rectangle("fill", 0, 0, 300, 50)
+	love.graphics.rectangle("fill", love.graphics.getWidth() - 300, 0, 300, 50)
 	love.graphics.setColor(r, g, b, a)
 
 	-- draw some data to monitor the status of game
-	_time = _time + love.timer.getDelta()
-	if _time >= 0.016 * 150 then
-		_time = 0
-		_memory = collectgarbage("count")
-	end
+	-- _time = _time + love.timer.getDelta()
+	-- if _time >= 0.016 * 150 then
+	-- 	_time = 0
+	-- 	_memory = collectgarbage("count")
+	-- end
 	
-	love.graphics.print(strcat("FPS:", tostring(love.timer.getFPS())), 10, 10, 0, 1, 1.1)
-	love.graphics.print(strcat("lua memory:", tostring(_memory)), 10, 30, 0, 1, 1.1)
+	love.graphics.print(strcat("FPS:", tostring(love.timer.getFPS())), love.graphics.getWidth() - 300 + 10, 10)
+	-- love.graphics.print(strcat("lua memory:", tostring(_memory)), 10, 30)
 	-- love.graphics.print(love.timer.getDelta(), 10, 50, 0, 1, 1.1)
 
 	local _mousePos = { x = love.mouse.getX(), y = love.mouse.getY() }
-    love.graphics.print(
-		strcat(
-			tostring(_mousePos.x),
-			",",
-			tostring(_mousePos.y)
-		), 
-		_mousePos.x - 20, 
-		_mousePos.y - 10
-	)
-	--love.graphics.print("剑神", 100, 100, 0, 1, 1)
+    love.graphics.print(strcat(tostring(_mousePos.x), ",", tostring(_mousePos.y)), _mousePos.x - 20, _mousePos.y - 10)
+	_UIMGR:Draw()
+
+
+	local r, g, b, a = love.graphics.getColor()
+	love.graphics.setColor(0, 0, 0, 255)
+	love.graphics.print("剑神", 100, 200, 0, 1.6, 1.6)
+	love.graphics.setColor(r, g, b, a)
+	love.graphics.print("剑神", 100, 200, 0, 1.5, 1.5)
+	
+
 end
 
 function _GAMEMGR.KeyPressed(key)
 	_KEYBOARD.PressHandle(key)
 	_INPUTHANDLER.PressHandle(key)
+
+	if _KEYBOARD.Press("rctrl") then
+		_gamePause = not _gamePause
+	end
+
 end
 
 function _GAMEMGR.KeyReleased(key)
@@ -154,10 +164,16 @@ function _GAMEMGR.KeyReleased(key)
 	_INPUTHANDLER.ReleaseHandle(key)
 end
 
-function _GAMEMGR.MousePressed(x, y, key，istouch)
+function _GAMEMGR.MousePressed(x, y, button, istouch)
+	_UIMGR.MousePressed(x, y, button, istouch)
 end
 
-function _GAMEMGR.MousePressed(x, y, key，istouch)
+function _GAMEMGR.MouseReleased(x, y, button, istouch)
+	_UIMGR.MouseReleased(x, y, button, istouch)
+end
+
+function _GAMEMGR.MouseMoved(x, y, dx, dy)
+	_UIMGR.MouseMoved(x, y, dx, dy)
 end
 
 return _GAMEMGR

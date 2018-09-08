@@ -47,26 +47,90 @@ function _AniPack:Ctor(_type) --initialize
 
 	self.count = 0
 	self.time = 0
-
 	self.updateCount = 0
-
 	self.baseRate = 1
 
 	self.box = _Rect.New(0,0,1,1)
 
 	self.focus = {
 		["focus"] = false,
-		["max"] = 220,
+		["focus"] = true,
+		["max"] = 255,
 		["min"] = 80,
 		["dir"] = -1,
 		["speed"] = 240,
-		["ARGB"] = {["A"] = 200,["R"] = 0,["G"] = 255,["B"] = 0}
+		["ARGB"] = {["A"] = 255,["R"] = 255,["G"] = 0,["B"] = 0},
+		['scale'] = {x = 1.5, y = 1.5, spd = 0.05},
+		['sprite'] = {
+			_Sprite.New(_RESMGR.imageNull),
+			_Sprite.New(_RESMGR.imageNull),
+			_Sprite.New(_RESMGR.imageNull),
+			_Sprite.New(_RESMGR.imageNull),
+		},
+		['shader'] = love.graphics.newShader(
+			[[
+				vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
+				{
+					vec4 GlowColor = vec4(255, 0, 0, 0);		// 发光色
+					vec2 TextureSize = vec2(800, 600); 			// 纹理尺寸
+					number samplerPre = 1.0;					// 采样器
+					number radiusX = 0.5 / TextureSize.x;		// 半径x
+					number radiusY = 0.5 / TextureSize.y;		// 半径y
+					number glowAlpha = 0.0;						// 背景发光透明度
+					number count = 0.0;							// 计数
+					number GlowRange = 0.5;						// 发光范围
+					number GlowExpand = 255;						// 发光强度 0 - 255
+					for( number i = -GlowRange; i <= GlowRange; i += samplerPre)
+					{
+						for(number j = -GlowRange; j <= GlowRange; j += samplerPre)
+						{
+							vec2 samplerTexCoord = vec2(texture_coords.x + j * radiusX, texture_coords.y + i* radiusY );
+							
+							/*
+							if(samplerTexCoord.x < 0.0 || samplerTexCoord.x > 1.0 || samplerTexCoord.y < 0.0 || samplerTexCoord.y > 1.0)
+							{
+								glowAlpha += 0.0;
+							}
+							else
+							{
+								glowAlpha += Texel(texture, samplerTexCoord).a;
+							}
+							*/
+
+							glowAlpha += Texel(texture, samplerTexCoord).a;
+							
+							count += 1.0;
+						}
+					}
+	
+					glowAlpha /= (count + 500);
+					// glowAlpha = 255;
+					GlowColor.a = glowAlpha * GlowExpand;
+					return GlowColor;
+				}
+				
+			]]
+		),
+
 	}
 
+	--[[
+
+
+		vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
+		{
+			vec4 texcolor = Texel(texture, texture_coords);
+			texcolor.rgb = texcolor.rgb/2;
+			texcolor.a = 1;
+			return texcolor * color;
+		}
+
+		
+	]]
+	-- self:SetColor(255, 0, 0, 255)
+
 	self.filter = false
-
 	self.debug = false
-
 	self.plusOffset = true
 
 	self.blendModeList = {
@@ -82,22 +146,32 @@ function _AniPack:Ctor(_type) --initialize
 	}
 
 	self.blendMode = self.blendModeList[1]
- 
+
 end
 
-function _AniPack:NextFrame()
+function _AniPack:NextFrame(n)
 	if self.playNum == 0 then
 		return
 	end
-	if self.count == self.num-1 then
+	n = n or 1
+	if self.count + n == self.num then
 		if self.playNum > 1 then
 			self.playNum = self.playNum
 		end
 		self.count = 0
 	else
-		self.count = self.count + 1
+		self.count = self.count + n
 		self.time = 0
 	end
+	-- if self.count == self.num-1 then
+	-- 	if self.playNum > 1 then
+	-- 		self.playNum = self.playNum
+	-- 	end
+	-- 	self.count = 0
+	-- else
+	-- 	self.count = self.count + 1
+	-- 	self.time = 0
+	-- end
 end
 
 function _AniPack:Update(dt)
@@ -111,12 +185,7 @@ function _AniPack:Update(dt)
 		end 
 	end 
 
-	--[[
-		When the aniData just has one frame 
-		and this class has updata one time 
-		then doesn't update any more
-	]]
-	
+	-- When the aniData just has one frame and this class has updata one time then doesn't update any more
 	if self.type == "MAP_ANI_BLOCK" then
 		if self.num <= 1 then 
 			if self.updateCount >= 1 then
@@ -203,84 +272,98 @@ function _AniPack:Update(dt)
 		-- print("frameHead", self.frameHead, "frame", self.count, "PlayFinished", self.soundPlayFinished)
 		self.soundPlayFinished = true
 	end
+
+	self:SuperArmor_Update()
 	
 	self.updateCount = self.updateCount + 1
-
 end
 
 function _AniPack:Draw(x,y,r,sx,sy)
 	
-	if x and y then
-		self:SetPos(x, y)
-	end
+	if x and y then self:SetPos(x, y) end
+	if sx and sy then self:SetScale(sx, sy) end
+	if r then self:SetAngle(r) end
 
-	if sx and sy then
-		self:SetScale(sx, sy)
-	end
-	
-	if r then
-		self:SetAngle(r)
-	end
-
-	if self.focus["focus"]  then --霸体状态下的外线效果
-
-		self.focus["ARGB"]["A"]  = self.focus["ARGB"]["A"]   + self.focus["dir"] * self.focus["speed"] * 引擎.取帧时间()
-		if self.focus["ARGB"]["A"]  >= self.focus["max"] or
-			self.focus["ARGB"]["A"] <= self.focus["min"] then
-
-			self.focus["dir"] = -self.focus["dir"]
-		end
-		self:SetColor(
-			self.focus["ARGB"]["R"],
-			self.focus["ARGB"]["G"],
-			self.focus["ARGB"]["B"],
-			self.focus["ARGB"]["A"])
-
-		self.playingSprite:SetCenter(self.center.x,self.center.y)
-		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x * self.dir ) - 1,
-			math.floor(self.pos.y + self.offset.y ) - 1,
-			self.angle,
-			self.scale.x * self.dir,
-			self.scale.y)
-
-		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x * self.dir ) + 1,
-			math.floor(self.pos.y + self.offset.y ) - 1,
-			self.angle,
-			self.scale.x * self.dir,
-			self.scale.y)
-
-		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x * self.dir ) + 1,
-			math.floor(self.pos.y + self.offset.y ) + 1,
-			self.angle,
-			self.scale.x * self.dir,
-			self.scale.y)
-
-		self.playingSprite:Draw(
-			math.floor(self.pos.x + self.offset.x * self.dir ) - 1,
-			math.floor(self.pos.y + self.offset.y ) + 1,
-			self.angle,
-			self.scale.x * self.dir,
-			self.scale.y)
-	end
+	self:SuperArmor_Draw()
 	
 	self.playingSprite:SetCenter(self.center.x,self.center.y)
 	self.playingSprite:Draw(
-		self.pos.x + self.offset.x * self.dir,
-		self.pos.y + self.offset.y,
-		self.angle or 0, 		-- rotation 旋转参数
+		self.pos.x + self.offset.x * self.dir * self.scale.x,
+		self.pos.y + self.offset.y * self.scale.y,
+		self.angle or 0,
 		self.scale.x * self.dir,
 		self.scale.y
 	)
-	
+
 	if self.debug then
 		self:DrawBox()
 		self.playingSprite.rect:Draw()
 	end 
 	
-	
+end
+
+function _AniPack:SuperArmor_Switch(s)
+	if s == true then
+		for i,v in ipairs(self.focus["sprite"]) do
+			v:SetTexture(self.playingSprite:GetTexture())
+		end
+		
+		if self.focus['focus'] == false then
+			self.focus['scale'].x = 1.5
+			self.focus['scale'].y = 1.5
+		end
+		self.focus["focus"] = true
+	else
+		self.focus["focus"] = false
+	end
+end
+
+function _AniPack:SuperArmor_Update()
+
+	local _damageType = self.frameData[self.frameHead]['[DAMAGE TYPE]']
+	if _damageType and _damageType == "superarmor" then
+		self:SuperArmor_Switch(true)
+	else
+		self:SuperArmor_Switch(false)
+	end
+
+	if self.focus['focus'] then
+		for k,v in pairs(self.focus.scale) do
+			if self.focus.scale[k] > 1.0 then
+				self.focus.scale[k] = self.focus.scale[k] - self.focus.scale.spd
+				if self.focus.scale[k] < 1.0 then
+					self.focus.scale[k] = 1.0
+				end
+			end
+		end
+	end
+end
+
+function _AniPack:SuperArmor_Draw()
+
+	if self.focus["focus"]  then --霸体状态下的外线效果
+		-- self.focus["ARGB"]["G"]  = self.focus["ARGB"]["G"]   + self.focus["dir"] * self.focus["speed"] * love.timer.getDelta()
+		-- if self.focus["ARGB"]["G"]  >= self.focus["max"] or
+		-- 	self.focus["ARGB"]["G"] <= self.focus["min"] then
+		-- 	self.focus["dir"] = -self.focus["dir"]
+		-- end
+
+		local _baseX = math.floor(self.pos.x + self.offset.x * self.focus.scale.x * self.dir)
+		local _baseY = math.floor(self.pos.y + self.offset.y * self.focus.scale.y)
+		for i,v in ipairs(self.focus["sprite"]) do
+			v:SetCenter(self.center.x,self.center.y)
+		end
+
+		love.graphics.setShader(self.focus["shader"])
+
+		self.focus["sprite"][1]:Draw(_baseX - 1, _baseY - 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
+		self.focus["sprite"][2]:Draw(_baseX + 1, _baseY - 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
+		self.focus["sprite"][3]:Draw(_baseX + 1, _baseY + 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
+		self.focus["sprite"][4]:Draw(_baseX - 1, _baseY + 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
+		
+		love.graphics.setShader()
+	end
+
 end
 
 function _AniPack:DrawBox()

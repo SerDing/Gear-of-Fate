@@ -69,6 +69,7 @@ function _Monster:Ctor(path, nav)
 			self.property["[attack motion]"][j] = string.gsub(self.property["[attack motion]"][j], ".ani","")
 			v:AddAnimation(strcat(_pathHead, _pathMid, self.property["[attack motion]"][j]), 1, strcat("[attack motion ", tostring(j), "]"))
 		end
+		v:SetBaseRate(self.property["[attack speed]"][1] / 1000)
 	end
 
 	self.aniArr["body"]:SetAnimation("[move motion]")

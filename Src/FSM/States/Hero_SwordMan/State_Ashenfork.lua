@@ -15,7 +15,7 @@ local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 function _State_Ashenfork:Ctor()
 	self:_Init()
 	self.jumpPower = 0
-	self.g = 130
+	self.g = 160 -- 130
 	self.speed = 140 * 1.3
 	self.landed = false
 	self.enoughHeight = false
@@ -25,7 +25,7 @@ end
 function _State_Ashenfork:Enter(hero_)
 	self.name = "ashenfork"
 	self.attackName = "ashenfork"
-	hero_:SetAnimation("flowmindtwoattack1") -- waiting for change a right one
+	hero_:SetAnimation("flowmindtwoattack1") -- waiting for changing a right one
 	for i=1,3 do
 		hero_:NextFrame()
 	end
@@ -37,6 +37,8 @@ function _State_Ashenfork:Enter(hero_)
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.atkObj = nil
+	self.movement = hero_:GetComponent('Movement')
+	self.movement.dir_z = -1
 	self:_Enter(hero_)
 	hero_:SetActionStopTime(love.timer.getTime())
 end
@@ -58,23 +60,16 @@ function _State_Ashenfork:Update(hero_,FSM_)
 end 
 
 function _State_Ashenfork:Gravity()
-	
-	self.jumpPower = self.jumpPower + self.dt * self.g * self.hero_:GetAtkSpeed()
-	
-	if self.hero_:GetZ() < 0 then
-		self.hero_:SetZ(self.hero_:GetZ() + self.jumpPower)
-	end
-
-	if not self.landed and self.hero_:GetZ() >= 0 then 
+	self.movement:Set_g(self.g, self.hero_:GetAtkSpeed())
+	local function landEvent()
 		self.hero_:SetAnimation("sit")
-		self.hero_:SetZ(0)
-		self.landed = true
 	end
+	self.movement:Gravity(nil, landEvent)
 end
 
 function _State_Ashenfork:X_Move()
     if self.hero_:GetZ() < 0 then
-		self.hero_:X_Move( self.speed * self.hero_:GetDir())
+		self.movement:X_Move( self.speed * self.hero_:GetDir())
 	end 
 end
 
@@ -100,7 +95,6 @@ function _State_Ashenfork:AtkObjBorn()
 end
 
 function _State_Ashenfork:Exit(hero_)
-	-- print("self.hero_:GetZ()", self.hero_:GetZ())
     self:_Exit()
 end
 

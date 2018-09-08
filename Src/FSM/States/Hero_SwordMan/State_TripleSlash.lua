@@ -33,17 +33,19 @@ function _State_TripleSlash:Enter(hero_)
     
 	hero_:SetAnimation(self.childName[1])
 	self.attackNum = 1
+	self.attackName = self.childName[self.attackNum]
 	self.nextDir = hero_:GetDir()
 
-----[[  Call base class function  ]] 
+	----[[  Call base class function  ]] 
     self:_Enter(hero_)
-    self:Effect("tripleslash/move1.lua", 1, 1, hero_)
-	self:Effect("tripleslash/slash1.lua", 1, 1, hero_)
+    self:Effect("tripleslash/move1.lua", 1, 1)
+	self:Effect("tripleslash/slash1.lua", 1, 1)
 	self:ReSetSpeed()
 
+	-- Get Components
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.attackName = self.childName[self.attackNum]
+	self.movement = hero_:GetComponent('Movement')
 end
 
 function _State_TripleSlash:Update(hero_,FSM_)
@@ -79,8 +81,8 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect("tripleslash/move2.lua", 1, 1, hero_)
-				self:Effect("tripleslash/slash2.lua", 1, 1, hero_)
+				self:Effect("tripleslash/move2.lua", 1, 1)
+				self:Effect("tripleslash/slash2.lua", 1, 1)
 				self:ReSetSpeed()
 			end 
 		end 
@@ -108,8 +110,8 @@ function _State_TripleSlash:Update(hero_,FSM_)
 					table.remove(self.effect,n)
 				end 
 
-				self:Effect("tripleslash/move2.lua", 1, 1, hero_)
-				self:Effect("tripleslash/slash3.lua", 1, 1, hero_)
+				self:Effect("tripleslash/move2.lua", 1, 1)
+				self:Effect("tripleslash/slash3.lua", 1, 1)
 				self:ReSetSpeed()
 			end 
 
@@ -142,7 +144,7 @@ function _State_TripleSlash:Exit(hero_)
 end
 
 function _State_TripleSlash:Movement(hero_)
-	hero_:X_Move(self.speed * hero_.dir)
+	self.movement:X_Move(self.speed * hero_.dir)
 	self.slideX = self.slideX + self.speed * self.dt
 	if self.heroBody:GetCount() >= 3 then -- and self.speed > self.a
 		self.speed = self.speed - self.a * self.dt * hero_:GetAtkSpeed() / 1.5
@@ -156,7 +158,8 @@ function _State_TripleSlash:Movement(hero_)
 end
 
 function _State_TripleSlash:ReSetSpeed()
-	self.speed = 255 * self.hero_:GetAtkSpeed() * (self.hero_:GetMovSpeed().x / 100 + 1)
+	-- self.speed = 255 * self.hero_:GetAtkSpeed() * (self.hero_:GetMovSpeed().x / 100 + 1)
+	self.speed = 310 * (self.hero_:GetMovSpeed().x / 100 + 1)
 	self.a = self.speed / self.hero_:GetAtkSpeed() / 4 * 60
 	self.slideX = 0
 	

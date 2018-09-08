@@ -1,16 +1,18 @@
-# Development Plan --> Gear Of Fate
+# Development Plan For Gear Of Fate
 
-## Version_0.1
-    
-### Time: 2017.8.1
-    Mission:
-    1.complete the Sprite module OK
-    2.complete the AniPack module OK
+## Version_0.5
 
-### Time: 2017.9.3
+### Time: 2018.8.11
     Mission: 
-    1.Try to design class inheritance access
-    2.Export a simple GDC 
-    3.Added sound for hero 
+    1.Create GUI system for game
+        * Button
+        * List
+        * Slider
+        * Panel
+        * Grid
+        * ScrollBar
+    2.Implemente grab attack effect
+    3.Build basical game mechanics
+    
 
 

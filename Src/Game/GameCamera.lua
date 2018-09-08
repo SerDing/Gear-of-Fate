@@ -40,8 +40,14 @@ function _GameCamera.Ctor(scenemgr)
 
 	_GameCamera.pos = {x = 0, y = 0}
 	_GameCamera.scale = {x = 800 / 800, y = 600 / 600}
-	-- _GameCamera.scale = {x = 1280 / 800, y = (800 + 55) / 600}
+	-- _GameCamera.scale = {x = 1280 / 800, y = (800 + 70) / 600}
+	-- _GameCamera.scale = {x = (655) / 600, y = (655) / 600}
 
+	-- _GameCamera.scale = {x = 960 / 800, y = 960 / 800}
+	
+	_GameCamera.scale = {x = 1280 / 800, y = 1280 / 800}
+	-- _GameCamera.scale = {x = 1280 / 740, y = 1280 / 740}
+	
 end 
 
 function _GameCamera.Update(dt)
@@ -71,24 +77,32 @@ function _GameCamera.LockPos()
 
 	local win_w = love.graphics.getWidth()
 	local win_h = love.graphics.getHeight()
-	local _range_left = win_w / 2 / _GameCamera.scale.x
-	local _range_right = SCENEMGR_.curScene:GetWidth() - win_w / 2 / _GameCamera.scale.x
-
+	
 	if _targetPos.x ~= 0 and _targetPos.y ~= 0 then -- there is a target need to lock
 		
-		if _targetPos.x > _range_left and _targetPos.x < _range_right then -- target in midlle area
+		local _rangeLeftX = win_w / 2 / _GameCamera.scale.x
+		local _rangeRightX = SCENEMGR_.curScene:GetWidth() - win_w / 2 / _GameCamera.scale.x
+
+		if _targetPos.x > _rangeLeftX and _targetPos.x < _rangeRightX then -- target in midlle area
 			_GameCamera.pos.x = -_targetPos.x + win_w / 2 / _GameCamera.scale.x
-		elseif _targetPos.x <= _range_left then -- target in left area
+		elseif _targetPos.x <= _rangeLeftX then -- target in left area
 			_GameCamera.pos.x = 0
-		elseif _targetPos.x >= _range_right then -- target in right area
+		elseif _targetPos.x >= _rangeRightX then -- target in right area
 			_GameCamera.pos.x = (- SCENEMGR_.curScene:GetWidth() + win_w / _GameCamera.scale.x) 
 		end
 	
-		if _targetPos.y > win_h then
-			_GameCamera.pos.y = -_targetPos.y + win_h / 2
-		else
+		local _rangeLeftY = win_h / 2 / _GameCamera.scale.y
+		local _rangeRightY = SCENEMGR_.curScene:GetHeight() - win_h / 2 / _GameCamera.scale.y
+
+		if _targetPos.y > _rangeLeftY and _targetPos.y < _rangeRightY then
+			_GameCamera.pos.y = -_targetPos.y + win_h / 2 / _GameCamera.scale.y
+		elseif _targetPos.y <= _rangeLeftY then
 			_GameCamera.pos.y = 0
+		elseif _targetPos.y >= _rangeRightY then
+			_GameCamera.pos.y = (- SCENEMGR_.curScene:GetHeight() + win_h / _GameCamera.scale.y) 
 		end
+
+		-- _GameCamera.pos.y = 0 - (win_h * _GameCamera.scale.y - win_h - 60) / 4
 
 		_GameCamera.pos.x = math.floor(_GameCamera.pos.x)
 		_GameCamera.pos.y = math.floor(_GameCamera.pos.y)
@@ -97,11 +111,10 @@ function _GameCamera.LockPos()
 end
 
 function _GameCamera.Set()
-	love.graphics.scale(_GameCamera.scale.x, _GameCamera.scale.y)
 	_GameCamera.LockPos()
 	love.graphics.push()
+	love.graphics.scale(_GameCamera.scale.x, _GameCamera.scale.y)
 	love.graphics.translate(_GameCamera.pos.x,_GameCamera.pos.y)
-	
 	_GameCamera.ShakingSet()
 end
 

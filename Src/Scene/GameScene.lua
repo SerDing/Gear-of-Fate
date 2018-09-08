@@ -27,7 +27,6 @@ local _Navigation = require "Src.Navigation.Navigation"
 local _sceneMgr = {} -- Initialize a null pointer of SceneManager
 
 _PassiveObjMgr.Ctor()
-
 _MonsterSpawner.Ctor()
 
 function _GameScene:Ctor(path,res_,sceneMgr) --initialize
@@ -423,7 +422,7 @@ end
 function _GameScene:IsInObstacles(x,y)
     
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
-        return {false, "not in scene area"} 
+        return {false, "not in scene area"}
     end 
     if #self.layers["[normal]"]["[passive object]"] == 0 then
         return {false, "no obstacles"}

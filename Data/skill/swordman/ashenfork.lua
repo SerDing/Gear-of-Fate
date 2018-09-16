@@ -15,7 +15,7 @@ return {--[[ #PVF_File --]]
 		["[durability decrease rate]"]=20,
 		["[icon]"]={"Character/Swordman/Effect/SkillIcon.img",12,"Character/Swordman/Effect/SkillIcon.img",13},
 		["[weapon effect type]"]="[physical]",
-		["[command]"]={{5=""},},
+		["[command]"]={},
 		["[command key explain]"]="操作指令 : (跳跃状态下) Z",
 		["[command customizing]"]=0,
 		["[dungeon]"]={ 
@@ -32,5 +32,5 @@ return {--[[ #PVF_File --]]
 		["[warroom]"]={ },
 		["[level property]"]={1,99,"物理攻击力 : <int>%%,冲击波物理攻击力 : <int>,冲击波大小比率 : <int>%%,佩戴巨剑时附加攻击力 : [银光落刃]攻击力<int>%%,佩戴巨剑时附加攻击的攻击次数上限 : <int>,佩戴钝器时刺击攻击力减少率 : <int>%%,佩戴钝器时冲击波攻击力 : <int>%%,佩戴钝器时冲击波大小增加比率 : <int>%%",-1,0,1.00,-2,1,1.00,-1,2,1.00,4,4,1.00,5,5,1.00,7,7,1.00,-1,3,1.00,-1,4,1.00,},
 		["[skill preloading image]"]={"Character/Swordman/Effect/JumpAttackHold.img",},
-		["[feature skill index]"]=153,}
+		["[feature skill index]"]=153,
 }

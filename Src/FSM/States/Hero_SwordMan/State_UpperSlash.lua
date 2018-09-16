@@ -10,20 +10,20 @@
 local _State_UpperSlash = require("Src.Core.Class")()
 
 local _EffectMgr = require "Src.Scene.EffectManager" 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
 
 function _State_UpperSlash:Ctor()
+	self.name = "upperslash"
 	self.effect = {}
 	self.smooth = 1.2
+	self.coolMsg = self.name
 end 
 
 function _State_UpperSlash:Enter(hero_)
-    self.name = "upperslash"
 	hero_:SetAnimation("hitback")
-	
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.movement = hero_:GetComponent('Movement')
+	self.input = hero_:GetInput()
 end
 
 function _State_UpperSlash:Update(hero_,FSM_)
@@ -32,8 +32,8 @@ function _State_UpperSlash:Update(hero_,FSM_)
 
 	local _movable = true
 
-    if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
-    (_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
+    if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
+    (self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
         _movable = false
     end
 
@@ -41,8 +41,8 @@ function _State_UpperSlash:Update(hero_,FSM_)
 		if _body:GetCount() >= 2 and _body:GetCount() <=4 then
 			self.movement:X_Move(hero_.spd.x * self.smooth * hero_.dir )
 		end 
-		if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-		(_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+		if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
+		(self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
 			
 			self.movement:X_Move(hero_.spd.x * self.smooth * 0.5 * hero_.dir )
 		end 

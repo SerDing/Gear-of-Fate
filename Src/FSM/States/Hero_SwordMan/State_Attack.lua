@@ -29,10 +29,8 @@ function _State_Attack:Ctor()
 end
 
 function _State_Attack:Enter(hero_,FSM_)
-    
     self.attackNum = 1
     self.attackName = self.childName[self.attackNum]
-
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
     self.input = hero_:GetInput()
@@ -88,16 +86,12 @@ function _State_Attack:Update(hero_,FSM_)
         end
     end
     
-
     -- attack judgement
     if hero_:GetAttackBox() then
         self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
     end
 
-
-
     -- memory release
-
     _body = nil
     _dt = nil
     

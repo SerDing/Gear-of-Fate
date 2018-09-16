@@ -37,7 +37,11 @@ function _UI_Manager.MessageHandler(msg) -- CallBack
 end
 
 function _UI_Manager.SwitchInterface(index)
-    self.curIndex = index
+    this.curIndex = index
+end
+
+function _UI_Manager.Find(frameID, compArrName, compID)
+    -- this.interfaces[this.curIndex].frames[frameID].
 end
 
 function _UI_Manager.Draw()

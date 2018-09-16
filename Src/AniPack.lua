@@ -55,10 +55,10 @@ function _AniPack:Ctor(_type) --initialize
 	self.focus = {
 		["focus"] = false,
 		["focus"] = true,
-		["max"] = 255,
-		["min"] = 80,
+		["max"] = 1.0,
+		["min"] = 0.0,
 		["dir"] = -1,
-		["speed"] = 240,
+		["speed"] = 6,
 		["ARGB"] = {["A"] = 255,["R"] = 255,["G"] = 0,["B"] = 0},
 		['scale'] = {x = 1.5, y = 1.5, spd = 0.05},
 		['sprite'] = {
@@ -69,9 +69,11 @@ function _AniPack:Ctor(_type) --initialize
 		},
 		['shader'] = love.graphics.newShader(
 			[[
+				extern number green;
 				vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
 				{
 					vec4 GlowColor = vec4(255, 0, 0, 0);		// 发光色
+					vec4 GlowColor2 = vec4(0, 150, 0, 0);
 					vec2 TextureSize = vec2(800, 600); 			// 纹理尺寸
 					number samplerPre = 1.0;					// 采样器
 					number radiusX = 0.5 / TextureSize.x;		// 半径x
@@ -80,6 +82,7 @@ function _AniPack:Ctor(_type) --initialize
 					number count = 0.0;							// 计数
 					number GlowRange = 0.5;						// 发光范围
 					number GlowExpand = 255;						// 发光强度 0 - 255
+					
 					for( number i = -GlowRange; i <= GlowRange; i += samplerPre)
 					{
 						for(number j = -GlowRange; j <= GlowRange; j += samplerPre)
@@ -102,20 +105,29 @@ function _AniPack:Ctor(_type) --initialize
 							count += 1.0;
 						}
 					}
-	
+
 					glowAlpha /= (count + 500);
-					// glowAlpha = 255;
 					GlowColor.a = glowAlpha * GlowExpand;
+					GlowColor.g = green;
 					return GlowColor;
 				}
-				
 			]]
 		),
 
 	}
 
 	--[[
-
+	vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
+				{
+					vec4 texcolor = Texel(texture, texture_coords);
+					texcolor.rgb = texcolor.rgb/2;
+					texcolor.a = 1;
+					//vec4 color = vec4(255, 1, 0 ,255);
+					color.r = 255;
+					color.g = 0.7;
+					color.b = 0;
+					return color;
+				}
 
 		vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
 		{
@@ -124,8 +136,6 @@ function _AniPack:Ctor(_type) --initialize
 			texcolor.a = 1;
 			return texcolor * color;
 		}
-
-		
 	]]
 	-- self:SetColor(255, 0, 0, 255)
 
@@ -307,12 +317,12 @@ function _AniPack:SuperArmor_Switch(s)
 		for i,v in ipairs(self.focus["sprite"]) do
 			v:SetTexture(self.playingSprite:GetTexture())
 		end
-		
 		if self.focus['focus'] == false then
+			self.focus["focus"] = true
 			self.focus['scale'].x = 1.5
 			self.focus['scale'].y = 1.5
+			self.focus["ARGB"]["G"] = 0
 		end
-		self.focus["focus"] = true
 	else
 		self.focus["focus"] = false
 	end
@@ -326,7 +336,7 @@ function _AniPack:SuperArmor_Update()
 	else
 		self:SuperArmor_Switch(false)
 	end
-
+	
 	if self.focus['focus'] then
 		for k,v in pairs(self.focus.scale) do
 			if self.focus.scale[k] > 1.0 then
@@ -336,34 +346,30 @@ function _AniPack:SuperArmor_Update()
 				end
 			end
 		end
+		self.focus["ARGB"]["G"] = self.focus["ARGB"]["G"] + self.focus["dir"] * self.focus["speed"] * love.timer.getDelta()
+		if self.focus["ARGB"]["G"] >= self.focus["max"] then
+			self.focus["dir"] = -1
+		elseif self.focus["ARGB"]["G"] <= self.focus["min"] then
+			self.focus["dir"] = 1
+		end
+		self.focus["shader"]:send("green", self.focus['ARGB']['G'])
 	end
 end
 
 function _AniPack:SuperArmor_Draw()
-
-	if self.focus["focus"]  then --霸体状态下的外线效果
-		-- self.focus["ARGB"]["G"]  = self.focus["ARGB"]["G"]   + self.focus["dir"] * self.focus["speed"] * love.timer.getDelta()
-		-- if self.focus["ARGB"]["G"]  >= self.focus["max"] or
-		-- 	self.focus["ARGB"]["G"] <= self.focus["min"] then
-		-- 	self.focus["dir"] = -self.focus["dir"]
-		-- end
-
+	if self.focus["focus"]  then
 		local _baseX = math.floor(self.pos.x + self.offset.x * self.focus.scale.x * self.dir)
 		local _baseY = math.floor(self.pos.y + self.offset.y * self.focus.scale.y)
 		for i,v in ipairs(self.focus["sprite"]) do
 			v:SetCenter(self.center.x,self.center.y)
 		end
-
 		love.graphics.setShader(self.focus["shader"])
-
 		self.focus["sprite"][1]:Draw(_baseX - 1, _baseY - 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
 		self.focus["sprite"][2]:Draw(_baseX + 1, _baseY - 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
 		self.focus["sprite"][3]:Draw(_baseX + 1, _baseY + 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
 		self.focus["sprite"][4]:Draw(_baseX - 1, _baseY + 1, self.angle, self.focus.scale.x * self.dir, self.focus.scale.y)
-		
 		love.graphics.setShader()
 	end
-
 end
 
 function _AniPack:DrawBox()

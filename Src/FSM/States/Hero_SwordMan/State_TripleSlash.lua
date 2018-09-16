@@ -10,10 +10,9 @@
 local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_TripleSlash = require("Src.Core.Class")(_State_AtkBase)
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
-
 function _State_TripleSlash:Ctor()
 	self.name = "tripleslash"
+	self.coolMsg = self.name
 	self.childName ={
         "tripleslash1",
         "tripleslash2",
@@ -63,7 +62,7 @@ function _State_TripleSlash:Update(hero_,FSM_)
 
 	if self.attackNum == 1 then
 		if self.heroBody:GetCount() >= 3 then
-			if _KEYBOARD.Press(hero_.KEY[self.KEYID["TripleSlash"]]) then
+			if self.input:IsPressed(hero_.KEY[self.KEYID["TripleSlash"]]) then
 				self:ChangeDir()
 				self.hero_:SetDir(self.nextDir)
 				
@@ -91,7 +90,7 @@ function _State_TripleSlash:Update(hero_,FSM_)
 
 	elseif self.attackNum == 2 then
 		if self.heroBody:GetCount() >= 2 then
-			if _KEYBOARD.Press(hero_.KEY[self.KEYID["TripleSlash"]]) then
+			if self.input:IsPressed(hero_.KEY[self.KEYID["TripleSlash"]]) then
 				self:ChangeDir()
 				self.hero_:SetDir(self.nextDir)
 
@@ -169,8 +168,8 @@ end
 
 function _State_TripleSlash:ChangeDir()
 	
-	local left = _KEYBOARD.Hold(self.hero_.KEY["LEFT"])
-	local right = _KEYBOARD.Hold(self.hero_.KEY["RIGHT"])
+	local left = self.input:IsHold(self.hero_.KEY["LEFT"])
+	local right = self.input:IsHold(self.hero_.KEY["RIGHT"])
 
 	if left or right then
         if left and right then
@@ -188,11 +187,11 @@ function _State_TripleSlash:ChangeDir()
         end
     end
 
-	if _KEYBOARD.Press("left") then
+	if self.input:IsPressed("left") then
         self.time_left = love.timer.getTime()
     end 
    
-    if _KEYBOARD.Press("right") then
+    if self.input:IsPressed("right") then
         self.time_right = love.timer.getTime()
     end 
 	

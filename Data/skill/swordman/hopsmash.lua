@@ -15,7 +15,7 @@ return {--[[ #PVF_File --]]
 		["[durability decrease rate]"]=15,
 		["[icon]"]={"Character/Swordman/Effect/SkillIcon.img",154,"Character/Swordman/Effect/SkillIcon.img",155},
 		["[weapon effect type]"]="[physical]",
-		["[command]"]={{5=""},{7=""},{5=""},{7=""},{5=""},},
+		["[command]"]={},
 		["[command key explain]"]="操作指令 : →↓ + Z",
 		["[skill command advantage]"]={10,20},
 		["[dungeon]"]={ 
@@ -32,5 +32,5 @@ return {--[[ #PVF_File --]]
 		["[warroom]"]={ },
 		["[level property]"]={1,99,"物理攻击力 : <int>%%,多段攻击次数 : <int>~<int>次,    已学[血气旺盛]时,冲击波物理攻击力 : <int>,出血几率 : <float1>%%； 出血Lv : Lv<int>； 出血持续时间 : <float1>秒； 出血攻击力 : <int>,冲击波范围 : <int>~<int>px",-1,0,1.00,8,8,1.00,9,9,1.00,-2,1,1.00,-1,2,0.10,-1,3,1.00,-1,4,0.00,-4,5,1.00,-1,6,1.00,-1,7,1.00,},
 		["[skill preloading image]"]={ },
-		["[feature skill index]"]=157,}
+		["[feature skill index]"]=157,
 }

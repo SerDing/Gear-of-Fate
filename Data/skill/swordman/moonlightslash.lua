@@ -11,7 +11,7 @@ return {--[[ #PVF_File --]]
 		["[auto cooltime apply]"]=1,
 		["[icon]"]={"Character/Swordman/Effect/SkillIcon.img",160,"Character/Swordman/Effect/SkillIcon.img",161},
 		["[weapon effect type]"]="[magical]",
-		["[command]"]={{5=""},{7=""},{5=""},{7=""},{5=""},},
+		["[command]"]={},
 		["[command key explain]"]="操作指令 : ↑→ + Z",
 		["[skill command advantage]"]={10,20},
 		["[dungeon]"]={ 
@@ -30,5 +30,5 @@ return {--[[ #PVF_File --]]
 		["[basic explain]"]="    向前方敌人发出暗属性伤害的月形斩击， 并追加一",
 		["[caption]"]="    是暗属性魔法攻击技能， 在视频里看到的第三个[满月斩]只有转职为鬼泣后才能使用。",
 		["[level property]"]={1,99,"月形斩击魔法攻击力 : <int>%% +<int>,单手上斩魔法攻击力 : <int>%% +<int>,双手上斩魔法攻击力 : <int>%% +<int>,- [对附着冥炎的敌人施放时] -,卡洛爆炸魔法攻击力 : <int>,卡洛爆炸次数 : <int>",-1,0,1.00,-2,3,1.00,-1,1,1.00,-2,4,1.00,-1,2,1.00,-2,5,1.00,-2,7,1.00,-1,6,1.00,},
-		["[feature skill index]"]=155,}
+		["[feature skill index]"]=155,
 }

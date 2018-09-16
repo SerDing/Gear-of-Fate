@@ -9,9 +9,8 @@
 
 local _State_Stay = require("Src.Core.Class")()
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _EffectMgr = require "Src.Scene.EffectManager" 
-local _HOLD_SPACE = 0.3
+local _HOLD_SPACE = 0.4
 
 function _State_Stay:Ctor()
 	self.keyPressTime = {left = 0, right = 0}
@@ -19,8 +18,8 @@ function _State_Stay:Ctor()
 	self.trans = {
 		{"NORMAL", "JUMP", "jump"}, 
 		{"NORMAL", "ATTACK", "attack"}, 
-		{"NORMAL", "UNIQUE", "upperslash"}, 
 		{"NORMAL", "BACK", "jump", true}, 
+		{"SKILL", "UpperSlash", "upperslash"}, 
 		{"SKILL", "GoreCross", "gorecross"}, 
 		{"SKILL", "HopSmash", "hopsmash"}, 
 		{"SKILL", "Frenzy", "frenzy"}, 
@@ -32,6 +31,7 @@ end
 function _State_Stay:Enter(hero_)
     self.name = "stay"
 	hero_:SetAnimation(self.name)
+	self.input = hero_:GetInput()
 end
 
 function _State_Stay:Update(hero_,FSM_)
@@ -41,12 +41,11 @@ function _State_Stay:Update(hero_,FSM_)
 	local _left = hero_.KEY["LEFT"]
 	local _right = hero_.KEY["RIGHT"]
 	
-	
-	if _KEYBOARD.Hold(_up) or _KEYBOARD.Hold(_down) then
+	if self.input:IsHold(_up) or self.input:IsHold(_down) then
 		FSM_:SetState("move",hero_)
 	end 
 	
-	if _KEYBOARD.Hold(_left) then
+	if self.input:IsHold(_left) then
 		if love.timer.getTime() - self.keyPressTime.left <= _HOLD_SPACE then
 			FSM_:SetState("dash",hero_)
 		else
@@ -54,7 +53,7 @@ function _State_Stay:Update(hero_,FSM_)
 			hero_:SetDir(-1)
 			FSM_:SetState("move",hero_)
 		end 
-	elseif _KEYBOARD.Hold(_right) then
+	elseif self.input:IsHold(_right) then
 		if love.timer.getTime() - self.keyPressTime.right <= _HOLD_SPACE then
 			FSM_:SetState("dash",hero_)
 		else 

@@ -16,6 +16,8 @@ local _CAMERA = require "Src.Game.GameCamera"
 local _GetTime = love.timer.getTime
 
 function _State_HopSmash:Ctor()
+	self.name = "hopsmash"
+	self.coolMsg = self.name
 	self.attackName = {"hopsmash1", "hopsmash2", "hopsmash3"}
 	self.judgeEvents = {[3] = false, [4] = false, [5] = false, [6] = false}
 
@@ -44,7 +46,7 @@ function _State_HopSmash:Ctor()
 end 
 
 function _State_HopSmash:Enter(hero_)
-    self.name = "hopsmash"
+    
 	hero_:SetAnimation("hopsmashready",1,1)
 	self.oriAtkSpeed = hero_:GetAtkSpeed()
 	-- self.atkSpeed = self.oriAtkSpeed * 0.85

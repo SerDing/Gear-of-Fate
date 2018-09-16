@@ -10,7 +10,6 @@
 
 local _SCENEMGR = {}
 
--- local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _Sprite = require "Src.Core.Sprite"
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _EffectMgr = require "Src.Scene.EffectManager"

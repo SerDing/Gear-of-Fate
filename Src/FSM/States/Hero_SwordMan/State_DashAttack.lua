@@ -9,8 +9,6 @@
 local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_DashAttack = require("Src.Core.Class")(_State_AtkBase)
 
-local _KEYBOARD = require "Src.Core.KeyBoard"
-
 function _State_DashAttack:Ctor()
 	self:_Init()
 end 
@@ -22,6 +20,7 @@ function _State_DashAttack:Enter(hero_)
 	self.attackCount = 1
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
+	self.input = hero_:GetInput()
 	self.movement = hero_:GetComponent('Movement')
 	self:_Enter(hero_)
 end
@@ -40,7 +39,7 @@ function _State_DashAttack:Update(hero_,FSM_)
 	end 
 
 	if _body:GetCount() > 3 and _body:GetCount() < 8 then -- 
-		if _KEYBOARD.Press(hero_.KEY["ATTACK"]) and self.attackCount == 1 then
+		if self.input:IsPressed(hero_.KEY["ATTACK"]) and self.attackCount == 1 then
 			hero_:GetBody():SetFrame(2)
 			hero_:GetWeapon():SetFrame(2)
 			self.attackCount = self.attackCount + 1

@@ -9,11 +9,11 @@
 
 local _State_MoonSlash = require("Src.Core.Class")()
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
 local _EffectMgr = require "Src.Scene.EffectManager"
 
 function _State_MoonSlash:Ctor()
-	self.name = "moonslash"
+	self.name = "moonlightslash"
+	self.coolMsg = self.name
 	self.childName ={
         "moonlightslash1",
         "moonlightslash2",
@@ -28,7 +28,7 @@ function _State_MoonSlash:Enter(hero_)
 	self.attackName = self.childName[self.atkNum]
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	
+	self.input = hero_:GetInput()
 	self.movement = hero_:GetComponent('Movement')
 end
 
@@ -54,7 +54,7 @@ function _State_MoonSlash:Update(hero_,FSM_)
 	end 
 
 	if _body:GetCount() >= 2 and self.atkNum == 1 then
-		if _KEYBOARD.Press(hero_.KEY[self.KEYID["MoonLightSlash"]]) then
+		if self.input:IsPressed(hero_.KEY[self.KEYID["MoonLightSlash"]]) then
 			hero_:SetAnimation(self.childName[2])
 			self.atkNum = 2
 			self.atkJudger:ClearDamageArr()
@@ -66,8 +66,8 @@ function _State_MoonSlash:Update(hero_,FSM_)
 		
 	end 
 	
-	if (_KEYBOARD.Hold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-	(_KEYBOARD.Hold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
+	if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
+	(self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == 1 )   then
 		self.movement:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
 	end
 

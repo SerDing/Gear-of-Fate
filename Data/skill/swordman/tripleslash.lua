@@ -16,7 +16,7 @@ return {--[[ #PVF_File --]]
 		["[auto cooltime apply]"]=0,
 		["[weapon effect type]"]="[physical]",
 		["[icon]"]={"Character/Swordman/Effect/SkillIcon.img",18,"Character/Swordman/Effect/SkillIcon.img",19},
-		["[command]"]={{5=""},{7=""},{5=""},},
+		["[command]"]={},
 		["[command key explain]"]="操作指令 : →(按住状态下) + Z",
 		["[dungeon]"]={ 
 		["[consume MP]"]={12,120},
@@ -32,5 +32,5 @@ return {--[[ #PVF_File --]]
 		["[warroom]"]={ },
 		["[level property]"]={1,99,"3连斩的各物理攻击力 : <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>,5连斩的各物理攻击力 : <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>",-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,1,1.00,-2,4,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,1,1.00,-2,4,1.00,-1,2,1.00,-2,5,1.00,},
 		["[feature skill level property]"]={1,99,"5连斩的各物理攻击力 : <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>,7连斩的各物理攻击力 : <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>、  <int>%% + <int>",-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,1,1.00,-2,4,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,0,1.00,-2,3,1.00,-1,1,1.00,-2,4,1.00,-1,2,1.00,-2,5,1.00,},
-		["[feature skill index]"]=143,}
+		["[feature skill index]"]=143,
 }

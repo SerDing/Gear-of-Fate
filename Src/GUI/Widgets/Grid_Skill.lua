@@ -9,21 +9,43 @@
 local _Widget = require("Src.GUI.Widgets.Widget")
 local _Grid_Skill = require("Src.Core.Class")(_Widget)
 
-
-
-function _Grid_Skill:Ctor(id, fixed)
-    self.skillID = 0
-
-    self.fixed = fixed or false
-    self.skillRef = _SkillMgr.GetSkillById()
-end 
-
-function _Grid_Skill:Update(dt)
-    --body
+local _SkillMgr = require "Src.BattleSystem.SkillManager"
+local _RESMGR = require "Src.Resource.ResManager"
+local _Sprite = require "Src.Core.Sprite"
+local _SCENEMGR = require "Src.Scene.GameSceneMgr"
+local hero_ = _SCENEMGR.GetHero_()
+function _Grid_Skill:Ctor(x, y, id, origin)
+	self.x = x or 0
+	self.y = y or 0
+	self.origin = origin or false
+	self:SetSkill(id)
+	self.coolPercent = 1.00
 end 
 
 function _Grid_Skill:Draw(x,y)
-    --body
-end
+	if self.sprites then
+		self.sprites[self.skill.state]:Draw(self.x + 1, self.y + 1)
+		if self.skill.coolTimer > 0 then
+			self.coolPercent = self.skill.coolTimer / self.skill.coolTime
+			self.coolPercent = math.abs(self.coolPercent)
+			self.sprites[3]:SetDrawArea(0, 0, self.sprites[3]:GetWidth(), self.sprites[3]:GetHeight() * self.coolPercent)
+			self.sprites[3]:Draw(self.x + 1, self.y + 1)
+		end
+	end
+end 
+
+function _Grid_Skill:SetSkill(id)
+	if id == 0 then
+		return 
+	end
+	self.skillID = id
+	self.skill = _SkillMgr.GetSkillById(hero_, self.skillID)
+	self.sprites = {
+		_Sprite.New(_RESMGR.pathHead .. self.skill.iconPath[1]), -- useable
+		_Sprite.New(_RESMGR.pathHead .. self.skill.iconPath[2]), -- cool
+	}
+	self.sprites[3] = _Sprite.New(love.graphics.newImage(love.image.newImageData(self.sprites[1]:GetWidth(), self.sprites[1]:GetHeight()))) -- black mask
+	self.sprites[3]:SetColorEx(0, 0, 0, 122)
+end 
 
 return _Grid_Skill 

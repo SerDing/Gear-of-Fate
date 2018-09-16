@@ -38,6 +38,8 @@ local _GDBOARD = require "Src.Game.GameDataBoard"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
 local _UIMGR = require "Src.GUI.UI_Manager"
 
+local _SkillMgr = require "Src.BattleSystem.SkillManager"
+
 local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
 
 --[[ Key Note:
@@ -67,6 +69,7 @@ function _GAMEMGR.Ctor() --initialize
 	_AUDIOMGR.Init()
 	_GDBOARD.Load()
 	_SCENEMGR.Ctor()
+	_SkillMgr.Ctor()
 	_InitGUI()
 
 	-- collectgarbage("stop")
@@ -76,6 +79,21 @@ function _GAMEMGR.Ctor() --initialize
 	-- bgm:setLooping(true)
 	-- love.graphics.setDefaultFilter( 'nearest', 'nearest' )
 
+	--[[
+		8	`Swordman/TripleSlash.skl`
+		16	`Swordman/AshenFork.skl`
+		40	`Swordman/Reckless.skl`
+		46	`Swordman/UpperSlash.skl`
+		58	`Swordman/VaneSlash.skl`
+		64	`Swordman/GoreCross.skl`
+		65	`Swordman/HopSmash.skl`
+		76	`Swordman/Frenzy.skl`
+		77	`Swordman/MoonlightSlash.skl`
+		169	`Swordman/BackStep.skl`
+	]]
+	local _skillIDs = {8, 16, 46, 64, 65, 76, 77, 169}
+	_SkillMgr.LearnSkills(_SCENEMGR.GetHero_(), _skillIDs)
+	_SkillMgr.RegActor(_SCENEMGR.GetHero_())
 end
 
 function _GAMEMGR.Update(dt)
@@ -108,6 +126,7 @@ function _GAMEMGR.Update(dt)
 	end 
 
 	_SCENEMGR.Update(dt)
+	_SkillMgr.Update(dt)
 	-- _RESMGR.Update(dt)
 	_KEYBOARD.Update(dt)
 end

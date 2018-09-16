@@ -51,7 +51,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.0 + 0.26
+	self.atkSpeed = 1.0 + 0.9 -- 0.26
 	self.hitRecovery = 22.5 -- 45 65
 	self.hitRecovery = 55 -- 45 65
 	self.hitTime = 0
@@ -377,11 +377,13 @@ end
 
 function Hero_SwordMan:InitSkillKeyList()
 	self.skillKeyList = {
+		{"UNIQUE", "Ashenfork"},
+		{"UNIQUE", "UpperSlash"},
 		{"A", "HopSmash"},
 		{"S", "GoreCross"},
 		{"D", "Grab"},
-		{"F","TripleSlash"},
-		{"G","ReckLess"},
+		{"F", "TripleSlash"},
+		{"G", "ReckLess"},
 		{"H", "Frenzy"},
 		{"E", "MoonLightSlash"},
 		{"R", "Ashenfork"},

@@ -13,6 +13,8 @@ local _EffectMgr = require "Src.Scene.EffectManager"
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 
 function _State_Ashenfork:Ctor()
+	self.name = "ashenfork"
+	self.coolMsg = self.name
 	self:_Init()
 	self.jumpPower = 0
 	self.g = 160 -- 130
@@ -23,7 +25,6 @@ function _State_Ashenfork:Ctor()
 end 
 
 function _State_Ashenfork:Enter(hero_)
-	self.name = "ashenfork"
 	self.attackName = "ashenfork"
 	hero_:SetAnimation("flowmindtwoattack1") -- waiting for changing a right one
 	for i=1,3 do

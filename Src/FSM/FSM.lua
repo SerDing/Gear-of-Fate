@@ -22,7 +22,7 @@ function _FSM:RegisterState(state_name,class_name)
 end
 
 function _FSM:Ctor(entity_,state_name,entityType)
-    
+    self.entity_ = entity_
     self.state = {}
     self.entityType = entityType
     self:InitStates(entityType)
@@ -31,7 +31,10 @@ function _FSM:Ctor(entity_,state_name,entityType)
     self.preState = nil
     self.curState = self.state[state_name]
     self.curState:Enter(entity_,self)
-
+    if self.onNewStateEnter then
+        self:onNewStateEnter(entity_)
+    end
+    
     self.KEYID = {}
     self.input = entity_:GetInput()
 end
@@ -65,12 +68,18 @@ function _FSM:SetState(state_name,entity_, ...)
 
     self.preState = self.curState
     self.curState:Exit(entity_)
+    if self.onCurStateExit then
+        self:onCurStateExit(entity_)
+    end
     self.curState = self.state[state_name]
 
     if not self.curState then
         print(strcat("_FSM:SetState() curState ", state_name, " nil", " entity.subType: ", entity.subType))
     end
     self.curState:Enter(entity_, self, ...)
+    if self.onNewStateEnter then
+        self:onNewStateEnter(entity_)
+    end
     
 end
 
@@ -123,6 +132,12 @@ end
 
 function _FSM:GetCurState()
     return self.curState
+end
+
+function _FSM:onNewStateEnter(entity_)
+end
+
+function _FSM:onCurStateExit(entity_)
 end
 
 return _FSM 

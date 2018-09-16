@@ -16,6 +16,12 @@ return {
 
         {1, "single","interface/hud/2.png", 15, 14, 0, 0.7, 0.7},
     },
+     -- x, y, id, origin
+    -- ['Grid_Skill'] = {
+    --     -- {frameIndex, "single", x, y, r, sx, sy},
+    --     -- {frameIndex, "batch", x, y, blank_x, blank_y, num_x, num_y},
+    --     {1, "group", 19, 62, 3, 4, 6, 2},
+    -- },
     ['pops'] = {
         {1, 20, 20, 25, 25, require("Data/ui/popup/groove")},
     },

@@ -9,8 +9,6 @@
 
 local _State_Move = require("Src.Core.Class")()
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
-
 function _State_Move:Ctor()
     self.time_up = 0
     self.time_down = 0
@@ -19,8 +17,8 @@ function _State_Move:Ctor()
     self.trans = {
 		{"NORMAL", "JUMP", "jump"}, 
 		{"NORMAL", "ATTACK", "attack"}, 
-		{"NORMAL", "UNIQUE", "upperslash"}, 
-		{"NORMAL", "BACK", "jump", true}, 
+        {"NORMAL", "BACK", "jump", true}, 
+        {"SKILL", "UpperSlash", "upperslash"}, 
 		{"SKILL", "GoreCross", "gorecross"}, 
 		{"SKILL", "HopSmash", "hopsmash"}, 
 		{"SKILL", "MoonLightSlash", "moonslash"}, 
@@ -36,15 +34,15 @@ function _State_Move:Enter(hero_)
     self.time_down = 0
     self.time_left = 0
     self.time_right = 0
-
+    self.input = hero_:GetInput()
     self.movement = hero_:GetComponent('Movement')
 end
 
 function _State_Move:Update(hero_,FSM_)
-	local up = _KEYBOARD.Hold("up")
-	local down = _KEYBOARD.Hold("down")
-	local left = _KEYBOARD.Hold("left")
-	local right = _KEYBOARD.Hold("right")
+	local up = self.input:IsHold("up")
+	local down = self.input:IsHold("down")
+	local left = self.input:IsHold("left")
+	local right = self.input:IsHold("right")
 	
     if up or down then
         if up and down then
@@ -81,19 +79,19 @@ function _State_Move:Update(hero_,FSM_)
     end
 
 
-    if _KEYBOARD.Press("up") then
+    if self.input:IsPressed("up") then
         self.time_up = love.timer.getTime()
     end 
     
-    if _KEYBOARD.Press("down") then
+    if self.input:IsPressed("down") then
         self.time_down = love.timer.getTime()
     end 
     
-    if _KEYBOARD.Press("left") then
+    if self.input:IsPressed("left") then
         self.time_left = love.timer.getTime()
     end 
    
-    if _KEYBOARD.Press("right") then
+    if self.input:IsPressed("right") then
         self.time_right = love.timer.getTime()
     end 
     

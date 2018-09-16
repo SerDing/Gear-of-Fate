@@ -21,7 +21,7 @@ function _State_Jump:Ctor()
 	self.stableFPS = 60
 	self.sounds = {"SM_JUMP_ATK_01", "SM_JUMP_ATK_02"}
 	self.trans = {
-		{"NORMAL", "UNIQUE", "ashenfork"}, 
+		{"SKILL", "Ashenfork", "ashenfork"}, 
 	}
 	self.topMsg = false
 	self.landMsg = false

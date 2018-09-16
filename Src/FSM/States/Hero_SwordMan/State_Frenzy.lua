@@ -13,7 +13,8 @@ local _EffectMgr = require "Src.Scene.EffectManager"
 local _BuffMgr = require "Src.Heroes.BuffManager" 
 
 function _State_Frenzy:Ctor()
-	self.name = "grab"
+	self.name = "frenzy"
+	self.coolMsg = self.name
 	self.effect = {}
 	self.stateColor = {255,150,0,255}
 	self.switch = false
@@ -37,7 +38,7 @@ function _State_Frenzy:Enter(hero_,FSM_)
 		return 
 	end 
 	
-	hero_:SetAnimation(self.name)
+	hero_:SetAnimation("grab")
 	
 	hero_.pakGrp.body:SetColor(unpack(self.stateColor))
 	-- hero_.pakGrp.weapon:SetColor(unpack(self.stateColor))

@@ -9,14 +9,12 @@
 
 local _State_Dash = require("Src.Core.Class")()
 
-local _KEYBOARD = require "Src.Core.KeyBoard"
-
 function _State_Dash:Ctor()
     self.KEYID = {}
     self.trans = {
 		{"NORMAL", "JUMP", "jump"}, 
 		{"NORMAL", "ATTACK", "dashattack"}, 
-		{"NORMAL", "UNIQUE", "upperslash"}, 
+		{"SKILL", "UpperSlash", "upperslash"},  
 		{"NORMAL", "BACK", "jump", true}, 
 		{"SKILL", "GoreCross", "gorecross"}, 
 		{"SKILL", "HopSmash", "hopsmash"}, 
@@ -28,15 +26,16 @@ end
 function _State_Dash:Enter(hero_)
     self.name = "dash"
     hero_:SetAnimation(self.name)
+    self.input = hero_:GetInput()
     self.movement = hero_:GetComponent('Movement')
 end
 
 function _State_Dash:Update(hero_,FSM_)
 	
-    local up = _KEYBOARD.Hold("up")
-	local down = _KEYBOARD.Hold("down")
-	local left = _KEYBOARD.Hold("left")
-	local right = _KEYBOARD.Hold("right")
+    local up = self.input:IsHold("up")
+	local down = self.input:IsHold("down")
+	local left = self.input:IsHold("left")
+	local right = self.input:IsHold("right")
 	
     if up then
         self.movement:Y_Move(- hero_.spd.y * 1.5 )
@@ -52,15 +51,15 @@ function _State_Dash:Update(hero_,FSM_)
         hero_:SetDir(1)
     end 
 
-    if _KEYBOARD.Press("left") then
-        if _KEYBOARD.Hold("right") then
+    if self.input:IsPressed("left") then
+        if self.input:IsHold("right") then
             FSM_:SetState("move",hero_)
             hero_:SetDir(-1)
         end 
     end 
    
-    if _KEYBOARD.Press("right") then
-        if _KEYBOARD.Hold("left") then
+    if self.input:IsPressed("right") then
+        if self.input:IsHold("left") then
             FSM_:SetState("move",hero_)
             hero_:SetDir(1)
         end 

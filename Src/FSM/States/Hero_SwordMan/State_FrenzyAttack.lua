@@ -11,8 +11,6 @@
 local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_FrenzyAttack = require("Src.Core.Class")(_State_AtkBase)
 
-local _KEYBOARD = require "Src.Core.KeyBoard" 
-
 function _State_FrenzyAttack:Ctor()
     self.name = "frenzyattack"
     self.childName ={"frenzy1", "frenzy2", "frenzy3", "frenzy4"}

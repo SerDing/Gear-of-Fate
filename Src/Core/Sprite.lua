@@ -12,6 +12,7 @@ local _Sprite = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
 local _RESMGR = require "Src.Resource.ResManager" 
+local _GameCamera = require "Src.Game.GameCamera"
 
 local _Scissor = love.graphics.setScissor
 local _GraphNewShader = love.graphics.newShader
@@ -66,7 +67,12 @@ function _Sprite:Draw(x, y, rotation, sx, sy)
 	love.graphics.setBlendMode(self.blendMode)
 	
 	if self.scissor then
-		_Scissor(self.pos.x - self.center.x * self.scale.x, self.pos.y - self.center.y, self.area.w, self.area.h)
+		_Scissor(
+			self.pos.x * _GameCamera.scale.x - self.center.x * self.scale.x, 
+			self.pos.y * _GameCamera.scale.y - self.center.y, 
+			self.area.w * _GameCamera.scale.x, 
+			self.area.h * _GameCamera.scale.y
+		)
 	end
 
 	love.graphics.draw(self.texture,

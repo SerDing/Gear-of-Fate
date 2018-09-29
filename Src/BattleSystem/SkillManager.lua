@@ -23,29 +23,22 @@ function _SkillMgr.InitData(job)
 	job = string.gsub(job,'%[', "")
 	job = string.gsub(job,'%]', "")
 	this.sklPathArr = {} -- map < id, path >
-	this.skillList = LoadFile("/Data/skill/" .. job .. "skill.lst")
-	this.skillList = split(this.skillList,"\n")
-	this.skillList = split(this.skillList[2],"\t")
-
 	this.nameIdList = {} -- list < sklName, sklID >
 	this.skills = {} -- map < id, skillObj >
-
-	for i=1, #this.skillList do
-		if i % 2 ~= 0 and this.skillList[i + 1] then
-			local path = string.gsub(string.lower(this.skillList[i + 1]), "`", "")
-			path = string.gsub(path, ".skl", "")
-			local pathSplit = split(path, "/") -- separate path by '/', the second part is skill's name
-			this.sklPathArr[tonumber(this.skillList[i])] = strcat(this.pathHead, path)
-			this.nameIdList[pathSplit[2]] = tonumber(this.skillList[i])
-			this.sklPathArr[tonumber(this.skillList[i])] = this.pathHead .. path
-		end
+	this.skillList = require("/Data/skill/" .. job .. "skill")
+	local pathSplit = ""
+	for id, path in pairs(this.skillList) do
+		pathSplit = split(path, "/") -- separate path by '/', the second part is skill's name
+		this.sklPathArr[id] = strcat(this.pathHead, string.lower(path))
+		this.nameIdList[string.lower(pathSplit[2])] = id
+		-- print("nameIdList ", pathSplit[2], id)
 	end
 
 	this.skills[job] = {}
 	local _pool = this.skills[job]
-	for k,v in pairs(this.sklPathArr) do	
+	for k,v in pairs(this.sklPathArr) do
 		if love.filesystem.exists(v .. ".lua") then -- only create skills which has a real file
-			print(v)
+			-- print(v)
 			_pool[k] = _Skill.New(v, k)
 		end 
 	end 
@@ -76,58 +69,75 @@ function _SkillMgr.HandleAvailability(actor)
 	job = string.gsub(job,'%[', "")
 	job = string.gsub(job,'%]', "")
 	for job, skills in pairs(this.skills) do
-		for k, skill in pairs(skills) do
-			local mp = actor:GetModel('MP'):GetCur()
-			local consume_mp = skill.property['[consume MP]'] or skill.property['[dungeon]']['[consume MP]']
-			if skill:WasLearned() and skill.coolTimer <= 0 and mp >= consume_mp[1] then
-				skill:SetState(1)
-			else
-				skill:SetState(2)
-			end
-		end
+		
 		for k, skill in pairs(skills) do -- assume that all skills cannot be used
 			skill:SetState(2)
 		end
+
 		local skill
 		if _stateTransList then -- set some skills to be available by transition list
 			for i,v in ipairs(_stateTransList) do
-				if v[1] == "SKILL" then -- v[1] = stateType, v[2] = skillName v[3] = stateName
-					print(this.GetSklIDByName(string.lower(v[2])), v[2])
-					skill = this.GetSkillById(actor, this.GetSklIDByName(string.lower(v[2])))
+				if v[1] == "SKILL" then -- v[1] = stateType, v[2] = skillID v[3] = stateName
+					skill = this.GetSkillById(actor, v[2])
 					if skill.coolTimer <= 0 then
 						skill:SetState(1)
 					end
 				end
 			end
 		end
+
+		local consume_mp = 0
+		local mp = actor:GetModel('MP'):GetCur()
+		for k, skill in pairs(skills) do
+			consume_mp = skill.property['[consume MP]'] or skill.property['[dungeon]']['[consume MP]']
+			if skill:GetState() == 1 then -- the skill has been available state 
+				if skill:WasLearned() and skill.coolTimer <= 0 and mp >= consume_mp[1] then
+					skill:SetState(1)
+				else
+					skill:SetState(2)
+				end
+			end
+		end
+		
 	end
 end
 
-function _SkillMgr.IsSklUseable(actor, name) 
+function _SkillMgr.IsSklUseable(actor, sklID) 
 	--[[
 		only useable for hero/APC now
 		this method need ref 'actor' to know which job it needs to check avalability
 	]]
-
-	name = string.lower(name)
 	local job = actor:GetProperty('job')
 	job = string.gsub(job,'%[', "")
 	job = string.gsub(job,'%]', "")
-	local sklID = this.nameIdList[name]
+	-- local sklID = this.nameIdList[name]
 	local skill = this.skills[job][sklID]
 	return skill:IsUseable()
 end 
 
-function _SkillMgr.StartCoolSkl(actor, name)
+function _SkillMgr.DoSkill(actor, sklID)
 	local job = actor:GetProperty('job')
 	job = string.gsub(job,'%[', "")
 	job = string.gsub(job,'%]', "")
-	local sklID = this.GetSklIDByName(name)
+	-- local sklID = this.GetSklIDByName(string.lower(name))
 	local skill = this.skills[job][sklID]
+	
+	local consume_mp = skill.property['[consume MP]'] or skill.property['[dungeon]']['[consume MP]']
+	actor:GetModel('MP'):Decrease(consume_mp[1])
+end
+
+function _SkillMgr.StartCoolSkl(actor, sklID)
+	local job = actor:GetProperty('job')
+	job = string.gsub(job,'%[', "")
+	job = string.gsub(job,'%]', "")
+	-- local sklID = this.GetSklIDByName(name)
+	local skill = this.skills[job][sklID]
+
 	skill:Done()
 end
 
 function _SkillMgr.GetSklIDByName(name)
+	assert(this.nameIdList[name], "_SkillMgr.GetSklIDByName(name) no id for: " .. name)
 	return this.nameIdList[name]
 end
 

@@ -156,7 +156,7 @@ function _AniPack:Ctor(_type) --initialize
 	}
 
 	self.blendMode = self.blendModeList[1]
-
+	self.active = true
 end
 
 function _AniPack:NextFrame(n)
@@ -185,6 +185,10 @@ function _AniPack:NextFrame(n)
 end
 
 function _AniPack:Update(dt)
+
+	if not self.active then
+		return 
+	end
 
 	--[[ Debug Switch ]]
 	if _KEYBOARD.Press("f1") then
@@ -216,14 +220,13 @@ function _AniPack:Update(dt)
 	end
 
 	self.time = self.time + (dt or 0)
-	
+	-- print(self.frameData[self.frameHead])
 	if self.time >= (self.frameData[self.frameHead]["[DELAY]"] or 100) / (1000 * self.baseRate)  then
 		self.time = 0-- self.time - self.frameData[self.frameHead]["[DELAY]"] / 1000
 		if self.playNum ~= 0 then
 			self.count = self.count + 1
 		end
 		
-
 		if self.count >= self.num then
 			if self.playNum == -1 then
 				self.count = 0
@@ -288,8 +291,12 @@ function _AniPack:Update(dt)
 	self.updateCount = self.updateCount + 1
 end
 
-function _AniPack:Draw(x,y,r,sx,sy)
+function _AniPack:Draw(x, y, r, sx, sy)
 	
+	if not self.active then
+		return 
+	end
+
 	if x and y then self:SetPos(x, y) end
 	if sx and sy then self:SetScale(sx, sy) end
 	if r then self:SetAngle(r) end
@@ -408,6 +415,10 @@ end
 
 function _AniPack:SetAnimation(id,num,rate)
 
+	if not self.active then
+		return 
+	end
+
 	local _idType = type(id)
 
 	if _idType == "string" then
@@ -477,6 +488,10 @@ function _AniPack:AddAnimation(aniPath,__num,id)
 	    print("Err: _AniPack:AddAnimation() --> aniPath get a unexpected type!")
 	    return false
 	end
+end
+
+function _AniPack:SetActive(s)
+	self.active = s
 end
 
 function _AniPack:SetPos(x, y)

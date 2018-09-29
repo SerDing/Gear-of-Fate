@@ -1,5 +1,5 @@
 --[[
-	Desc: Grid Skills
+	Desc: Grid for Skill
 	Author: SerDing 
 	Since: 2018-08-29 15:11:16 
 	Last Modified time: 2018-08-29 15:11:16 
@@ -14,7 +14,7 @@ local _RESMGR = require "Src.Resource.ResManager"
 local _Sprite = require "Src.Core.Sprite"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr"
 local hero_ = _SCENEMGR.GetHero_()
-function _Grid_Skill:Ctor(x, y, id, origin)
+function _Grid_Skill:Ctor(x, y, id, absKey,origin)
 	self.x = x or 0
 	self.y = y or 0
 	self.origin = origin or false
@@ -46,6 +46,10 @@ function _Grid_Skill:SetSkill(id)
 	}
 	self.sprites[3] = _Sprite.New(love.graphics.newImage(love.image.newImageData(self.sprites[1]:GetWidth(), self.sprites[1]:GetHeight()))) -- black mask
 	self.sprites[3]:SetColorEx(0, 0, 0, 122)
+end 
+
+function _Grid_Skill:MessageEvent(msg)
+	
 end 
 
 return _Grid_Skill 

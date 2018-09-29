@@ -14,12 +14,12 @@ function _State_Attack:Ctor()
 
     self.childName = {"attack1", "attack2", "attack3"}
     self.trans = {
-		{"NORMAL", "UNIQUE", "upperslash"}, 
-		{"NORMAL", "BACK", "jump", true}, 
-		{"SKILL", "GoreCross", "gorecross"}, 
-		{"SKILL", "HopSmash", "hopsmash"}, 
-		{"SKILL", "MoonLightSlash", "moonslash"}, 
-		{"SKILL", "TripleSlash", "tripleslash"}, 
+        {"NORMAL", "BACK", "jump", true}, 
+        {"SKILL", 46, "upperslash"},
+		{"SKILL", 64, "gorecross"}, 
+		{"SKILL", 65, "hopsmash"}, 
+		{"SKILL", 77, "moonslash"}, 
+		{"SKILL", 8, "tripleslash"}, 
 	}
     
     self.attackNum = 0
@@ -48,24 +48,24 @@ function _State_Attack:Update(hero_,FSM_)
     local _body = hero_:GetBody()
     local _dt = love.timer.getDelta()
     
-    local _leftHold = self.input:IsHold(hero_.KEY["LEFT"])
-    local _rightHold = self.input:IsHold(hero_.KEY["RIGHT"])
+    local _leftHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"])
+    local _rightHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"])
     local _movable = true
 
-    if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == 1) or
-    (self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == -1) then
+    if (self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) and hero_.dir == 1) or
+    (self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) and hero_.dir == -1) then
         _movable = false
     end
 
     if self.attackNum == 1 then
-        if self.input:IsPressed(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 2
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
         end
     elseif self.attackNum == 2 then
-        if self.input:IsPressed(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
@@ -78,8 +78,8 @@ function _State_Attack:Update(hero_,FSM_)
                 self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
             end 
             
-            if (self.input:IsHold(hero_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (self.input:IsHold(hero_.KEY["RIGHT"]) and hero_.dir == 1 ) then
+            if (self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) and hero_.dir == -1 ) or 
+            (self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) and hero_.dir == 1 ) then
                 
                 self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
             end 

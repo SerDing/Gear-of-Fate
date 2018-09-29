@@ -55,7 +55,8 @@ local function InitHMP_Bars(interface, HMP_Bars)
         end
         
         local _b = _HMP_Bar.New(v[2], v[3], v[4], _model, _controller, v[7])
-        interface.frames[v[1]]:AddWidget(_b)
+        -- interface.frames[v[1]]:AddWidget(_b)
+        interface:AddWidget(_b)
     end
 end
 
@@ -82,14 +83,16 @@ local function InitImages(interface, Images)
             -- add all images in _batch
             for i = 1, v[9] do
                 for k = 1, v[8] do
-                    interface.frames[v[1]]:AddWidget(_batch[i][k])
+                    -- interface.frames[v[1]]:AddWidget(_batch[i][k])
+                    interface:AddWidget(_batch[i][k])
                 end
             end
 
         elseif v[2] == "single" then
             print("single image path:", v[3])
             _image = _Image.New(v[3], v[4], v[5], v[6], v[7], v[8])
-            interface.frames[v[1]]:AddWidget(_image)
+            -- interface.frames[v[1]]:AddWidget(_image)
+            interface:AddWidget(_image)
         else
             error("_LayoutMgr.InitImages()  the type of one image item is unknown.")
         end

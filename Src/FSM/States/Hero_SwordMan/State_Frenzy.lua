@@ -14,7 +14,6 @@ local _BuffMgr = require "Src.Heroes.BuffManager"
 
 function _State_Frenzy:Ctor()
 	self.name = "frenzy"
-	self.coolMsg = self.name
 	self.effect = {}
 	self.stateColor = {255,150,0,255}
 	self.switch = false
@@ -26,9 +25,10 @@ function _State_Frenzy:Enter(hero_,FSM_)
 		
 		self.switch = false
 		
-		hero_.pakGrp.body:SetColor(255, 255, 255, 255)
-		hero_.pakGrp.weapon:SetColor(255, 255, 255, 255)
-		
+		hero_:GetBody():SetColor(255, 255, 255, 255)
+		-- hero_:GetAvatar():GetWidget("weapon_b1"):SetColor(255, 255, 255, 255)
+		-- hero_:GetAvatar():GetWidget("weapon_c1"):SetColor(255, 255, 255, 255)
+
 		_BuffMgr.OffBuff(hero_, "frenzy")
 		
 		FSM_:SetState(FSM_.oriState, hero_)
@@ -40,8 +40,9 @@ function _State_Frenzy:Enter(hero_,FSM_)
 	
 	hero_:SetAnimation("grab")
 	
-	hero_.pakGrp.body:SetColor(unpack(self.stateColor))
-	-- hero_.pakGrp.weapon:SetColor(unpack(self.stateColor))
+	hero_:GetBody():SetColor(unpack(self.stateColor))
+	-- hero_:GetAvatar():GetWidget("weapon_b1"):SetColor(unpack(self.stateColor))
+	-- hero_:GetAvatar():GetWidget("weapon_c1"):SetColor(unpack(self.stateColor))
 
 	self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/cast.lua", hero_.pos.x, hero_.pos.y, 1, hero_:GetDir())	
 	self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())

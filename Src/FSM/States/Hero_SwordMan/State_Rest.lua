@@ -17,13 +17,13 @@ function _State_Rest:Ctor()
 	self.trans = {
 		{"NORMAL", "JUMP", "jump"}, 
 		{"NORMAL", "ATTACK", "attack"}, 
-		{"SKILL", "UpperSlash", "upperslash"}, 
 		{"NORMAL", "BACK", "jump", true}, 
-		{"SKILL", "GoreCross", "gorecross"}, 
-		{"SKILL", "HopSmash", "hopsmash"}, 
-		{"SKILL", "Frenzy", "frenzy"}, 
-		{"SKILL", "MoonLightSlash", "moonslash"}, 
-		{"SKILL", "TripleSlash", "tripleslash"}, 
+		{"SKILL", 46, "upperslash"}, 
+		{"SKILL", 64, "gorecross"}, 
+		{"SKILL", 65, "hopsmash"}, 
+		{"SKILL", 76, "frenzy"}, 
+		{"SKILL", 77, "moonslash"}, 
+		{"SKILL", 8, "tripleslash"}, 
 	}
 end 
 
@@ -35,11 +35,11 @@ end
 
 function _State_Rest:Update(hero_,FSM_)
     
-	local _up = hero_.KEY["UP"]
-	local _down = hero_.KEY["DOWN"]
-	local _left = hero_.KEY["LEFT"]
-	local _right = hero_.KEY["RIGHT"]
-	local _jump = hero_.KEY["JUMP"]
+	local _up = FSM_.HotKeyMgr_.KEY["UP"]
+	local _down = FSM_.HotKeyMgr_.KEY["DOWN"]
+	local _left = FSM_.HotKeyMgr_.KEY["LEFT"]
+	local _right = FSM_.HotKeyMgr_.KEY["RIGHT"]
+	local _jump = FSM_.HotKeyMgr_.KEY["JUMP"]
 	
 	if self.input:IsHold(_up) or self.input:IsHold(_down) then
 		FSM_:SetState("move",hero_)

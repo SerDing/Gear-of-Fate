@@ -18,11 +18,11 @@ function _State_Move:Ctor()
 		{"NORMAL", "JUMP", "jump"}, 
 		{"NORMAL", "ATTACK", "attack"}, 
         {"NORMAL", "BACK", "jump", true}, 
-        {"SKILL", "UpperSlash", "upperslash"}, 
-		{"SKILL", "GoreCross", "gorecross"}, 
-		{"SKILL", "HopSmash", "hopsmash"}, 
-		{"SKILL", "MoonLightSlash", "moonslash"}, 
-		{"SKILL", "TripleSlash", "tripleslash"}, 
+        {"SKILL", 46, "upperslash"}, 
+		{"SKILL", 64, "gorecross"}, 
+		{"SKILL", 65, "hopsmash"}, 
+		{"SKILL", 77, "moonslash"}, 
+		{"SKILL", 8, "tripleslash"}, 
     }
     self.KEYID = {}
 end 

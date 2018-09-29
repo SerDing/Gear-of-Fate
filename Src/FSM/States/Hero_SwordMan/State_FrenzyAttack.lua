@@ -15,10 +15,10 @@ function _State_FrenzyAttack:Ctor()
     self.name = "frenzyattack"
     self.childName ={"frenzy1", "frenzy2", "frenzy3", "frenzy4"}
     self.trans = {
-		{"NORMAL", "UNIQUE", "upperslash"}, 
-		{"NORMAL", "BACK", "jump", true}, 
-		{"SKILL", "GoreCross", "gorecross"}, 
-		{"SKILL", "HopSmash", "hopsmash"}, 
+        {"NORMAL", "BACK", "jump", true}, 
+        {"SKILL", 46, "upperslash"}, 
+		{"SKILL", 64, "gorecross"}, 
+		{"SKILL", 65, "hopsmash"}, 
 	}
     
     self.attackNum = 0
@@ -48,8 +48,8 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
     local _body = hero_:GetBody()
     local _dt = love.timer.getDelta()
     
-    local _leftHold = self.input:IsHold(hero_.KEY["LEFT"])
-    local _rightHold = self.input:IsHold(hero_.KEY["RIGHT"])
+    local _leftHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"])
+    local _rightHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"])
     local _movable = true
 
     if (_leftHold and hero_.dir == 1) or
@@ -59,7 +59,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
     if self.attackNum == 1 then
         
-        if self.input:IsHold(hero_.KEY["ATTACK"]) and _body:GetCount() > 4 then
+        if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 4 then
             self.attackNum = 2
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
@@ -92,7 +92,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
             end 
         end
 
-        if self.input:IsHold(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
@@ -126,7 +126,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
             end
         end
 
-        if self.input:IsHold(hero_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 4
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])

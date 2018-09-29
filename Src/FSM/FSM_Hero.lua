@@ -30,38 +30,35 @@ function _FSM_Hero:Transition(entity_)
 	end
 end 
 
-function _FSM_Hero:SwitchSkillState(skillName, stateName, hero_, ...)
-	
-	--[[
-		热键响应过程梳理
-		skillName --> abstractKeyName --> realKeyID
-	]]
-	
-	
-	self.KEYID[skillName] = hero_:GetSkillKeyID(skillName)
-	if self.input:IsPressed(hero_.KEY[self.KEYID[skillName]]) then -- IsPressed
-		-- 检测技能是否满足释放条件：1.技能是否学习？ 2.冷却是否完成？ 2.heroMP是否足够？
-		print("SwitchSkillState", skillName)
-		if _SkillMgr.IsSklUseable(hero_, skillName) then
+function _FSM_Hero:SwitchSkillState(sklID, stateName, hero_, ...)
+	--skillID --> abstractKeyName --> realKeyID
+	if self.input:IsPressed(self.HotKeyMgr_.GetSkillKey(sklID)) or self.input:IsPressed(self.HotKeyMgr_.GetSkillCMDKey(sklID)) then -- IsPressed
+		print("Switch Skill State", sklID)
+		if _SkillMgr.IsSklUseable(hero_, sklID) then
 			self:SetState(stateName, hero_, ...)
+			_SkillMgr.DoSkill(hero_, sklID)
 		end
 	end 
 end 
 
 function _FSM_Hero:SwitchState(keyID, stateName, hero_, ...)
-    if self.input:IsPressed(hero_.KEY[keyID]) then -- IsPressed
+    if self.input:IsPressed(self.HotKeyMgr_.KEY[keyID]) then
 		self:SetState(stateName, hero_, ...)
 	end 
 end 
 
-function _FSM_Hero:onCurStateExit(entity_)
+function _FSM_Hero:OnConstruct()
+    self.HotKeyMgr_ = require "Src.Input.HotKeyMgr"
+end
+
+function _FSM_Hero:OnCurStateExit(entity_)
 	self:SkillCoolEvents(entity_)
 end
 
 function _FSM_Hero:SkillCoolEvents(entity_)
-	local msg = self.curState.coolMsg or nil -- Actually, coolMsg is just a skill name
-	if msg then
-		_SkillMgr.StartCoolSkl(entity_, msg)
+	local coolMsg = self.curState.skillID or nil
+	if coolMsg then
+		_SkillMgr.StartCoolSkl(entity_, coolMsg)
 	end
 end
 

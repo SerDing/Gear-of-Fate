@@ -11,13 +11,14 @@ local _State_GoreCross = require("Src.Core.Class")()
 
 local _EffectMgr = require "Src.Scene.EffectManager" 
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
+local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 
 function _State_GoreCross:Ctor() 
 	self.name = "gorecross"
+	self.skillID = 64
 	self.effect = {}
 	self.KEYID = ""
 	self.plusAtk = false
-	self.coolMsg = self.name
 end 
 
 function _State_GoreCross:Enter(hero_)
@@ -80,22 +81,18 @@ function _State_GoreCross:Update(hero_,FSM_)
 	
 	-- whether plusAtk check
 	if _body:GetCount() >= 9 then 
-		self.KEYID = hero_:GetSkillKeyID("GoreCross")
-		if self.input:IsPressed(hero_.KEY[self.KEYID]) then
+		if self.input:IsPressed(_HotKeyMgr.GetSkillKey(self.skillID)) then
 			self.plusAtk = true
 		end
 	end
 
 	if _body:GetCount() == 10 then 
 		if not self.plusAtk then -- jump the next frames
-			hero_:GetBody():SetCurrentPlayNum(0) 
-			hero_:GetWeapon():SetCurrentPlayNum(0)
+			hero_.animMap:SetCurrentPlayNum(0) 
 		else
 			if self.effect[3] and self.effect[4] then
-				-- hero_:GetBody():NextFrame() 
-				-- hero_:GetWeapon():NextFrame()
-				-- hero_:GetBody():NextFrame() 
-				-- hero_:GetWeapon():NextFrame()
+				-- hero_.animMap:NextFrame() 
+				-- hero_.animMap:NextFrame() 
 			end
 		end
 	end

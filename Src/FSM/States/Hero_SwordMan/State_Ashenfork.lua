@@ -14,7 +14,7 @@ local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 
 function _State_Ashenfork:Ctor()
 	self.name = "ashenfork"
-	self.coolMsg = self.name
+	self.skillID = 16
 	self:_Init()
 	self.jumpPower = 0
 	self.g = 160 -- 130

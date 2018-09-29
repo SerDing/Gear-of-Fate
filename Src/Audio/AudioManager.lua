@@ -19,8 +19,8 @@ local music_ = {
 local sound_ = {id = "", source = nil}
 
 function _AudioMgr.Init(bgmVol, soundVol)
-    _AudioMgr.bgmVol = bgmVol or 0.1
-    _AudioMgr.soundVol = soundVol or 0.01
+    _AudioMgr.bgmVol = bgmVol or 0.5
+    _AudioMgr.soundVol = soundVol or 0.8
     _AudioMgr.pathHead = "/SoundPacks/"
     _AudioMgr.pathList = require("/Config/audio")
 end 
@@ -77,8 +77,8 @@ function _AudioMgr.PlaySceneMusic(id_table) -- play map music
 end
 
 function _AudioMgr.PlayBGM(id) -- play background music
-    -- _AudioMgr.PlayMusic("BGM", id)
-    -- music_["BGM"].source:setVolume(0.5 * _AudioMgr.bgmVol)
+    _AudioMgr.PlayMusic("BGM", id)
+    music_["BGM"].source:setVolume(0.5 * _AudioMgr.bgmVol)
 end
 
 function _AudioMgr.PlayEVM(id) -- play enviroment music

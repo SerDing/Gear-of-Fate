@@ -112,8 +112,9 @@ end
 
 function _GameCamera.Set()
 	_GameCamera.LockPos()
-	love.graphics.push()
 	love.graphics.scale(_GameCamera.scale.x, _GameCamera.scale.y)
+	love.graphics.push()
+	
 	love.graphics.translate(_GameCamera.pos.x,_GameCamera.pos.y)
 	_GameCamera.ShakingSet()
 end
@@ -143,6 +144,7 @@ end
 
 function _GameCamera.UnSet()
 	love.graphics.pop()
+	-- love.graphics.scale(1, 1)
 end
 
 function _GameCamera.LookAt(x,y)

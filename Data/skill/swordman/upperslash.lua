@@ -33,7 +33,7 @@ return {--[[ #PVF_File --]]
 		
 		["[weapon effect type]"]="[physical]",
 		
-		["[command]"]={},
+		["[command]"]={'SKILL'},
 		
 		["[command key explain]"]="操作指令 : Z",
 		

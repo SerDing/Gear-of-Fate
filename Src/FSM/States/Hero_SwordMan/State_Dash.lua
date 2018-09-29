@@ -12,14 +12,14 @@ local _State_Dash = require("Src.Core.Class")()
 function _State_Dash:Ctor()
     self.KEYID = {}
     self.trans = {
-		{"NORMAL", "JUMP", "jump"}, 
-		{"NORMAL", "ATTACK", "dashattack"}, 
-		{"SKILL", "UpperSlash", "upperslash"},  
-		{"NORMAL", "BACK", "jump", true}, 
-		{"SKILL", "GoreCross", "gorecross"}, 
-		{"SKILL", "HopSmash", "hopsmash"}, 
-		{"SKILL", "MoonLightSlash", "moonslash"}, 
-		{"SKILL", "TripleSlash", "tripleslash"}, 
+        {"NORMAL", "ATTACK", "dashattack"}, 
+        {"NORMAL", "JUMP", "jump"}, 
+        {"NORMAL", "BACK", "jump", true}, 
+        {"SKILL", 46, "upperslash"},  
+		{"SKILL", 64, "gorecross"}, 
+		{"SKILL", 65, "hopsmash"}, 
+		{"SKILL", 77, "moonslash"}, 
+		{"SKILL", 8, "tripleslash"}, 
     }
 end 
 

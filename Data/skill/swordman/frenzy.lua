@@ -15,7 +15,7 @@ return {--[[ #PVF_File --]]
 		["[auto cooltime apply]"]=0,
 		["[durability decrease rate]"]=70,
 		["[icon]"]={"Character/Swordman/Effect/SkillIcon.img",134,"Character/Swordman/Effect/SkillIcon.img",135},
-		["[command]"]={},
+		["[command]"]={"DOWN", ",", "UP", ",", "BUFF"},
 		["[command key explain]"]="操作指令 : ↓↑ + Space",
 		["[dungeon]"]={ 
 			["[consume MP]"]={10,35},

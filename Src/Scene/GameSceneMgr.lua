@@ -16,7 +16,7 @@ local _EffectMgr = require "Src.Scene.EffectManager"
 local _Scene = require "Src.Scene.GameScene"
 local _sendPos = require "Src.Scene.SendPosition" -- new position in next scene
 local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
-local _CAMERA = require "Src.Game.GameCamera"
+-- local _CAMERA = require "Src.Game.GameCamera"
 local _RESMGR = require("Src.Resource.ResManager")
 
 -- const
@@ -40,7 +40,7 @@ local _NAME_LIST = {
 -- init
 _EffectMgr.Ctor()
 _ObjectMgr.Ctor()
-_CAMERA.Ctor(_SCENEMGR)
+-- _CAMERA.Ctor(_SCENEMGR)
 
 -- create hero
 local _hero = _Hero_SwordMan.New(400,460)
@@ -88,14 +88,14 @@ function _SCENEMGR.Update(dt)
 
 	-- _hero:Update(dt)
 
-	_CAMERA.Update(dt)
-	_CAMERA.LookAt(_hero.pos.x, _hero.pos.y)
+	-- _CAMERA.Update(dt)
+	-- _CAMERA.LookAt(_hero.pos.x, _hero.pos.y)
 
 end 
 
-function _SCENEMGR.Draw()
+function _SCENEMGR.Draw(x, y)
 	
-	local drawFunc = function (x,y)
+	-- local drawFunc = function (x,y)
 		if _SCENEMGR.curScene then
 			if _cover.alpha <= 240 then --防止切换场景后 场景先于黑色封面显示
 				if _SCENEMGR.curScene.Draw then
@@ -114,9 +114,9 @@ function _SCENEMGR.Draw()
 			_cover.sprite:SetColor(0,0,0,_cover.alpha)
 			_cover.alpha = _cover.alpha - _cover.speed
 		end 
-	end
+	-- end
 
-	_CAMERA.Draw(drawFunc)
+	-- _CAMERA.Draw(drawFunc)
 
 end
 

@@ -45,4 +45,8 @@ function _Skill:SetState(s)
 	self.state = s
 end
 
+function _Skill:GetState(s)
+	return self.state
+end
+
 return _Skill 

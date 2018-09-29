@@ -12,6 +12,7 @@ local Hero_SwordMan = require("Src.Core.Class")(_obj)
 
 -- Components
 local _AniPack = require "Src.AniPack"
+local _AnimGrp = require "Src.Animation.AnimGrp"
 local _Weapon = require "Src.Heroes.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Game.AttackJudger"
@@ -51,7 +52,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.0 + 0.9 -- 0.26
+	self.atkSpeed = 1.0 + 0.50 -- 0.26
 	self.hitRecovery = 22.5 -- 45 65
 	self.hitRecovery = 55 -- 45 65
 	self.hitTime = 0
@@ -65,82 +66,65 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 
 	-- bool
 	self.hitStop = false
-	-- map
-	self.KEY = {
-		["UP"] = "up",
-		["DOWN"] = "down",
-		["LEFT"] = "left",
-		["RIGHT"] = "right",
-		
-		["JUMP"] = "c",
-		["ATTACK"] = "x",
-		["UNIQUE"] = "z",
-		["BACK"] = "v",
-
-		["A"] = "a",
-		["S"] = "s",
-		["D"] = "d",
-		["F"] = "f",
-		["G"] = "g",
-		["H"] = "h",
-
-		["Q"] = "q",
-		["W"] = "w",
-		["E"] = "e",
-		["R"] = "r",
-		["T"] = "t",
-		["Y"] = "y",
-		
-	}
-
 	self.AI = false
 
 	self.buff = {
 		["frenzy"] = {switch = false, ani = nil},
 	}
-
 	self.pakGrp = {
-		["body"] = _AniPack.New(),
-		["weapon"] = _Weapon.New(self.subType),
+		["weapon"] = _Weapon.New(self.subType, self),
 	}
+	self.Models = {}
+	self.Components = {}
+	self.Models['HP'] = _HP_Model.New(120, 120)
+	self.Models['MP'] = _HP_Model.New(120, 120, 0.1)
+	self.Components['Movement'] = _Movement.New(self)
+	self.Components['Weapon'] = _Weapon.New(self.subType, self)
+	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
-	self.pakGrp.body:SetFileNum(0001)
-	local darkDepth = 50
-	-- self.pakGrp.body:SetColor(darkDepth, darkDepth, darkDepth, 255)
-	-- self.pakGrp.weapon:SetColor (darkDepth, darkDepth, darkDepth, 255)
-
-	-- self.pakGrp.weapon:SetSingle(true)
-	self.pakGrp.weapon:SetRes("lswd", 0500) -- subType, fileNum
-	self.pakGrp.weapon:SetType("hsword", "lswd")  -- mainType, subType
+	-- // fight with your own dark side
+	-- local darkDepth = 50
+	-- self.animMap:SetColor(darkDepth, darkDepth, darkDepth, 255)
+	-- self.Components['Weapon']:SetSingle(true)
+	
+	self.Components['Weapon']:SetType("hsword", "lswd")  -- mainType, subType
 	-- katana	katana	0001
 	-- katana	katana	3201
 	-- katana	lkatana	0004	0002
 	-- hsword	lswd	0500	0100
 	-- ssword	sswd	4200c	
 	
+	self.animMap = _AnimGrp.New()
+	self.animMap:AddWidget("body")
+	self.animMap:AddWidget("weapon_b1")
+	self.animMap:AddWidget("weapon_b2")
+	self.animMap:AddWidget("weapon_c1")
+	self.animMap:AddWidget("weapon_c2")
+
+	self.animMap:GetWidget("body"):SetFileNum(0001)
 
 	for i = 1,#_aniName do
-		self.pakGrp.body:AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
+		self.animMap:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
 	end
 
-	local _wpMainTp, _wpSubTp = self.pakGrp.weapon:GetType()
+	local _wpMainTp, _wpSubTp = self.Components['Weapon']:GetType()
 	for i = 1,#_aniName do
-		self.pakGrp.weapon:AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+		self.animMap:GetWidget("weapon_b1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
+	for i = 1,#_aniName do
+		self.animMap:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+	end
+	self.animMap:GetWidget("body"):SetBaseRate(self.atkSpeed)
+	self.animMap:GetWidget("weapon_b1"):SetBaseRate(self.atkSpeed)
+	self.animMap:GetWidget("weapon_c1"):SetBaseRate(self.atkSpeed)
 
-	self.pakGrp.body:SetBaseRate(self.atkSpeed)
-	self.pakGrp.weapon:SetBaseRate(self.atkSpeed)
-
+	self.Components['Weapon']:SetRes("lswd", 0100)  -- subType, fileNum
+	
+	-- Components Models
 	self.input = _Input.New(self)
 	self.FSM = _FSM.New(self,"stay",self.subType)
 
-	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
-	self.Models = {}
-	self.Models['HP'] = _HP_Model.New(120, 120)
-	self.Models['MP'] = _HP_Model.New(120, 120)
-	self.Components = {}
-	self.Components['Movement'] = _Movement.New(self)
 	--------------- test ani file
 	for n = 1,_pakNum do
 		-- self.pakGrp[_name[n]]:SetPlayNum("outragebreakslash",-1)
@@ -151,7 +135,6 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 		-- self.pakGrp[_name[n]]:NextFrame()
 	end
 	-----------------------------
-	self:InitSkillKeyList()
 	self.extraEffects = {}
 end
 
@@ -170,12 +153,8 @@ function Hero_SwordMan:Update(dt)
 	end
 	
 	self.FSM:Update(self)
-
 	self.input:Update(dt)
-
-	for n=1,_pakNum do 
-		self.pakGrp[_name[n]]:Update(dt)
-	end
+	self.animMap:Update(dt)
 
 	for k,v in pairs(self.buff) do 
 		if v.switch then
@@ -198,6 +177,12 @@ function Hero_SwordMan:Update(dt)
 			table.remove(self.extraEffects,n)
 		end 
 	end 
+
+	for k,v in pairs(self.Models) do
+		if v.Update then
+			v:Update(dt)
+		end
+	end
 	
 	self.Y = self.pos.y
 
@@ -213,9 +198,7 @@ function Hero_SwordMan:Draw()
 		end 
 	end 
 	
-	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z, 0, 1, 1)
-	end
+	self.animMap:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z, 0, 1, 1)
 
 	for k,v in pairs(self.buff) do
 		if v.switch then
@@ -248,13 +231,6 @@ function Hero_SwordMan:Draw()
 	
 end
 
-function Hero_SwordMan:UpdateAni()
-	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:Update(dt)
-	end
-	
-end
-
 function Hero_SwordMan:Damage()
 	self.Models['HP']:Decrease(0.05)
 end
@@ -277,21 +253,15 @@ end
 
 function Hero_SwordMan:SetDir(dir_)
 	self.dir = dir_ 
-	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:SetDir(dir_)
-	end
+	self.animMap:SetDir(dir_)
 end
 
 function Hero_SwordMan:SetAnimation(ani)
-	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:SetAnimation(ani)
-	end
+	self.animMap:SetAnimation(ani)
 end
 
 function Hero_SwordMan:NextFrame()
-	for n=1,_pakNum do
-		self.pakGrp[_name[n]]:NextFrame()
-	end
+	self.animMap:NextFrame()
 end
 
 function Hero_SwordMan:SetScenePtr(ptr)
@@ -305,9 +275,7 @@ end
 
 function Hero_SwordMan:SetAtkSpeed(spd)
 	self.atkSpeed = spd
-	for n = 1,_pakNum do
-		self.pakGrp[_name[n]]:SetBaseRate(spd)
-	end	
+	self.animMap:SetBaseRate(spd)
 end
 
 function Hero_SwordMan:SetHitTime(time)
@@ -348,11 +316,11 @@ function Hero_SwordMan:GetInput()
 end
 
 function Hero_SwordMan:GetBody()
-	return self.pakGrp.body
+	return self.animMap:GetWidget("body")
 end
 
 function Hero_SwordMan:GetWeapon()
-	return self.pakGrp.weapon
+	return self.Components['Weapon']
 end
 
 function Hero_SwordMan:GetAttackMode()
@@ -360,7 +328,8 @@ function Hero_SwordMan:GetAttackMode()
 end
 
 function Hero_SwordMan:GetAttackBox()
-	return self.pakGrp["weapon"]:GetAttackBox() or self.pakGrp["body"]:GetAttackBox()
+	-- return self.pakGrp["weapon"]:GetAttackBox() or self.pakGrp["body"]:GetAttackBox()
+	return self.animMap:GetAttackBox()
 end
 
 function Hero_SwordMan:GetAtkJudger()
@@ -373,29 +342,6 @@ end
 
 function Hero_SwordMan:GetProperty(key)
 	return self.property[strcat("[", key, "]")]
-end
-
-function Hero_SwordMan:InitSkillKeyList()
-	self.skillKeyList = {
-		{"UNIQUE", "Ashenfork"},
-		{"UNIQUE", "UpperSlash"},
-		{"A", "HopSmash"},
-		{"S", "GoreCross"},
-		{"D", "Grab"},
-		{"F", "TripleSlash"},
-		{"G", "ReckLess"},
-		{"H", "Frenzy"},
-		{"E", "MoonLightSlash"},
-		{"R", "Ashenfork"},
-	}
-end
-
-function Hero_SwordMan:GetSkillKeyID(skillName)
-	for n=1,#self.skillKeyList do
-		if self.skillKeyList[n][2] == skillName then
-			return self.skillKeyList[n][1] 
-		end 
-	end 
 end
 
 function Hero_SwordMan:AddExtraEffect(effect)

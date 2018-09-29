@@ -10,9 +10,11 @@
 local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_TripleSlash = require("Src.Core.Class")(_State_AtkBase)
 
+local _HotKeyMgr = require "Src.Input.HotKeyMgr"
+
 function _State_TripleSlash:Ctor()
 	self.name = "tripleslash"
-	self.coolMsg = self.name
+	self.skillID = 8
 	self.childName ={
         "tripleslash1",
         "tripleslash2",
@@ -34,7 +36,7 @@ function _State_TripleSlash:Enter(hero_)
 	self.attackNum = 1
 	self.attackName = self.childName[self.attackNum]
 	self.nextDir = hero_:GetDir()
-
+	self.slideX = 0
 	----[[  Call base class function  ]] 
     self:_Enter(hero_)
     self:Effect("tripleslash/move1.lua", 1, 1)
@@ -51,9 +53,9 @@ function _State_TripleSlash:Update(hero_,FSM_)
 
 	self:_Update(FSM_) -- super class update
 
-	self.KEYID["TripleSlash"] = hero_:GetSkillKeyID("TripleSlash")
+	self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
 
-	self:ChangeDir()
+	self:ChangeDir(FSM_)
 
 	-- attack judgement
 	if hero_:GetAttackBox() then
@@ -62,8 +64,8 @@ function _State_TripleSlash:Update(hero_,FSM_)
 
 	if self.attackNum == 1 then
 		if self.heroBody:GetCount() >= 3 then
-			if self.input:IsPressed(hero_.KEY[self.KEYID["TripleSlash"]]) then
-				self:ChangeDir()
+			if self.input:IsPressed(self.KEYID) then
+				self:ChangeDir(FSM_)
 				self.hero_:SetDir(self.nextDir)
 				
 				hero_:SetAnimation(self.childName[2])
@@ -85,13 +87,11 @@ function _State_TripleSlash:Update(hero_,FSM_)
 				self:ReSetSpeed()
 			end 
 		end 
-		
-
 
 	elseif self.attackNum == 2 then
 		if self.heroBody:GetCount() >= 2 then
-			if self.input:IsPressed(hero_.KEY[self.KEYID["TripleSlash"]]) then
-				self:ChangeDir()
+			if self.input:IsPressed(self.KEYID) then
+				self:ChangeDir(FSM_)
 				self.hero_:SetDir(self.nextDir)
 
 				hero_:SetAnimation(self.childName[3])
@@ -115,16 +115,7 @@ function _State_TripleSlash:Update(hero_,FSM_)
 			end 
 
 		end 
-		
-		-- if self.heroBody:GetCount() >= 3 and self.speed >= self.a then
-		-- 	self.speed = self.speed - self.a * self.dt --* hero_:GetAtkSpeed() / 1.5
-		-- end 
 
-	elseif self.attackNum == 3 then
-
-		-- if self.heroBody:GetCount() >= 3 and self.speed >= self.a then
-		-- 	self.speed = self.speed - self.a * self.dt  --* hero_:GetAtkSpeed() / 1.5
-		-- end 
 	end 
 
 	self:Movement(hero_)
@@ -145,7 +136,7 @@ end
 function _State_TripleSlash:Movement(hero_)
 	self.movement:X_Move(self.speed * hero_.dir)
 	self.slideX = self.slideX + self.speed * self.dt
-	if self.heroBody:GetCount() >= 3 then -- and self.speed > self.a
+	if self.slideX >= 130 then -- 130   and self.speed > self.a    self.heroBody:GetCount() >= 3
 		self.speed = self.speed - self.a * self.dt * hero_:GetAtkSpeed() / 1.5
 		if self.speed < 0 then
 			self.speed = 0
@@ -158,7 +149,7 @@ end
 
 function _State_TripleSlash:ReSetSpeed()
 	-- self.speed = 255 * self.hero_:GetAtkSpeed() * (self.hero_:GetMovSpeed().x / 100 + 1)
-	self.speed = 310 * (self.hero_:GetMovSpeed().x / 100 + 1)
+	self.speed = 260 * (self.hero_:GetMovSpeed().x / 100 + 1)
 	self.a = self.speed / self.hero_:GetAtkSpeed() / 4 * 60
 	self.slideX = 0
 	
@@ -166,10 +157,10 @@ function _State_TripleSlash:ReSetSpeed()
 	-- print("speed * dt =", self.speed * self.dt, "a =", self.a)
 end
 
-function _State_TripleSlash:ChangeDir()
+function _State_TripleSlash:ChangeDir(FSM_)
 	
-	local left = self.input:IsHold(self.hero_.KEY["LEFT"])
-	local right = self.input:IsHold(self.hero_.KEY["RIGHT"])
+	local left = self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"])
+	local right = self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"])
 
 	if left or right then
         if left and right then

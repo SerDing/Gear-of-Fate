@@ -15,7 +15,7 @@ return {--[[ #PVF_File --]]
 		["[durability decrease rate]"]=15,
 		["[icon]"]={"Character/Swordman/Effect/SkillIcon.img",154,"Character/Swordman/Effect/SkillIcon.img",155},
 		["[weapon effect type]"]="[physical]",
-		["[command]"]={},
+		["[command]"]={"RIGHT", ",", "DOWN", ",", "SKILL"},
 		["[command key explain]"]="操作指令 : →↓ + Z",
 		["[skill command advantage]"]={10,20},
 		["[dungeon]"]={ 

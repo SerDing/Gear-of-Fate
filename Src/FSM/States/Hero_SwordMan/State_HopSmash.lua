@@ -12,12 +12,12 @@ local _State_HopSmash = require("Src.Core.Class")(_State_AtkBase)
 local _EffectMgr = require "Src.Scene.EffectManager" 
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 local _CAMERA = require "Src.Game.GameCamera" 
-
+local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 local _GetTime = love.timer.getTime
 
 function _State_HopSmash:Ctor()
 	self.name = "hopsmash"
-	self.coolMsg = self.name
+	self.skillID = 65
 	self.attackName = {"hopsmash1", "hopsmash2", "hopsmash3"}
 	self.judgeEvents = {[3] = false, [4] = false, [5] = false, [6] = false}
 
@@ -86,10 +86,10 @@ function _State_HopSmash:Update(hero_,FSM_)
 	
 -----[[  HopSmash Ready period  ]]
 	if self.period == 1 then
-		self.KEYID = hero_:GetSkillKeyID("HopSmash")
-		if self.input:IsReleased(hero_.KEY[self.KEYID]) or _GetTime() - self.time >= self.timer then 
+		self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
+		if self.input:IsReleased(self.KEYID) or _GetTime() - self.time >= self.timer then 
 			local t = 0
-			if _GetTime() - self.time < self.timer and self.input:IsReleased(hero_.KEY[self.KEYID]) then
+			if _GetTime() - self.time < self.timer and self.input:IsReleased(self.KEYID) then
 				t = 0.9
 			else
 				t = 0.75
@@ -103,8 +103,8 @@ function _State_HopSmash:Update(hero_,FSM_)
 			self.atkSpeed = self.oriAtkSpeed * _percent
 			hero_:SetAtkSpeed(self.atkSpeed)
 			self.speed = self.basePower * 0.8 * self.time * 0.2
-			if self.time < 0.09 then
-				self.time = 0.09
+			if self.time < 0.11 then
+				self.time = 0.11
 			end
 
 			-- if self.time < 0.1 then

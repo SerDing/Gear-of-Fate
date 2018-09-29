@@ -21,7 +21,7 @@ function _State_Jump:Ctor()
 	self.stableFPS = 60
 	self.sounds = {"SM_JUMP_ATK_01", "SM_JUMP_ATK_02"}
 	self.trans = {
-		{"SKILL", "Ashenfork", "ashenfork"}, 
+		{"SKILL", 16, "ashenfork"}, 
 	}
 	self.topMsg = false
 	self.landMsg = false
@@ -41,8 +41,7 @@ function _State_Jump:Enter(hero_,FSM_,backJump)
 	self.backJump = backJump
 	if backJump then
 		self.jumpPower = (3.5 + 1.5) * self.stableFPS
-		hero_.pakGrp.body:SetFrame(8)
-		hero_.pakGrp.weapon:SetFrame(8)
+		hero_.animMap:SetFrame(8)
 	end
 	
 	self.dirLock = false
@@ -124,9 +123,7 @@ function _State_Jump:Gravity(hero_, _body, _dt)
 	if self.topMsg then
 		if not self.jumpAttack and not self.backJump then
 			while _body:GetCount() <= 7 and _body:GetCount() > 0 do
-				for _,v in pairs(hero_.pakGrp) do
-					v:NextFrame()
-				end
+				hero_:NextFrame()
 			end
 		end
 	end
@@ -134,9 +131,7 @@ function _State_Jump:Gravity(hero_, _body, _dt)
 	if self.landMsg then
 		if not self.jumpAttack then
 			while _body:GetCount() <= 14 and _body:GetCount() > 7 do
-				for _,v in pairs(hero_.pakGrp) do
-					v:NextFrame()
-				end
+				hero_:NextFrame()
 			end
 		end
 	end
@@ -151,21 +146,21 @@ function _State_Jump:Movement(FSM_, hero_)
 			if FSM_.preState.name == "dash" then
 				v = 2
 			end 
-			if self.input:IsHold(hero_.KEY["LEFT"]) then
+			if self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) then
 				if not self.jumpAttack and not self.dirLock then
 					hero_:SetDir(-1)
 				end
 				self.movement:X_Move(hero_.spd.x * v * -1)
-			elseif self.input:IsHold(hero_.KEY["RIGHT"]) then
+			elseif self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) then
 				if not self.jumpAttack and not self.dirLock then
 					hero_:SetDir(1)
 				end
 				self.movement:X_Move(hero_.spd.x * v * 1)
 			end
 
-			if self.input:IsHold(hero_.KEY["UP"]) then
+			if self.input:IsHold(FSM_.HotKeyMgr_.KEY["UP"]) then
 				self.movement:Y_Move(hero_.spd.y * v * 0.5 * -1)
-			elseif self.input:IsHold(hero_.KEY["DOWN"]) then
+			elseif self.input:IsHold(FSM_.HotKeyMgr_.KEY["DOWN"]) then
 				self.movement:Y_Move(hero_.spd.y * v * 0.5 * 1)
 			end
 		end 
@@ -179,7 +174,7 @@ end
 function _State_Jump:JumpATK(FSM_, hero_, _body)
 	if not self.jumpAttack then
 		if  hero_:GetZ() < -2  then
-			if self.input:IsPressed(hero_.KEY["ATTACK"]) then
+			if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) then
 				hero_:SetAnimation("jumpattack")
 				self.dirLock = true
 				self.jumpAttack = true
@@ -193,7 +188,7 @@ function _State_Jump:JumpATK(FSM_, hero_, _body)
 
 	if self.jumpAttack then -- multiple slash
 		if _body:GetCount() >= 5 then --   _body.playNum == 0
-			if self.input:IsPressed(hero_.KEY["ATTACK"]) and hero_:GetZ() < -2 then
+			if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) and hero_:GetZ() < -2 then
 				_body.playNum = 1
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
 				self.atkJudger:ClearDamageArr()
@@ -207,8 +202,7 @@ function _State_Jump:JumpATK(FSM_, hero_, _body)
 					FSM_:SetState(FSM_.oriState, hero_)
 				else 
 					hero_:SetAnimation(self.name) -- trans to jump state
-					hero_:GetBody():SetFrame(8)
-					hero_:GetWeapon():SetFrame(8)
+					hero_.animMap:SetFrame(8)
 				end 
 			end 
 			

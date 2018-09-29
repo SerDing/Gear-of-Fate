@@ -10,6 +10,12 @@
 local _Actor = require("Src.Core.Class")()
 
 function _Actor:Ctor()
+
+    local data = require "/Data/character/swordman"
+    for k,v in pairs(data) do -- copy actor data to this object
+        self[k] = v
+    end
+
     self.pos = {x = 0, y = 0}
     self.drawPos = {x = math.floor(x), y = math.floor(y)}
     self.spd = {x = 0, y = 0}

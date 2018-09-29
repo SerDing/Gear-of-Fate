@@ -8,11 +8,19 @@
 ]]
 
 local _HP_Model = require("Src.Core.Class")()
-
-function _HP_Model:Ctor(cur, max)
+local stableFPS = 60
+function _HP_Model:Ctor(cur, max, regenSpd)
     self.cur = cur or 100
     self.max = max or 100
+    self.regenSpd = regenSpd or 0
+    self.regen = (self.regenSpd == 0) and false or true
 end 
+
+function _HP_Model:Update(dt)
+   if self.regen then
+       self:Increase(self.regenSpd * 60 * dt)
+   end
+end
 
 function _HP_Model:Increase(p)
     if p < 0 then

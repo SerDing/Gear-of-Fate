@@ -41,6 +41,7 @@ function _UI_Manager.SwitchInterface(index)
 end
 
 function _UI_Manager.Find(frameID, compArrName, compID)
+    --Find(PanelID, tag)
     -- this.interfaces[this.curIndex].frames[frameID].
 end
 
@@ -72,7 +73,7 @@ function _UI_Manager.MouseMoved(x, y, dx, dy)
     _UI_Manager.DispatchMessage("MOUSE_MOVED", x, y)
 end
 
-function _UI_Manager.AddInterface(i)
+function _UI_Manager.AddInterface(k, i)
     this.interfaces[#this.interfaces + 1] = i
     print("UI_Manager.AddInterface()  ", i)
 end

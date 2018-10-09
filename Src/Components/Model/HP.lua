@@ -14,12 +14,18 @@ function _HP_Model:Ctor(cur, max, regenSpd)
     self.max = max or 100
     self.regenSpd = regenSpd or 0
     self.regen = (self.regenSpd == 0) and false or true
+    self.regenIntervalTimer = 0 -- regeneration interval timer
+    self.regenIntervalTime = 0.8
 end 
 
 function _HP_Model:Update(dt)
-   if self.regen then
-       self:Increase(self.regenSpd * 60 * dt)
-   end
+    if self.regen then
+        if self.regenIntervalTimer >= self.regenIntervalTime then
+            self:Increase(self.regenSpd * 60 * dt)
+        else
+            self.regenIntervalTimer = self.regenIntervalTimer + dt
+        end
+    end
 end
 
 function _HP_Model:Increase(p)
@@ -40,6 +46,7 @@ function _HP_Model:Decrease(p)
     if self.cur < 0 then
         self.cur = 0
     end
+    self.regenIntervalTimer = 0
 end
 
 function _HP_Model:GetMax()

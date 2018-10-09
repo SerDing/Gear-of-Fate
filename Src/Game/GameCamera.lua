@@ -45,9 +45,11 @@ function _GameCamera.Ctor(scenemgr)
 
 	-- _GameCamera.scale = {x = 960 / 800, y = 960 / 800}
 	
-	_GameCamera.scale = {x = 1280 / 800, y = 1280 / 800}
 	-- _GameCamera.scale = {x = 1280 / 740, y = 1280 / 740}
-	
+
+
+	-- _GameCamera.scale = {x = 1280 / 800, y = 1280 / 800}
+
 end 
 
 function _GameCamera.Update(dt)

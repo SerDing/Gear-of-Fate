@@ -28,6 +28,7 @@ function _AttackJudger:Ctor(atker, entityType)
 	self.atkInfoArr = {}
 	self:LoadAtkInfo(entityType)
 	self.debug = false
+	-- self.debug = true
 end
 
 function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo) 
@@ -39,6 +40,7 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 	self.atker = atker
 	local _objArr =_ObjectMgr.GetObjects()
 	local _hit = false
+	local _hasHit = false
 	local _atkInfo
 	local _enemy
 	local _weaponSoundArr
@@ -52,10 +54,9 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 		_weaponHitInfo = _weaponHitInfo[_WpMainType]
 	end
 
-	for n=1,#_objArr do
+	for n = 1, #_objArr do
 		if _objArr[n] and _objArr[n]:GetType() == enemyType then
-			-- get pointer
-			_enemy = _objArr[n]
+			_enemy = _objArr[n] -- get pointer
 			
 			-- judge whether the monster is hit
 			_hit = false
@@ -108,9 +109,17 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 				
 			end
 
-			return _hit
+			-- return _hit
+
+			if not _hasHit and _hit == true then
+				_hasHit = true
+			end
+
 		end
+		
 	end
+
+	return _hasHit
 
 end 
 

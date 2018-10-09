@@ -67,6 +67,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- bool
 	self.hitStop = false
 	self.AI = false
+	self.dead = false
 
 	self.buff = {
 		["frenzy"] = {switch = false, ani = nil},
@@ -77,7 +78,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.Models = {}
 	self.Components = {}
 	self.Models['HP'] = _HP_Model.New(120, 120)
-	self.Models['MP'] = _HP_Model.New(120, 120, 0.1)
+	self.Models['MP'] = _HP_Model.New(120, 120, 0.325)
 	self.Components['Movement'] = _Movement.New(self)
 	self.Components['Weapon'] = _Weapon.New(self.subType, self)
 	self.AttackJudger = _AttackJudger.New(self, self.subType)
@@ -235,6 +236,10 @@ function Hero_SwordMan:Damage()
 	self.Models['HP']:Decrease(0.05)
 end
 
+function Hero_SwordMan:Die()
+	self.dead = true
+end
+
 function Hero_SwordMan:SetPosition(x,y)
 	self.pos.x = x or self.pos.x
 	self.pos.y = y or self.pos.y
@@ -352,6 +357,10 @@ end
 
 function Hero_SwordMan:GetSubType()
 	return self.subType
+end
+
+function Hero_SwordMan:IsDead()
+	return self.dead
 end
 
 function Hero_SwordMan:IsAI()

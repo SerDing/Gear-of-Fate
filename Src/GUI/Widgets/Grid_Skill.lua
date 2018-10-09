@@ -14,16 +14,21 @@ local _RESMGR = require "Src.Resource.ResManager"
 local _Sprite = require "Src.Core.Sprite"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr"
 local hero_ = _SCENEMGR.GetHero_()
-function _Grid_Skill:Ctor(x, y, id, absKey,origin)
+
+function _Grid_Skill:Ctor(id, x, y, skillid, absKey,origin)
+	self.type = "SkillGrid"
+	self.id = id or nil
 	self.x = x or 0
 	self.y = y or 0
+	self.skillID = 0
+	self.absKey = absKey
 	self.origin = origin or false
-	self:SetSkill(id)
+	self:SetSkill(skillid)
 	self.coolPercent = 1.00
 end 
 
 function _Grid_Skill:Draw(x,y)
-	if self.sprites then
+	if self.skillID ~= 0 then
 		self.sprites[self.skill.state]:Draw(self.x + 1, self.y + 1)
 		if self.skill.coolTimer > 0 then
 			self.coolPercent = self.skill.coolTimer / self.skill.coolTime
@@ -35,10 +40,10 @@ function _Grid_Skill:Draw(x,y)
 end 
 
 function _Grid_Skill:SetSkill(id)
+	self.skillID = id
 	if id == 0 then
 		return 
 	end
-	self.skillID = id
 	self.skill = _SkillMgr.GetSkillById(hero_, self.skillID)
 	self.sprites = {
 		_Sprite.New(_RESMGR.pathHead .. self.skill.iconPath[1]), -- useable

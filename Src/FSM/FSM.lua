@@ -42,12 +42,12 @@ function _FSM:Ctor(entity_,state_name,entityType)
 end
 
 function _FSM:Update(entity_)
-   
+    
     self.curState:Update(entity_,self)
-
+    
     self:LateUpdate(entity_)
 
-    if entity_:GetBody():GetCurrentPlayNum() == 0 then
+    if entity_:GetBody():GetCurrentPlayNum() == 0 and self.curState ~= "die" then
         if entity_:GetBody():GetAniId() == "[down motion]" then
             self:SetState("sit",entity_)
         else
@@ -112,6 +112,7 @@ function _FSM:InitStates(entityType)
             {"move", "State_Move"},
             {"waiting", "State_Waiting"},
             {"damage", "State_Damage"},
+            {"die", "State_Die"},
             {"sit", "State_Sit"},
         },
         

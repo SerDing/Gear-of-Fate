@@ -26,15 +26,7 @@ local function InitInterface_HUD()
     local _Interface_HUD = _Interface.New(_ENUM.INDEX_HUD, "HUD")
     _LayoutMgr.InitLayout(_Interface_HUD, "HUD")
 
-    local _absKey = ""
-    local _Grid_Skill_Grp = {{}, {}}
-    for y = 1, 2 do
-        for x = 1, 6 do
-            _absKey = "SKL_" .. tostring(y) .. tostring(x)
-            _Grid_Skill_Grp[y][x] = _Grid_Skill.New(19 + (30 + 3) * (x - 1), 62 + (30 + 4) * (y - 1), 0, false)
-        end
-    end
-    --[[
+    --[[ skill_id  skl_file_path
 		8	`Swordman/TripleSlash.skl`
 		16	`Swordman/AshenFork.skl`
 		40	`Swordman/Reckless.skl`
@@ -64,18 +56,22 @@ local function InitInterface_HUD()
             [5] = 0,    -- G
             [6] = 76,   -- H
         },
+        -- {46, 0, 77, 16, 0, 169},
+        -- {65, 64, 0, 8, 0, 76},
     }
 
+    -- get skill_grids reference
+    local _Grid_Skill_Grp = {{}, {}}
     for y = 1, 2 do
         for x = 1, 6 do
-            _Grid_Skill_Grp[y][x]:SetSkill(_sklGUIData[y][x])
+            _Grid_Skill_Grp[y][x] = _Interface_HUD:GetWidgetById("skill_grid_" .. tostring(y) .. tostring(x))
         end
     end
 
+    -- set skill
     for y = 1, 2 do
         for x = 1, 6 do
-            -- _Interface_HUD.frames[1]:AddWidget(_Grid_Skill_Grp[y][x])
-            _Interface_HUD:AddWidget(_Grid_Skill_Grp[y][x])
+            _Grid_Skill_Grp[y][x]:SetSkill(_sklGUIData[y][x])
         end
     end
 
@@ -84,11 +80,20 @@ end
 
 local function InitInterface_Loading()
     local _key = "Loading"
-    local _Interface_Loading = _Interface.New(_ENUM.INDEX_LOADING, "loading")
-    -- local _button = _Button.New("button", 100, 100, require("Data/ui/buttons/small"))
-    -- _Interface_Loading:AddWidget(_button)
-
+    local _Interface_Loading = _Interface.New(_ENUM.INDEX_LOADING, "Loading")
+    _LayoutMgr.InitLayout(_Interface_HUD, "Loading")
+    
     return _key, _Interface_Loading
+end
+
+local function InitInterface_Inventory()
+    local _key = "Inventory"
+    local _Panel_Inventory = _Interface.New(_ENUM.INDEX_LOADING, "Inventory")
+    _LayoutMgr.InitLayout(_Panel_Inventory, "Inventory")
+    local _button = _Button.New("学习技能", 690, 40, require("Data/ui/buttons/small"))
+    _Panel_Inventory:AddWidget(_button)
+
+    return _key, _Panel_Inventory
 end
 
 local function InitGUI()
@@ -96,8 +101,7 @@ local function InitGUI()
     _UIMGR.Ctor()
     _LayoutMgr.Ctor()
     _UIMGR.AddInterface(InitInterface_HUD())
+    _UIMGR.AddInterface(InitInterface_Inventory())
 end
 
 return InitGUI
-
-

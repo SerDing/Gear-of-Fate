@@ -68,8 +68,8 @@ function _Sprite:Draw(x, y, rotation, sx, sy)
 	
 	if self.scissor then
 		_Scissor(
-			self.pos.x * _GameCamera.scale.x - self.center.x * self.scale.x, 
-			self.pos.y * _GameCamera.scale.y - self.center.y, 
+			self.pos.x * _GameCamera.scale.x - self.center.x * self.scale.x + self.area.cam_x, 
+			self.pos.y * _GameCamera.scale.y - self.center.y * self.scale.y + self.area.cam_y, 
 			self.area.w * _GameCamera.scale.x, 
 			self.area.h * _GameCamera.scale.y
 		)
@@ -143,11 +143,13 @@ function _Sprite:SetCenter(x, y)
 	self.rect:SetCenter(x,y)
 end
 
-function _Sprite:SetDrawArea(x, y, w, h)
+function _Sprite:SetDrawArea(x, y, w, h, cam_x, cam_y)
 	self.area.x = x or 0
     self.area.y = y or 0
     self.area.w = w or 0
 	self.area.h = h or 0
+	self.area.cam_x = cam_x or 0
+	self.area.cam_y = cam_y or 0
 	self.scissor = true
 end
 

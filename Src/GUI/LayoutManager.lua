@@ -15,6 +15,7 @@ local _Button = require("Src.GUI.Widgets.Button")
 local _Image = require("Src.GUI.Widgets.Image")
 local _Label = require("Src.GUI.Widgets.Label")
 local _HMP_Bar = require("Src.GUI.Widgets.HMP_Bar")
+local _Grid_Skill = require("Src.GUI.Widgets.Grid_Skill")
 local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
 
 local function InitFrames(interface, frames)
@@ -70,13 +71,16 @@ local function InitImages(interface, Images)
     ]]
     for i,v in ipairs(Images) do
         local _image
-        local _batch = {{}, {}}
+        local _batch = {}
         local _tmpImage = _Image.New(v[3], 0, 0) -- temp image widget to get dimentsion info
         local _w = _tmpImage.spr:GetWidth()
         local _h = _tmpImage.spr:GetHeight()
         if v[2] == "batch" then
             for i = 1, v[9] do
                 for k = 1, v[8] do
+                    if not _batch[i] then
+                        _batch[i] = {}
+                    end
                     _batch[i][k] = _Image.New(v[3], v[4] + (_w + v[6]) * (k - 1), v[5] + (_h + v[7]) * (i - 1))
                 end
             end
@@ -89,7 +93,7 @@ local function InitImages(interface, Images)
             end
 
         elseif v[2] == "single" then
-            print("single image path:", v[3])
+            print("GUI_Init.InitImages() single image path:", v[3])
             _image = _Image.New(v[3], v[4], v[5], v[6], v[7], v[8])
             -- interface.frames[v[1]]:AddWidget(_image)
             interface:AddWidget(_image)
@@ -97,6 +101,49 @@ local function InitImages(interface, Images)
             error("_LayoutMgr.InitImages()  the type of one image item is unknown.")
         end
         
+    end
+end
+
+local function Init_SkillGrids(interface, data)
+    --[[
+        -- x, y, id, absKey, origin
+        ['Grid_Skill'] = {
+            -- {frameIndex, "single", x, y, id, absKey, origin},
+            -- {frameIndex, "batch", x, y, id, absKey, origin, blank_x, blank_y, num_x, num_y},
+            {"skill_grid_11", "single", 19 , 62, 0, "SKL_Q", false},
+            ...
+        },
+    ]]
+
+    for i,v in ipairs(data) do
+        local _grid
+        local _group = {}
+        local _w = 30
+        local _h = 30
+        if v[2] == "group" then
+            for i = 1, v[11] do
+                for k = 1, v[10] do
+                    if not _group[i] then
+                        _group[i] = {}
+                    end
+                    _group[i][k] = _Grid_Skill.New(v[3], v[4] + (_w + v[8]) * (k - 1), v[5] + (_h + v[9]) * (i - 1), v[6], v[7])
+                end
+            end
+            -- add all grids in _group
+            for i = 1, v[11] do
+                for k = 1, v[10] do
+                    -- interface.frames[v[1]]:AddWidget(_group[i][k])
+                    interface:AddWidget(_group[i][k])
+                end
+            end
+
+        elseif v[2] == "single" then
+            _grid = _Grid_Skill.New(v[1], v[3], v[4], v[5], v[6], v[7])
+            -- interface.frames[v[1]]:AddWidget(_grid)
+            interface:AddWidget(_grid)
+        else
+            error("_LayoutMgr.Init_SkillGrids()  the type of one image item is unknown.")
+        end
     end
 end
 
@@ -108,6 +155,8 @@ function _LayoutMgr.Ctor()
         {'frames', InitFrames},
         {'HMP_Bars', InitHMP_Bars},
         {'Images', InitImages},
+        {'SkillGrids', Init_SkillGrids},
+        
     }
     this.layoutPool = {}
 end 

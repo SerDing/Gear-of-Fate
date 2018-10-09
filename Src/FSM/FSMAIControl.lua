@@ -220,7 +220,7 @@ function _FSMAIControl:IsInAttackArea(obj, entity, range)
 end
 
 function _FSMAIControl:SetDir(entity, aim)
-    if self.FSM:GetCurState().name == "damage" then
+    if self.FSM:GetCurState().name == "damage" or self.FSM:GetCurState().name == "die" then
         return
     end
     local _dir = (math.floor(aim.x) > math.floor(entity.pos.x)) and 1 or -1

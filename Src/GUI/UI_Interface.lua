@@ -62,4 +62,12 @@ function _UI_Interface:SetIndex(index)
     self.index = index
 end
 
+function _UI_Interface:GetWidgetById(id)
+    for k,v in pairs(self.widgets) do
+        if v.id and v.id == id then
+            return v
+        end
+    end
+end
+
 return _UI_Interface 

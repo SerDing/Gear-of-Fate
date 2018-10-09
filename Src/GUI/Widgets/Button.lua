@@ -62,7 +62,7 @@ function _Button:Draw()
 end
 
 function _Button:MessageEvent(msg, x, y)
-    -- print("_Button:MessageEvent(msg, x, y)", msg, x, y)
+    print("_Button:MessageEvent(msg, x, y)", msg, x, y)
     if msg == "MOUSE_MOVED" then
         if love.mouse.isDown(1) and self.state == _ENUM.BUTTON_PRESSED then
             self.x, self.y = love.mouse.getPosition()

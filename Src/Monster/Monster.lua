@@ -13,6 +13,8 @@ local _AniPack = require "Src.AniPack"
 local _Input = require "Src.Input.Input"
 local _FSM = require "Src.FSM.FSM"
 local _FSMAIControl = require "Src.FSM.FSMAIControl"
+local _HP_Model = require "Src.Components.Model.HP"
+local _HMP_Bar = require("Src.GUI.Widgets.HMP_Bar")
 
 local scene_ = {} -- init a null Scene Pointer
 
@@ -80,9 +82,15 @@ function _Monster:Ctor(path, nav)
 
 	self.AI_Control = _FSMAIControl.New(self.FSM, self, nav, self.input)
 
+	self.Models = {}
+	self.Models['HP'] = _HP_Model.New(1000, 1000)
+	self.HP_Bar = _HMP_Bar.New(self.pos.x, self.pos.y, require("Data.ui.progressbar.mon_hp"), self.Models["HP"], nil, true)
 end 
 
 function _Monster:Update(dt)
+	if self.dead then
+		return
+	end
 	
 	for k,v in pairs(self.aniArr) do
 		v:Update(dt)
@@ -102,17 +110,19 @@ function _Monster:Update(dt)
 	end 
 
 	self.FSM:Update(self)
-
+	
 	self.AI_Control:Update(dt,self)
 
 	self.input:Update(dt)
-
+	
 	self.Y = self.pos.y
 end 
 
-function _Monster:Draw(x,y)
+function _Monster:Draw(x, y)
 	-- love.graphics.rectangle("line", self.pos.x - 320, self.pos.y - 150, 320 * 2, 150 * 2)
 	-- love.graphics.rectangle("line", self.pos.x - 400, self.pos.y - 85, 400 * 2, 85 * 2)
+	
+	
 	for n=1,#self.extraEffects do
 		if self.extraEffects[n] and self.extraEffects[n].Draw and self.extraEffects[n].layer == 0 then
 			self.extraEffects[n]:Draw()
@@ -129,6 +139,10 @@ function _Monster:Draw(x,y)
 		end 
 	end 
 
+	if not self.dead then
+		self.HP_Bar:Draw(self.pos.x - self.HP_Bar:GetWidth() / 2, self.pos.y + self.pos.z - self.aniArr["body"]:GetHeight() - self.HP_Bar:GetHeight(), x, y)
+	end
+	
 	-- move aim debug drawing
 	-- love.graphics.line(self.pos.x, self.pos.y, self.aim.x, self.aim.y)
 	-- love.graphics.circle("fill", self.pos.x, self.pos.y, 3, 20)
@@ -226,6 +240,19 @@ function _Monster:Damage(obj, damageInfo)
 	
 	self:SetDir(d)-- fix direction
 	self.FSM:SetState("damage", self, damageInfo, obj)
+
+	-- decrease hp
+	if not damageInfo["[damage bonus]"] then
+		damageInfo["[damage bonus]"] = 35
+	end
+	self.Models["HP"]:Decrease(damageInfo["[damage bonus]"])
+
+end
+
+function _Monster:Die()
+	self.dead = true
+	self.aniArr["body"]:SetColor(100, 100, 100, 255)
+	print("_Monster: i'm really dead!")
 end
 
 function _Monster:SetPos(x,y)
@@ -323,12 +350,12 @@ function _Monster:IsDead()
 	return self.dead
 end
 
-function _Monster:GetDamageBox()
-	return self.aniArr["body"]:GetDamageBox()
-end
-
 function _Monster:IsAI()
 	return self.AI
+end
+
+function _Monster:GetDamageBox()
+	return self.aniArr["body"]:GetDamageBox()
 end
 
 function _Monster:GetProperty(index)

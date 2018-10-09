@@ -19,14 +19,14 @@ function _State_Damage:Ctor()
 
 	self.lift_V = 0
 	self.liftPower = 0
-	self.dir_Y = "default"
+	self.dir_Y = "null"
 	self.bounce = false
 end 
 
 function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
 	-- print("monster damage")
 	local _hasDown
-	if entity:GetBody():GetAniId() == "[down motion]" and self.dir_Y == "default" then
+	if entity:GetBody():GetAniId() == "[down motion]" and self.dir_Y == "null" then
 		_hasDown = true
 	end
 	
@@ -138,7 +138,7 @@ end
 function _State_Damage:Update(entity, FSM_)
 	local _dt = love.timer.getDelta()
 
-	-- if self.dir_Y == "default" then
+	-- if self.dir_Y == "null" then
 	-- 	self:BackEffect(entity, _dt)
 	-- end
 
@@ -151,7 +151,14 @@ function _State_Damage:Update(entity, FSM_)
 	end
 
 	self:HitRecovery(entity, FSM_, _dt)
+
+	-- death check
 	
+	if self.dir_Y == "null" and entity.Models["HP"]:GetCur() <= 0 then
+		FSM_:SetState("die", entity)
+	end
+
+
 end 
 
 function _State_Damage:BackEffect(entity, _dt)
@@ -197,18 +204,18 @@ function _State_Damage:HitFlyEffect(entity, _dt)
 					self.dir_Y = "up"
 					self.timer = 0
 				else
-					self.dir_Y = "default"
+					self.dir_Y = "null"
 					self.lift_V = 0
 				end
 			end
 			entity:X_Move( - entity:GetDir() * self.push_A * self.stableFPS) --* self.push_V / 30 * self.stableFPS 
 		else -- has been on land then change entity to lying stage
-			self.dir_Y = "default"
+			self.dir_Y = "null"
 			self.lift_V = 0
 			-- print("monster damage [dir_Y == down], entity:GetZ() >= 0")
 		end
 
-	elseif self.dir_Y == "default" and entity:GetBody():GetAniId() == "[down motion]" then
+	elseif self.dir_Y == "null" and entity:GetBody():GetAniId() == "[down motion]" then
 		while entity:GetBody():GetCount() < 4 do
 			entity:NextFrame()
 			-- self.timer = 0

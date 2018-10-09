@@ -12,11 +12,6 @@ local _AvatarGrp = require("Src.Core.Class")()
 local _Animation = require "Src.AniPack"
 
 function _AvatarGrp:Ctor()
-    --[[
-        self["body"]
-        self.["weapon"]
-        ...
-    ]]
     self.widgets = {}
     self.keylist = {} -- store key names of all widgets to draw them in order（(for k,v) cannot draw them in order）
 end 

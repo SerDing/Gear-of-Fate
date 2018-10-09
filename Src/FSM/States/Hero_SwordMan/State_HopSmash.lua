@@ -171,6 +171,9 @@ function _State_HopSmash:AttackJudgement(hero_, _body, _dt)
 			-- if self.atkJudgeTime < self.atkJudgeTimer then
 			-- 	return
 			-- end
+
+
+
 			if self.atkTimes < 2 then
 				self.atkJudger:ClearDamageArr()
 				if self.atkJudger:Judge(hero_, "MONSTER", "hopsmash") then

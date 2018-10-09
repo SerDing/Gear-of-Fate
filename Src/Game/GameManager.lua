@@ -38,7 +38,7 @@ local _GDBOARD = require "Src.Game.GameDataBoard"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
 local _CAMERA = require "Src.Game.GameCamera"
 local _UIMGR = require "Src.GUI.UI_Manager"
-local _InitGUI = require "Src.GUI.Init"
+local _InitGUI = require "Src.GUI.GUI_Init"
 local _SkillMgr = require "Src.BattleSystem.SkillManager"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
@@ -148,10 +148,10 @@ function _GAMEMGR.Draw(x,y)
 	-- love.graphics.draw(_HUD, (love.graphics.getWidth() - 800) / 2, love.graphics.getHeight() - 91) -- 91
 	
 	-- // debug panel draw
-	local r, g, b, a = love.graphics.getColor()
-	love.graphics.setColor(0, 0, 0, 180)
-	love.graphics.rectangle("fill", love.graphics.getWidth() / _CAMERA.scale.x - 300, 0, 300, 50)
-	love.graphics.setColor(r, g, b, a)
+	-- local r, g, b, a = love.graphics.getColor()
+	-- love.graphics.setColor(0, 0, 0, 180)
+	-- love.graphics.rectangle("fill", love.graphics.getWidth() / _CAMERA.scale.x - 300, 0, 300, 50)
+	-- love.graphics.setColor(r, g, b, a)
 
 	-- // memory draw
 	-- _time = _time + love.timer.getDelta()
@@ -159,24 +159,23 @@ function _GAMEMGR.Draw(x,y)
 	-- 	_time = 0
 	-- 	_memory = collectgarbage("count")
 	-- end
+	-- love.graphics.print(strcat("lua memory:", tostring(_memory)), 10, 30)
+	-- love.graphics.print(love.timer.getDelta(), 10, 50, 0, 1, 1.1) -- Dt Draw
 	
 	-- // FPS draw
-	-- print(love.graphics.getWidth())
-	love.graphics.print(strcat("FPS:", tostring(love.timer.getFPS())), (love.graphics.getWidth() / _CAMERA.scale.x - 300 + 10) , 10 )
-	-- love.graphics.print(strcat("lua memory:", tostring(_memory)), 10, 30)
-	-- love.graphics.print(love.timer.getDelta(), 10, 50, 0, 1, 1.1)
-
+	love.graphics.print(strcat("FPS:", tostring(love.timer.getFPS())), (love.graphics.getWidth() / _CAMERA.scale.x - 300 + 10) , 10)
+	
 	-- // mouse pos draw
-	local _mousePos = { x = love.mouse.getX(), y = love.mouse.getY()}
+	local _mousePos = {x = love.mouse.getX(), y = love.mouse.getY()}
 	love.graphics.print(strcat(tostring(_mousePos.x), ",", tostring(_mousePos.y)), (_mousePos.x - 20) / _CAMERA.scale.x, (_mousePos.y - 10) / _CAMERA.scale.y)
 	
 	-- _UIMGR:Draw()
 
-	local r, g, b, a = love.graphics.getColor()
-	love.graphics.setColor(0, 0, 0, 255)
-	love.graphics.print("剑神", 100, 200, 0, 1.6, 1.6)
-	love.graphics.setColor(r, g, b, a)
-	love.graphics.print("剑神", 100, 200, 0, 1.5, 1.5)
+	-- local r, g, b, a = love.graphics.getColor()
+	-- love.graphics.setColor(0, 0, 0, 255)
+	-- love.graphics.print("剑神", 100, 200, 0, 1.6, 1.6)
+	-- love.graphics.setColor(r, g, b, a)
+	-- love.graphics.print("剑神", 100, 200, 0, 1.5, 1.5)
 
 end
 
@@ -184,10 +183,12 @@ function _GAMEMGR.KeyPressed(key)
 	_KEYBOARD.PressHandle(key)
 	_INPUTHANDLER.PressHandle(key)
 
+	_UIMGR.KeyPressed(key)
+
 	if _KEYBOARD.Press("rctrl") then
 		_gamePause = not _gamePause
 	end
-
+	
 end
 
 function _GAMEMGR.KeyReleased(key)

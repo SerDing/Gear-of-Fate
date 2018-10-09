@@ -10,6 +10,7 @@ return {
 		["backSpeed"] = 0.25,
 		["float"] = 5/0.9,
 	},
+	
 	["Y"] = 50,
 
 	["[attack type]"] = "[magic]",

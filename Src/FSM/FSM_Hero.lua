@@ -9,7 +9,10 @@
 local _FSM = require "Src.FSM.FSM"
 local _FSM_Hero = require("Src.Core.Class")(_FSM)
 
-local _SkillMgr = require "Src.BattleSystem.SkillManager"
+function _FSM_Hero:OnConstruct()
+	self.HotKeyMgr_ = require "Src.Input.HotKeyMgr"
+	self.SkillMgr_ = self.entity_:GetComponent('SkillMgr')
+end
 
 function _FSM_Hero:LateUpdate(entity_)
 	if self.curState.GetTrans then
@@ -34,9 +37,9 @@ function _FSM_Hero:SwitchSkillState(sklID, stateName, hero_, ...)
 	--skillID --> abstractKeyName --> realKeyID
 	if self.input:IsPressed(self.HotKeyMgr_.GetSkillKey(sklID)) or self.input:IsPressed(self.HotKeyMgr_.GetSkillCMDKey(sklID)) then -- IsPressed
 		print("Switch Skill State", sklID)
-		if _SkillMgr.IsSklUseable(hero_, sklID) then
+		if self.SkillMgr_:IsSklUseable(sklID) then
 			self:SetState(stateName, hero_, ...)
-			_SkillMgr.DoSkill(hero_, sklID)
+			self.SkillMgr_:DoSkill(sklID)
 		end
 	end 
 end 
@@ -47,10 +50,6 @@ function _FSM_Hero:SwitchState(keyID, stateName, hero_, ...)
 	end 
 end 
 
-function _FSM_Hero:OnConstruct()
-    self.HotKeyMgr_ = require "Src.Input.HotKeyMgr"
-end
-
 function _FSM_Hero:OnCurStateExit(entity_)
 	self:SkillCoolEvents(entity_)
 end
@@ -58,7 +57,7 @@ end
 function _FSM_Hero:SkillCoolEvents(entity_)
 	local coolMsg = self.curState.skillID or nil
 	if coolMsg then
-		_SkillMgr.StartCoolSkl(entity_, coolMsg)
+		self.SkillMgr_:StartCoolSkl(coolMsg)
 	end
 end
 

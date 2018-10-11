@@ -39,7 +39,6 @@ local _SCENEMGR = require "Src.Scene.GameSceneMgr"
 local _CAMERA = require "Src.Game.GameCamera"
 local _UIMGR = require "Src.GUI.UI_Manager"
 local _InitGUI = require "Src.GUI.GUI_Init"
-local _SkillMgr = require "Src.BattleSystem.SkillManager"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
 
@@ -67,7 +66,6 @@ function _GAMEMGR.Ctor() --initialize
 	_GDBOARD.Load()
 	_SCENEMGR.Ctor()
 	_CAMERA.Ctor(_SCENEMGR)
-	_SkillMgr.Ctor()
 	_HotKeyMgr.Ctor(_SCENEMGR.GetHero_():GetProperty('job'))
 	_InitGUI(_GAMEMGR)
 
@@ -78,7 +76,7 @@ function _GAMEMGR.Ctor() --initialize
 	-- bgm:setLooping(true)
 	-- love.graphics.setDefaultFilter( 'nearest', 'nearest' )
 
-	--[[
+	--[[ skillId filePath
 		8	`Swordman/TripleSlash.skl`
 		16	`Swordman/AshenFork.skl`
 		40	`Swordman/Reckless.skl`
@@ -90,10 +88,10 @@ function _GAMEMGR.Ctor() --initialize
 		77	`Swordman/MoonlightSlash.skl`
 		169	`Swordman/BackStep.skl`
 	]]
-
+	
 	local _skillIDs = {8, 16, 46, 64, 65, 76, 77, 169}
-	_SkillMgr.LearnSkills(_SCENEMGR.GetHero_(), _skillIDs)
-	_SkillMgr.RegActor(_SCENEMGR.GetHero_())
+	_SkillMgr = _SCENEMGR.GetHero_():GetComponent('SkillMgr')
+	_SkillMgr:LearnSkills(_skillIDs)
 
 	local save_abskeys = {
 		[46] = "SKL_Q", -- UpperSlash
@@ -132,7 +130,6 @@ function _GAMEMGR.Update(dt)
 	_SCENEMGR.Update(dt)
 	_CAMERA.Update(dt)
 	_CAMERA.LookAt(_SCENEMGR.GetHero_().pos.x, _SCENEMGR.GetHero_().pos.y)
-	_SkillMgr.Update(dt)
 	-- _RESMGR.Update(dt)
 	_KEYBOARD.Update(dt)
 end

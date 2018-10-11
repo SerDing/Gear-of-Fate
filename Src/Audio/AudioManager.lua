@@ -20,7 +20,7 @@ local sound_ = {id = "", source = nil}
 
 function _AudioMgr.Init(bgmVol, soundVol)
     _AudioMgr.bgmVol = bgmVol or 0.005
-    _AudioMgr.soundVol = soundVol or 0.005
+    _AudioMgr.soundVol = soundVol or 0.0085
     _AudioMgr.pathHead = "/SoundPacks/"
     _AudioMgr.pathList = require("/Config/audio")
 end 

@@ -16,7 +16,7 @@ function love.conf(t)
 
 	t.window.title = "Gear Of Fate (Ver:Beta)"
 	-- t.window.msaa = 16 -- 超过8才有效s
-	t.window.vsync = false
+	-- t.window.vsync = false
 	-- t.console = true
 	-- t.window.fullscreen = true
 	t.window.fullscreentype = "exclusive"

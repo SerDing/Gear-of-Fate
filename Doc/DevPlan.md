@@ -11,8 +11,10 @@
         * Panel
         * Grid
         * ScrollBar
-    2.Implemente grab attack effect
+    2.Core systems like Inventory\Save\
     3.Build basical game mechanics
+    4.Refactor AI_Control (virtual input command contorl behavior)
+    
     
 
 

@@ -9,7 +9,7 @@
 
 local _FSM = require("Src.Core.Class")()
 
-function _FSM:RegisterState(state_name,class_name)
+function _FSM:RegisterState(state_name, class_name)
     
     if not self.state then
         print("Error: state list in FSM was not initialized.")
@@ -21,7 +21,7 @@ function _FSM:RegisterState(state_name,class_name)
 
 end
 
-function _FSM:Ctor(entity_,state_name,entityType)
+function _FSM:Ctor(entity_, state_name, entityType)
     self.entity_ = entity_
     self.state = {}
     self.entityType = entityType

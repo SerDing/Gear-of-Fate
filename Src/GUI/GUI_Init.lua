@@ -59,19 +59,12 @@ local function InitInterface_HUD()
         -- {46, 0, 77, 16, 0, 169},
         -- {65, 64, 0, 8, 0, 76},
     }
-
-    -- get skill_grids reference
-    local _Grid_Skill_Grp = {{}, {}}
+    
+    local _skillGrid -- temp skill grid ref
     for y = 1, 2 do
         for x = 1, 6 do
-            _Grid_Skill_Grp[y][x] = _Interface_HUD:GetWidgetById("skill_grid_" .. tostring(y) .. tostring(x))
-        end
-    end
-
-    -- set skill
-    for y = 1, 2 do
-        for x = 1, 6 do
-            _Grid_Skill_Grp[y][x]:SetSkill(_sklGUIData[y][x])
+            _skillGrid = _Interface_HUD:GetWidgetById("skill_grid_" .. tostring(y) .. tostring(x))
+            _skillGrid:SetSkill(_sklGUIData[y][x])
         end
     end
 

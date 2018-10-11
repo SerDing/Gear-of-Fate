@@ -1,4 +1,11 @@
 --[[
+	Desc: A new lua class 
+	Author: SerDing 
+	Since: 2018-10-09 19:29:22 
+	Last Modified time: 2018-10-09 19:29:22 
+	Docs: 
+		* Write more details here 
+]]--[[
 	Desc: Hero Class --> SwordMan
  	Author: Night_Walker
 	Since: 2017-08-07 22:25:22
@@ -18,6 +25,8 @@ local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Game.AttackJudger"
 local _Input = require "Src.Input.Input"
 local _Movement = require "Src.Components.Movement"
+
+local _SkillMgr = require "Src.BattleSystem.SkillManager"
 
 -- Models
 local _HP_Model = require "Src.Components.Model.HP"
@@ -52,7 +61,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.0 + 0.50 -- 0.26
+	self.atkSpeed = 1.0 + 0.70 -- 0.26
 	self.hitRecovery = 22.5 -- 45 65
 	self.hitRecovery = 55 -- 45 65
 	self.hitTime = 0
@@ -81,6 +90,9 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.Models['MP'] = _HP_Model.New(120, 120, 0.325)
 	self.Components['Movement'] = _Movement.New(self)
 	self.Components['Weapon'] = _Weapon.New(self.subType, self)
+	
+	self.Components['SkillMgr'] = _SkillMgr.New(self)
+
 	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
 	-- // fight with your own dark side
@@ -123,7 +135,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	
 	-- Components Models
 	self.input = _Input.New(self)
-	self.FSM = _FSM.New(self,"stay",self.subType)
+	self.FSM = _FSM.New(self, "stay", self.subType, self)
 
 
 	--------------- test ani file
@@ -140,6 +152,8 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 end
 
 function Hero_SwordMan:Update(dt)
+
+	self.Components['SkillMgr']:Update(dt)
 
 	if love.timer.getTime() - self.hitTime <= self.hitRecovery / 1000 then -- hit stop effect
 		return

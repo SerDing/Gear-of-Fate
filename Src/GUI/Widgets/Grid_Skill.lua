@@ -9,11 +9,10 @@
 local _Widget = require("Src.GUI.Widgets.Widget")
 local _Grid_Skill = require("Src.Core.Class")(_Widget)
 
-local _SkillMgr = require "Src.BattleSystem.SkillManager"
 local _RESMGR = require "Src.Resource.ResManager"
 local _Sprite = require "Src.Core.Sprite"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr"
-local hero_ = _SCENEMGR.GetHero_()
+local _SkillMgr = _SCENEMGR.GetHero_():GetComponent('SkillMgr')
 
 function _Grid_Skill:Ctor(id, x, y, skillid, absKey,origin)
 	self.type = "SkillGrid"
@@ -44,7 +43,7 @@ function _Grid_Skill:SetSkill(id)
 	if id == 0 then
 		return 
 	end
-	self.skill = _SkillMgr.GetSkillById(hero_, self.skillID)
+	self.skill = _SkillMgr:GetSkillById(self.skillID)
 	self.sprites = {
 		_Sprite.New(_RESMGR.pathHead .. self.skill.iconPath[1]), -- useable
 		_Sprite.New(_RESMGR.pathHead .. self.skill.iconPath[2]), -- cool

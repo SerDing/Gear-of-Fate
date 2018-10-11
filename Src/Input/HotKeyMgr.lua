@@ -10,7 +10,7 @@
 local _HotkeyMgr = {KEY = {}, ABS_KEY = {}}
 
 local this = _HotkeyMgr
-local _SkillMgr = require "Src.BattleSystem.SkillManager"
+-- local _SkillMgr = 
 
 function _HotkeyMgr.Ctor(hero_job)
     this.KEY = {

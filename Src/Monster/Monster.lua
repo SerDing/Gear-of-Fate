@@ -35,7 +35,7 @@ function _Monster:Ctor(path, nav)
 	self.speed = {x = 2, y = 1.5}
 	self.speed = {
 		x = self.property["[move speed]"][1] / 7.5, 
-		y = self.property["[move speed]"][2] / 7.5
+		y = self.property["[move speed]"][2] / 7.5 / 2
 	}
 	self.dir = 1
 	self.Y = 0
@@ -76,15 +76,21 @@ function _Monster:Ctor(path, nav)
 
 	self.aniArr["body"]:SetAnimation("[move motion]")
 
-	self.input = _Input.New(self)
+	self.Components = {}
+	self.Components["Input"] = _Input.New(self)
+	-- self.input = _Input.New(self)
 
 	self.FSM = _FSM.New(self, "waiting", self.subType)
 
 	self.AI_Control = _FSMAIControl.New(self.FSM, self, nav, self.input)
 
 	self.Models = {}
-	self.Models['HP'] = _HP_Model.New(1000, 1000)
+	self.Models['HP'] = _HP_Model.New(6000, 6000)
 	self.HP_Bar = _HMP_Bar.New(self.pos.x, self.pos.y, require("Data.ui.progressbar.mon_hp"), self.Models["HP"], nil, true)
+
+	
+
+	love.graphics.setPointSize(5)
 end 
 
 function _Monster:Update(dt)
@@ -113,7 +119,8 @@ function _Monster:Update(dt)
 	
 	self.AI_Control:Update(dt,self)
 
-	self.input:Update(dt)
+	-- self.input:Update(dt)
+	self.Components["Input"]:Update(dt)
 	
 	self.Y = self.pos.y
 end 
@@ -150,7 +157,13 @@ function _Monster:Draw(x, y)
 	-- love.graphics.setColor(200, 0, 0, 255)
 	-- love.graphics.circle("fill", self.aim.x, self.aim.y, 5, 20)
 	-- love.graphics.setColor(r, g, b, a)
-	
+	love.graphics.points(self.pos.x, self.pos.y + self.pos.z)
+
+
+	-- tween test drawing
+	-- love.graphics.line(self.pos.x, self.pos.y, self.pos.x, self.pos.y - 100)
+	-- love.graphics.line(self.pos.x, self.pos.y, self.pos.x + 30, self.pos.y)
+
 end
 
 function _Monster:X_Move(offset)
@@ -334,10 +347,6 @@ function _Monster:GetY()
 	return self.Y
 end
 
-function _Monster:GetInput()
-	return self.input
-end
-
 function _Monster:GetSpeed()
 	return self.speed
 end
@@ -366,6 +375,22 @@ function _Monster:AddExtraEffect(effect)
 	assert(effect,"Warning: Hero_SwordMan:AddExtraEffect() got a nil effect!")
 	self.extraEffects[#self.extraEffects + 1] = effect
 	self.extraEffects[#self.extraEffects]:SetLayerId(1000 + #self.extraEffects)
+end
+
+function _Monster:AddComponent(key, component)
+	assert(key, " key is null.")
+	assert(component, " component is null.")
+	self.Components[key] = component
+end
+
+function _Monster:DelComponent(k)
+	assert(self.Components[k], " no component: " .. k)
+	return self.Components[k]
+end
+
+function _Monster:GetComponent(k)
+	assert(self.Components[k], " no component: " .. k)
+	return self.Components[k]
 end
 
 return _Monster 

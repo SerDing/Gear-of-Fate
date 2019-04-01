@@ -19,7 +19,7 @@ return {--[[ #PVF_File --]]
 
 	["[attack info]"]="AttackInfo/HopSmashSub.atk",
 
-	["[add object effect]"]={"Animation/HopSmashSubFront2.ani",1,0,},
+	["[add object effect]"]={"Animation/HopSmashSubFront2.ani", 1, 0, 0},
 	
 	["[object destroy condition]"]={"[destroy condition]","[on end of animation]"},
 }

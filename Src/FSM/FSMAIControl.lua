@@ -9,7 +9,7 @@
 
 local _FSMAIControl = require("Src.Core.Class")()
 
-local _ObjectMgr = require "Src.Scene.ObjectManager"
+local _ACTORMGR = require "Src.Actor.ActorMgr"
 local _GDB = require "Src.Game.GameDataBoard"
 
 function _FSMAIControl:Ctor(FSM_, entity, nav, input)
@@ -18,7 +18,7 @@ function _FSMAIControl:Ctor(FSM_, entity, nav, input)
     self.FSM = FSM_
     self.nav = nav
     self.input = input
-    self.hero_ = _ObjectMgr.GetHero()
+    self.hero_ = _ACTORMGR.mainPlayer
     
     -- property
     self.moveTerm = entity.property["[detination change term]"] or 5000
@@ -44,23 +44,20 @@ function _FSMAIControl:Ctor(FSM_, entity, nav, input)
     -- timer data
     self.moveTimer = math.random(0, self.moveTerm)
     self.attackTimer = math.random(0, self.attackDelay)
-
+    
     self.scene = {} -- null ptr
-
 end 
 
 function _FSMAIControl:Update(dt, entity)
-    
+
     self:UpdatePerceptions(dt, entity)
 
     -- in the sight of the monster
     if GetDistance(self.hero_:GetPos(), entity:GetPos()) <= entity.property["[sight]"] then
-        
         self:Action(entity)
         self:SelectDestination(entity)
         self:MoveMethod(entity)    
         self:SetDir(entity, self.heroPos)
-        
     else
         -- idle
         self:SetDir(entity, self.newAim)
@@ -69,7 +66,7 @@ function _FSMAIControl:Update(dt, entity)
         end
         
     end
-
+    
 end
 
 function _FSMAIControl:Action(entity)
@@ -90,16 +87,23 @@ function _FSMAIControl:SelectDestination(entity)
     if self.FSM:GetCurState().name == "waiting" then
         if self.moveTimer >= self.moveTerm / 1000 then
             self.moveTimer = 0
-            
+            print("start select new destination")
             local _range = (self:GetWarLikeResult()) and self.range[3] or self.range[1]
             self.newAim = {}
+            local calcTimes = 0
             repeat
                 self.newAim = {
                     x = self.heroPos.x + math.random(-_range[1], _range[1]), 
                     y = self.heroPos.y + math.random(-_range[2], _range[2])
                 }
+                calcTimes = calcTimes + 1
+                if calcTimes >= 10 then
+                    break
+                end
                 -- print("repeat calc aim")
             until self.scene:IsInMoveableArea(self.newAim.x, self.newAim.y) and self.scene:IsInObstacles(self.newAim.x, self.newAim.y)[1] == false
+            -- print("nav pos:", self.newAim.x, self.newAim.y)
+            print("finished select new destination")
             self:NavMove(self.newAim.x, self.newAim.y, entity)
             
         end

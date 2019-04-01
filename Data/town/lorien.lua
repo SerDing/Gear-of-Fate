@@ -6,7 +6,10 @@ return  {
 
 	['[area]']={
 		[0] = {'lorien/s3.map',['[minimap rect]'] = {372,242,438,268},'[normal]'},
+		-- [0] = {'mirkwood/248(2,0)boss.map',['[minimap rect]'] = {372,242,438,268},'[normal]'},
 	},
+
+	-- 20(0,0)start		s3
 
 	['[name]'] = '洛兰',
 	['[permission]'] = {

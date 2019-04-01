@@ -16,15 +16,23 @@ function _Actor:Ctor()
         self[k] = v
     end
 
-    self.pos = {x = 0, y = 0}
-    self.drawPos = {x = math.floor(x), y = math.floor(y)}
-    self.spd = {x = 0, y = 0}
+    self.pos = {x = x, y = y, z = 0}
+	self.drawPos = {x = math.floor(x), y = math.floor(y), z = 0}
+	self.spd = {x = 60 * 2.5, y = 37.5 * 2} -- 125 125
 
     self.dir = 1
     
     self.camp = "HERO"
 
-    self.input = _Input.New(self)
+	-- ints
+	self.dir = 1
+	self.Y = self.pos.y
+	self.atkSpeed = 1.2 + 0.30 -- 0.26  0.40  0.70
+	self.hitRecovery = 22.5 -- 45 65
+	self.hitRecovery = 70 * 0.86 -- 45 65 70 100 
+	self.hitTime = 0
+	self.actionStop = 170
+	self.actionStopTime = 0
 
 end 
 
@@ -32,16 +40,24 @@ function _Actor:Update(dt)
     --body
 end 
 
-function _Actor:X_Move(offset)
-    --body
-end 
-
-function _Actor:Y_Move(offset)
-    --body
-end 
-
 function _Actor:Draw(x,y)
     --body
+end
+
+function _Actor:AddComponent(key, component)
+	assert(key, "Key is null.")
+	assert(component, "Component is null.")
+	self.Components[key] = component
+end
+
+function _Actor:DelComponent(k)
+	assert(self.Components[k], "no component: " .. k)
+    self.Components[k] = nil
+end
+
+function _Actor:GetComponent(k)
+	assert(self.Components[k], "no component: " .. k)
+	return self.Components[k]
 end
 
 return _Actor 

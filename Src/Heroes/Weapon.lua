@@ -1,15 +1,13 @@
 --[[
-	Desc: weapon class
+	Desc: component weapon
  	Author: Night_Walker
 	Since: 2017-08-08 17:30:16
 	Alter: 2017-08-09 02:21:38
 	Docs:
-		* weapon component
+		* 
 ]]
 
 local _Weapon = require("Src.Core.Class")()
-
-local _AniPack = require "Src.AniPack"
 
 local _RESMGR = require "Src.Resource.ResManager"
 
@@ -51,7 +49,9 @@ function _Weapon:SetRes(weaponType, fileNum)
 		self.actor_.animMap:GetWidget("weapon_c1"):SetFileNum(_path_c)
 	end
 
-	-- in default, we set b2 and c2 to inactive unless the weapon of hero is light sword or a complex weapon like ming-dao or Evil Sword：Apophis
+	-- in default, we set b2 and c2 to inactive unless the 
+	-- weapon of hero is light sword or a complex weapon 
+	-- like ming-dao or Evil Sword：Apophis
 	self.actor_.animMap:GetWidget("weapon_b2"):SetActive(false)
 	self.actor_.animMap:GetWidget("weapon_c2"):SetActive(false)
 end
@@ -61,7 +61,8 @@ function _Weapon:SetType(mainType, subType)
 end
 
 function _Weapon:SetSingle(bool)
-	self.single = bool or self.single
+	self.single = bool
+	self.actor_.animMap:GetWidget("weapon_b1"):SetActive(not bool)
 end
 
 function _Weapon:GetType()

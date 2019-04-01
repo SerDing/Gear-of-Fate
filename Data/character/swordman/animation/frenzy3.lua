@@ -22,6 +22,7 @@ return {
 		['[IMAGE POS]'] = {-232,-333,},
 		['[DAMAGE BOX]'] = {-17,-5,0,36,10,99,},
 		['[DELAY]'] = 60,
+		['[PLAY SOUND]'] = "R_SM_ATK",
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",202,},
 	},
 	['[FRAME004]'] = {

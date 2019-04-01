@@ -4,8 +4,8 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 23:36:07
 	Docs:
-		* This class can add many *.ani files by using :AddAnimation(path)
-		* using :SetAnimation() to switch the class to objective state animation
+		* Bind animation data(*.ani) by using :AddAnimation(path, id)
+		* Play animation by SetAnimation(id)
 ]]
 
 
@@ -157,6 +157,9 @@ function _AniPack:Ctor(_type) --initialize
 
 	self.blendMode = self.blendModeList[1]
 	self.active = true
+	self.stop = false
+	-- self:Update(love.timer.getDelta())
+
 end
 
 function _AniPack:NextFrame(n)
@@ -206,6 +209,11 @@ function _AniPack:Update(dt)
 				return 
 			end 
 		end 	
+	end
+
+	-- stop effect
+	if self.stop then
+		return
 	end
 
 	local _frameHead = string.format("[FRAME%03d]", self.count)
@@ -379,6 +387,14 @@ function _AniPack:SuperArmor_Draw()
 	end
 end
 
+function _AniPack:Stop()
+	self.stop = true
+end
+
+function _AniPack:Continue()
+	self.stop = false
+end
+
 function _AniPack:DrawBox()
 	local boxTab = self.frameData[self.frameHead]["[ATTACK BOX]"]
 	local atkBox = _Rect.New(0,0,1,1)
@@ -406,6 +422,9 @@ function _AniPack:DrawBox()
 end
 
 function _AniPack:GetAttackBox()
+	if not self.active then
+		return nil
+	end
 	return self.frameData[self.frameHead]["[ATTACK BOX]"] or nil
 end
 
@@ -423,12 +442,7 @@ function _AniPack:SetAnimation(id,num,rate)
 
 	if _idType == "string" then
 	    if not self.frameDataGrp[id] then
-			print(strcat(
-				"Err:_AniPack:SetAnimation() -- cannot find ani：", 
-				id, 
-				"in frameDataGrp"
-				)
-			)
+			print("Err:_AniPack:SetAnimation() -- cannot find ani：" .. id .. "in frameDataGrp")
 			return false 
 		else 
 			self.frameData = self.frameDataGrp[id].data
@@ -446,7 +460,7 @@ function _AniPack:SetAnimation(id,num,rate)
 	self.count = 0
 	self.time = 0
 	self.num = self.frameData["[FRAME MAX]"]
-
+	self:Continue()
 	self:Update(0)
 	self.frameHead = string.format("[FRAME%03d]", self.count)
 	

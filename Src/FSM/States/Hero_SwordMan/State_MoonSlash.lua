@@ -1,13 +1,13 @@
 --[[
-	Desc: Tmp state 
+	Desc: state of moonlight slash
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
 		* wrap the logic of tmp state in this class
 ]]
-
-local _State_MoonSlash = require("Src.Core.Class")()
+local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_MoonSlash = require("Src.Core.Class")(_State_AtkBase)
 
 local _EffectMgr = require "Src.Scene.EffectManager"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
@@ -18,10 +18,11 @@ function _State_MoonSlash:Ctor()
 	self.childName ={
         "moonlightslash1",
         "moonlightslash2",
-    } 
+    }
     self.KEYID = {}
 	self.effect = {}
 	self.moveSpd = 1.5
+	self:_Init()
 end 
 
 function _State_MoonSlash:Enter(hero_)
@@ -30,8 +31,9 @@ function _State_MoonSlash:Enter(hero_)
 	self.attackName = self.childName[self.atkNum]
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 	self.movement = hero_:GetComponent('Movement')
+	self:_Enter(hero_)
 end
 
 function _State_MoonSlash:Update(hero_,FSM_)
@@ -45,8 +47,7 @@ function _State_MoonSlash:Update(hero_,FSM_)
 	self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
 
 	if _body:GetCount() == 2 and not self.effect[1] then
-		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash1.lua", hero_.pos.x, hero_.pos.y + 1, 1, hero_:GetDir(), hero_)
-		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+		self:Effect("moonlightslash1.lua", 1, 1)
 	end
 	
 	if _body:GetCount() <= 3  and self.atkNum == 1 then
@@ -61,9 +62,7 @@ function _State_MoonSlash:Update(hero_,FSM_)
 			self.atkNum = 2
 			self.atkJudger:ClearDamageArr()
 			self.attackName = self.childName[self.atkNum]
-
-			self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "moonlightslash2.lua",hero_.pos.x, hero_.pos.y + 1, 1, hero_:GetDir(), hero_)
-			self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+			self:Effect("moonlightslash2.lua", 1, 1)
 		end 
 		
 	end 

@@ -11,23 +11,15 @@ return {
 		["float"] = 3,
 	},
 	["Y"] = 38,
-
 	["[damage bonus]"] = 100,
-
 	["[attack type]"] = "[physic]",
-
 	["[weapon damage apply]"] = 1,
-
 	["[attack enemy]"] = 1,
-
 	["[elemental property]"] = "[no element]",
-
 	["[damage reaction]"] = "[down]",
 
 	["[push aside]"] = 30, -- 270
-
 	["[lift up]"] = 180,
-
 	["[attack direction]"] = "[hit lift up]", -- [hit down]
 
 }

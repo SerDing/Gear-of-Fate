@@ -13,7 +13,7 @@ local _Effect = require "Src.Scene.Blocks.Effect"
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 
 function _EffectMgr.Ctor()
-    _EffectMgr.pathHead = {
+		_EffectMgr.pathHead = {
 		["SwordMan"] = "../Data/character/swordman/effect/animation/" ,
 		["HERO_SWORDMAN"] = "../Data/character/swordman/effect/animation/" ,
 	}

@@ -1,5 +1,5 @@
 --[[
-	Desc: Attack1 state 
+	Desc: FrenzyAttack state 
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
@@ -22,6 +22,7 @@ function _State_FrenzyAttack:Ctor()
 	}
     
     self.attackNum = 0
+    self.hitTimes = 0
     self.KEYID = {}
     self.spdRate = 0.55
     self:_Init()
@@ -34,13 +35,14 @@ function _State_FrenzyAttack:Enter(hero_)
     
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
+    self.hitTimes = 0
     self.movement = hero_:GetComponent('Movement')
 
     ----[[  Call base class function  ]]
     self:_Enter(hero_)
-    self:Effect("frenzy/sword1-1.lua", 0, 1)
-    self:Effect("frenzy/sword1-3.lua", 0, 1)
-    self:Effect("frenzy/sword1-4.lua", 0, 1)
+    self:Effect("frenzy/sword1-1.lua", 1, 1)
+    self:Effect("frenzy/sword1-3.lua", 1, 1)
+    self:Effect("frenzy/sword1-4.lua", 1, 1)
     
 end
 
@@ -62,6 +64,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 4 then
             self.attackNum = 2
             self.atkJudger:ClearDamageArr()
+            self.hitTimes = 0
             hero_:SetAnimation(self.childName[self.attackNum])
             
            
@@ -95,6 +98,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.atkJudger:ClearDamageArr()
+            self.hitTimes = 0
             hero_:SetAnimation(self.childName[self.attackNum])
             
             
@@ -129,6 +133,7 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 4
             self.atkJudger:ClearDamageArr()
+            self.hitTimes = 0
             hero_:SetAnimation(self.childName[self.attackNum])
             
             
@@ -161,7 +166,13 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
     end 
    
     if hero_:GetAttackBox() then
-        self.atkJudger:Judge(hero_, "MONSTER", self.childName[self.attackNum])
+        local _hit = self.atkJudger:Judge(hero_, "MONSTER", self.childName[self.attackNum])
+        if _hit then
+            self.hitTimes = self.hitTimes + 1
+            if self.hitTimes < 2 then
+                self.atkJudger:ClearDamageArr()
+            end
+        end
     end
 
     for n=1,#self.effect do

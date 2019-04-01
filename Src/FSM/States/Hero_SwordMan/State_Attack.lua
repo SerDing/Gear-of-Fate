@@ -33,7 +33,7 @@ function _State_Attack:Enter(hero_,FSM_)
     self.attackName = self.childName[self.attackNum]
     self.atkJudger = hero_:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
-    self.input = hero_:GetInput()
+    self.input = hero_:GetComponent("Input")
     self.movement = hero_:GetComponent('Movement')
 
     hero_:SetAnimation(self.attackName)

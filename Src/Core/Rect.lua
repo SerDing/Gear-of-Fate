@@ -40,7 +40,7 @@ function _Rect:Ctor(x, y, w, h) --initialize
 		[0] = "fill",
 		[1] = "line",
 	}
-	self:SetDrawType(1)
+	self:SetDrawType(0)
 	self:Update()
 end
 

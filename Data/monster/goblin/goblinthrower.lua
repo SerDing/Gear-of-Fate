@@ -82,15 +82,16 @@ return {--[[ #PVF_File ]]
 
 	["[ai pattern]"]={ 
 
-	["[normal]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
+		["[normal]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
 
-	["[expert]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
+		["[expert]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
 
-	["[master]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
+		["[master]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
 
-	["[king]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
+		["[king]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
 
-	["[slayer]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},},
+		["[slayer]"]={"ai/Event.ai","ai/DestinationSelect.ai","ai/Action.ai","ai/MoveMethod.ai",},
+	},
 
 	["[hp regen rate]"]=0.00,0.00,
 }

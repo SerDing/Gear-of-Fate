@@ -16,7 +16,7 @@ local _Image = require("Src.GUI.Widgets.Image")
 local _Label = require("Src.GUI.Widgets.Label")
 local _HMP_Bar = require("Src.GUI.Widgets.HMP_Bar")
 local _Grid_Skill = require("Src.GUI.Widgets.Grid_Skill")
-local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
+local _ACTORMGR = require "Src.Actor.ActorMgr"
 
 local function InitFrames(interface, frames)
     --[[
@@ -45,7 +45,7 @@ local function InitHMP_Bars(interface, HMP_Bars)
         local _tmpArr = split(v[5], "/")
 
         if _tmpArr[1] == "Hero" and _tmpArr[2] == "Model" then
-            hero_ = _SCENEMGR.GetHero_()
+            hero_ = _ACTORMGR.mainPlayer
             print("LayoutMgr is getting hero's model:", _tmpArr[3])
             _model = hero_:GetModel(_tmpArr[3])
         end

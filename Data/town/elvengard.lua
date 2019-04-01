@@ -15,8 +15,4 @@ return  {
 	['[permission]'] = {
 		['[need level]']=1,
 	},
-
-
-
-
 }

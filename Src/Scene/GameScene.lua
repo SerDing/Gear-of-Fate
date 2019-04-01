@@ -11,7 +11,7 @@
 local _GameScene = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
-local _TileBlock = require "Src.Scene.Blocks.TileBlock"
+local _Tile = require "Src.Scene.Blocks.Tile"
 local _AniBlock = require "Src.Scene.Blocks.AniBlock" 
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _Collider = require "Src.Core.Collider"
@@ -29,13 +29,24 @@ local _sceneMgr = {} -- Initialize a null pointer of SceneManager
 _PassiveObjMgr.Ctor()
 _MonsterSpawner.Ctor()
 
-function _GameScene:Ctor(path,res_,sceneMgr) --initialize
+function _GameScene:Ctor(path, res_, sceneMgr) --initialize
     -- ptr
     _sceneMgr = sceneMgr
 
     -- data and structure
     self.pathHead = "/Data/map/"
     self.map = require(string.gsub(path,".lua",""))
+
+    -- temp proc of [virtual movable area] for test maps
+    -- if not self.map["[virtual movable area]"] then
+    --     self.map["[virtual movable area]"] = {}
+    --     self.map["[virtual movable area]"][1] = self.map["[pathgate pos]"][1] + 20
+    --     self.map["[virtual movable area]"][2] = self.map["[pathgate pos]"][2] - 80
+    --     self.map["[virtual movable area]"][3] = self.map["[pathgate pos]"][3] - 40
+    --     self.map["[virtual movable area]"][4] = self.map["[pathgate pos]"][4] - 50
+    -- end
+    -- self.map["[sound]"] = {"AMB_FOREST_01","M_FOREST_01_NEW",}
+
     self.res = {}
     self.layers = {
         ["[normal]"] = {
@@ -60,6 +71,9 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
         updating and drawing layers equal to find 
         objects by id then update and draw them
     ]]
+    self.tiles = {}
+    self.extendedTiles = {}
+
     -- property
     self.isDgn = false
     self.clear = false
@@ -67,6 +81,7 @@ function _GameScene:Ctor(path,res_,sceneMgr) --initialize
     self.iterator = 0
     self.limit = 0
     self.warmSpd = 2.25
+    self.drawExTile = false
 
     -- instance
     self.rect = _Rect.New(0,0,1,1)
@@ -86,17 +101,31 @@ end
 
 function _GameScene:LoadTiles()
    
-    if not self.res["[tile]"] then
-        self.res["[tile]"] = {}
-    end 
-
     local _tilePath
-
     for n=1,#self.map["[tile]"] do
         _tilePath = strcat(self.pathHead, self.directory, self.map["[tile]"][n])
-        self.res["[tile]"][self.map["[tile]"][n]] = _TileBlock.New(_tilePath)
-        self.res["[tile]"][self.map["[tile]"][n]]:SetOffset_2(0, (self.map["[background pos"] or 80))
-    end 
+        self.tiles[n] = _Tile.New(_tilePath)
+        self.tiles[n]:SetPos((n - 1) * 224, 0)
+        self.tiles[n]:SetOffset(0, 80) -- set draw offset
+        self.tiles[n]:SetOffset_2(0, 80 * 2) -- set grid data offset
+
+    end
+
+    if self.map["[extended tile]"] then
+        local filePath = ""
+        local n = #self.map["[tile]"] + 1 -- tile_num + 1
+        for i,v in ipairs(self.map["[extended tile]"]["[tile map]"]) do
+            filePath = self.map["[extended tile]"]["[tile files]"][v]
+            print("create extended tiles:", strcat(self.pathHead, self.directory, filePath))
+            self.extendedTiles[i] = _Tile.New(strcat(self.pathHead, self.directory, filePath))
+            self.extendedTiles[i]:SetPos(((i - 1) % n) * 224, math.floor(i / n) * self.extendedTiles[i].sprite:GetHeight())
+            self.extendedTiles[i]:SetOffset(0, 80) -- set draw offset
+            self.extendedTiles[i]:SetOffset_2(0, 480 + 80 + math.floor(i / n) * 120) -- set obstacle grid offset, 120 is default height of any extile.
+        end
+        self.drawExTile = true
+    else
+        
+    end
 
 end
 
@@ -133,7 +162,6 @@ function _GameScene:LoadPassiveObjects()
             table.remove(self.res["[passive object]"], n)
         end
     end 
-
 end
 
 function _GameScene:LoadBackGround()
@@ -240,11 +268,8 @@ function _GameScene:Update(dt)
 		self.iterator = 0
 		self.limit = self.limit - self.warmSpd
 	end
-
-
     
     _ObjectMgr.Update(dt)
-
 end
 
 function _GameScene:Draw(cam_x,cam_y)
@@ -252,6 +277,7 @@ function _GameScene:Draw(cam_x,cam_y)
     self:DrawBackGround("[far]", cam_x,cam_y)
     self:DrawBackGround("[mid]", cam_x,cam_y)
     self:DrawTile(cam_x, cam_y)
+    self:DrawExtendedTile(cam_x, cam_y)
     self:DrawLayer("[closeback]",cam_x, cam_y)
     self:DrawLayer("[bottom]",cam_x, cam_y)
 
@@ -264,6 +290,7 @@ function _GameScene:Draw(cam_x,cam_y)
     _ObjectMgr.Draw(cam_x, cam_y)
     self:DrawLayer("[close]",cam_x, cam_y)
     
+    -- love.graphics.line(100, 0, 100, 480 + 80)
 end
 
 function _GameScene:UpdateLayer(layer,dt)
@@ -312,16 +339,43 @@ function _GameScene:DrawBackGround(type,ex,ey)
     end
 end
 
-function _GameScene:DrawTile(ex,ey)
+function _GameScene:DrawTile(ex, ey)
+
+    if ex >= 480 + 80 then
+        return 
+    end
     
-    local index = math.floor(math.abs(ex) / 224) +1
-	local num = math.ceil(_GAMEINI.winSize.width / 224)
-    local endl = (index + num > #self.map["[tile]"]) and ( #self.map["[tile]"]) or index + num
-    -- print("index:",index,"endl:", endl)
-    for n=index,endl do
-		self.res["[tile]"][self.map["[tile]"][n]]:Draw((n - 1) * 224,0)
+    -- horizental
+    local index = math.floor(math.abs(ex) / 224) + 1 -- 向下取整
+	local num = math.ceil(_GAMEINI.winSize.width / 224) - 2 -- 向上取整
+    local endl = (index + num > #self.map["[tile]"]) and (#self.map["[tile]"]) or index + num
+    -- print("index:", index, "endl:", endl)
+    for n = index, endl do
+        self.tiles[n]:Draw()
 	end
 
+end
+
+function _GameScene:DrawExtendedTile(ex, ey)
+    
+    if not self.drawExTile then
+        return 
+    end
+    -- horizental
+    local XStart = math.floor(math.abs(ex) / 224) + 1 -- 向下取整
+	local num = math.ceil(_GAMEINI.winSize.width / 224) - 2 -- 向上取整
+    local XEnd = (XStart + num > #self.map["[tile]"]) and (#self.map["[tile]"]) or XStart + num
+    -- vertical
+    local tileNum = #self.map["[tile]"]
+    local YStart = (ey <= 480) and 1 or math.floor((ey - (480 + 80)) / 120) + 1
+    local YEnd = math.ceil((ey + _GAMEINI.winSize.height - (480 + 80)) / 120) --#self.extendedTiles / tileNum、
+    YEnd = (YEnd > #self.extendedTiles / tileNum) and YEnd - 1 or YEnd
+    for i = YStart, YEnd do
+        for n = XStart, XEnd do
+            self.extendedTiles[(i - 1) * tileNum + n]:Draw()
+        end
+    end
+    
 end
 
 function _GameScene:DrawSpecialArea(type)
@@ -355,7 +409,7 @@ end
 function _GameScene:GetWidth()
 	local w = 0
 	for n=1,#self.map["[tile]"] do
-		w = w + self.res["[tile]"][self.map["[tile]"][n]]:GetWidth()
+		w = w + self.tiles[n]:GetWidth()
 	end
 	return  w
 end
@@ -364,16 +418,35 @@ function _GameScene:GetHeight()
 	return 600
 end
 
-function _GameScene:IsInMoveableArea(x,y)
-    
+function _GameScene:GetTileByPos(x, y)
+    local nx = 0
+    local ny = 0
+    if y <= 480 + 80 then -- normal tile
+        nx = math.ceil(x / 224)
+        return self.tiles[nx]
+    else -- extended tile
+        nx = math.ceil(x / 224)
+        ny = math.floor((y - (480 + 80)) / 120)
+        return self.extendedTiles[ny * #self.tiles + nx]
+    end
+end
+
+function _GameScene:IsPassable(x, y, tableRef)
+    -- return the result and if it is not passable 
+    -- then set the grid data to tableRef (except out of scene boundary)
+    if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
+        return false
+    end 
+    return self:GetTileByPos(x, y):IsPassable(x, y, tableRef)
+end
+
+function _GameScene:IsInMoveableArea(x, y) 
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
         return false 
     end 
-
     if self.map["[virtual movable area]"] then -- town
         return self:IsInArea("movable",x,y)
     end
-    
 end
 
 function _GameScene:IsInArea(areaType,x,y)
@@ -454,7 +527,6 @@ function _GameScene:CollideWithObstacles(rect_a)
     end 
 
     return false
-
 end
 
 return _GameScene

@@ -19,7 +19,7 @@ return {--[[ #PVF_File ]]
 
 	["[level]"] = {1,6},
 
-	["detination change term"]  =  1500,
+	["detination change term"]  =  500, -- 1500
 
 	["[move speed]"] = {500,500}, -- 500 500
 
@@ -35,9 +35,9 @@ return {--[[ #PVF_File ]]
 
 	["[targeting nearest]"] = 1,
 
-	["[warlike]"] = 60,
+	["[warlike]"] = 70,
 
-	["[attack delay]"] = 3000,
+	["[attack delay]"] = 1000, -- 3000
 
 	["[stuckbonus on damage]"] = {0,0,0,0},
 
@@ -69,21 +69,13 @@ return {--[[ #PVF_File ]]
 	["[face image]"] = {"Monster/MonsterFace.img",0},
 
 	["[waiting motion]"] = "Animation_Goblin2/Stay.ani",
-
 	["[move motion]"] = "Animation_Goblin2/Move.ani",
-
 	["[sit motion]"] = "Animation_Goblin2/Sit.ani",
-
 	["[damage motion 1]"] = "Animation_Goblin2/Damage1.ani",
-
 	["[damage motion 2]"] = "Animation_Goblin2/Damage2.ani",
-
 	["[down motion]"] = "Animation_Goblin2/Down.ani",
-
 	["[overturn motion]"] = "Animation_Goblin2/Overturn.ani",
-
 	["[attack motion]"] = {"Animation_Goblin2/Attack1.ani","Animation_Goblin2/Stay.ani"},
-
 	["[attack info]"] = {"AttackInfo/Attack1.atk",""},
 
 	["[name]"] = "哥布林",

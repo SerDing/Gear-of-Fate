@@ -23,7 +23,7 @@ function _State_UpperSlash:Enter(hero_)
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.movement = hero_:GetComponent('Movement')
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 end
 
 function _State_UpperSlash:Update(hero_,FSM_)

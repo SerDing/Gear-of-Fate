@@ -18,6 +18,8 @@ local _Scissor = love.graphics.setScissor
 local _GraphNewShader = love.graphics.newShader
 local _GraphSetShader = love.graphics.setShader
 
+local _spriteCount = 0
+
 function _Sprite:Ctor(path, x, y, w, h) --initialize
 
 	local tp = type(path)
@@ -52,6 +54,10 @@ function _Sprite:Ctor(path, x, y, w, h) --initialize
 	self.rect:SetSize(tWidth,tHeight)
 	self.rect:SetColor(0,0,255,50)
 	
+	_spriteCount = _spriteCount + 1
+
+	-- print("_spriteCount = ", _spriteCount)
+
 end
 
 function _Sprite:Draw(x, y, rotation, sx, sy)

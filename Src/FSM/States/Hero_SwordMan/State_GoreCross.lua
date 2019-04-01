@@ -13,7 +13,7 @@ local _EffectMgr = require "Src.Scene.EffectManager"
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 
-function _State_GoreCross:Ctor() 
+function _State_GoreCross:Ctor()
 	self.name = "gorecross"
 	self.skillID = 64
 	self.effect = {}
@@ -32,7 +32,7 @@ function _State_GoreCross:Enter(hero_)
 	self.atkJudger:ClearDamageArr()
 	self.attackName = "gorecross1"
 	self.atkObj = nil
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 end
 
 function _State_GoreCross:Update(hero_,FSM_)
@@ -63,21 +63,27 @@ function _State_GoreCross:Update(hero_,FSM_)
 		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		
 		self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash2.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_) 
-		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+		self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
 		
 	end 
 	
-	if self.effect[2] and not self.effect[3] then
-		if  self.effect[2]:GetAni():GetCurrentPlayNum() == 0 then
-			if not self.atkObj then
-				self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20028)
-				self.atkObj:SetHost(hero_)
-				self.atkObj:SetPos(hero_:GetPos().x + 70 * hero_:GetDir(), hero_:GetPos().y, - 85)
-				self.atkObj:SetDir(hero_:GetDir())
-				self.atkObj:SetMoveSpeed(4)
-			end
-		end 
+	if self.effect[2] and self.effect[2]:GetAni():GetCurrentPlayNum() == 0 then -- 
+		if not self.atkObj then
+			self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20028)
+			self.atkObj:SetHost(hero_)
+			self.atkObj:SetPos(hero_:GetPos().x + 85 * hero_:GetDir(), hero_:GetPos().y, - 85) -- x + 70 * dir, y - 85
+			self.atkObj:SetDir(hero_:GetDir())
+			self.atkObj:SetMoveSpeed(4)
+		end
+		-- table.remove(self.effect, 2)
+		self.effect[2].over = false
 	end 
+
+	if self.atkObj then
+		if self.atkObj:IsOver() then
+			self.atkObj = nil
+		end
+	end
 	
 	-- whether plusAtk check
 	if _body:GetCount() >= 9 then 
@@ -86,14 +92,14 @@ function _State_GoreCross:Update(hero_,FSM_)
 		end
 	end
 
-	if _body:GetCount() == 10 then 
+	if _body:GetCount() == 11 then
 		if not self.plusAtk then -- jump the next frames
-			hero_.animMap:SetCurrentPlayNum(0) 
+			hero_.animMap:SetCurrentPlayNum(0)
 		else
-			if self.effect[3] and self.effect[4] then
-				-- hero_.animMap:NextFrame() 
-				-- hero_.animMap:NextFrame() 
-			end
+			-- if self.effect[3] and self.effect[4] then
+				hero_.animMap:NextFrame() 
+				hero_.animMap:NextFrame() 
+			-- end
 		end
 	end
 

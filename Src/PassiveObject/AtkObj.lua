@@ -20,7 +20,7 @@ function _AtkObj:Ctor(path)
 	local _rootPath = string.gsub(path, _pathArr[#_pathArr], "")
 
 	self.data = require(string.sub(path, 1, string.len(path) - 4))
-	self.pathInfo = {} -- storage path which is getn in data
+	self.pathInfo = {} -- storage pathinfo in datafile
 	self.aniFiles = {}
 	self.aniArr = {}
 	self.etcAniArr = {}
@@ -35,7 +35,9 @@ function _AtkObj:Ctor(path)
 		self.aniFiles["[add object effect]"] = require(self.pathInfo["[add object effect]"])
 		self.aniArr["addAni"] = _AniPack.New()
 		self.aniArr["addAni"]:SetAnimation(self.aniFiles["[add object effect]"], 1)
+		-- self.aniArr["addAni"]:SetActive(false)
 	end
+	-- add object effect data format:{aniPath, int, int, delayFrames}
 
 	-- init etc motion
 	
@@ -59,6 +61,14 @@ function _AtkObj:Ctor(path)
 	self.aniArr["basicAni"] = _AniPack.New()
 	self.aniArr["basicAni"]:SetAnimation(self.aniFiles["[basic motion]"], 1)
 	
+	-- play animations in order
+	if self.data["[add object effect]"] and self.data["[add object effect]"][2] < 0 then
+		self.aniArr["basicAni"]:SetActive(false) -- [add object effect] is prioritized, delay [basic motion]
+	else
+		self.aniArr["basicAni"]:SetAnimation(self.aniFiles["[basic motion]"], 1)
+	end
+
+
 	for _,v in pairs(self.aniArr) do
 		if self.data["[object destroy condition]"] and 
 		self.data["[object destroy condition]"][2] == "[on end of animation]" then
@@ -81,13 +91,24 @@ function _AtkObj:Ctor(path)
 end 
 
 function _AtkObj:Update(dt)
+
+	-- resume playing basic motion
 	
-	if love.timer.getTime() - self.hitTime <= self.hitRecovery / 1000 then
-		return
+	if self.aniArr["basicAni"].active == false then
+		print("self.aniArr[addAni]:GetCount() = ", self.aniArr["addAni"]:GetCount())
+		if self.aniArr["addAni"]:GetCount() == - self.data["[add object effect]"][2] then
+			self.aniArr["basicAni"]:SetAnimation(self.aniFiles["[basic motion]"], 1)
+			self.aniArr["basicAni"]:SetActive(true)
+		end
 	end
 
+	if love.timer.getTime() - self.hitTime <= self.hitRecovery / 1000 then
+		return 
+	end
+
+
 	for _,v in pairs(self.aniArr) do
-		v:Update(dt)	
+		v:Update(dt)
 	end
 
 	for _,etc in pairs(self.etcAniArr) do
@@ -103,11 +124,11 @@ function _AtkObj:Update(dt)
 		_elementNum = _elementNum + 1
 	end
 	
-	if _overNum == _elementNum then
+	if _overNum == _elementNum then -- check whether all animations are over
 		self.over = true
 	end
 
-	if self.speed ~= 0 then
+	if self.speed ~= 0 and self.aniArr["basicAni"].active then
 		self.pos.x = self.pos.x + self.speed * self.stableFPS * dt * self.dir
 	end	
 
@@ -223,43 +244,57 @@ function _AtkObj:GetAtkObjType()
 end
 
 function _AtkObj:Destroy()
-	self.attackJudger = nil
-	self.data = nil
 
-	for k,v in pairs(self.aniArr) do
-		v:Destroy()
-	end
 
-	self.aniArr = nil
+	self.data = {}
+	self.attackJudger = {}
+	self.data = {}
+	self.aniArr = {}
+	self.aniFiles = {}
+	self.etcAniArr = {}
+	self.pathInfo = {}
 
-	for _,etc in pairs(self.etcAniArr) do
-		etc:Destroy()
-	end
+	self = {}
 
-	self.etcAniArr = nil
+	-- self.attackJudger = nil
+	-- self.data = nil
 
-	for k,v in pairs(self.pathInfo) do
-		if type(v) == "table" then
-			for i,v2 in ipairs(v) do
-				v2 = nil
-			end
-		else
-			v = nil
-		end
-	end
+	-- for k,v in pairs(self.aniArr) do
+	-- 	v:Destroy()
+	-- end
 
-	self.pathInfo = nil
+	-- self.aniArr = nil
 
-	for k,v in pairs(self.aniFiles) do
-		if type(v) == "table" then
-			for i,v2 in ipairs(v) do
-				v2 = nil
-			end
-		else
-			v = nil
-		end
-	end
+	-- for _,etc in pairs(self.etcAniArr) do
+	-- 	etc:Destroy()
+	-- end
 
-	self.aniFiles = nil
+	-- self.etcAniArr = nil
+
+	-- for k,v in pairs(self.pathInfo) do
+	-- 	if type(v) == "table" then
+	-- 		for i,v2 in ipairs(v) do
+	-- 			v2 = nil
+	-- 		end
+	-- 	else
+	-- 		v = nil
+	-- 	end
+	-- end
+
+	-- self.pathInfo = nil
+
+	-- for k,v in pairs(self.aniFiles) do
+	-- 	if type(v) == "table" then
+	-- 		for i,v2 in ipairs(v) do
+	-- 			v2 = nil
+	-- 		end
+	-- 	else
+	-- 		v = nil
+	-- 	end
+	-- end
+
+	-- self.aniFiles = nil
+	-- self = nil
+	
 end
 return _AtkObj 

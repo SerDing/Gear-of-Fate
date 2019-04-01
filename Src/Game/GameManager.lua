@@ -40,6 +40,10 @@ local _CAMERA = require "Src.Game.GameCamera"
 local _UIMGR = require "Src.GUI.UI_Manager"
 local _InitGUI = require "Src.GUI.GUI_Init"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
+
+local _ACTORMGR = require "Src.Actor.ActorMgr"
+
+
 local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
 
 --[[ Key Note:
@@ -55,6 +59,14 @@ local _gamePause = false
 
 log = print
 
+local _sourceDir = love.filesystem.getSourceBaseDirectory()
+local _success = love.filesystem.mount(_sourceDir, "ImagePacks")
+print("mount result = ", _success, "_sourceDir = ", _sourceDir)
+print("love.filesystem.isFused() = ", love.filesystem.isFused())
+
+
+love.graphics.setDefaultFilter( "linear","linear" ) -- nearest
+
 -- local mri = require("Src.Lib.MemoryCheck.MemoryReferenceInfo")
 
 -- collectgarbage("collect")
@@ -64,12 +76,18 @@ function _GAMEMGR.Ctor() --initialize
 	_RESMGR.Ctor()
 	_AUDIOMGR.Init()
 	_GDBOARD.Load()
+	_ACTORMGR.Ctor()
 	_SCENEMGR.Ctor()
+	
 	_CAMERA.Ctor(_SCENEMGR)
-	_HotKeyMgr.Ctor(_SCENEMGR.GetHero_():GetProperty('job'))
+	_HotKeyMgr.Ctor(_ACTORMGR.mainPlayer:GetProperty('job'))
 	_InitGUI(_GAMEMGR)
 
+
+
 	-- collectgarbage("stop")
+
+	-- _RESMGR.LoadTexture("/ImagePacks/1.png")
 
 	-- local bgm = _RESMGR.LoadSound("/Music/character_stage.ogg")
 	-- bgm:play()
@@ -89,10 +107,8 @@ function _GAMEMGR.Ctor() --initialize
 		169	`Swordman/BackStep.skl`
 	]]
 	
-	local _skillIDs = {8, 16, 46, 64, 65, 76, 77, 169}
-	_SkillMgr = _SCENEMGR.GetHero_():GetComponent('SkillMgr')
-	_SkillMgr:LearnSkills(_skillIDs)
-
+	-- _SkillMgr = _SCENEMGR.GetHero_():GetComponent('SkillMgr')
+	-- _SkillMgr:LearnSkills({8, 16, 46, 64, 65, 76, 77, 169})
 	local save_abskeys = {
 		[46] = "SKL_Q", -- UpperSlash
 		[16] = "SKL_R", -- Ashenfork
@@ -117,19 +133,18 @@ function _GAMEMGR.Update(dt)
 		love.event.quit()
 	end
 
+	
 	-- if _KEYBOARD.Press("tab") then
 	-- 	collectgarbage("collect")
 	-- 	mri.m_cMethods.DumpMemorySnapshot("./", "2-After", -1)
 	-- end
-
-
 	if _gamePause then
 		return  
 	end 
 
 	_SCENEMGR.Update(dt)
 	_CAMERA.Update(dt)
-	_CAMERA.LookAt(_SCENEMGR.GetHero_().pos.x, _SCENEMGR.GetHero_().pos.y)
+	_CAMERA.LookAt(_ACTORMGR.mainPlayer.pos.x, _ACTORMGR.mainPlayer.pos.y)
 	-- _RESMGR.Update(dt)
 	_KEYBOARD.Update(dt)
 end
@@ -163,8 +178,8 @@ function _GAMEMGR.Draw(x,y)
 	love.graphics.print(strcat("FPS:", tostring(love.timer.getFPS())), (love.graphics.getWidth() / _CAMERA.scale.x - 300 + 10) , 10)
 	
 	-- // mouse pos draw
-	local _mousePos = {x = love.mouse.getX(), y = love.mouse.getY()}
-	love.graphics.print(strcat(tostring(_mousePos.x), ",", tostring(_mousePos.y)), (_mousePos.x - 20) / _CAMERA.scale.x, (_mousePos.y - 10) / _CAMERA.scale.y)
+	-- local _mousePos = {x = love.mouse.getX(), y = love.mouse.getY()}
+	-- love.graphics.print(strcat(tostring(_mousePos.x), ",", tostring(_mousePos.y)), (_mousePos.x - 20) / _CAMERA.scale.x, (_mousePos.y - 10) / _CAMERA.scale.y)
 	
 	-- _UIMGR:Draw()
 

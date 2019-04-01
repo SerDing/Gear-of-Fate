@@ -40,7 +40,7 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 	self.atker = atker
 	local _objArr =_ObjectMgr.GetObjects()
 	local _hit = false
-	local _hasHit = false
+	local _hitResult = false
 	local _atkInfo
 	local _enemy
 	local _weaponSoundArr
@@ -86,6 +86,10 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 					local _hitWav = _atkInfo["[hit wav]"]
 					if not _hitWav then
 						_hitWav = _weaponSoundArr[3]
+						if attackName == "dashattack" or attackName == "dashattackmultihit" then
+							_hitWav = _weaponSoundArr[4]
+						end
+						
 					end
 					_AUDIOMGR.PlaySound(_hitWav)
 				end
@@ -111,15 +115,15 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 
 			-- return _hit
 
-			if not _hasHit and _hit == true then
-				_hasHit = true
+			if not _hitResult and _hit == true then
+				_hitResult = true
 			end
 
 		end
 		
 	end
 
-	return _hasHit
+	return _hitResult
 
 end 
 
@@ -193,7 +197,6 @@ function _AttackJudger:IsInY(_enemy)
 end
 
 function _AttackJudger:IsInDamageArr(obj_id, frame)
-	
 	for i=1,#self.damageArr do
 		if self.damageArr[i] == obj_id then
 			return true
@@ -239,11 +242,11 @@ function _AttackJudger:LoadAtkInfo(entityType)
 		self.atkInfoArr[k] = dofile(_filesPath .. v)
 	end
 	
-	self.atkY = require(strcat("Data.AtkJudger.AtkInfo.", entityType))
+	self.atkY = require(strcat(".Data.AtkJudger.AtkInfo.", entityType))
 end
 
 function _AttackJudger:RandomEffectPath(hitType)
-	local _path_1 = "Data/common/hiteffect/animation/"
+	local _path_1 = "/Data/common/hiteffect/animation/"
 	local _size = {"small", "large"}
 	if hitType == "[cut]" then
 		return strcat(_path_1, "slash", _size[math.random(1, 2)], tostring(math.random(1, 3)), ".lua")

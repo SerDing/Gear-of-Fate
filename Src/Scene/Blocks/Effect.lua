@@ -9,15 +9,14 @@
 local _obj = require "Src.Scene.Object" 
 local _Effect = require("Src.Core.Class")(_obj)
 
-local _KEYBOARD = require "Src.Core.KeyBoard"
 local _AniPack = require "Src.AniPack" 
 local _Rect = require "Src.Core.Rect" 
 local _GAMEINI = require "Src.Config.GameConfig" 
 
 function _Effect:Ctor(aniPath)
 	
+	self.aniPath = aniPath	
 	self.animas = {}
-	
 	if aniPath then -- a single effect which just has one animation
 		self.animas[1] = require(string.sub(aniPath, 1, string.len(aniPath) - 4))
 	else 
@@ -27,33 +26,24 @@ function _Effect:Ctor(aniPath)
 	-- local tmpArr = string.split(self.path,"/")
 	-- self.name = tmpArr[#tmpArr]
 	
-	self.ani = _AniPack.New()
-	self.ani:SetAnimation(self.animas[1], 1)
-
-	self.pos = {x = 0,y = 0}
-
-	self.offset = {x = 0,y = 0}
-	self.offset_2 = {x = 0,y = 0}
-	
-	self.ani:SetFilter(true)
-
 	self:SetType("EFFECT")
 
 	self.rect = _Rect.New(0,0,10,10)
-	
-	self.debug = false
+	self.ani = _AniPack.New()
+	self.ani:SetAnimation(self.animas[1], 1)
+	self.ani:SetFilter(true)
+
+	self.pos = {x = 0,y = 0}
+	self.offset = {x = 0,y = 0}
+	self.offset_2 = {x = 0,y = 0}
 	
 	self.display = 1
+	self.speed = 0
+	self.dir = 1
 
 	self.destroyed = false
-
 	self.over = false
-
-	self.aniPath = aniPath
-
-	self.speed = 0
-
-	self.dir = 1
+	self.debug = false
 
 	-- self.ani.debug = true
 
@@ -77,31 +67,24 @@ function _Effect:Update(dt)
 		self.pos.x = self.pos.x + self.speed * self.dir
 	end	
 	
-	if _KEYBOARD.Press("f1") then
-		if self.debug then
-			self.debug = false
-		else
-			self.debug = true
-		end
+	self.ani:SetPos(
+		math.floor( self.pos.x + self.offset.x),
+		math.floor( self.pos.y + self.offset.y)
+	)
+
+	if self.debug then
+		self.rect:SetCenter(5,5)
+		self.rect:SetPos(self.pos.x, self.pos.y)
+		self.rect:SetColor(0, 255, 255, 255)
 	end
 	
 end 
 
 function _Effect:Draw()
-
-	self.ani:SetPos(
-		math.floor( self.pos.x + self.offset.x),
-		math.floor( self.pos.y + self.offset.y)
-	)
 	self.ani:Draw()
 	if self.debug then
-		self.rect:SetCenter(5,5)
-		self.rect:SetPos(self.pos.x, self.pos.y)
-		self.rect:SetColor(0, 255, 255, 255)
 		self.rect:Draw()
 	end
-	
-
 end
 
 function _Effect:SetPos(x,y)
@@ -147,6 +130,7 @@ function _Effect:GetAni()
 end
 
 function _Effect:Destroy()
+	self = {}
 	-- self.ani = nil
 	-- self.destroyed = true
 	

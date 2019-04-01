@@ -31,7 +31,7 @@ end
 function _State_Stay:Enter(hero_)
     self.name = "stay"
 	hero_:SetAnimation(self.name)
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 end
 
 function _State_Stay:Update(hero_,FSM_)

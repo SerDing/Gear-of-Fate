@@ -26,7 +26,7 @@ function _State_Move:Enter(entity, FSM_)
 	entity:SetAnimation("[move motion]")
 	self.speed = entity:GetSpeed()
 	self.pos = entity:GetPos()
-	self.input = entity.input
+	self.input = entity:GetComponent("Input")
 	self.time_up = 0
     self.time_down = 0
     self.time_left = 0

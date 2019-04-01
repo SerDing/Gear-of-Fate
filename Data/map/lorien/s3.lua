@@ -10,7 +10,22 @@ return {--[[ #PVF_File ]]
 
 	["[greed]"]="EE EE",
 
-	["[tile]"]={"Tile/ForestOver.til","Tile/ForestOver.til","Tile/ForestOverUnder.til","Tile/ForestUnderOver.til","Tile/ForestOver.til",},
+	["[tile]"]={
+		"Tile/ForestOver.til",
+		"Tile/ForestOver.til",
+		"Tile/ForestOverUnder.til",
+		"Tile/ForestUnderOver.til",
+		"Tile/ForestOver.til",
+	},
+
+	["[extended tile]"] = {
+		["[tile files]"] = {
+			[0] = "tile/forestunderex.til",
+		},
+		["[tile map]"] = {
+			0, 0, 0, 0, 0
+		},
+	},
 
 	["[far sight scroll]"]=56,
 
@@ -40,17 +55,21 @@ return {--[[ #PVF_File ]]
 	},
 
 	["[pathgate pos]"]={
-		15,233,
-		1105,226,
-		608,168,
-		560,348
+		15,233,1105,226,
+		608,168,560,348
 	},
 
+	["[pathgate]"]={
+		-- x, y, pathgateNum, desitinateMapNum
+		15, 233, 361, -- lorien left normal
+		1105, 226, 366, -- lorien right wall
+	},
+	
 	["[virtual movable area]"] = {15 + 20, 233 - 80, 1105 - 40, 226 - 20},
 
 	["[dungeon start area]"]={775,314,119,50},
 
-	["[sound]"]={"AMB_FOREST_01", "M_VILMARK_BOSS",}, -- M_FOREST_01_NEW  M_VILMARK_BOSS
+	["[sound]"]={"AMB_FOREST_01", "M_FOREST_01_NEW",}, -- M_FOREST_01_NEW  M_VILMARK_BOSS
 
 	["[animation]"]={
 		"Animation/BurntTree4.ani","[close]",896,454,0,
@@ -82,8 +101,6 @@ return {--[[ #PVF_File ]]
 		1,1,0,300,221,0,1,1,"[fixed]","[normal]",
 		-- 1,1,0,241,328,0,1,1,"[fixed]","[normal]",
 		-- 1,1,0,496,330,0,1,1,"[fixed]","[normal]",
-
-
 
 		-- 1,1,0,372,184,0,1,1,"[fixed]","[normal]",
 		-- 1,1,0,300,221,0,1,1,"[fixed]","[normal]",

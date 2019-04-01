@@ -50,7 +50,7 @@ function _State_Jump:Enter(hero_,FSM_,backJump)
 	
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 	self.movement = hero_:GetComponent('Movement')
 
 	self.jumpStart = false

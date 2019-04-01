@@ -118,7 +118,12 @@ function _State_TripleSlash:Update(hero_,FSM_)
 
 	end 
 
-	self:Movement(hero_)
+	-- animation control
+	-- if hero_:GetBody():GetCount() == 4 then
+	-- 	hero_.animMap:Stop()
+	-- end
+
+	self:Movement(hero_, FSM_)
 
 	for n=1,#self.effect do
         if self.effect[n] then
@@ -129,32 +134,96 @@ function _State_TripleSlash:Update(hero_,FSM_)
 end 
 
 function _State_TripleSlash:Exit(hero_)
-	-- print("TripleSlash Slide X", self.slideX)
 	self:_Exit()
 end
 
-function _State_TripleSlash:Movement(hero_)
+function _State_TripleSlash:Movement(hero_, FSM_)
 	self.movement:X_Move(self.speed * hero_.dir)
 	self.slideX = self.slideX + self.speed * self.dt
-	if self.slideX >= 130 then -- 130   and self.speed > self.a    self.heroBody:GetCount() >= 3
+
+	-- self.speed = self.speed - self.a * self.dt
+	-- print("movement:  tripslash move speed = ", self.speed)
+	-- print("movement:  tripslash slideX = ", self.slideX)
+	-- if self.speed < 0 then
+	-- 	self.speed = 0
+	-- end
+
+	if self.slideX >= 120 then -- self.slideX >= 130   and self.speed > self.a    self.heroBody:GetCount() >= 3
 		self.speed = self.speed - self.a * self.dt * hero_:GetAtkSpeed() / 1.5
 		if self.speed < 0 then
-			self.speed = 0
+			self.speed = 0	
 		end
-		if self.slideX >= 80 then
-			self.a = self.a * 0.85
-		end
+
+		print("movement:  tripslash move speed = ", self.speed)
+
+		-- if self.speed == 0 and self.heroBody:GetCurrentPlayNum() == 0 then
+		-- 	print("triplslash slide x = ", self.slideX)
+		-- 	FSM_:SetState(FSM_.oriState, hero_)
+		-- end
 	end 
+	
+	-- if self.speed == 0 then
+		
+	-- 	FSM_:SetState(FSM_.oriState, hero_)
+	-- end
+
+	
 end
 
 function _State_TripleSlash:ReSetSpeed()
-	-- self.speed = 255 * self.hero_:GetAtkSpeed() * (self.hero_:GetMovSpeed().x / 100 + 1)
-	self.speed = 260 * (self.hero_:GetMovSpeed().x / 100 + 1)
-	self.a = self.speed / self.hero_:GetAtkSpeed() / 4 * 60
-	self.slideX = 0
+	--[[ 
+		滑动距离由移动速度决定
+		其不变时，攻速越快，滑动初速度越大，阻力加速度越大。
+	]]
 	
+	-- self.speed = 255 * self.hero_:GetAtkSpeed() * (self.hero_:GetMovSpeed().x / 100 + 1)
+
+	-- self.speed = 200 * (self.hero_:GetMovSpeed().x / 100 + 1) -- 260
+	
+	
+	-- self.speed = 200 * (self.hero_:GetAtkSpeed() + 1) -- 260
+	-- self.a = self.speed / self.hero_:GetAtkSpeed() / 4 * 60
+	-- self.slideX = 0
+	
+	
+	self.speed = 180 * (self.hero_:GetAtkSpeed() + 1) -- 260
+	self.a = self.speed / self.hero_:GetAtkSpeed() / 6 * 60
+	self.slideX = 0
+
+
+	-- self.slideX = 120
+
+	-- local t = 580 / (1000 * self.hero_.atkSpeed) -- seconds
+	-- print("movement: tripslash t = ", t)
+	-- self.speed = 250 * (1 + self.hero_:GetAtkSpeed()) -- 277
+	-- self.a = self.speed / t
+	
+	-- self.a = self.speed * self.speed / (2 * self.slideX)
+	
+	
+	-- self.a = 2 * self.slideX / (t * t)
+	-- self.speed =  math.sqrt(2 * self.a * self.slideX)
+	self.slideX = 0
+
+	if self.a < 0 then
+		self.a = - self.a
+	end
+
 	-- print("TripSlash Movement Args:")
-	-- print("speed * dt =", self.speed * self.dt, "a =", self.a)
+	-- print("speed * dt =", self.speed, "a =", self.a)
+
+
+
+	
+	-- speed = baseSpeed * atkSpd -- 移动速度相对固定，因为只受攻击速度影响
+	-- slideX = 固定值
+	-- t = 580ms / (1000 * 动画播放加速倍数)  -- 单位:秒
+
+	-- 推导加速度
+	-- x = speed * t + a * t * t / 2 -- 一般方程 匀减速时 a < 0 
+	-- x = 1 / 2 * a * t * t  -- 反过来看匀减速过程 即为从 v = 0 开始的匀加速
+	-- a = 2 * x / (t * t) -- 由上式即可求出阻力加速度
+
 end
 
 function _State_TripleSlash:ChangeDir(FSM_)

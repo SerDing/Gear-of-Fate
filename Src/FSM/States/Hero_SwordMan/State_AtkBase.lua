@@ -49,7 +49,7 @@ function _State_AtkBase:_Enter(hero_)
 	self.heroBody = hero_:GetBody()
 	self.heroType = hero_:GetSubType()
 	self.atkJudger = hero_:GetAtkJudger()
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 end 
 
 function _State_AtkBase:_Update(FSM_)
@@ -88,14 +88,14 @@ function _State_AtkBase:Effect(path, layer, num, atkSpdPercent)
 			self.hero_:GetDir(),
 			self.hero_
 		)
-	else
-		error("_State_AtkBase:Effect() hero_ ptr is nil!")
-		-- self.effect[#self.effect + 1] = self.EffectMgr.GenerateEffect(path, 
+		-- self.effect[#self.effect + 1] = _EffectMgr.GenerateEffect(strcat(_EffectMgr.pathHead[self.heroType], path), 
 		-- 	self.hero_.pos.x, 
 		-- 	self.hero_.pos.y + layer, 
 		-- 	num, 
 		-- 	self.hero_:GetDir()
 		-- )
+	else
+		error("_State_AtkBase:Effect() hero_ ptr is nil!")
 	end
 	
 	

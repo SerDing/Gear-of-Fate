@@ -32,17 +32,14 @@ function _ObjectMgr.Ctor()
 end 
 
 function _ObjectMgr.Update(dt)
-	
+
 	for n=1,#_ObjectMgr.objects do
 		if _ObjectMgr.objects[n] and _ObjectMgr.objects[n].Update  then -- and _ObjectMgr.objects[n]:GetType() ~= "HERO"
-			if _ObjectMgr.objects[n]:GetType() == "HERO" then
-				_ObjectMgr.objects[n]:Update(dt)
-			else 
-				_ObjectMgr.objects[n]:Update(dt)
-			end 
+			-- print("_ObjectMgr update object", _ObjectMgr.objects[n]:GetType())
+			_ObjectMgr.objects[n]:Update(dt)
 		end 
 	end 
-	
+
 	for n=#_ObjectMgr.objects,1,-1 do
 		if _ObjectMgr.objects[n]:GetType() == "EFFECT" or 
 		   _ObjectMgr.objects[n]:GetType() == "ATKOBJ" then
@@ -54,7 +51,7 @@ function _ObjectMgr.Update(dt)
 			end 
 		end 
 	end 
-
+	
 end 
 
 function _ObjectMgr.Draw(cam_x, cam_y)
@@ -67,7 +64,7 @@ function _ObjectMgr.Draw(cam_x, cam_y)
 end
 
 function _ObjectMgr.Sort()
-    table.sort(_ObjectMgr.objects, _sort)
+	table.sort(_ObjectMgr.objects, _sort)
 end
 
 function _ObjectMgr.AddObject(obj)

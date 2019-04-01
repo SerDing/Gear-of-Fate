@@ -31,6 +31,7 @@ function _Navigation:Ctor(area, scene)
     }
 
     self.debug = false
+    -- self.debug = true
 
 end 
 

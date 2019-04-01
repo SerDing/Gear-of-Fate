@@ -11,8 +11,8 @@ local _Grid_Skill = require("Src.Core.Class")(_Widget)
 
 local _RESMGR = require "Src.Resource.ResManager"
 local _Sprite = require "Src.Core.Sprite"
-local _SCENEMGR = require "Src.Scene.GameSceneMgr"
-local _SkillMgr = _SCENEMGR.GetHero_():GetComponent('SkillMgr')
+local _ACTORMGR = require "Src.Actor.ActorMgr"
+
 
 function _Grid_Skill:Ctor(id, x, y, skillid, absKey,origin)
 	self.type = "SkillGrid"
@@ -24,6 +24,7 @@ function _Grid_Skill:Ctor(id, x, y, skillid, absKey,origin)
 	self.origin = origin or false
 	self:SetSkill(skillid)
 	self.coolPercent = 1.00
+	self._SkillMgr = _ACTORMGR.mainPlayer:GetComponent('SkillMgr')
 end 
 
 function _Grid_Skill:Draw(x,y)
@@ -43,10 +44,10 @@ function _Grid_Skill:SetSkill(id)
 	if id == 0 then
 		return 
 	end
-	self.skill = _SkillMgr:GetSkillById(self.skillID)
+	self.skill = self._SkillMgr:GetSkillById(self.skillID)
 	self.sprites = {
-		_Sprite.New(_RESMGR.pathHead .. self.skill.iconPath[1]), -- useable
-		_Sprite.New(_RESMGR.pathHead .. self.skill.iconPath[2]), -- cool
+		_Sprite.New(_RESMGR.pathHead .. string.lower(self.skill.iconPath[1])), -- useable
+		_Sprite.New(_RESMGR.pathHead .. string.lower(self.skill.iconPath[2])), -- cool
 	}
 	self.sprites[3] = _Sprite.New(love.graphics.newImage(love.image.newImageData(self.sprites[1]:GetWidth(), self.sprites[1]:GetHeight()))) -- black mask
 	self.sprites[3]:SetColorEx(0, 0, 0, 122)

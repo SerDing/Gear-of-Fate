@@ -22,22 +22,26 @@ function _FSM:RegisterState(state_name, class_name)
 end
 
 function _FSM:Ctor(entity_, state_name, entityType)
+    
+    
+    
     self.entity_ = entity_
     self.state = {}
     self.entityType = entityType
     self:InitStates(entityType)
 
+    self.KEYID = {}
+    self.input = entity_:GetComponent("Input")
+
+    self:OnConstruct()
+
     self.oriState = state_name
     self.preState = nil
     self.curState = self.state[state_name]
     self.curState:Enter(entity_,self)
-    if self.onNewStateEnter then
-        self:onNewStateEnter(entity_)
-    end
-    self.KEYID = {}
-    self.input = entity_:GetInput()
-    if self.OnConstruct then
-        self:OnConstruct()
+    
+    if self.OnNewStateEnter then
+        self:OnNewStateEnter(entity_)
     end
 end
 
@@ -60,6 +64,8 @@ end
 function _FSM:LateUpdate(entity_)
 end
 
+--@param string state_name
+--@param table entity_
 function _FSM:SetState(state_name,entity_, ...)
 
     if self.curState.name ~= "damage" then
@@ -79,6 +85,9 @@ function _FSM:SetState(state_name,entity_, ...)
         print(strcat("_FSM:SetState() curState ", state_name, " nil", " entity.subType: ", entity.subType))
     end
     self.curState:Enter(entity_, self, ...)
+    if self.OnNewStateEnter then
+        self:OnNewStateEnter(entity_)
+    end
 end
 
 function _FSM:InitStates(entityType)
@@ -134,6 +143,9 @@ function _FSM:GetCurState()
 end
 
 function _FSM:OnCurStateExit(entity_)
+end
+
+function _FSM:OnNewStateEnter(entity_)
 end
 
 function _FSM:OnConstruct()

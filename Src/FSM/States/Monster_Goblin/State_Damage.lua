@@ -17,34 +17,74 @@ function _State_Damage:Ctor()
 	self.push_A = 0
 	self.stableFPS = 60
 
+	self.up_a = 14.75 * self.stableFPS
+	self.down_a = 15 * self.stableFPS
+
 	self.lift_V = 0
 	self.liftPower = 0
 	self.dir_Y = "null"
 	self.bounce = false
+
+	self.acfactor = 1.1 -- acceleration factor
+
 end 
 
-function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
-	-- print("monster damage")
-	local _hasDown
-	if entity:GetBody():GetAniId() == "[down motion]" and self.dir_Y == "null" then
-		_hasDown = true
-	end
-	
+local function SetDamageAnimR(entity)
 	local _motion = strcat("[damage motion ", tostring(math.random(1, 2)), "]")
 	entity:SetAnimation(_motion)
+end
+
+function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
+
+	--[[
+		subaerial(在陆上)
+			["[damage reaction]"] == "[down]"
+				spd_z = [lift up];  spd_x = [push aside] / 60 (匀速)
+
+			["[damage reaction]"] == "[damage]" or "[hit down]"
+				spd_x = [push aside] (匀减速)
+ 
+		aerial(在空中)
+			["[damage reaction]"] == "[damage]" or "[down]"
+				spd_z = spd_z + [lift up];  spd_x = [push aside] / 60 (匀速)
+
+			
+			
+		damage方法 逻辑整理
+
+		记录是否已倒地
+
+		随机播放[damage motion x]
+
+		读取并存储[hitRecovery]
+
+		重置两个timer = 0
+
+		从damageInfo里获取 [lift](在空中) 和 [push](在地上) 两组数据
+		
+		
+
+		
+
+	]]
+
+	print("monster damage")
+
+	local _hasDown = self:IsDown(entity)
+	
+	SetDamageAnimR(entity)
 	
 	self.hit_recovery = entity.property["hit recovery"] or 1000
 	self.hit_recovery = 800
 	self.timer = 0
 	self.timer2 = 0
 
-
 	local _info = (self.lift_V > 0) and damageInfo["lift"] or damageInfo["push"]
 
-	self.push_A = _info["backSpeed"] or 1
+	self.push_A = _info["backSpeed"]
 	-- self.bounce = _info["bounce"] or self.bounce
 	self.bounce = (_info["float"] > 0) and true or false
-	self.liftPower = _info["float"] * self.stableFPS or 0
+	self.liftPower = _info["float"] * self.stableFPS * 1.15
 
 	if self.liftPower > 0 then
 		if self.dir_Y == "up" or self.dir_Y == "down" then
@@ -63,7 +103,7 @@ function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
 		if self.dir_Y == "up" or self.dir_Y == "down" then -- in air
 			self.lift_V = 2
 			self.dir_Y = "up"
-			self.push_V = self.push_V / 2
+			-- self.push_V = self.push_V / 2
 			entity:SetAnimation("[down motion]")
 			entity:NextFrame()
 
@@ -78,7 +118,23 @@ function _State_Damage:Enter(entity, FSM_, damageInfo, obj)
 		self.bounce = false
 	end
 
+	
+	--[[
 
+		受击对象站立情况下(subaerial)  是否应用 [lift up] 要看 if [attack direction] == "hit lift up"
+
+		非站立情况下 即 浮空时（aerial）   无视 [attack direction] 直接应用 [lift up] 
+ 
+		if not entity.IsFloat() then -- is on land
+			
+			if(damageInfo['[attack direction]'] == 'hit horizen')
+			
+			end
+		end
+
+	]]
+
+	-- ----------------------------------------------------
 	-- self.push_A = 5
 	-- self.bounce = true
 
@@ -178,9 +234,10 @@ end
 function _State_Damage:HitFlyEffect(entity, _dt)
 	if self.dir_Y == "up" then
 		if self.lift_V > 0 then
-			self.lift_V = self.lift_V - _dt * 15 * self.stableFPS -- v = v - at
-			if self.lift_V < 0 then  -- v < 0
-				self.lift_V = 0 -- v = 0
+			self.lift_V = self.lift_V - _dt * self.up_a * self.acfactor -- v = v - at
+			if self.lift_V <= 0 then  -- v < 0   self.lift_V < 80 / 60
+				-- self.lift_V = 0 -- v = 0
+				self.lift_V = - self.lift_V
 				self.dir_Y = "down"
 				if entity:GetBody():GetAniId() ~= "[down motion]" then
 					entity:SetAnimation("[down motion]")
@@ -192,7 +249,7 @@ function _State_Damage:HitFlyEffect(entity, _dt)
 		end
 
 	elseif self.dir_Y == "down" then
-		self.lift_V = self.lift_V + _dt * 15 * self.stableFPS
+		self.lift_V = self.lift_V + _dt * self.down_a * self.acfactor
 		if entity:GetZ() < 0 then -- on air
 			
 			entity:SetZ(entity:GetZ() + self.lift_V * 1.2  * _dt) -- fall down
@@ -200,7 +257,7 @@ function _State_Damage:HitFlyEffect(entity, _dt)
 				entity:SetZ(0) -- fix z to right boundary
 				if self.bounce then -- judge bounce
 					self.bounce = false
-					self.lift_V = self.lift_V * 0.35
+					self.lift_V = self.lift_V * 0.5
 					self.dir_Y = "up"
 					self.timer = 0
 				else
@@ -234,6 +291,13 @@ function _State_Damage:HitRecovery(entity, FSM_, _dt)
 	else
 		-- print("HitRecovery()  self.liftPower", self.liftPower)
 	end
+end
+
+function _State_Damage:IsDown(entity)
+	if entity:GetBody():GetAniId() == "[down motion]" and self.dir_Y == "null" then
+		return true
+	end
+	return false
 end
 
 function _State_Damage:Exit(entity)

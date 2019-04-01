@@ -28,19 +28,20 @@ function _Movement:Ctor(entity)
 end 
 
 function _Movement:SetSceneRef(s)
+	assert(s, "Scene ref is null.")
 	scene_ = s
 end
 
-function _Movement:X_Move(offset)
-    offset = offset * _GetDt()
+function _Movement:X_Move(dx)
+    dx = dx * _GetDt()
 	local _pass, _result
-	local _next = self.pos.x + offset
+	local _next = self.pos.x + dx
 
-	if scene_:IsInMoveableArea(_next, self.pos.y) then
+	if scene_:IsPassable(_next, self.pos.y) then -- IsInMoveableArea
 		_result = scene_:IsInObstacles(_next, self.pos.y)
 		if _result[1] then
-			-- self:Y_Move(offset)
-			if offset > 0 then
+			-- self:Y_Move(dx)
+			if dx > 0 then
 				_next = _result[2]:GetVertex()[1].x - 1
 			else
 				_next = _result[2]:GetVertex()[2].x + 1
@@ -65,7 +66,8 @@ function _Movement:Y_Move(offset)
 	local _result
 	local _next = self.pos.y + offset
 
-	if scene_:IsInMoveableArea(self.pos.x, _next) then	
+	if scene_:IsPassable(self.pos.x, _next) then	-- IsInMoveableArea
+		
 		_result = scene_:IsInObstacles(self.pos.x, _next)
 		if _result[1] then
 			if offset > 0 then
@@ -106,8 +108,8 @@ end
 function _Movement:Gravity(topEvent, landEvent, fallCond)
 	_dt = _GetDt()
 	if self.dir_z == _DIR_Z_UP then
-        self.vz = self.vz - _dt * self.g * _stableFPS
-        if self.vz < 0 then 
+		self.vz = self.vz - _dt * self.g * _stableFPS
+        if self.vz < 0 then
             self.vz = 0 
 		end
 		self:Z_Move(-self.vz)
@@ -122,9 +124,9 @@ function _Movement:Gravity(topEvent, landEvent, fallCond)
 			end
 		end
     elseif self.dir_z == _DIR_Z_DOWN then
-        self.vz = self.vz + _dt * self.g * _stableFPS
+		self.vz = self.vz + _dt * self.g * _stableFPS
 		if self.entity:GetZ() < 0 then
-			self:Z_Move(self.vz)	
+			self:Z_Move(self.vz)
 		end
 		if self.entity:GetZ() >= 0 then
 			self.entity:SetZ(0)

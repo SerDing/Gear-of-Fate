@@ -45,13 +45,18 @@ function _FSM_Hero:SwitchSkillState(sklID, stateName, hero_, ...)
 end 
 
 function _FSM_Hero:SwitchState(keyID, stateName, hero_, ...)
-    if self.input:IsPressed(self.HotKeyMgr_.KEY[keyID]) then
+	if self.input:IsPressed(self.HotKeyMgr_.KEY[keyID]) then
 		self:SetState(stateName, hero_, ...)
 	end 
 end 
 
 function _FSM_Hero:OnCurStateExit(entity_)
 	self:SkillCoolEvents(entity_)
+	
+end
+
+function _FSM_Hero:OnNewStateEnter(entity_)
+	self.SkillMgr_:HandleAvailability(self.curState.trans)
 end
 
 function _FSM_Hero:SkillCoolEvents(entity_)

@@ -11,6 +11,7 @@ local _State_Frenzy = require("Src.Core.Class")()
 
 local _EffectMgr = require "Src.Scene.EffectManager" 
 local _BuffMgr = require "Src.Heroes.BuffManager" 
+local _AUDIOMGR = require "Src.Audio.AudioManager"
 
 function _State_Frenzy:Ctor()
 	self.name = "frenzy"
@@ -50,7 +51,7 @@ function _State_Frenzy:Enter(hero_,FSM_)
 
 	self.switch = true
 	hero_:SetAttackMode("frenzy")
-	
+	_AUDIOMGR.PlaySound("SM_FLENSE")
 end
 
 function _State_Frenzy:Update(hero_,FSM_)

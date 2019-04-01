@@ -1,11 +1,4 @@
 --[[
-	Desc: A new lua class 
-	Author: SerDing 
-	Since: 2018-10-09 19:29:22 
-	Last Modified time: 2018-10-09 19:29:22 
-	Docs: 
-		* Write more details here 
-]]--[[
 	Desc: Hero Class --> SwordMan
  	Author: Night_Walker
 	Since: 2017-08-07 22:25:22
@@ -36,7 +29,7 @@ local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
 -- const
 local _aniPath = {
 "/Data/character/swordman/animation/",
-"/Data/equipment/swordman/weapon/"
+"/Data/equipment/character/swordman/weapon/"
 }
 
 local _aniName = {"attack1", "attack2", "attack3","frenzy1","frenzy2","frenzy3","frenzy4",
@@ -53,7 +46,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y, z = 0}
 	self.drawPos = {x = math.floor(x), y = math.floor(y), z = 0}
-	self.spd = {x = 60 * 2.5, y = 35 * 2} -- 125 125
+	self.spd = {x = 60 * 2.5, y = 37.5 * 2} -- 125 125
 
 	--property
 	self.property = require("Data/character/swordman/swordman")
@@ -61,9 +54,9 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.0 + 0.70 -- 0.26
+	self.atkSpeed = 1.2 + 0.30 -- 0.26  0.40  0.70
 	self.hitRecovery = 22.5 -- 45 65
-	self.hitRecovery = 55 -- 45 65
+	self.hitRecovery = 70 * 0.86 -- 45 65 70 100 
 	self.hitTime = 0
 	self.actionStop = 170
 	self.actionStopTime = 0
@@ -81,9 +74,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.buff = {
 		["frenzy"] = {switch = false, ani = nil},
 	}
-	self.pakGrp = {
-		["weapon"] = _Weapon.New(self.subType, self),
-	}
+	
 	self.Models = {}
 	self.Components = {}
 	self.Models['HP'] = _HP_Model.New(120, 120)
@@ -91,22 +82,10 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.Components['Movement'] = _Movement.New(self)
 	self.Components['Weapon'] = _Weapon.New(self.subType, self)
 	
-	self.Components['SkillMgr'] = _SkillMgr.New(self)
-
+	
+	
 	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
-	-- // fight with your own dark side
-	-- local darkDepth = 50
-	-- self.animMap:SetColor(darkDepth, darkDepth, darkDepth, 255)
-	-- self.Components['Weapon']:SetSingle(true)
-	
-	self.Components['Weapon']:SetType("hsword", "lswd")  -- mainType, subType
-	-- katana	katana	0001
-	-- katana	katana	3201
-	-- katana	lkatana	0004	0002
-	-- hsword	lswd	0500	0100
-	-- ssword	sswd	4200c	
-	
 	self.animMap = _AnimGrp.New()
 	self.animMap:AddWidget("body")
 	self.animMap:AddWidget("weapon_b1")
@@ -116,6 +95,17 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 
 	self.animMap:GetWidget("body"):SetFileNum(0001)
 
+	self.Components['Weapon']:SetType("katana", "katana")  -- mainType, subType
+	self.Components['Weapon']:SetRes("katana", 0001)  -- subType, fileNum
+	-- katana	katana	0001
+	-- katana	katana	3201
+	-- katana	lkatana	0004	0002
+	-- hsword	lswd	0500	0100	0001
+	-- ssword	sswd	4200c	
+	
+	-- self.Components['Weapon']:SetSingle(true)
+	
+	-- loading anim data file
 	for i = 1,#_aniName do
 		self.animMap:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
 	end
@@ -131,11 +121,23 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.animMap:GetWidget("weapon_b1"):SetBaseRate(self.atkSpeed)
 	self.animMap:GetWidget("weapon_c1"):SetBaseRate(self.atkSpeed)
 
-	self.Components['Weapon']:SetRes("lswd", 0100)  -- subType, fileNum
 	
-	-- Components Models
-	self.input = _Input.New(self)
-	self.FSM = _FSM.New(self, "stay", self.subType, self)
+	
+	-- // fight with your own dark side
+	-- local darkDepth = 50
+	-- self.animMap:SetColor(darkDepth, darkDepth, darkDepth, 255)
+	
+
+	-- Components
+	self.Components["Input"] = _Input.New(self)
+	self.Components['SkillMgr'] = _SkillMgr.New(self, {8, 16, 46, 64, 65, 76, 77, 169})
+	
+
+	self.Components["FSM"] = _FSM.New(self, "stay", self.subType)
+	-- self.Components["FSM"]:OnNewStateEnter(self)
+	
+	-- self.FSM = _FSM.New(self, "stay", self.subType, self)
+
 
 
 	--------------- test ani file
@@ -149,6 +151,133 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	end
 	-----------------------------
 	self.extraEffects = {}
+end
+
+function Hero_SwordMan:LoadAnimData()
+	
+	local _job = self.property["[job]"]
+	_job = string.gsub(_job,'%[', "") -- delete "["
+	_job = string.gsub(_job,'%]', "") -- delete "]"
+	local _aniDir = {
+		"/Data/character/" .. _job .. "/animation/",
+		"/Data/equipment/character/" .. _job .. "/weapon/",
+	}
+
+	local _basicAniRealDir = {
+		['attack1'] = string.gsub(self.property["[attack motion 1]"], ".ani"),
+		['attack2'] = string.gsub(self.property["[attack motion 2]"], ".ani"),
+		['attack3'] = string.gsub(self.property["[attack motion 3]"], ".ani"),
+
+		['rest'] = string.gsub(self.property["[rest motion]"], ".ani"),
+		['stay'] = string.gsub(self.property["[waiting motion]"], ".ani"),
+		['move'] = string.gsub(self.property["[move motion]"], ".ani"),
+		['dash'] = string.gsub(self.property["[dash motion]"], ".ani"),
+		['dashattack'] = string.gsub(self.property["[dashattack motion]"], ".ani"),
+		['down'] = string.gsub(self.property["[down motion]"], ".ani"),
+		['sit'] = string.gsub(self.property["[sit motion]"], ".ani"),
+		
+		['jump'] = string.gsub(self.property["[jump motion]"], ".ani"),
+		['jumpattack'] = string.gsub(self.property["[jumpattack motion]"], ".ani"),
+
+		['damage1'] = string.gsub(self.property["[damage motion 1]"], ".ani"),
+		['damage2'] = string.gsub(self.property["[damage motion 2]"], ".ani"),
+		
+		['overturn'] = string.gsub(self.property["[overturn motion]"], ".ani"),
+		
+		
+		['throw1-1'] = string.gsub(self.property["[throw motion 1-1]"], ".ani"),
+		['throw1-2'] = string.gsub(self.property["[throw motion 1-2]"], ".ani"),
+		['throw2-1'] = string.gsub(self.property["[throw motion 2-1]"], ".ani"),
+		['throw2-2'] = string.gsub(self.property["[throw motion 2-2]"], ".ani"),
+		
+		
+		['getitem'] = string.gsub(self.property["[getitem motion]"], ".ani"),
+		['simple_rest'] = string.gsub(self.property["[simple rest motion]"], ".ani"),
+		['simple_move'] = string.gsub(self.property["[simple move motion]"], ".ani"),
+		
+	}
+
+	local names = {
+		"attack1", 
+		"attack2",
+		"attack3",
+
+		"damage1",
+		"damage2",
+
+		"rest",
+		"stay", 
+		"move", 
+		"dash", 
+		"dashattack", 
+		"down", 
+		"sit",
+
+		"jump",
+		"jumpattack",
+
+		"guard", 
+		"getitem", 
+
+		
+
+		"frenzy1",
+		"frenzy2",
+		"frenzy3",
+		"frenzy4",
+
+		"gorecross", 
+		"grab", 
+		"hopsmash",
+		"hopsmashready",
+		
+		"hitback",
+		"hardattack", 
+		
+		
+		"moonlightslash1",
+		"moonlightslash2",
+		"tripleslash1",
+		"tripleslash2",
+		"tripleslash3",
+		"summon1", 
+		"summon2", 
+		"upperslashafter", 
+		"flowmindtwoattack1", 
+		"outragebreakready", 
+		"outragebreakslash", 
+	}
+
+	for k,v in pairs(_basicAniRealDir) do
+		self.animMap:GetWidget("body"):AddAnimation(_aniDir[1] .. v, 1, k)
+	end
+	
+	-- 装备应该独立出来 不应混在这里  由一个equipment组件类来专门通过equ文件及其指定的lay文件来初始化animation
+	-- 这里的独立单指逻辑的独立，对应的anim对象仍然放在在这里的animMap中，这才符合object-component的思想
+	local _wpMainTp, _wpSubTp = self.Components['Weapon']:GetType()
+	local _wpAniPath = ""
+	for i = 1,#_aniName do
+		_wpAniPath = strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i])
+		self.animMap:GetWidget("weapon_b1"):AddAnimation(_wpAniPath, 1, _aniName[i])
+	end
+	for i = 1,#_aniName do
+		self.animMap:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+	end
+
+
+
+	for i = 1,#_aniName do
+		self.animMap:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
+	end
+
+	local _wpMainTp, _wpSubTp = self.Components['Weapon']:GetType()
+	for i = 1,#_aniName do
+		self.animMap:GetWidget("weapon_b1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+	end
+	for i = 1,#_aniName do
+		self.animMap:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+	end
+
 end
 
 function Hero_SwordMan:Update(dt)
@@ -167,10 +296,11 @@ function Hero_SwordMan:Update(dt)
 		return
 	end
 	
-	self.FSM:Update(self)
-	self.input:Update(dt)
+	self.Components["FSM"]:Update(self)
+	-- self.input:Update(dt)
+	self.Components["Input"]:Update(dt)
 	self.animMap:Update(dt)
-
+	
 	for k,v in pairs(self.buff) do 
 		if v.switch then
 			v.ani:Update(dt)
@@ -198,7 +328,7 @@ function Hero_SwordMan:Update(dt)
 			v:Update(dt)
 		end
 	end
-	
+
 	self.Y = self.pos.y
 
 	-- HP_Model Unit Test
@@ -214,6 +344,8 @@ function Hero_SwordMan:Draw()
 	end 
 	
 	self.animMap:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z, 0, 1, 1)
+
+	-- self.animMap:Draw(self.drawPos.x + 80, self.drawPos.y + self.drawPos.z, 0, 1, 1)
 
 	for k,v in pairs(self.buff) do
 		if v.switch then
@@ -330,10 +462,6 @@ function Hero_SwordMan:GetY()
 	return self.Y
 end
 
-function Hero_SwordMan:GetInput()
-	return self.input
-end
-
 function Hero_SwordMan:GetBody()
 	return self.animMap:GetWidget("body")
 end
@@ -347,7 +475,6 @@ function Hero_SwordMan:GetAttackMode()
 end
 
 function Hero_SwordMan:GetAttackBox()
-	-- return self.pakGrp["weapon"]:GetAttackBox() or self.pakGrp["body"]:GetAttackBox()
 	return self.animMap:GetAttackBox()
 end
 
@@ -390,9 +517,20 @@ function Hero_SwordMan:GetModel(tag)
 	return self.Models[tag]
 end
 
-function Hero_SwordMan:GetComponent(tag)
-	assert(self.Components[tag], "Hero_SwordMan:GetComponent()  no component: " .. tag)
-	return self.Components[tag]
+function Hero_SwordMan:AddComponent(key, component)
+	assert(key, "Key is null.")
+	assert(component, "Component is null.")
+	self.Components[key] = component
+end
+
+function Hero_SwordMan:DelComponent(k)
+	assert(self.Components[k], "Hero_SwordMan:GetComponent()  no component: " .. k)
+	return self.Components[k]
+end
+
+function Hero_SwordMan:GetComponent(k)
+	assert(self.Components[k], "Hero_SwordMan:GetComponent()  no component: " .. k)
+	return self.Components[k]
 end
 
 return Hero_SwordMan

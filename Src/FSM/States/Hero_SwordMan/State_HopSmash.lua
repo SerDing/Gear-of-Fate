@@ -43,6 +43,8 @@ function _State_HopSmash:Ctor()
 	self.start = false
 	self.input = {}
 	self.land = false
+	self.smash = true
+	-- self.smash = false
 end 
 
 function _State_HopSmash:Enter(hero_)
@@ -66,7 +68,7 @@ function _State_HopSmash:Enter(hero_)
 	self.atkJudger:ClearDamageArr()
 	self.atkObj = nil
 	
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 	self.movement = hero_:GetComponent('Movement')
 	self.land = false
 	self:_Enter(hero_)
@@ -103,8 +105,9 @@ function _State_HopSmash:Update(hero_,FSM_)
 			self.atkSpeed = self.oriAtkSpeed * _percent
 			hero_:SetAtkSpeed(self.atkSpeed)
 			self.speed = self.basePower * 0.8 * self.time * 0.2
-			if self.time < 0.11 then
-				self.time = 0.11
+			local _limit_time = 0.10
+			if self.time < _limit_time then
+				self.time = _limit_time
 			end
 
 			-- if self.time < 0.1 then
@@ -149,12 +152,13 @@ function _State_HopSmash:Gravity(hero_)
 	end
 	local function fallCond()
 		if hero_:GetBody():GetCount() >= 2 then
-			return true
+			return true 
 		end
 		return false
 	end
 	self.movement:Set_g(self.basePower * 0.51 * hero_:GetAtkSpeed())
 	self.movement:Gravity(nil, landEvent, fallCond)
+	-- self.movement:Gravity(nil, landEvent)
 end
 
 function _State_HopSmash:AttackJudgement(hero_, _body, _dt)
@@ -176,7 +180,11 @@ function _State_HopSmash:AttackJudgement(hero_, _body, _dt)
 
 			if self.atkTimes < 2 then
 				self.atkJudger:ClearDamageArr()
-				if self.atkJudger:Judge(hero_, "MONSTER", "hopsmash") then
+				local _attackName = "hopsmash"
+				if self.atkTimes == 1 then
+					_attackName = "hopsmashfinal"
+				end
+				if self.atkJudger:Judge(hero_, "MONSTER", _attackName) then
 					self.atkTimes = self.atkTimes + 1
 				end
 				self.judgeEvents[_body:GetCount()] = true
@@ -189,7 +197,7 @@ end
 
 function _State_HopSmash:SmashEffect(hero_, _body)
 	if self.land and _body:GetCount() == 4 and not self.effect[3] and not self.effect[4]  then
-		if not self.atkObj then
+		if not self.atkObj and self.smash then
 			self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20050)
 			self.atkObj:SetHost(hero_)
 			self.atkObj:SetPos(hero_:GetPos().x + 140 * hero_:GetDir(), hero_:GetPos().y)

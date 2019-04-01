@@ -12,6 +12,7 @@ local _RESMGR = {
 	imageCachePool = {},
 	soundCachePool = {},
 	count = 0,
+	maxSize = 1200,
 	pathHead = "/ImagePacks/"
 }
 
@@ -33,7 +34,6 @@ function _RESMGR.Ctor() --initialize
 		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana3201b.img/",
 		"/ImagePacks/character/swordman/equipment/avatar/weapon/katana/katana3201c.img/",
 		
-
 		"/ImagePacks/character/swordman/effect/gorecross/gorecross_cross.img/",
 		"/ImagePacks/character/swordman/effect/gorecross/gorecross_obj_cross_ldodge.img/",
 		"/ImagePacks/character/swordman/effect/gorecross/gorecross_obj_cross_none.img/",
@@ -44,66 +44,42 @@ function _RESMGR.Ctor() --initialize
 	for n=1,#_cacheNameList do
 		_RESMGR.LoadTextureByImg(_cacheNameList[n])
 	end 
-	
-
 end
 
 function _RESMGR.Update(dt)
-
-	-- Display the amount of the resource poll
-	-- _time = _time + dt
-	-- if _time > 0.016 * 60 then
-	-- 	_time = 0
-	-- 	print(strcat("ResPool_Count:", tostring(table.getn(_RESMGR.imageCachePool))))
-	-- end
-	
+	-- Display the amount of the resource pool
+	_time = _time + dt
+	if _time > 0.016 * 60 then
+		_time = 0
+		print("ResPool_Count:", _RESMGR.count)
+	end
 end
 
-function _RESMGR.LoadTexture(filePath,cache)
-	if not cache then
-		-- [[ find objected texture in imageCachePool ]]
-		for n = 1, table.getn(_RESMGR.imageCachePool) do
-			if _RESMGR.imageCachePool[n].filePath == filePath then
-				return _RESMGR.imageCachePool[n].ptr
-			end
-		end
-	end 
-	
-	-- [[ find nothing then create objective texture ]]
-	local _tmpImage = {ptr = 0, filePath = filePath}
-    _tmpImage.ptr =  love.graphics.newImage(filePath)
-    _RESMGR.Insert("IMAGE", _tmpImage)
-	
-	if cache then
-		_tmpImage = nil
-	else 
-		return _tmpImage.ptr 
-	end 
-	
+function _RESMGR.LoadTexture(path, cache)
+	local texture = _RESMGR.imageCachePool[path]
+	if texture then
+		return texture
+	end
+	-- not found in pool, create one.
+	_RESMGR.imageCachePool[path] = love.graphics.newImage(path)
+	_RESMGR.count = _RESMGR.count + 1
+	-- proc overflow of pool size
+	if _RESMGR.count > _RESMGR.maxSize then
+		table.remove(_RESMGR.imageCachePool, 1)
+	end
+	return _RESMGR.imageCachePool[path]
 end
 
-function _RESMGR.LoadSound(filePath,cache) -- cache : early caching resource
-
+function _RESMGR.LoadSound(path, cache)
 	if not cache then
-		-- [[ find objected sound in imageCachePool ]]
-		for n = 1, #_RESMGR.soundCachePool do
-			if _RESMGR.soundCachePool[n].filePath == filePath then
-				-- print("ResMgr.LoadSound() has found ", filePath)
-				return _RESMGR.soundCachePool[n].ptr
-			end
+		local sound = _RESMGR.soundCachePool[path]
+		if sound then
+			return sound
 		end
 	end
-
-	local _tmpSound = {ptr = 0, filePath = filePath}
-	_tmpSound.ptr = love.audio.newSource(filePath)
-    _RESMGR.Insert("SOUND", _tmpSound)
-	
-	-- if cache then
-	-- 	_tmpSound = nil
-	-- else 
-		return _tmpSound.ptr 
-	-- end 
-	
+	-- not found in pool or force to reload, then create new one.
+	_RESMGR.soundCachePool[path] = love.audio.newSource(path)
+	return _RESMGR.soundCachePool[path]
 end
 
 function _RESMGR.LoadTextureByImg(filePath)
@@ -145,15 +121,6 @@ function _RESMGR.LoadTextureByImg(filePath)
 
 end
 
-function _RESMGR.Insert(pool, element)
-	if pool == "IMAGE" then
-		_RESMGR.imageCachePool[#_RESMGR.imageCachePool + 1] = element
-	elseif pool == "SOUND" then
-		_RESMGR.soundCachePool[ #_RESMGR.soundCachePool + 1] = element
-	end
-	_RESMGR.count = _RESMGR.count + 1
-end
-
 function _RESMGR.InstantiateImageData(imagedata)
 	--[[
 		all of pixel value in imagedata are zero, 
@@ -165,10 +132,10 @@ function _RESMGR.InstantiateImageData(imagedata)
 	local h = imagedata:getHeight()
 
 	for x = 0, w - 1 do
-        for y = 0, h - 1 do
+		for y = 0, h - 1 do
 			imagedata:setPixel(x, y, 255, 255, 255, 255) -- set color of pixel to white
 		end
-    end
+	end
 end
 
 return _RESMGR

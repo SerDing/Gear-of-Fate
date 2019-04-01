@@ -31,5 +31,5 @@ return {
 		['[DELAY]'] = 300,
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",198,},
 	},
- 
+
 }

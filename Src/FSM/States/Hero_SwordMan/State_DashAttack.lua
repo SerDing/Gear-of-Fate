@@ -20,7 +20,7 @@ function _State_DashAttack:Enter(hero_)
 	self.attackCount = 1
 	self.atkJudger = hero_:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 	self.movement = hero_:GetComponent('Movement')
 	self:_Enter(hero_)
 end

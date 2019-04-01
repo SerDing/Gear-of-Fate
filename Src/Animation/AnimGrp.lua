@@ -52,6 +52,18 @@ function _AvatarGrp:SetCurrentPlayNum(n)
     end
 end
 
+function _AvatarGrp:Stop()
+    for k,v in pairs(self.widgets) do
+        v:Stop()
+    end
+end
+
+function _AvatarGrp:Continue()
+    for k,v in pairs(self.widgets) do
+        v:Continue()
+    end
+end
+
 function _AvatarGrp:SetDir(d)
     for k,v in pairs(self.widgets) do
         v:SetDir(d)
@@ -93,4 +105,4 @@ function _AvatarGrp:ClearWidget(k)
     self.widgets[k] = {}
 end
 
-return _AvatarGrp 
+return _AvatarGrp

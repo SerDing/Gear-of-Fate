@@ -34,7 +34,7 @@ function _State_Move:Enter(hero_)
     self.time_down = 0
     self.time_left = 0
     self.time_right = 0
-    self.input = hero_:GetInput()
+    self.input = hero_:GetComponent("Input")
     self.movement = hero_:GetComponent('Movement')
 end
 

@@ -132,16 +132,6 @@ function _Obstacle:Update(dt)
 	
 	self.ani:Update(dt)
 	
-	if _KEYBOARD.Press("f1") then
-		if self.debug then
-			self.debug = false
-			log("obstacles debug = false")
-		else
-			self.debug = true
-			log("obstacles debug = true")
-		end
-	end
-
 	self.ani:SetPos(
 		math.floor(self.pos.x + self.offset.x),
 		math.floor(self.pos.y + self.offset.y)

@@ -18,7 +18,7 @@ end
 function _State_Waiting:Enter(entity)
     self.name = "waiting"
 	entity:SetAnimation("[waiting motion]")
-	self.input = entity.input
+	self.input = entity:GetComponent("Input")
 end
 
 function _State_Waiting:Update(entity,FSM_)

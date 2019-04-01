@@ -39,11 +39,11 @@ function _HotkeyMgr.Ctor(hero_job)
 		["SKL_Y"] = "y",
 	}
 
-	this.ABS_KEY = {} -- abstract keys, format:[sklName] = {"SKL_12", "SKL_UNIQUE"},
+	this.ABS_KEY = {} -- abstract keys, format:[skillID] = {"SKL_12", "SKL_UNIQUE"},
 
 	if hero_job == "[swordman]" then
-		this.ABS_KEY[46] = {"SKL_Q", "SKL_UNIQUE"} -- UpperSlash
-		this.ABS_KEY[16] = {"SKL_R", "SKL_UNIQUE"} -- Ashenfork
+		this.ABS_KEY[46] = {"", "SKL_UNIQUE"} -- UpperSlash
+		this.ABS_KEY[16] = {"", "SKL_UNIQUE"} -- Ashenfork
 	end
 
 end 

@@ -30,7 +30,7 @@ end
 function _State_Rest:Enter(hero_,_keyRlstime)
     self.name = "rest"
 	hero_:SetAnimation(self.name)
-	self.input = hero_:GetInput()
+	self.input = hero_:GetComponent("Input")
 end
 
 function _State_Rest:Update(hero_,FSM_)

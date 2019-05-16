@@ -70,22 +70,19 @@ function _State_Attack:Update(hero_,FSM_)
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
             hero_:SetAnimation(self.childName[self.attackNum])
-        end 
-    end 
+        end
+    end
     if self.attackNum == 2 or self.attackNum == 3 then
         if _movable then
             if _body:GetCount() <= self.attackNum then
                 self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
-            end 
-            
+            end
             if (self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) and hero_.dir == -1 ) or 
             (self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) and hero_.dir == 1 ) then
-                
                 self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
-            end 
+            end
         end
     end
-    
     -- attack judgement
     if hero_:GetAttackBox() then
         self.atkJudger:Judge(hero_, "MONSTER", self.attackName)

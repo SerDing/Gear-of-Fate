@@ -14,6 +14,7 @@ function _FSM_Hero:OnConstruct()
 	self.SkillMgr_ = self.entity_:GetComponent('SkillMgr')
 end
 
+---@param entity_ table 
 function _FSM_Hero:LateUpdate(entity_)
 	if self.curState.GetTrans then
 		self:Transition(entity_)
@@ -34,7 +35,7 @@ function _FSM_Hero:Transition(entity_)
 end 
 
 function _FSM_Hero:SwitchSkillState(sklID, stateName, hero_, ...)
-	--skillID --> abstractKeyName --> realKeyID
+	-- skillID --> abstractKeyName --> realKeyID
 	if self.input:IsPressed(self.HotKeyMgr_.GetSkillKey(sklID)) or self.input:IsPressed(self.HotKeyMgr_.GetSkillCMDKey(sklID)) then -- IsPressed
 		print("Switch Skill State", sklID)
 		if self.SkillMgr_:IsSklUseable(sklID) then
@@ -52,7 +53,6 @@ end
 
 function _FSM_Hero:OnCurStateExit(entity_)
 	self:SkillCoolEvents(entity_)
-	
 end
 
 function _FSM_Hero:OnNewStateEnter(entity_)

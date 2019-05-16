@@ -9,78 +9,72 @@
 
 local _PassiveObjMgr = {}
 
+local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _Obstacle = require "Src.Scene.Blocks.Obstacle"
 local _AtkObj = require "Src.PassiveObject.AtkObj"
-local _ObjectMgr = require "Src.Scene.ObjectManager"
+local _PathgateWall = require "Src.PassiveObject.PathgateWall"
 
 function _PassiveObjMgr.Ctor()
-	_PassiveObjMgr.LoadLstData()
-end
-
-function _PassiveObjMgr.LoadLstData()
-	
 	_PassiveObjMgr.pathHead = "/Data/passiveobject/"
 	_PassiveObjMgr.objPathArr = {}
-	_PassiveObjMgr.objList = LoadFile("/Data/passiveobject/passiveobject.lst")
-	_PassiveObjMgr.objList = CutText(_PassiveObjMgr.objList,"\n")
-	_PassiveObjMgr.objList = CutText(_PassiveObjMgr.objList[2],"\t")
+	_PassiveObjMgr.objPathArr = require("Data/passiveobject/passiveobject")
+end
+
+local function _GetObjPath(id)
+	assert(_PassiveObjMgr.objPathArr[id], " No obj:" .. id .. " in passiveobj list.")
+	return _PassiveObjMgr.pathHead .. string.lower(_PassiveObjMgr.objPathArr[id])
+end
+
+function _PassiveObjMgr.GeneratePassiveObj(id)
 	
-	for i=1,#_PassiveObjMgr.objList do
-		if i % 2 ~= 0 and _PassiveObjMgr.objList[i + 1] then
-			local _tmpStr = string.gsub(string.lower(_PassiveObjMgr.objList[i + 1]), "`", "")
-			_PassiveObjMgr.objPathArr[tonumber(_PassiveObjMgr.objList[i])] = strcat(_PassiveObjMgr.pathHead, _tmpStr)
-		elseif i % 2 ~= 0 and not _PassiveObjMgr.objList[i + 1] then
-			print("Error. _PassiveObjMgr.LoadLstData() --> ending data error (no string data)")
-		end
-	end
-
-end 
-
-function _PassiveObjMgr.GeneratePassiveObj(_objId)
-	
-	local _objPath
-
-	if _PassiveObjMgr.objPathArr[_objId] then
-		_objPath = _PassiveObjMgr.objPathArr[_objId]
-	else
-		error("_PassiveObjMgr.GeneratePassiveObj() \n* can not find objPath in passive object list\n* _objId:", tostring(_objId))
-	end
-
+	local _objPath = _GetObjPath(id)
 	local _objPathPieces = CutText(_objPath,"/")
 	local _obj
 	if _objPathPieces[#_objPathPieces - 1] == "obstacle" then
 		_obj = _Obstacle.New(_objPath)
 		return _obj
 	elseif _objPathPieces[#_objPathPieces - 2] == "character" then
+		print("__generate atk obj ", id)
 		_obj = _AtkObj.New(_objPath)
 		_ObjectMgr.AddObject(_obj)
 		return _obj
 	else
-		return 0
+		return nil
 	end
 
 end 
 
-function _PassiveObjMgr.AtkObj(_objId, x, y, dir)
+function _PassiveObjMgr.AtkObj(id, x, y, dir)
 	
-	local _objPath
-
-	if _PassiveObjMgr.objPathArr[_objId] then
-		_objPath = _PassiveObjMgr.objPathArr[_objId]
-	else
-		error("_PassiveObjMgr.GeneratePassiveObj() \n* can not find objPath in passive object list\n* _objId:" .. tostring(_objId))
-	end
-	
-	local _obj
+	local _objPath = _GetObjPath(id)
 	local _objPathPieces = CutText(_objPath,"/")
+	local _obj
 	if _objPathPieces[#_objPathPieces - 2] == "character" then
 		_obj = _AtkObj.New(_objPath)
 		_ObjectMgr.AddObject(_obj)
 		return _obj
 	else
-		return 0
+		return nil
 	end
 
 end 
+
+function _PassiveObjMgr.GeneratePathgate(x, y, id, destMap)
+	local _path = _GetObjPath(id)
+	_path = string.gsub(_path, "%.obj", "")
+	local _data = require(_path)
+	if #_data["[string data]"] == 3 then -- wall(left or right) (contains tile)
+		return _PathgateWall.New(_path, x, y, destMap)
+	-- elseif #_data["[string data]"] == 4 then -- down gate
+
+	-- elseif #_data["[string data]"] == 5 then -- up gate
+
+	-- elseif #_data["[string data]"] == 7 then -- side gate (left or right) (contains tile)
+
+	else
+		return nil;
+	end
+
+end
 
 return _PassiveObjMgr

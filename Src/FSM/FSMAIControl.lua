@@ -87,7 +87,7 @@ function _FSMAIControl:SelectDestination(entity)
     if self.FSM:GetCurState().name == "waiting" then
         if self.moveTimer >= self.moveTerm / 1000 then
             self.moveTimer = 0
-            print("start select new destination")
+            -- print("start select new destination")
             local _range = (self:GetWarLikeResult()) and self.range[3] or self.range[1]
             self.newAim = {}
             local calcTimes = 0
@@ -103,7 +103,8 @@ function _FSMAIControl:SelectDestination(entity)
                 -- print("repeat calc aim")
             until self.scene:IsInMoveableArea(self.newAim.x, self.newAim.y) and self.scene:IsInObstacles(self.newAim.x, self.newAim.y)[1] == false
             -- print("nav pos:", self.newAim.x, self.newAim.y)
-            print("finished select new destination")
+            
+            -- print("finished select new destination")
             self:NavMove(self.newAim.x, self.newAim.y, entity)
             
         end

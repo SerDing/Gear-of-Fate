@@ -161,6 +161,8 @@ function _LayoutMgr.Ctor()
     this.layoutPool = {}
 end 
 
+---@param interface table 
+---@param fileName string 
 function _LayoutMgr.InitLayout(interface, fileName)
     local _layout = require(this.pathHead .. fileName)
     for i,v in ipairs(this.funcsMap) do

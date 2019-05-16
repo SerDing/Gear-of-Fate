@@ -106,7 +106,6 @@ function _AtkObj:Update(dt)
 		return 
 	end
 
-
 	for _,v in pairs(self.aniArr) do
 		v:Update(dt)
 	end
@@ -149,7 +148,7 @@ function _AtkObj:Draw(x,y)
    
 	for _,v in pairs(self.aniArr) do
 		v:SetPos(math.floor(self.pos.x), math.floor(self.pos.y) + math.floor(self.pos.z))
-		v:Draw()	
+		v:Draw()
 	end
 
 	for _,etc in pairs(self.etcAniArr) do

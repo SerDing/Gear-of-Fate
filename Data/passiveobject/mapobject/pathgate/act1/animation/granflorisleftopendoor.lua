@@ -5,10 +5,12 @@ return {--[[ #PVF_File --]]
 		["[IMAGE]"]={"Map/PathGate/GranFlorisSideDoor%d%d.img",0},
 		["[IMAGE POS]"]={-44,-200},
 		["[INTERPOLATION]"]=1,
-		["[DELAY]"]=500,},
+		["[DELAY]"]=500,
+	},
 	["[FRAME001]"]={
 		["[IMAGE]"]={"Map/PathGate/GranFlorisSideDoor%d%d.img",0},
 		["[IMAGE POS]"]={-44,-200},
 		["[RGBA]"]={255,255,255,0},
-		["[DELAY]"]=600,}
+		["[DELAY]"]=600,
+	}
 }

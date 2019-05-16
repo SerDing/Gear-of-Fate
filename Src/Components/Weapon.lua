@@ -11,7 +11,7 @@ local _Weapon = require("Src.Core.Class")()
 
 local _RESMGR = require "Src.Resource.ResManager"
 
-function _Weapon:Ctor(heroType, actor_) --initialize
+function _Weapon:Ctor(heroType, actor_) -- initialize
 	self.actor_ = actor_ or nil
 	self.pathHeads = {
 		["[swordman]"] = "character/swordman/equipment/avatar/weapon/",

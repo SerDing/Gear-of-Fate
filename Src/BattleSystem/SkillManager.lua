@@ -55,9 +55,9 @@ function _SkillMgr:Update(dt)
 			v.coolTimer = v.coolTimer - dt
 			if v.coolTimer < 0 then
 				v.coolTimer = 0
-				self:HandleAvailability()
+				self:HandleAvailability(self.actor:GetComponent("FSM"):GetCurState().trans)
 			end
-		end  
+		end 
 	end 
 end 
 
@@ -70,9 +70,6 @@ function _SkillMgr:HandleAvailability(stateTransList)
 
 	-- Check whether the skill cool down finished by transition list
 	local skill
-	if not stateTransList then -- get the trans manualy when this function called in _SkillMgr:Update()
-		stateTransList = self.actor:GetComponent("FSM").curState.trans
-	end
 	if stateTransList then 
 		for i,v in ipairs(stateTransList) do
 			if v[1] == "SKILL" then -- v[1] = stateType, v[2] = skillID v[3] = stateName
@@ -103,12 +100,12 @@ function _SkillMgr:IsSklUseable(sklID)
 	if self.debug then
 		return true
 	end
+
 	local skill = self.skills[sklID]
 	return skill:IsUseable()
 end 
 
 function _SkillMgr:DoSkill(sklID)
-
 	if self.debug then
 		return
 	end

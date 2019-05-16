@@ -25,15 +25,19 @@ return {
     ["[weight]"] = 50000.00,
     ["[skill]"] = {179,7,174,1,169,1,5,1,46,1,},
     ["[growtype 1]"] = {},
-	["[show skill]"] = {5,8,65,58,},
+	["[show skill]"] = {5, 8, 65, 58, },
 	
-	["[create equipment list]"]={"[weapon]",27600,"[coat]",10400,"[pants]",12400,},
+	["[create equipment list]"]={
+		"[weapon]", 27600, 
+		"[coat]", 10400, 
+		"[pants]", 12400,
+	},
 
     ["[weapon wav]"] = {
-        ['hsword'] = {"R_SQUARESWDA","SQUARESWDB","R_SQUARESWDA_HIT","SQUARESWDB_HIT",},
-        ["ssword"] = {"R_MINERALSWDA","MINERALSWDB","R_MINERALSWDA_HIT","MINERAL_SWDB_HIT",},
-        ["katana"] = {"R_KATANAA","KATANAB","R_KATANAA_HIT","KATANAB_HIT",},
-        -- ["katana"] = {"R_MINERALSWDA","MINERALSWDB","R_MINERALSWDA_HIT","MINERAL_SWDB_HIT",},
+        ['hsword'] = {"R_SQUARESWDA","SQUARESWDB","R_SQUARESWDA_HIT","SQUARESWDB_HIT",}, -- huge sword
+        ["ssword"] = {"R_MINERALSWDA","MINERALSWDB","R_MINERALSWDA_HIT","MINERAL_SWDB_HIT",}, -- short sword
+        -- ["katana"] = {"R_KATANAA","KATANAB","R_KATANAA_HIT","KATANAB_HIT",},
+        ["katana"] = {"R_MINERALSWDA","MINERALSWDB","R_MINERALSWDA_HIT","MINERAL_SWDB_HIT",},
         ["beamsword"] = {"R_BEAMSWDA","BEAMSWDB","R_BEAMSWDA_HIT","BEAMSWDB_HIT",},
         ["club"] = {"R_STICKA","STICKB_01","R_STICKA_HIT","STICKB_HIT_01",},
     },
@@ -83,7 +87,11 @@ return {
 	["[attack motion 2]"]="Animation/Attack2.ani",
 	["[attack motion 3]"]="Animation/Attack3.ani",
 	["[ghost motion]"]={"Animation/Ghost.ani","Animation/Ghost_Dodge.ani",},
-	["[victory motion]"]={"Animation/Victory1.ani","Animation/Victory2.ani","Animation/Victory3.ani",},
+	["[victory motion]"]={
+		"Animation/Victory1.ani",
+		"Animation/Victory2.ani",
+		"Animation/Victory3.ani",
+	},
 	["[etc motion]"]={
 		"Animation/Guard.ani",
 		"Animation/HardAttack.ani",

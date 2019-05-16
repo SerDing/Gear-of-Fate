@@ -1,4 +1,4 @@
---[[ 引擎配置,初始化 --]]
+-- love2d framework initialization 
 
 function love.conf(t)
 	io.stdout:setvbuf("no")
@@ -17,8 +17,8 @@ function love.conf(t)
 	t.window.title = "Gear Of Fate (Ver:Beta)"
 	t.window.msaa = 16 -- 超过8才有效
 	
-	t.window.vsync = false
-	-- t.console = true
+	-- t.window.vsync = false
+	t.console = true
 	-- t.window.fullscreen = true
 	t.window.fullscreentype = "exclusive"
 	t.gammacorrect = false              -- Enable gamma-correct rendering, when supported by the system (boolean)

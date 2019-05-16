@@ -46,7 +46,21 @@ return {--[[ #PVF_File ]]
 
 	["[sound]"]={"AMB_FOREST_01","M_FOREST_01_NEW",},
 
-	["[animation]"]={"Animation/smallTree0.ani","[close]",836,466,0,"Animation/Flower1.ani","[normal]",500,287,0,"Animation/Flower0.ani","[normal]",424,275,0,"Animation/Flower1.ani","[normal]",977,213,0,"Animation/Flower0.ani","[normal]",445,211,0,"Animation/Flower2.ani","[normal]",836,210,0,"Animation/Flower2.ani","[normal]",656,208,0,"Animation/Flower2.ani","[normal]",903,204,0,"Animation/Flower1.ani","[normal]",805,182,0,"Animation/Flower1.ani","[bottom]",526,247,0,"Animation/smallTree0.ani","[closeback]",361,123,0,"Animation/smallTree1.ani","[closeback]",1278,131,0,"Animation/Tree2.ani","[closeback]",476,135,0,},
+	["[animation]"]={
+		"Animation/smallTree0.ani","[close]",836,466,0,
+		"Animation/Flower1.ani","[normal]",500,287,0,
+		"Animation/Flower0.ani","[normal]",424,275,0,
+		"Animation/Flower1.ani","[normal]",977,213,0,
+		"Animation/Flower0.ani","[normal]",445,211,0,
+		"Animation/Flower2.ani","[normal]",836,210,0,
+		"Animation/Flower2.ani","[normal]",656,208,0,
+		"Animation/Flower2.ani","[normal]",903,204,0,
+		"Animation/Flower1.ani","[normal]",805,182,0,
+		"Animation/Flower1.ani","[bottom]",526,247,0,
+		"Animation/smallTree0.ani","[closeback]",361,123,0,
+		"Animation/smallTree1.ani","[closeback]",1278,131,0,
+		"Animation/Tree2.ani","[closeback]",476,135,0,
+	},
 
 	["[passive object]"]={
 		5,150,150,0,

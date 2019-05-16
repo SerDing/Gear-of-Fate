@@ -60,10 +60,10 @@ function _State_GoreCross:Update(hero_,FSM_)
 	if _body:GetCount() == 1 and not self.effect[1] and not self.effect[2] then
 		
 		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash1.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_)
-		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+		self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed() )
 		
 		self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash2.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir(), hero_) 
-		self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+		self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed() * 1.05)
 		
 	end 
 	
@@ -85,7 +85,7 @@ function _State_GoreCross:Update(hero_,FSM_)
 		end
 	end
 	
-	-- whether plusAtk check
+	-- check whether attack
 	if _body:GetCount() >= 9 then 
 		if self.input:IsPressed(_HotKeyMgr.GetSkillKey(self.skillID)) then
 			self.plusAtk = true

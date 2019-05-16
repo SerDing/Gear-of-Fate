@@ -11,7 +11,7 @@
 local _ObjectMgr = {}
 
 local _sort = function (obj_a,obj_b)
-	assert(obj_b:GetY(),obj_b.type)
+	assert(obj_b:GetY(), obj_b.type)
 	-- return (
 	-- 	(math.floor(obj_a:GetY()) == math.floor(obj_b:GetY())) and
 	-- 	(obj_a.layerId < obj_b.layerId) or

@@ -113,8 +113,6 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 				
 			end
 
-			-- return _hit
-
 			if not _hitResult and _hit == true then
 				_hitResult = true
 			end

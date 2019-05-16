@@ -1,9 +1,9 @@
 --[[
-		Desc: Manage scenes in the game
-		Author: Night_Walker
-		Since: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
-		Alter: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
-		Docs: 
+	Desc: Manage scenes in the game
+	Author: Night_Walker
+	Since: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
+	Alter: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
+	Docs: 
 		* --load [*.twn] or [*.dgn] then create right scene
 		* load "*.map" file to create scene
 	
@@ -82,11 +82,9 @@ function _SCENEMGR.Ctor()
 	this._playerHero = _ACTORMGR.NewHero()
 	_ObjectMgr.AddObject(this._playerHero)
 
-	----[[	test elvengard map	]]
+	-- test elvengard map
 	-- _SCENEMGR.CreatScene(_Index["elvengard"][1], _Index["elvengard"][2], "town")
-	
 	-- _SCENEMGR.LoadScene(_Index["elvengard"][1], _Index["elvengard"][2], _SCENEMGR.curType)
-
 	this.LoadScene(_Index["lorien"][1], _Index["lorien"][2], _SCENEMGR.curType)
 	
 end 
@@ -119,8 +117,6 @@ function _SCENEMGR.Draw(x, y)
 		else
 			print("Err:SceneMgr.Draw() --> curScene is not existing!")
 		end
-
-		-- _hero:Draw()
 		
 		if _cover.alpha > 0 then
 			_cover.sprite:Draw(- x, - y)
@@ -156,10 +152,13 @@ function _SCENEMGR.LoadScene(area, map, type)
 		_SCENEMGR.curScene = _sceneList[type][area][map]
 		_SCENEMGR.curIndex = {area,map}
 		_SCENEMGR.curScene:Awake()
-		-- _hero:SetScenePtr(_SCENEMGR.curScene)
 	end 
+	
+	this.OnLoadScene()
+end
 
-	this.OnSwitchScene()
+function _SCENEMGR.OnLoadScene()
+	this._Events.OnSwitchScene:Notify(this.curScene)
 end
 
 function _SCENEMGR.UnLoadScene()
@@ -176,18 +175,8 @@ function _SCENEMGR.CreatScene(area, map, type)
 			error("Error:_SCENEMGR.CreatScene(): the map: " .. _path .. ".lua" .. " is not existing!")
 			return false
 		end
-		_sceneList[type][area][map] = _Scene.New(_path, _res[area][map], _SCENEMGR) 
+		_sceneList[type][area][map] = _Scene.New(_path, _SCENEMGR) 
 	end
-end
-
-function _SCENEMGR.IsMapFileExisting(path)
-	local fp = io.open(path)
-	if not fp then
-		return false
-	else 
-		fp:close()
-		return true
-	end 
 end
 
 function _SCENEMGR.SwitchScene(area, map, posIndex)
@@ -202,6 +191,7 @@ function _SCENEMGR.SwitchScene(area, map, posIndex)
 			this.LoadScene(area, map, this.curType)
 			this._playerHero:SetPosition(_pos.x, _pos.y)
 		end 
+		
 	else
 		error("_SCENEMGR:SwitchScene() the objected AreaData is not Existing!" .. "\n* area:" .. area .. " * map:" .. map)
 		return false
@@ -209,17 +199,33 @@ function _SCENEMGR.SwitchScene(area, map, posIndex)
 	
 end
 
-function _SCENEMGR.OnSwitchScene()
-	this._Events.OnSwitchScene:Notify(this.curScene)
+--@param string event
+--@param table obj
+--@param function func
+function _SCENEMGR.RegEventListener(event, obj, func)
+	this._Events[event]:AddListener(obj, func)
+end
+
+--@param string event
+--@param table obj
+--@param function func
+function _SCENEMGR.DelEventListener(event, obj, func)
+	this._Events[event]:DelListener(obj, func)
+end
+
+function _SCENEMGR.IsMapFileExisting(path)
+	local fp = io.open(path)
+	if not fp then
+		return false
+	else 
+		fp:close()
+		return true
+	end 
 end
 
 function _SCENEMGR.PutCover()
 	_cover.alpha = 255
 end 
-
--- function _SCENEMGR.GetHero_()
--- 	return _hero 
--- end 
 
 function _SCENEMGR.GetCurScene()
 	return _SCENEMGR.curScene

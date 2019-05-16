@@ -15,7 +15,7 @@ local _GAMEINI = require "Src.Config.GameConfig"
 
 function _Effect:Ctor(aniPath)
 	
-	self.aniPath = aniPath	
+	self.aniPath = aniPath
 	self.animas = {}
 	if aniPath then -- a single effect which just has one animation
 		self.animas[1] = require(string.sub(aniPath, 1, string.len(aniPath) - 4))

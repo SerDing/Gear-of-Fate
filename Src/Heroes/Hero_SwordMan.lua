@@ -13,7 +13,7 @@ local Hero_SwordMan = require("Src.Core.Class")(_obj)
 -- Components
 local _AniPack = require "Src.AniPack"
 local _AnimGrp = require "Src.Animation.AnimGrp"
-local _Weapon = require "Src.Heroes.Weapon"
+local _Weapon = require "Src.Components.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Game.AttackJudger"
 local _Input = require "Src.Input.Input"
@@ -48,19 +48,19 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.drawPos = {x = math.floor(x), y = math.floor(y), z = 0}
 	self.spd = {x = 60 * 2.5, y = 37.5 * 2} -- 125 125
 
-	--property
+	-- property
 	self.property = require("Data/character/swordman/swordman")
 
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.2 + 0.30 -- 0.26  0.40  0.70
+	self.atkSpeed = 1.2 + 0.0 -- 0.26  0.40  0.70
 	self.hitRecovery = 22.5 -- 45 65
-	self.hitRecovery = 70 * 0.86 -- 45 65 70 100 
+	self.hitRecovery = 70 * 0.86 --0.86 1.3 -- 45 65 70 100 
 	self.hitTime = 0
 	self.actionStop = 170
 	self.actionStopTime = 0
-
+	
 	-- string 
 	self.camp = "HERO"
 	self.subType = "HERO_SWORDMAN"
@@ -74,16 +74,14 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.buff = {
 		["frenzy"] = {switch = false, ani = nil},
 	}
-	
+
 	self.Models = {}
 	self.Components = {}
 	self.Models['HP'] = _HP_Model.New(120, 120)
 	self.Models['MP'] = _HP_Model.New(120, 120, 0.325)
 	self.Components['Movement'] = _Movement.New(self)
 	self.Components['Weapon'] = _Weapon.New(self.subType, self)
-	
-	
-	
+
 	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
 	self.animMap = _AnimGrp.New()
@@ -95,12 +93,12 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 
 	self.animMap:GetWidget("body"):SetFileNum(0001)
 
-	self.Components['Weapon']:SetType("katana", "katana")  -- mainType, subType
-	self.Components['Weapon']:SetRes("katana", 0001)  -- subType, fileNum
+	self.Components['Weapon']:SetType("katana", "lkatana")  -- mainType, subType
+	self.Components['Weapon']:SetRes("katana", 3201)  -- subType, fileNum
 	-- katana	katana	0001
 	-- katana	katana	3201
 	-- katana	lkatana	0004	0002
-	-- hsword	lswd	0500	0100	0001
+	-- hsword	lswd	0500	0100	0001	4200
 	-- ssword	sswd	4200c	
 	
 	-- self.Components['Weapon']:SetSingle(true)
@@ -120,7 +118,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.animMap:GetWidget("body"):SetBaseRate(self.atkSpeed)
 	self.animMap:GetWidget("weapon_b1"):SetBaseRate(self.atkSpeed)
 	self.animMap:GetWidget("weapon_c1"):SetBaseRate(self.atkSpeed)
-
+	
 	
 	
 	-- // fight with your own dark side
@@ -365,7 +363,7 @@ function Hero_SwordMan:Draw()
 	-- love.graphics.circle("fill", self.drawPos.x, self.drawPos.y, 2.5, 10)
 
 	-- if self.pos.z < 0 then
-		-- love.graphics.circle("fill", self.drawPos.x, self.drawPos.y + self.pos.z, 2.5, 10)
+		love.graphics.circle("line", self.drawPos.x, self.drawPos.y + self.pos.z, 4, 10)
 		-- love.graphics.line(self.pos.x - 200, self.pos.y - 151, self.pos.x + 200, self.pos.y - 151)
 	-- end
 

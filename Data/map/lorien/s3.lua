@@ -55,14 +55,20 @@ return {--[[ #PVF_File ]]
 	},
 
 	["[pathgate pos]"]={
-		15,233,1105,226,
-		608,168,560,348
+		15,233,
+		1105,226,
+		608,168,
+		560,348
 	},
 
 	["[pathgate]"]={
-		-- x, y, pathgateNum, desitinateMapNum
-		15, 233, 361, -- lorien left normal
-		1105, 226, 366, -- lorien right wall
+		-- x, y, pathgateNum, desitinateMapNum(-1 = no dest)
+		-- 15, 233, 361, -- lorien left normal
+		-- 1105, 226, 366, -1 -- lorien right wall
+
+		15, 233, 363, -1,
+		1105, 226, 366, -1,
+
 	},
 	
 	["[virtual movable area]"] = {15 + 20, 233 - 80, 1105 - 40, 226 - 20},
@@ -78,7 +84,7 @@ return {--[[ #PVF_File ]]
 		"Animation/BurntTree2.ani","[normal]",713,167,0,
 		"Animation/Flower0.ani","[normal]",151,143,0,
 		"Animation/Flower1.ani","[normal]",484,141,0,
-		"Animation/BurntTree5.ani","[normal]",227,139,0,
+		-- "Animation/BurntTree5.ani","[normal]",227,139,0,
 		"Animation/Tree3.ani","[closeback]",802,149,0,
 		"Animation/Tree0.ani","[closeback]",401,138,0,
 		"Animation/smallTree1.ani","[closeback]",574,137,0,

@@ -12,14 +12,14 @@ local _State_Dash = require("Src.Core.Class")()
 function _State_Dash:Ctor()
     self.KEYID = {}
     self.trans = {
-        {"NORMAL", "ATTACK", "dashattack"}, 
-        {"NORMAL", "JUMP", "jump"}, 
-        {"NORMAL", "BACK", "jump", true}, 
-        {"SKILL", 46, "upperslash"},  
-		{"SKILL", 64, "gorecross"}, 
-		{"SKILL", 65, "hopsmash"}, 
-		{"SKILL", 77, "moonslash"}, 
-		{"SKILL", 8, "tripleslash"}, 
+        {"NORMAL", "ATTACK", "dashattack"},
+        {"NORMAL", "JUMP", "jump"},
+        {"NORMAL", "BACK", "jump", true},
+        {"SKILL", 46, "upperslash"},
+		{"SKILL", 64, "gorecross"},
+		{"SKILL", 65, "hopsmash"},
+		{"SKILL", 77, "moonslash"},
+		{"SKILL", 8, "tripleslash"},
     }
 end 
 
@@ -28,6 +28,7 @@ function _State_Dash:Enter(hero_)
     hero_:SetAnimation(self.name)
     self.input = hero_:GetComponent("Input")
     self.movement = hero_:GetComponent('Movement')
+    self.animator = hero_:GetBody()
 end
 
 function _State_Dash:Update(hero_,FSM_)
@@ -42,15 +43,27 @@ function _State_Dash:Update(hero_,FSM_)
     elseif down then
         self.movement:Y_Move( hero_.spd.y * 1.5 )
     end 
-           
+    
+    local realSpdX = hero_.spd.x * 2
+
+    -- if self.animator:GetCount() == 2 or 
+    -- self.animator:GetCount() == 3 or 
+    -- -- self.animator:GetCount() == 4 or 
+    -- -- self.animator:GetCount() == 0 or
+    -- self.animator:GetCount() == 6 or 
+    -- self.animator:GetCount() == 7 then
+    --     realSpdX = hero_.spd.x * 1.5 
+    -- end
+
     if left then
-        self.movement:X_Move(- hero_.spd.x * 2)
+        self.movement:X_Move(- realSpdX)
         hero_:SetDir(-1)
     elseif right then
-        self.movement:X_Move( hero_.spd.x * 2)
+        self.movement:X_Move( realSpdX)
         hero_:SetDir(1)
     end 
 
+    
     if self.input:IsPressed("left") then
         if self.input:IsHold("right") then
             FSM_:SetState("move",hero_)

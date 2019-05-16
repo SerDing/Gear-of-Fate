@@ -16,7 +16,7 @@ local _SwordMan = require "Src.Heroes.Hero_SwordMan"
 
 
 local _Avatar = require "Src.Animation.AnimGrp"
-local _Weapon = require "Src.Heroes.Weapon"
+local _Weapon = require "Src.Components.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Game.AttackJudger"
 local _Input = require "Src.Input.Input"
@@ -24,7 +24,6 @@ local _Movement = require "Src.Components.Movement"
 local _SkillHandler = require "Src.BattleSystem.SkillManager"
 local _HP_Model = require "Src.Components.Model.HP"
 local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
-
 
 -- 1.采用配置文件的形式避免硬编码，只需实现NewActor()
 -- 2.暂时采用硬编码，实现 NewHero() 和 NewMonster()，
@@ -38,21 +37,22 @@ function _ACTORMGR.Ctor()
 end 
 
 function _ACTORMGR.Update(dt)
-    --body
+    -- body
 end 
 
 function _ACTORMGR.NewActor()
-    --body
+    -- body
 end
 
 function _ACTORMGR.DestructActor(actor)
-    --body
+    local _movement = actor:GetComponent("Movement")
+    this._SCENEMGR.DelEventListener("OnSwitchScene", _movement, _movement.SetSceneRef)
 end
 
 function _ACTORMGR.NewHero()
     local hero = _SwordMan.New(400, 460)
     local _movement = hero:GetComponent("Movement")
-    this._SCENEMGR._Events.OnSwitchScene:AddListener(_movement, _movement.SetSceneRef)
+    this._SCENEMGR.RegEventListener("OnSwitchScene", _movement, _movement.SetSceneRef)
     this.mainPlayer = hero
     return hero
 end 
@@ -87,7 +87,7 @@ function _ACTORMGR._NewHero()
 	_weapon:SetType("katana", "katana")  -- mainType, subType
 	_weapon:SetRes("katana", 0001)  -- subType, fileNum
 
-    this._SCENEMGR._Events.OnSwitchScene:AddListener(_movement, _movement.SetSceneRef)
+    this._SCENEMGR.RegEventListener("OnSwitchScene", _movement, _movement.SetSceneRef)
 end
 
 function _ACTORMGR.NewMonster(monID)

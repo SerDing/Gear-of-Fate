@@ -53,6 +53,8 @@ local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png")
 	* left Alt -- Shake Camera
 ]]
 
+GDebug = false -- global game debug
+
 local _time = 0
 local _memory = 0
 local _gamePause = false
@@ -194,11 +196,14 @@ end
 function _GAMEMGR.KeyPressed(key)
 	_KEYBOARD.PressHandle(key)
 	_INPUTHANDLER.PressHandle(key)
-
 	_UIMGR.KeyPressed(key)
 
-	if _KEYBOARD.Press("rctrl") then
+	if key == "rctrl" then
 		_gamePause = not _gamePause
+	end
+
+	if key == "f1" then
+		GDebug = not GDebug
 	end
 	
 end

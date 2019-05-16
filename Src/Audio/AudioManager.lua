@@ -19,8 +19,8 @@ local music_ = {
 local sound_ = {id = "", source = nil}
 
 function _AudioMgr.Init(bgmVol, soundVol)
-    _AudioMgr.bgmVol = bgmVol or 0.5--0.005  0.65
-    _AudioMgr.soundVol = soundVol or 0.85--0.0085   1
+    _AudioMgr.bgmVol = bgmVol or 0.005--0.005  0.65
+    _AudioMgr.soundVol = soundVol or 0.0085--0.0085   1
     _AudioMgr.pathHead = "/SoundPacks/"
     _AudioMgr.pathList = require("/Config/audio")
 end 
@@ -33,8 +33,8 @@ local function _randomSoundID(randomID)
         i = i + 1
     end
 
-    local _rangeUpper = i - 1
-    local _rstr = strcat(_realID, string.format( "_%02d", math.random(1, _rangeUpper)))
+    local _upperRange = i - 1
+    local _rstr = strcat(_realID, string.format( "_%02d", math.random(1, _upperRange)))
     return _rstr
 end
 

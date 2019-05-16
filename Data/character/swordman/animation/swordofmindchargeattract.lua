@@ -53,7 +53,7 @@ return {
 		['[DELAY]'] = {40,40,},
 		['[DAMAGE TYPE]'] = {"superarmor","superarmor",},
 		['[IMAGE POS]'] = {-239,-330,-239,-330,},
-		['[LOOP START]'] = {[frame003]},
+		['[LOOP START]'] = {"[frame003]"},
 		['[DAMAGE BOX]'] = {-30,-10,-9,78,20,92,-30,-10,-9,78,20,92,},
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",21,"character/swordman/equipment/avatar/skin/sm_body%04d.img",21,},
 	},

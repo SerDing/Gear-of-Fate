@@ -1,6 +1,6 @@
 --[[
 	Desc: Manage scenes in the game
-	Author: Night_Walker
+	Author: SerDing
 	Since: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
 	Alter: Thu Sep 07 2017 23:10:06 GMT+0800 (CST)
 	Docs: 
@@ -19,7 +19,7 @@ local _EffectMgr = require "Src.Scene.EffectManager"
 local _Scene = require "Src.Scene.GameScene"
 local _sendPos = require "Src.Scene.SendPosition" -- new position in next scene
 local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
--- local _CAMERA = require "Src.Game.GameCamera"
+local _CAMERA = require "Src.Game.GameCamera"
 local _RESMGR = require("Src.Resource.ResManager")
 
 local _ACTORMGR = require "Src.Actor.ActorMgr"
@@ -36,7 +36,6 @@ local _Index = {-- Index = {area,map}
 }
 
 -- extern data loading
-local _GAMEINI = require "Src.Config.GameConfig" 
 local _NAME_LIST = {
 	town = require "Data/town/town" ,
 	dungeon = {},
@@ -45,18 +44,15 @@ local _NAME_LIST = {
 -- init
 _EffectMgr.Ctor()
 _ObjectMgr.Ctor()
--- _CAMERA.Ctor(_SCENEMGR)
+_CAMERA.Ctor(_SCENEMGR)
 
--- -- create hero
--- local _hero = _Hero_SwordMan.New(400,460)
--- _ObjectMgr.AddObject(_hero)
 
 -- black cover when switch scene
 local _cover = {
 	imageData = love.image.newImageData(love.graphics.getWidth(), love.graphics.getHeight()), 
 	sprite = {}, alpha = 240, speed = 3
 }
--- _RESMGR.InstantiateImageData(_cover.imageData)
+
 _cover.sprite = _Sprite.New(love.graphics.newImage(_cover.imageData)) -- love.graphics.newImage() "/Dat/backgroundpic.png"
 _cover.sprite:SetColorEx(0,0,0,255)
 _cover.sprite:SetColor(0,0,0,255)
@@ -64,8 +60,7 @@ _cover.sprite:SetColor(0,0,0,255)
 function _SCENEMGR.Ctor()
 	
 	this.path = "Data/map/"
-	this.preScene = {}
-	this.curScene = {}
+	this.curScene = nil
 	this.offset = {x = 0, y = 0}
 	this.curIndex = _Index["elvengard"]
 	this.curType = "town"
@@ -102,31 +97,30 @@ function _SCENEMGR.Update(dt)
 	-- _CAMERA.Update(dt)
 	-- _CAMERA.LookAt(_hero.pos.x, _hero.pos.y)
 
+	_CAMERA.Update(dt)
+	_CAMERA.LookAt(_ACTORMGR.mainPlayer.pos.x, _ACTORMGR.mainPlayer.pos.y)
+
 end 
 
-function _SCENEMGR.Draw(x, y)
-	
-	-- local drawFunc = function (x,y)
-		if this.curScene then
-			if _cover.alpha <= 240 then --防止切换场景后 场景先于黑色封面显示
-				if this.curScene.Draw then
-					this.curScene:Draw(x, y)
-				end
-				
+local drawFunc = function (x,y)
+	if this.curScene then
+		if _cover.alpha <= 240 then --防止切换场景后 场景先于黑色封面显示
+			if this.curScene.Draw then
+				this.curScene:Draw(x, y)
 			end
-		else
-			print("Err:SceneMgr.Draw() --> curScene is not existing!")
+			
 		end
-		
-		if _cover.alpha > 0 then
-			_cover.sprite:Draw(- x, - y)
-			_cover.sprite:SetColor(0,0,0,_cover.alpha)
-			_cover.alpha = _cover.alpha - _cover.speed
-		end 
-	-- end
+	end
+	
+	if _cover.alpha > 0 then
+		_cover.sprite:Draw(- x, - y)
+		_cover.sprite:SetColor(0,0,0,_cover.alpha)
+		_cover.alpha = _cover.alpha - _cover.speed
+	end 
+end
 
-	-- _CAMERA.Draw(drawFunc)
-
+function _SCENEMGR.Draw(x, y)
+	_CAMERA.Draw(drawFunc)
 end
 
 function _SCENEMGR.LoadScene(area, map, type)
@@ -199,16 +193,16 @@ function _SCENEMGR.SwitchScene(area, map, posIndex)
 	
 end
 
---@param string event
---@param table obj
---@param function func
+---@param event string 
+---@param obj table 
+---@param func function 
 function _SCENEMGR.RegEventListener(event, obj, func)
 	this._Events[event]:AddListener(obj, func)
 end
 
---@param string event
---@param table obj
---@param function func
+---@param event string 
+---@param obj table 
+---@param func function 
 function _SCENEMGR.DelEventListener(event, obj, func)
 	this._Events[event]:DelListener(obj, func)
 end

@@ -17,8 +17,8 @@ function _State_Damage:Ctor()
 	self.push_A = 0
 	self.stableFPS = 60
 
-	self.up_a = 14.75 * self.stableFPS
-	self.down_a = 15 * self.stableFPS
+	self.up_a = 16 * self.stableFPS -- 14.75
+	self.down_a = 16 * self.stableFPS
 
 	self.lift_V = 0
 	self.liftPower = 0

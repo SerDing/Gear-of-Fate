@@ -45,6 +45,4 @@ function _Object:GetY()
     return self.Y 
 end
 
-
-
 return _Object 

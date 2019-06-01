@@ -1,5 +1,5 @@
 --[[
-	Desc: A new lua class
+	Desc: effect manager
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
@@ -13,42 +13,33 @@ local _Effect = require "Src.Scene.Blocks.Effect"
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 
 function _EffectMgr.Ctor()
-		_EffectMgr.pathHead = {
-		["SwordMan"] = "../Data/character/swordman/effect/animation/" ,
-		["HERO_SWORDMAN"] = "../Data/character/swordman/effect/animation/" ,
+	_EffectMgr.pathHead = {
+		["SwordMan"] = "Data/character/swordman/effect/animation/" ,
+		["HERO_SWORDMAN"] = "Data/character/swordman/effect/animation/" ,
 	}
 end 
 
--- _EffectMgr.GenerateEffect(_aniPath,x,y,playNum,dir)
--- _aniPath must contain the suffix".lua" 
-function _EffectMgr.GenerateEffect(_aniPath, x, y, playNum, dir)
-	
-	local _tmpEffect = _Effect.New(_aniPath)
-	
-	_tmpEffect:SetPos(x,y)
-	
-	_tmpEffect:SetDir(dir)
-	
-	_tmpEffect:GetAni():SetCurrentPlayNum(playNum) 
-	
-	_ObjectMgr.AddObject(_tmpEffect)
+-- _EffectMgr.GenerateEffect(animPath,x,y,playNum,dir)
+-- animPath must contain the suffix".lua"
+function _EffectMgr.GenerateEffect(animPath, x, y, playNum, dir)
+	local effect = _Effect.New(animPath)
+	effect:SetPos(x,y)
+	effect:SetDir(dir)
+	effect:GetAni():SetCurrentPlayNum(playNum) 
+	_ObjectMgr.AddObject(effect)
 
-	return _tmpEffect
+	return effect
 end
 
-function _EffectMgr.ExtraEffect(_aniPath, x, y, playNum, dir, entity_)  -- generate an extra effect to hero class
-	
-	local _tmpEffect = _Effect.New(_aniPath)
-	
-	_tmpEffect:SetPos(x,y)
-	
-	_tmpEffect:SetDir(dir)
-	
-	_tmpEffect:GetAni():SetCurrentPlayNum(playNum) 
-	
-	entity_:AddExtraEffect(_tmpEffect)
+-- generate an extra effect to hero class
+function _EffectMgr.ExtraEffect(animPath, x, y, playNum, dir, entity_)
+	local effect = _Effect.New(animPath)
+	effect:SetPos(x,y)
+	effect:SetDir(dir)
+	effect:GetAni():SetCurrentPlayNum(playNum) 
+	entity_:AddExtraEffect(effect)
 
-	return _tmpEffect
+	return effect
 end
 
 return _EffectMgr 

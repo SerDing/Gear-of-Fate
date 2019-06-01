@@ -26,7 +26,7 @@ function _State_TripleSlash:Ctor()
 	
 	self.time_left = 0
 	self.time_right = 0
-	self.a = 255
+	self.a = 200--255
 	self.slideX = 0 -- slide x distance accumulation
 end 
 
@@ -149,7 +149,8 @@ function _State_TripleSlash:Movement(hero_, FSM_)
 	-- end
 
 	if self.slideX >= 120 then -- self.slideX >= 130   and self.speed > self.a    self.heroBody:GetCount() >= 3
-		self.speed = self.speed - self.a * self.dt * hero_:GetAtkSpeed() / 1.5
+		self.speed = self.speed - self.a * self.dt --* hero_:GetAtkSpeed() / 1.5
+		-- self.speed = self.speed - self.a * 1 / self.slideX
 		if self.speed < 0 then
 			self.speed = 0	
 		end
@@ -161,11 +162,10 @@ function _State_TripleSlash:Movement(hero_, FSM_)
 		-- 	FSM_:SetState(FSM_.oriState, hero_)
 		-- end
 	end 
-	
-	-- if self.speed == 0 then
-		
-	-- 	FSM_:SetState(FSM_.oriState, hero_)
-	-- end
+
+	if self.speed == 0 then
+		FSM_:SetState(FSM_.oriState, hero_)
+	end
 
 	
 end
@@ -187,7 +187,7 @@ function _State_TripleSlash:ReSetSpeed()
 	
 	
 	self.speed = 180 * (self.hero_:GetAtkSpeed() + 1) -- 260
-	self.a = self.speed / self.hero_:GetAtkSpeed() / 6 * 60
+	self.a = self.speed * 60 / 20 --  / self.hero_:GetAtkSpeed()
 	self.slideX = 0
 
 

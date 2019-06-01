@@ -1,7 +1,7 @@
 return {
 
 	["push"] = {
-		["backPower"] = 7,
+		["backPower"] = 5,
 		["backSpeed"] = 1,
 		["float"] = 0,
 	},

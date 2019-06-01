@@ -4,7 +4,7 @@
 	Since: 2018-04-12 13:19:36 
 	Last Modified time: 2018-04-12 13:19:36 
 	Docs: 
-		* Write notes here even more 
+		* 
 ]]
 local _FSM = require "Src.FSM.FSM"
 local _FSM_Hero = require("Src.Core.Class")(_FSM)

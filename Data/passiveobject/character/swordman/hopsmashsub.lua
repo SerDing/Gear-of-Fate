@@ -10,16 +10,16 @@ return {--[[ #PVF_File --]]
 
 	["[piercing power]"]=1000,
 
-	["[basic motion]"]="Animation/HopSmashSubFront1.ani",
+	["[basic motion]"]="Animation/HopSmashSubFront1_tn.ani",
 	
 	["[etc motion]"]={
-		"Animation/HopSmashSubBack1.ani", 
-		"Animation/HopSmashSubBack2.ani"
+		"Animation/HopSmashSubBack1_tn.ani", 
+		"Animation/HopSmashSubBack2_tn.ani"
 	},
 
 	["[attack info]"]="AttackInfo/HopSmashSub.atk",
 
-	["[add object effect]"]={"Animation/HopSmashSubFront2.ani", 1, 0, 0},
+	["[add object effect]"]={"Animation/HopSmashSubFront2_tn.ani", 1, 0, 0},
 	
 	["[object destroy condition]"]={"[destroy condition]","[on end of animation]"},
 }

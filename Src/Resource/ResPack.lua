@@ -11,42 +11,40 @@ local _ResPack = require("Src.Core.Class")()
 
 local _RESMGR = require "Src.Resource.ResManager"
 
-function _ResPack:Ctor(PakName) --initialize
+function _ResPack:Ctor(path)
+	if path then
+		self:Load(path)
+	end
+end
 
-	-- Game.run_path = GetRunPath()
+function _ResPack:Load(path)
 
-	-- self.real_path = Game.run_path .. [[\]] .. PakName
+	if path == self.path then
+		return
+	end
 
-	-- self.fileNum,self.pakInfo = self.empak.GetPakInfo(self.real_path)
-
-	-- if self.pakInfo == nil then
-	-- 	print("can not get pak infomation!" .. PakName)
-	-- 	-- 引擎:Log("can not get pak infomation" .. PakName)
-	-- 	return
-	-- end
+	self.path = path
 	
-	self.PakName = PakName
-	
-	local tmpArray = string.split(self.PakName,"/")
+	local tmpArray = string.split(self.path,"/")
 	
 	local _offsetName = string.gsub(tmpArray[#tmpArray],".img",".txt")
 	
-	if love.filesystem.exists(strcat(self.PakName, "/offset.txt")) == false
-	and love.filesystem.exists(strcat(self.PakName, "/", _offsetName)) == false then
-		print("The img pack is not existing:",self.PakName)
+	if love.filesystem.exists(strcat(self.path, "/offset.txt")) == false
+	and love.filesystem.exists(strcat(self.path, "/", _offsetName)) == false then
+		print("The img pack is not existing:",self.path)
 		return
 	end
 
 	
 
-	if love.filesystem.exists(strcat(self.PakName, "/", _offsetName)) then
-		self.offset_text = LoadFile(strcat(self.PakName, "/", _offsetName))
+	if love.filesystem.exists(strcat(self.path, "/", _offsetName)) then
+		self.offset_text = LoadFile(strcat(self.path, "/", _offsetName))
 	else 
-		self.offset_text = LoadFile(strcat(self.PakName, "/offset.txt"))
+		self.offset_text = LoadFile(strcat(self.path, "/offset.txt"))
 	end 
 
 	if self.offset_text == nil then
-		print("Error:_ResPack:Ctor() --> Can not get offset data!", self.PakName)
+		print("Error:_ResPack:Ctor() --> Can not get offset data!", self.path)
 		return
 	end
 	
@@ -70,7 +68,6 @@ function _ResPack:Ctor(PakName) --initialize
 	end
 
 	self.total_num = table.getn(self.pak_info)
-	
 end
 
 function _ResPack:GetTexture(num)
@@ -80,7 +77,7 @@ function _ResPack:GetTexture(num)
 	end 
 	
 	if self.pak_info[num].texture == 0 then
-		local _path = strcat(self.PakName, "/", tostring(num - 1), ".png")
+		local _path = strcat(self.path, "/", tostring(num - 1), ".png")
 		if love.filesystem.exists(_path)then
 			local tex = _RESMGR.LoadTexture(_path)
 			self.pak_info[num].texture = tex

@@ -7,7 +7,7 @@
 		* Bind animation data(*.ani) by using :AddAnimation(path, id)
 		* Play animation by SetAnimation(id)
 ]]
-local _AniPack = require('Src.Core.Class')()
+local _Animator = require('Src.Core.Class')()
 
 local _KEYBOARD = require 'Src.Core.KeyBoard'
 local _Sprite = require 'Src.Core.Sprite'
@@ -16,7 +16,7 @@ local _ResPack = require 'Src.Resource.ResPack'
 local _RESMGR = require 'Src.Resource.ResManager'
 local _AUDIOMGR = require 'Src.Audio.AudioManager'
 
-function _AniPack:Ctor(_type) --initialize
+function _Animator:Ctor(_type) --initialize
     self.type = _type or 'NORMAL_ANI'
     self.pos = {x = 0, y = 0, z = 0}
     self.center = {x = 0, y = 0}
@@ -29,9 +29,9 @@ function _AniPack:Ctor(_type) --initialize
     self.playNum = 1 -- 播放次数
     self.fileNum = {0000}
 
-    self.frameDataGrp = {} -- 帧数据组 包含多个ani数据
-    self.frameData = {} -- 从ani文件中读取出的帧数据
-    self.frameHead = '[FRAME000]' -- 每一帧的开头帧号
+    self.anims = {} -- anim data group
+    self.animData = {} -- current anim data
+    self.frameHead = '[FRAME000]'
 
     self.aniId = '' -- example: attack1 upperslash sit ...
 
@@ -40,6 +40,8 @@ function _AniPack:Ctor(_type) --initialize
         _RESMGR.imageNull = love.graphics.newImage(_tmpImageData)
     end
     self.playingSprite = _Sprite.New(_RESMGR.imageNull)
+
+    self.imgpack = _ResPack.New()
 
     self.count = 0
     self.time = 0
@@ -152,10 +154,9 @@ function _AniPack:Ctor(_type) --initialize
     self.blendMode = self.blendModeList[1]
     self.active = true
     self.stop = false
-    -- self:Update(love.timer.getDelta())
 end
 
-function _AniPack:NextFrame(n)
+function _Animator:NextFrame(n)
     if self.playNum == 0 then
         return
     end
@@ -180,12 +181,12 @@ function _AniPack:NextFrame(n)
     -- end
 end
 
-function _AniPack:Update(dt)
+function _Animator:Update(dt)
     if not self.active then
         return
     end
 
-    --[[ Debug Switch ]]
+    
     -- When the aniData just has one frame and this class has updata one time then doesn't update any more
     if self.type == 'MAP_ANI_BLOCK' then
         if self.num <= 1 then
@@ -207,17 +208,18 @@ function _AniPack:Update(dt)
     end
 
     if not self.frameHead then
-        print('Error:_AniPack:Update() --> frameHead is null')
+        print('Error:_Animator:Update() --> frameHead is null')
         return
     end
 
     self.time = self.time + (dt or 0)
-    -- print(self.frameData[self.frameHead])
-    if self.time >= (self.frameData[self.frameHead]['[DELAY]'] or 100) / (1000 * self.baseRate) then
+    -- print(self.animData[self.frameHead])
+    if self.time >= (self.animData[self.frameHead]['[DELAY]'] or 100) / (1000 * self.baseRate) then
         self.time = 0
-        -- self.time - self.frameData[self.frameHead]["[DELAY]"] / 1000
+        -- self.time - self.animData[self.frameHead]["[DELAY]"] / 1000
         if self.playNum ~= 0 then
             self.count = self.count + 1
+            self.OnChangeFrame(self.count)
         end
 
         if self.count >= self.num then
@@ -233,49 +235,39 @@ function _AniPack:Update(dt)
         end
     end
 
-    if self.frameData[self.frameHead]['[IMAGE]'][1] ~= '' then
-        --print(string.format("Sprite/"..self.frameData[self.frameHead]["[IMAGE]"][1],self.str))
-        --local img = require "sys/img"(string.format("playingSpriteite/"..self.frameData[self.frameHead]["[IMAGE]"][1], self.str))
-        local tmpStr = string.format(string.lower(self.frameData[self.frameHead]['[IMAGE]'][1]), unpack(self.fileNum))
+    if self.animData[self.frameHead]['[IMAGE]'][1] ~= '' then
+        local tmpStr = string.format(string.lower(self.animData[self.frameHead]['[IMAGE]'][1]), unpack(self.fileNum))
+        self.imgpack:Load(strcat(_RESMGR.pathHead, tmpStr))
 
-        local img = _ResPack.New(strcat(_RESMGR.pathHead, tmpStr))
+        self.playingSprite:SetTexture(self.imgpack:GetTexture(self.animData[self.frameHead]['[IMAGE]'][2] + 1))
+        self.offset = self.imgpack:GetOffset(self.animData[self.frameHead]['[IMAGE]'][2] + 1)
 
-        if not img then
-            print('Error:_AniPack:Update() --> load imgPack failed. ')
-            print(strcat('    ', self.frameData[self.frameHead]['[IMAGE]'][1]))
-            return
-        end
-
-        self.playingSprite:SetTexture(img:GetTexture(self.frameData[self.frameHead]['[IMAGE]'][2] + 1))
-        self.offset = img:GetOffset(self.frameData[self.frameHead]['[IMAGE]'][2] + 1)
-
-        img = nil
     else
         self.playingSprite:SetTexture(_RESMGR.imageNull)
     end
 
-    self:SetCenter(-self.frameData[self.frameHead]['[IMAGE POS]'][1], -self.frameData[self.frameHead]['[IMAGE POS]'][2])
+    self:SetCenter(-self.animData[self.frameHead]['[IMAGE POS]'][1], -self.animData[self.frameHead]['[IMAGE POS]'][2])
 
     if self.num > 1 then
-        if self.frameData[self.frameHead]['[GRAPHIC EFFECT]'] then
-            if self.frameData[self.frameHead]['[GRAPHIC EFFECT]'] == 'lineardodge' then
+        if self.animData[self.frameHead]['[GRAPHIC EFFECT]'] then
+            if self.animData[self.frameHead]['[GRAPHIC EFFECT]'] == 'lineardodge' then
                 -- self:SetBlendMode(1)
                 self.playingSprite:SetFilter(self.filter)
             end
         end
 
-        if self.frameData[self.frameHead]['[RGBA]'] then
+        if self.animData[self.frameHead]['[RGBA]'] then
             self:SetColor(
-                self.frameData[self.frameHead]['[RGBA]'][1],
-                self.frameData[self.frameHead]['[RGBA]'][2],
-                self.frameData[self.frameHead]['[RGBA]'][3],
-                self.frameData[self.frameHead]['[RGBA]'][4]
+                self.animData[self.frameHead]['[RGBA]'][1],
+                self.animData[self.frameHead]['[RGBA]'][2],
+                self.animData[self.frameHead]['[RGBA]'][3],
+                self.animData[self.frameHead]['[RGBA]'][4]
             )
         end
     end
 
-    if self.frameData[self.frameHead]['[PLAY SOUND]'] and not self.soundPlayFinished then
-        _AUDIOMGR.PlaySound(self.frameData[self.frameHead]['[PLAY SOUND]'])
+    if self.animData[self.frameHead]['[PLAY SOUND]'] and not self.soundPlayFinished then
+        _AUDIOMGR.PlaySound(self.animData[self.frameHead]['[PLAY SOUND]'])
         -- print("frameHead", self.frameHead, "frame", self.count, "PlayFinished", self.soundPlayFinished)
         self.soundPlayFinished = true
     end
@@ -285,7 +277,7 @@ function _AniPack:Update(dt)
     self.updateCount = self.updateCount + 1
 end
 
-function _AniPack:Draw(x, y, r, sx, sy)
+function _Animator:Draw(x, y, r, sx, sy)
     if not self.active then
         return
     end
@@ -317,7 +309,10 @@ function _AniPack:Draw(x, y, r, sx, sy)
     end
 end
 
-function _AniPack:SuperArmor_Switch(s)
+function _Animator:OnChangeFrame(frame)
+end
+
+function _Animator:SuperArmor_Switch(s)
     if s == true then
         for i, v in ipairs(self.focus['sprite']) do
             v:SetTexture(self.playingSprite:GetTexture())
@@ -333,8 +328,8 @@ function _AniPack:SuperArmor_Switch(s)
     end
 end
 
-function _AniPack:SuperArmor_Update()
-    local _damageType = self.frameData[self.frameHead]['[DAMAGE TYPE]']
+function _Animator:SuperArmor_Update()
+    local _damageType = self.animData[self.frameHead]['[DAMAGE TYPE]']
     if _damageType and _damageType == 'superarmor' then
         self:SuperArmor_Switch(true)
     else
@@ -361,7 +356,7 @@ function _AniPack:SuperArmor_Update()
     end
 end
 
-function _AniPack:SuperArmor_Draw()
+function _Animator:SuperArmor_Draw()
     if self.focus['focus'] then
         local _baseX = math.floor(self.pos.x + self.offset.x * self.focus.scale.x * self.dir)
         local _baseY = math.floor(self.pos.y + self.offset.y * self.focus.scale.y)
@@ -401,16 +396,16 @@ function _AniPack:SuperArmor_Draw()
     end
 end
 
-function _AniPack:Stop()
+function _Animator:Stop()
     self.stop = true
 end
 
-function _AniPack:Continue()
+function _Animator:Continue()
     self.stop = false
 end
 
-function _AniPack:DrawBox()
-    local boxTab = self.frameData[self.frameHead]['[ATTACK BOX]']
+function _Animator:DrawBox()
+    local boxTab = self.animData[self.frameHead]['[ATTACK BOX]']
     local atkBox = _Rect.New(0, 0, 1, 1)
     atkBox:SetColor(255, 0, 180, 150)
     if boxTab then
@@ -426,37 +421,43 @@ function _AniPack:DrawBox()
             atkBox:SetSize(boxTab[n + 3] * self.scale.x, -boxTab[n + 4] * self.scale.y)
             atkBox:Draw()
 
-            -- x, z, y, size_x, size_z, size_y
+            -- box = {x, z, y, size_x, size_z, size_y}
         end
     end
 
-    local boxTab = self.frameData[self.frameHead]['[DAMAGE BOX]']
+    local boxTab = self.animData[self.frameHead]['[DAMAGE BOX]']
     local dmgBox = _Rect.New(0, 0, 1, 1)
     dmgBox:SetColor(0, 255, 0, 150)
     if boxTab then
         for n = 1, #boxTab, 6 do
+            dmgBox:SetColor(0, 255, 0, 150)
             dmgBox:SetPos(self.pos.x + boxTab[n] * self.dir, self.pos.y + -boxTab[n + 2])
             dmgBox:SetSize(boxTab[n + 3] * self.scale.x, -boxTab[n + 5] * self.scale.y)
             dmgBox:SetDir(self.dir)
+            dmgBox:Draw()
+
+            dmgBox:SetColor(0, 0, 180, 150)
+            dmgBox:SetPos(self.pos.x + boxTab[n] * self.dir, self.pos.y - boxTab[n + 1])
+            dmgBox:SetSize(boxTab[n + 3] * self.scale.x, -boxTab[n + 4] * self.scale.y)
             dmgBox:Draw()
         end
     end
 end
 
-function _AniPack:GetAttackBox()
+function _Animator:GetAttackBox()
     if not self.active then
         return nil
     end
-    return self.frameData[self.frameHead]['[ATTACK BOX]'] or nil
+    return self.animData[self.frameHead]['[ATTACK BOX]'] or nil
 end
 
-function _AniPack:GetDamageBox()
-    return self.frameData[self.frameHead]['[DAMAGE BOX]'] or nil
+function _Animator:GetDamageBox()
+    return self.animData[self.frameHead]['[DAMAGE BOX]'] or nil
 end
 
 ---@param id string 
 ---@param num int 
-function _AniPack:SetAnimation(id, num, rate)
+function _Animator:SetAnimation(id, num, rate)
     if not self.active then
         return
     end
@@ -464,71 +465,71 @@ function _AniPack:SetAnimation(id, num, rate)
     local _idType = type(id)
 
     if _idType == 'string' then -- play animation by id
-        if not self.frameDataGrp[id] then
-            print('Err:_AniPack:SetAnimation() -- cannot find ani：' .. id .. 'in frameDataGrp')
+        if not self.anims[id] then
+            print('Err:_Animator:SetAnimation() -- cannot find anim：' .. id .. 'in anims')
             return false
         else
-            self.frameData = self.frameDataGrp[id].data
-            self.playNum = self.frameDataGrp[id].num or 1
+            self.animData = self.anims[id].data
+            self.playNum = self.anims[id].num or 1
             self.aniId = id
         end
     elseif _idType == 'table' then -- play animation by aniData
-        self.frameData = id
+        self.animData = id
         self.playNum = num or -1
     else
-        error('Err:_AniPack:SetAnimation() -- id type is wrong')
+        error('Err:_Animator:SetAnimation() -- id type is wrong')
         return false
     end
 
     self.count = 0
     self.time = 0
-    self.num = self.frameData['[FRAME MAX]']
+    self.num = self.animData['[FRAME MAX]']
     self:Continue()
     self:Update(0)
     self.frameHead = string.format('[FRAME%03d]', self.count)
-    if self.frameData[self.frameHead]['[GRAPHIC EFFECT]'] then
-        if string.lower(self.frameData[self.frameHead]['[GRAPHIC EFFECT]']) == 'lineardodge' then
+    if self.animData[self.frameHead]['[GRAPHIC EFFECT]'] then
+        if string.lower(self.animData[self.frameHead]['[GRAPHIC EFFECT]']) == 'lineardodge' then
             self:SetBlendMode(1)
         end
     end
 
-    if self.frameData[self.frameHead]['[RGBA]'] then
+    if self.animData[self.frameHead]['[RGBA]'] then
         self:SetColor(
-            self.frameData[self.frameHead]['[RGBA]'][1],
-            self.frameData[self.frameHead]['[RGBA]'][2],
-            self.frameData[self.frameHead]['[RGBA]'][3],
-            self.frameData[self.frameHead]['[RGBA]'][4]
+            self.animData[self.frameHead]['[RGBA]'][1],
+            self.animData[self.frameHead]['[RGBA]'][2],
+            self.animData[self.frameHead]['[RGBA]'][3],
+            self.animData[self.frameHead]['[RGBA]'][4]
         )
     end
 end
 
-function _AniPack:PlayAnimByData(aniData, num)
+function _Animator:PlayAnimByData(aniData, num)
     if not self.active then
         return
     end
 
-    self.frameData = id
+    self.animData = id
     self.playNum = num or -1
 
     self.count = 0
     self.time = 0
-    self.num = self.frameData['[FRAME MAX]']
+    self.num = self.animData['[FRAME MAX]']
     self:Continue()
     self:Update(0)
     self.frameHead = string.format('[FRAME%03d]', self.count)
 
-    if self.frameData[self.frameHead]['[GRAPHIC EFFECT]'] then
-        if string.lower(self.frameData[self.frameHead]['[GRAPHIC EFFECT]']) == 'lineardodge' then
+    if self.animData[self.frameHead]['[GRAPHIC EFFECT]'] then
+        if string.lower(self.animData[self.frameHead]['[GRAPHIC EFFECT]']) == 'lineardodge' then
             self:SetBlendMode(1)
         end
     end
 
-    if self.frameData[self.frameHead]['[RGBA]'] then
+    if self.animData[self.frameHead]['[RGBA]'] then
         self:SetColor(
-            self.frameData[self.frameHead]['[RGBA]'][1],
-            self.frameData[self.frameHead]['[RGBA]'][2],
-            self.frameData[self.frameHead]['[RGBA]'][3],
-            self.frameData[self.frameHead]['[RGBA]'][4]
+            self.animData[self.frameHead]['[RGBA]'][1],
+            self.animData[self.frameHead]['[RGBA]'][2],
+            self.animData[self.frameHead]['[RGBA]'][3],
+            self.animData[self.frameHead]['[RGBA]'][4]
         )
     end
 end
@@ -536,129 +537,129 @@ end
 --@param string aniPath
 --@param int playNum
 --@param string id
-function _AniPack:AddAnimation(aniPath, playNum, id)
+function _Animator:AddAnimation(aniPath, playNum, id)
     local content = require(aniPath) -- content is a table
-    self.frameDataGrp[id] = {data = content, num = playNum}
+    self.anims[id] = {data = content, num = playNum}
 
     if content['[LOOP]'] == 1 then
-        self.frameDataGrp[id].num = -1
+        self.anims[id].num = -1
     else
-        self.frameDataGrp[id].num = 1
+        self.anims[id].num = 1
     end
 end
 
-function _AniPack:SetActive(s)
+function _Animator:SetActive(s)
     self.active = s
 end
 
-function _AniPack:SetPos(x, y, z)
+function _Animator:SetPos(x, y, z)
     self.pos.x = x or self.pos.x
     self.pos.y = y or self.pos.y
     self.pos.z = z or self.pos.z
     self.playingSprite:SetPos(self.pos.x + self.offset.x * self.dir, self.pos.y + self.offset.y)
 end
 
-function _AniPack:SetScale(x, y)
+function _Animator:SetScale(x, y)
     self.scale.x = x or self.scale.x
     self.scale.y = y or self.scale.y
     self.playingSprite:SetScale(x, y)
 end
 
-function _AniPack:SetAngle(r)
+function _Animator:SetAngle(r)
     self.angle = r or self.angle
     self.playingSprite:SetAngle(r)
 end
 
-function _AniPack:SetPlayNum(id, num)
+function _Animator:SetPlayNum(id, num)
     -- id	ani的对应动作(状态)名称
     -- num	播放次数
 
     if type(id) == 'string' then
-        self.frameDataGrp[id].num = num
+        self.anims[id].num = num
     elseif type(id) == 'number' then
-        print('Err:_AniPack:SetPlayNum() --> id expected a string not number!')
+        print('Err:_Animator:SetPlayNum() --> id expected a string not number!')
     else
-        print('Err:_AniPack:SetPlayNum() --> id get a unexpected type')
+        print('Err:_Animator:SetPlayNum() --> id get a unexpected type')
     end
 end
 
-function _AniPack:SetCurrentPlayNum(num)
+function _Animator:SetCurrentPlayNum(num)
     self.playNum = num
 end
 
-function _AniPack:SetFrame(num)
+function _Animator:SetFrame(num)
     self.count = num
 end
 
-function _AniPack:SetBaseRate(baseRate)
+function _Animator:SetBaseRate(baseRate)
     self.baseRate = baseRate
 end
 
-function _AniPack:SetCenter(x, y)
+function _Animator:SetCenter(x, y)
     self.center.x = x or self.center.x
     self.center.y = y or self.center.y
 end
 
-function _AniPack:SetColor(r, g, b, a)
+function _Animator:SetColor(r, g, b, a)
     self.color = {r = r, g = g, b = b, a = a}
     self.playingSprite:SetColor(r, g, b, a)
 end
 
-function _AniPack:SetBlendMode(modeNum)
+function _Animator:SetBlendMode(modeNum)
     self.blendMode = self.blendModeList[modeNum]
     self.playingSprite:SetBlendMode(self.blendMode)
 end
 
-function _AniPack:SetFilter(switch)
+function _Animator:SetFilter(switch)
     self.filter = switch or false
 end
 
-function _AniPack:SetFileNum(...)
+function _Animator:SetFileNum(...)
     self.fileNum = {...}
     -- print(strcat("fileNum changed :", tostring(self.fileNum)))
 end
 
-function _AniPack:SetDir(dir)
+function _Animator:SetDir(dir)
     self.dir = dir
 end
 
-function _AniPack:GetCount()
+function _Animator:GetCount()
     return self.count or 0
 end
 
-function _AniPack:GetAniId()
+function _Animator:GetAniId()
     return self.aniId or ''
 end
 
-function _AniPack:GetRect()
+function _Animator:GetRect()
     return self.playingSprite:GetRect()
 end
 
-function _AniPack:GetScale()
+function _Animator:GetScale()
     return self.scale
 end
 
-function _AniPack:GetWidth()
+function _Animator:GetWidth()
     return self.playingSprite:GetWidth()
 end
 
-function _AniPack:GetHeight()
+function _Animator:GetHeight()
     return self.playingSprite:GetHeight()
 end
 
-function _AniPack:GetCurrentPlayNum()
+function _Animator:GetCurrentPlayNum()
     return self.playNum
 end
 
-function _AniPack:GetCountTime()
+function _Animator:GetCountTime()
     return self.time
 end
 
-function _AniPack:GetSpriteBox()
+function _Animator:GetSpriteBox()
     return self.box
 end
 
-function _AniPack:Destroy()
+function _Animator:Destroy()
     -- self.pos = nil
     -- self.center = nil
     -- self.offset = nil
@@ -667,8 +668,8 @@ function _AniPack:Destroy()
     -- self.playNum = nil
     -- self.fileNum = nil
 
-    -- self.frameDataGrp = nil
-    -- self.frameData = nil
+    -- self.anims = nil
+    -- self.animData = nil
     -- self.frameHead = nil
     -- self.count = nil
     -- self.time = nil
@@ -685,4 +686,4 @@ function _AniPack:Destroy()
     self = {}
 end
 
-return _AniPack
+return _Animator

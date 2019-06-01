@@ -1,10 +1,10 @@
 --[[
-	Desc: Attack1 state 
+	Desc: Attack state 
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
-		* wrap the logic of Attack1 state in this class
+		* wrap the logic of Attack state in this class
 ]]
 
 local _State_Attack = require("Src.Core.Class")()
@@ -28,7 +28,7 @@ function _State_Attack:Ctor()
     self.input = {}
 end
 
-function _State_Attack:Enter(hero_,FSM_)
+function _State_Attack:Enter(hero_, FSM_)
     self.attackNum = 1
     self.attackName = self.childName[self.attackNum]
     self.atkJudger = hero_:GetAtkJudger()
@@ -40,11 +40,11 @@ function _State_Attack:Enter(hero_,FSM_)
 
     if hero_:GetAttackMode() == "frenzy" then
         FSM_:SetState("frenzyattack",hero_)
-        return  
+        return
     end
 end
 
-function _State_Attack:Update(hero_,FSM_)
+function _State_Attack:Update(hero_, FSM_)
     local _body = hero_:GetBody()
     local _dt = love.timer.getDelta()
     

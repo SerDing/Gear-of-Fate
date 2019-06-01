@@ -15,10 +15,11 @@ function love.conf(t)
 	-- t.window.height = 960               -- The window height (number)
 
 	t.window.title = "Gear Of Fate (Ver:Beta)"
-	t.window.msaa = 16 -- 超过8才有效
+	-- t.window.msaa = 12 -- 超过8才有效
 	
 	-- t.window.vsync = false
-	t.console = true
+
+	-- t.console = true
 	-- t.window.fullscreen = true
 	t.window.fullscreentype = "exclusive"
 	t.gammacorrect = false              -- Enable gamma-correct rendering, when supported by the system (boolean)

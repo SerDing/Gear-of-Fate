@@ -18,7 +18,7 @@ local _SwordMan = require "Src.Heroes.Hero_SwordMan"
 local _Avatar = require "Src.Animation.AnimGrp"
 local _Weapon = require "Src.Components.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
-local _AttackJudger = require "Src.Game.AttackJudger"
+local _AttackJudger = require "Src.Components.AttackJudger"
 local _Input = require "Src.Input.Input"
 local _Movement = require "Src.Components.Movement"
 local _SkillHandler = require "Src.BattleSystem.SkillManager"
@@ -27,17 +27,12 @@ local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
 
 -- 1.采用配置文件的形式避免硬编码，只需实现NewActor()
 -- 2.暂时采用硬编码，实现 NewHero() 和 NewMonster()，
---   hero没有list，monster有list，配置文件也无法一次性设计完备。
 
 --@field table  mainPlayer
 --@field list   monsters
 function _ACTORMGR.Ctor()
     this.mainPlayer = nil
     this.monsters = {}
-end 
-
-function _ACTORMGR.Update(dt)
-    -- body
 end 
 
 function _ACTORMGR.NewActor()

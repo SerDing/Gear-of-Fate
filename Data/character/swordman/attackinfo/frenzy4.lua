@@ -8,7 +8,7 @@ return {
 	["lift"] = {
 		["backPower"] = 0,
 		["backSpeed"] = 1.1,
-		["float"] = 2.5,
+		["float"] = 0.5,
 	},
 	["Y"] = 38,
 	["[damage bonus]"] = 39,

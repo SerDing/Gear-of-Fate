@@ -24,16 +24,22 @@ local _MonsterSpawner = require "Src.Monster.MonsterSpawner"
 
 local _Navigation = require "Src.Navigation.Navigation"
 
-local _sceneMgr = {} -- Initialize a null pointer of SceneManager
-
 _PassiveObjMgr.Ctor()
 _MonsterSpawner.Ctor()
 
-function _GameScene:Ctor(path, sceneMgr) --initialize
-    -- ptr
-    _sceneMgr = sceneMgr
+local mathFloor = math.floor
+local mathCeil = math.ceil
+local mathAbs = math.abs
 
-    -- data and structure
+--[[
+    new refactoring mission:
+    1.changed ACTORMGR to a real factory, it just create and return actor
+    2.add new method: SCENEMGR.AddObject(obj, layer)
+]]
+
+function _GameScene:Ctor(path, SCENEMGR) --initialize
+    self._SCENEMGR = SCENEMGR
+
     self.pathHead = "/Data/map/"
     self.map = require(string.gsub(path,".lua",""))
 
@@ -49,38 +55,20 @@ function _GameScene:Ctor(path, sceneMgr) --initialize
 
     self.res = {}
     self.layers = {
-        ["[normal]"] = {
-            ["[animation]"] = {},
-            ["[passive object]"] = {},
-            ["[monster]"] = {},
-            ["[pathgate]"] = {},
-        },
-        ["[bottom]"] = {
-            ["[animation]"] = {},
-            ["[passive object]"] = {},
-            ["[pathgate]"] = {},
-        },
-        ["[closeback]"] = {
-            ["[animation]"] = {},
-            ["[passive object]"] = {},
-            ["[pathgate]"] = {},
-        },
-        ["[close]"] = {
-            ["[animation]"] = {},
-            ["[passive object]"] = {},
-            ["[pathgate]"] = {},
-        },
-    }   --[[
-        these layers just storage objects' id and types, 
-        updating and drawing layers equal to find 
-        objects by id then update and draw them
-    ]]
+        ["[normal]"] = {},
+        ["[bottom]"] = {},
+        ["[closeback]"] = {},
+        ["[close]"] = {},
+    }
     self.tiles = {}
     self.extendedTiles = {}
     self.pathgates = {}
     self.animations = {}
+    self.passiveobjs = {}
+    self.obstacles = {}
+    self.monsters = {}
 
-    -- property
+
     self.isDgn = false
     self.clear = false
     self.debug = false
@@ -89,7 +77,6 @@ function _GameScene:Ctor(path, sceneMgr) --initialize
     self.warmSpd = 2.25 -- warm after freeze camera
     self.drawExTile = false
 
-    -- instance
     self.rect = _Rect.New(0,0,1,1)
     self.nav = _Navigation.New(self.map["[virtual movable area]"], self)
 
@@ -103,7 +90,6 @@ function _GameScene:Ctor(path, sceneMgr) --initialize
     self:LoadPassiveObjects()
     self:LoadPathgate()
     self:LoadMonster()
-
 end
 
 function _GameScene:LoadTiles()
@@ -135,21 +121,9 @@ function _GameScene:LoadTiles()
 end
 
 function _GameScene:LoadAnimations()
-    -- local mapAnimation = self.map["[animation]"]
-    -- local aniPath
-    -- for n=1,#mapAnimation,5 do
-    --     aniPath = self.pathHead .. self.directory .. mapAnimation[n]
-    --     self.res["[animation]"][n] = _AniBlock.New(aniPath, mapAnimation[n + 1])
-    --     self.res["[animation]"][n]:SetOffset_2(0, 200)
-    --     self.res["[animation]"][n]:SetPos(mapAnimation[n + 2], mapAnimation[n + 3])
-    --     self.res["[animation]"][n]:SetFilter(true)
-    --     self.res["[animation]"][n]:SetLayer(mapAnimation[n + 1])
-    --     table.insert(self.layers[mapAnimation[n + 1]]["[animation]"], n)
-    -- end 
-
     local mapAnimation = self.map["[animation]"]
     local aniPath 
-    local animation
+    local animation 
     for n=1,#mapAnimation,5 do
         aniPath = self.pathHead .. self.directory .. mapAnimation[n]
         animation = _AniBlock.New(aniPath, mapAnimation[n + 1])
@@ -158,48 +132,38 @@ function _GameScene:LoadAnimations()
         animation:SetFilter(true)
         animation:SetLayer(mapAnimation[n + 1])
         self.animations[#self.animations + 1] = animation
-        table.insert(self.layers[mapAnimation[n + 1]]["[animation]"], animation)
+        table.insert(self.layers[mapAnimation[n + 1]], animation)
     end 
-    
-end
+end 
 
 function _GameScene:LoadPassiveObjects()
-    if not self.res["[passive object]"] then
-        self.res["[passive object]"] = {}
-    end 
-    local _objDataArr = self.map["[passive object]"]
-    for n=1,#_objDataArr,4 do
-        self.res["[passive object]"][n] = _PassiveObjMgr.GeneratePassiveObj(_objDataArr[n]) 
-        if self.res["[passive object]"][n] ~= nil then
-            self.res["[passive object]"][n]:SetOffset(0, 200)
-            self.res["[passive object]"][n]:SetPos(_objDataArr[n+1], _objDataArr[n+2], _objDataArr[n+3])
-            table.insert(self.layers[self.res["[passive object]"][n]:GetLayer()]["[passive object]"],n)
-        else
-            table.remove(self.res["[passive object]"], n)
+    local pobj_data = self.map["[passive object]"]
+    for n=1,#pobj_data,4 do
+        local obj = _PassiveObjMgr.GeneratePassiveObj(pobj_data[n]) 
+        if obj ~= nil then
+            obj:SetOffset(0, 200)
+            obj:SetPos(pobj_data[n + 1], pobj_data[n + 2], pobj_data[n + 3])
+            print("passive_obj:GetLayer() = ", obj:GetLayer())
+            self.passiveobjs[#self.passiveobjs + 1] = obj
+            if obj.subType == "OBSTACLE" then
+                self.obstacles[#self.obstacles + 1] = obj
+            end
+            table.insert(self.layers[obj:GetLayer()], obj)
         end
-    end 
+    end
 end
 
 function _GameScene:LoadPathgate()
-    -- local pathgates = self.map["[pathgate]"]
-    -- local pathgate
-    -- for n=1,#pathgates, 4 do
-    --     pathgate = _PassiveObjMgr.GeneratePathgate(pathgates[n], pathgates[n + 1], pathgates[n + 2], pathgates[n + 3])
-    --     self:InsertToLayer(pathgate.layer, pathgate)
-    -- end
-
     if not self.res["[pathgate]"] then
         self.res["[pathgate]"] = {}
     end
     local pathgates = self.map["[pathgate]"]
     local pathgate
     for n=1,#pathgates, 4 do
-        self.res["[pathgate]"][n] = _PassiveObjMgr.GeneratePathgate(pathgates[n], pathgates[n + 1], pathgates[n + 2], pathgates[n + 3])
-        if self.res["[pathgate]"][n] ~= nil then
-            table.insert(self.layers[self.res["[pathgate]"][n].layer]["[pathgate]"],n)
-            self.pathgates[#self.pathgates + 1] = self.res["[pathgate]"][n]
-        else
-            table.remove(self.res["[pathgate]"], n)
+        pathgate = _PassiveObjMgr.GeneratePathgate(pathgates[n], pathgates[n + 1], pathgates[n + 2], pathgates[n + 3])
+        if pathgate ~= nil then
+            self.pathgates[#self.pathgates + 1] = pathgate
+            table.insert(self.layers[pathgate.layer], pathgate)
         end
     end
 end
@@ -248,47 +212,37 @@ function _GameScene:LoadMonster()
             )
             _mon:SetPos(_monDataArr[q + 3], _monDataArr[q + 4] + 200)
             if _mon ~= 0 then
-                table.insert(self.layers["[normal]"]["[monster]"], _mon)
+                self.monsters[#self.monsters + 1] = _mon
             end
         end
         print("LoadMonster: ",#_monDataArr / 10,"monsters")
     end
 end
 
-function _GameScene:InsertToLayer(layer, o)
-    self.layers[layer]["[passive object]"][#self.layers[layer]["[passive object]"] + 1] = o
-end
-
 function _GameScene:Awake() -- ReAdd objects into ObjMgr
     
-    -- local _layer = self.layers["[normal]"]["[animation]"]
-    -- for n=1,#_layer do
-    --     _ObjectMgr.AddObject(self.res["[animation]"][_layer[n]])
-    -- end 
-
     for n=1,#self.animations do
-        print("self.animations[n]:GetLayer() = ", self.animations[n]:GetLayer())
         if self.animations[n]:GetLayer() == "[normal]" then
             _ObjectMgr.AddObject(self.animations[n])
-            
         end
     end 
     
-    _layer = self.layers["[normal]"]["[passive object]"]
-    for n=1,#_layer do
-        _ObjectMgr.AddObject(self.res["[passive object]"][_layer[n]])
+    for n=1,#self.passiveobjs do
+        if self.passiveobjs[n]:GetLayer() == "[normal]" then
+            _ObjectMgr.AddObject(self.passiveobjs[n])
+        end
     end 
 
-    _layer = self.layers["[normal]"]["[pathgate]"]
-    for n=1,#_layer do
-        _ObjectMgr.AddObject(self.res["[pathgate]"][_layer[n]])
+    for n=1,#self.pathgates do
+        if self.pathgates[n]:GetLayer() == "[normal]" then
+            _ObjectMgr.AddObject(self.pathgates[n])
+        end
     end 
 
-    _layer = self.layers["[normal]"]["[monster]"]
     if self.isDgn and self.clear == false then
-        for n=1,#_layer do
-            _layer[n]:SetScenePtr(self)
-            _ObjectMgr.AddObject(_layer[n])
+        for n=1,#self.monsters do
+            self.monsters[n]:SetScenePtr(self)
+            _ObjectMgr.AddObject(self.monsters[n])
         end
     end
     
@@ -303,8 +257,7 @@ function _GameScene:Update(dt)
     self:UpdateLayer("[bottom]",dt)
     self:UpdateLayer("[closeback]",dt)
     self:UpdateLayer("[close]",dt)
-    self:UpdateLayer("[normal]",dt)
-
+    
   --[[ limit objects update rate  ]]
     if _KEYBOARD.Press("space") then
 		self.limit = 20
@@ -321,14 +274,17 @@ function _GameScene:Update(dt)
     _ObjectMgr.Update(dt)
 end
 
+---@param cam_x float 
+---@param cam_y float 
 function _GameScene:Draw(cam_x,cam_y)
 
-    self:DrawBackGround("[far]", cam_x,cam_y)
-    self:DrawBackGround("[mid]", cam_x,cam_y)
+    self:DrawBackGround("[far]", cam_x, cam_y)
+    self:DrawBackGround("[mid]", cam_x, cam_y)
     self:DrawTile(cam_x, cam_y)
     self:DrawExtendedTile(cam_x, cam_y)
-    self:DrawLayer("[closeback]",cam_x, cam_y)
+
     self:DrawLayer("[bottom]",cam_x, cam_y)
+    self:DrawLayer("[closeback]",cam_x, cam_y)
 
     if GDebug then
         self:DrawSpecialArea("movable")
@@ -342,44 +298,30 @@ function _GameScene:Draw(cam_x,cam_y)
     -- love.graphics.line(100, 0, 100, 480 + 80)
 end
 
+---@param layer string 
+---@param dt float 
 function _GameScene:UpdateLayer(layer, dt)
-    -- for n=1,#self.layers[layer]["[animation]"] do
-    --     self.res["[animation]"][self.layers[layer]["[animation]"][n]]:Update(dt)
-    -- end 
-
-    for n=1,#self.layers[layer]["[animation]"] do
-        self.layers[layer]["[animation]"][n]:Update(dt)
-    end 
-
-    for n=1,#self.layers[layer]["[passive object]"] do
-        self.res["[passive object]"][self.layers[layer]["[passive object]"][n]]:Update(dt)
-    end 
-    for n=1,#self.layers[layer]["[pathgate]"] do
-        self.res["[pathgate]"][self.layers[layer]["[pathgate]"][n]]:Update(dt)
-    end 
-    
+    for n=1,#self.layers[layer] do
+        self.layers[layer][n]:Update(dt)
+    end  
 end
---@param string layer
+
+---@param layer string 
+---@param x float 
+---@param y float 
 function _GameScene:DrawLayer(layer, x, y)
-    -- for n=1,#self.layers[layer]["[animation]"] do
-    --     self.res["[animation]"][self.layers[layer]["[animation]"][n]]:Draw(x, y)
-    -- end 
-
-    for n=1,#self.layers[layer]["[animation]"] do
-        self.layers[layer]["[animation]"][n]:Draw(x, y)
-    end 
-
-    for n=1,#self.layers[layer]["[passive object]"] do
-        self.res["[passive object]"][self.layers[layer]["[passive object]"][n]]:Draw(x, y)
-    end 
-    for n=1,#self.layers[layer]["[pathgate]"] do
-        self.res["[pathgate]"][self.layers[layer]["[pathgate]"][n]]:Draw(x, y)
+    for n=1,#self.layers[layer] do
+        self.layers[layer][n]:Draw(x, y)
     end 
 end
---@param string type
-function _GameScene:DrawBackGround(type,ex,ey)
+
+---@param type string 
+---@param ex float 
+---@param ey float 
+function _GameScene:DrawBackGround(type, ex, ey)
     local _scroll = ""
     local _ani_info = ""
+    
     if type == "[far]" then
         _scroll = "[far sight scroll]"
         _ani_info = "[ani info]"
@@ -389,21 +331,23 @@ function _GameScene:DrawBackGround(type,ex,ey)
     end 
     
     if self.map["[background animation]"] then
-        local _name = self.map["[background animation]"][_ani_info]["[filename]"]
-        local _sprAni = self.res[type][_name]
-        local _x = ex * (self.map[_scroll] - 100) / 100
-        local _y = 0
-        local _imageWidth = _sprAni:GetWidth()
-        _x = (_x % - _imageWidth)
+        local name = self.map["[background animation]"][_ani_info]["[filename]"]
+        local bganim = self.res[type][name]
+        local x = ex * (self.map[_scroll] - 100) / 100
+        local y = 0
+        local imageWidth = bganim:GetWidth()
+        x = (x % - imageWidth)
         
-        while _x < -ex + _GAMEINI.winSize.width do
-			_sprAni:Draw(_x,_y)
-            -- print("_x:",_x,"ex...:",-ex + _GAMEINI.winSize.width)
-            _x = _x + _imageWidth
+        while x < -ex + _GAMEINI.winSize.width do
+			bganim:Draw(x,y)
+            -- print("x:", x, "ex...:", -ex + love.graphics.getWidth())
+            x = x + imageWidth
 		end
     end
 end
 
+---@param ex float 
+---@param ey float 
 function _GameScene:DrawTile(ex, ey)
 
     if ex >= 480 + 80 then
@@ -411,8 +355,8 @@ function _GameScene:DrawTile(ex, ey)
     end
     
     -- horizental
-    local index = math.floor(math.abs(ex) / 224) + 1 -- 向下取整
-	local num = math.ceil(_GAMEINI.winSize.width / 224) - 2 -- 向上取整
+    local index = mathFloor(mathAbs(ex) / 224) + 1 -- 向下取整
+	local num = mathCeil(_GAMEINI.winSize.width / 224) - 2 -- 向上取整
     local endl = (index + num > #self.map["[tile]"]) and (#self.map["[tile]"]) or index + num
     -- print("index:", index, "endl:", endl)
     for n = index, endl do
@@ -421,6 +365,8 @@ function _GameScene:DrawTile(ex, ey)
 
 end
 
+---@param ex float 
+---@param ey float 
 function _GameScene:DrawExtendedTile(ex, ey)
     
     if not self.drawExTile then
@@ -442,6 +388,7 @@ function _GameScene:DrawExtendedTile(ex, ey)
     end
     
 end
+
 --@param string type
 function _GameScene:DrawSpecialArea(type)
     local _head = ""
@@ -483,6 +430,8 @@ function _GameScene:GetHeight()
 	return 600
 end
 
+---@param x float 
+---@param y float 
 function _GameScene:GetTileByPos(x, y)
     local nx = 0
     local ny = 0
@@ -496,9 +445,9 @@ function _GameScene:GetTileByPos(x, y)
     end
 end
 
---@param float x
---@param float y
---@return bool result
+---@param x float 
+---@param y float 
+---@return result bool
 function _GameScene:IsPassable(x, y)
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
         return false
@@ -513,6 +462,8 @@ function _GameScene:IsPassable(x, y)
     return self:GetTileByPos(x, y):IsPassable(x, y)
 end
 
+---@param x float 
+---@param y float 
 function _GameScene:IsInMoveableArea(x, y) 
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
         return false 
@@ -522,7 +473,10 @@ function _GameScene:IsInMoveableArea(x, y)
     end
 end
 
-function _GameScene:IsInArea(areaType,x,y)
+---@param areaType string 
+---@param x float 
+---@param y float 
+function _GameScene:IsInArea(areaType, x, y)
 	local _head = ""
     local _count = 0
     
@@ -556,48 +510,67 @@ function _GameScene:IsInArea(areaType,x,y)
     return false
 end
 
-function _GameScene:CheckEvent(x,y)
+---@param x float 
+---@param y float
+function _GameScene:CheckEvent(x, y)
     local _result = self:IsInArea("event",x,y)
     
     if _result then
         local _index = {area = _result[1], map = _result[2]}
-        _sceneMgr.SwitchScene(_result[1],_result[2],_result[3])
+        self._SCENEMGR.SwitchScene(_result[1],_result[2],_result[3])
     end 
 end
 
-function _GameScene:IsInObstacles(x,y)
-    
+---@param x float 
+---@param y float
+function _GameScene:IsInObstacles(x, y)
+    -- out of scene
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
         return {false, "not in scene area"}
     end 
-    if #self.layers["[normal]"]["[passive object]"] == 0 then
+    -- no obstacles
+    if #self.obstacles == 0 then
         return {false, "no obstacles"}
     end
 
-    for n=1,#self.layers["[normal]"]["[passive object]"] do
-        if self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].subType == "OBSTACLE" then
-            if _Collider.Point_Rect(x, y, self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect) then
-                return {true,self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect}
-            end
-        end
+    -- for n=1,#self.layers["[normal]"]["[passive object]"] do
+    --     if self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].subType == "OBSTACLE" then
+    --         if _Collider.Point_Rect(x, y, self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect) then
+    --             return {true,self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect}
+    --         end 
+    --     end 
+    -- end 
+
+    for n=1,#self.obstacles do
+        if _Collider.Point_Rect(x, y, self.obstacles[n].rect) then
+            return {true,self.obstacles[n].rect}
+        end 
     end 
 
     return {false, "no collision"}
 end
 
+---@param rect_a table 
 function _GameScene:CollideWithObstacles(rect_a)
-    local _Layer = self.layers["[normal]"]["[passive object]"]
-    local _res = self.res["[passive object]"]
+    -- local _Layer = self.layers["[normal]"]["[passive object]"]
+    -- local _res = self.res["[passive object]"]
     
-    for n=1,#_Layer do
-        if _res[_Layer[n]].subType == "OBSTACLE" then
-            local rect_b = _res[_Layer[n]]:GetRect()
-            if _Collider.Rect_Rect(rect_a, rect_b) then
-                return true
-            end
+    -- for n=1,#_Layer do
+    --     if _res[_Layer[n]].subType == "OBSTACLE" then
+    --         local rect_b = _res[_Layer[n]]:GetRect()
+    --         if _Collider.Rect_Rect(rect_a, rect_b) then
+    --             return true
+    --         end
+    --     end
+    -- end 
+
+    for n=1,#self.obstacles do
+        local rect_b = self.obstacles[n]:GetRect()
+        if _Collider.Rect_Rect(rect_a, rect_b) then
+            return true
         end
     end 
-
+    
     return false
 end
 

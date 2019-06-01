@@ -21,7 +21,7 @@ function _Weapon:Ctor(heroType, actor_) -- initialize
 	self.subType = ""
 end
 
-function _Weapon:SetEqpID(id) -- set equipment id
+function _Weapon:SetEquID(id) -- set equipment id
 	local _equipment = ItemMgr.GetEquipment(id)
 	if _equipment:GetType() == "weapon" and _equipment:LayerNum() == 4 then
 		self.actor_.animMap:GetWidget("weapon_b2"):SetActive(not bool)

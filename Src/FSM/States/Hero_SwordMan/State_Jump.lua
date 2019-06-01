@@ -27,7 +27,7 @@ function _State_Jump:Ctor()
 	self.landMsg = false
 end 
 
-function _State_Jump:Enter(hero_,FSM_,backJump)
+function _State_Jump:Enter(hero_, FSM_, backJump)
     self.name = "jump"
 	hero_:SetAnimation(self.name)
 	self.jumpDir = 0
@@ -59,7 +59,7 @@ function _State_Jump:Enter(hero_,FSM_,backJump)
 
 end
 
-function _State_Jump:Update(hero_,FSM_)
+function _State_Jump:Update(hero_, FSM_)
     
 	local _body = hero_:GetBody()
 	local _dt = love.timer.getDelta()

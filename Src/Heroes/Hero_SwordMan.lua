@@ -15,15 +15,11 @@ local _AniPack = require "Src.AniPack"
 local _AnimGrp = require "Src.Animation.AnimGrp"
 local _Weapon = require "Src.Components.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
-local _AttackJudger = require "Src.Game.AttackJudger"
+local _AttackJudger = require "Src.Components.AttackJudger"
 local _Input = require "Src.Input.Input"
 local _Movement = require "Src.Components.Movement"
-
 local _SkillMgr = require "Src.BattleSystem.SkillManager"
-
--- Models
 local _HP_Model = require "Src.Components.Model.HP"
-
 local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
 
 -- const
@@ -54,9 +50,9 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.2 + 0.0 -- 0.26  0.40  0.70
+	self.atkSpeed = 1.2 + 0.2 -- 0.26  0.40  0.70
 	self.hitRecovery = 22.5 -- 45 65
-	self.hitRecovery = 70 * 0.86 --0.86 1.3 -- 45 65 70 100 
+	self.hitRecovery = 50 --0.86 1.3 -- 45 65 70 100 
 	self.hitTime = 0
 	self.actionStop = 170
 	self.actionStopTime = 0
@@ -93,17 +89,17 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 
 	self.animMap:GetWidget("body"):SetFileNum(0001)
 
-	self.Components['Weapon']:SetType("katana", "lkatana")  -- mainType, subType
-	self.Components['Weapon']:SetRes("katana", 3201)  -- subType, fileNum
+	self.Components['Weapon']:SetType("hsword", "lswd")  -- mainType, subType
+	self.Components['Weapon']:SetRes("lswd", 4200)  -- subType, fileNum
 	-- katana	katana	0001
 	-- katana	katana	3201
 	-- katana	lkatana	0004	0002
 	-- hsword	lswd	0500	0100	0001	4200
 	-- ssword	sswd	4200c	
 	
-	-- self.Components['Weapon']:SetSingle(true)
+	self.Components['Weapon']:SetSingle(true)
 	
-	-- loading anim data file
+	-- load anim data file
 	for i = 1,#_aniName do
 		self.animMap:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
 	end
@@ -121,7 +117,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	
 	
 	
-	-- // fight with your own dark side
+	-- fight with your own dark side
 	-- local darkDepth = 50
 	-- self.animMap:SetColor(darkDepth, darkDepth, darkDepth, 255)
 	
@@ -130,7 +126,6 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self.Components["Input"] = _Input.New(self)
 	self.Components['SkillMgr'] = _SkillMgr.New(self, {8, 16, 46, 64, 65, 76, 77, 169})
 	
-
 	self.Components["FSM"] = _FSM.New(self, "stay", self.subType)
 	-- self.Components["FSM"]:OnNewStateEnter(self)
 	

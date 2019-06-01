@@ -8,7 +8,7 @@
 ]]
 local _obj = require "Src.Scene.Object" 
 local _AtkObj = require("Src.Core.Class")(_obj)
-local _AttackJudger = require "Src.Game.AttackJudger"
+local _AttackJudger = require "Src.Components.AttackJudger"
 
 local _AniPack = require "Src.AniPack" 
 
@@ -156,7 +156,7 @@ function _AtkObj:Draw(x,y)
 		etc:Draw()
 	end
 
-	-- love.graphics.circle("line", self.pos.x, self.pos.y, 3, 50)
+	love.graphics.circle("line", self.pos.x, self.pos.y, 3, 50)
 	-- love.graphics.circle("line", self.pos.x, self.pos.y + self.pos.z, 3, 50)
 	-- love.graphics.line(self.pos.x, self.pos.y - self.atkInfo["Y"] / 2, self.pos.x, self.pos.y + self.atkInfo["Y"] / 2)
 

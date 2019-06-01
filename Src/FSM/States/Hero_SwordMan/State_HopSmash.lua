@@ -33,8 +33,8 @@ function _State_HopSmash:Ctor()
 	self.period = 0
 	self.atkTimeLimit = 3
 	self.atkTimes = 0
-	self.atkJudgeTimer = 0.32
-	self.atkJudgeTime = 0
+	self.atkJudgeTimer = 0.016 * 4
+	self.atkJudgeTime = 0.016 * 4
 	self.stopTime = 15
 
 	self.amplitudeX = 15
@@ -44,7 +44,7 @@ function _State_HopSmash:Ctor()
 	self.input = {}
 	self.land = false
 	self.smash = true
-	-- self.smash = false
+	self.smash = false
 end 
 
 function _State_HopSmash:Enter(hero_)
@@ -61,6 +61,8 @@ function _State_HopSmash:Enter(hero_)
 
 	self.start = false
 
+	self.atkJudgeTimer = 0.016 * 4
+	self.atkJudgeTime = 0.016 * 4
 	self.atkTimes = 0
 	self.judgeEvents = {[3] = false, [4] = false, [5] = false}
 
@@ -146,58 +148,79 @@ function _State_HopSmash:Update(hero_,FSM_)
 
 end 
 
+
+
+
+
 function _State_HopSmash:Gravity(hero_)
 	local function landEvent()
 		self.land = true
 	end
 	local function fallCond()
-		if hero_:GetBody():GetCount() >= 2 then
+		if self.hero_:GetBody():GetCount() >= 2 then
 			return true 
 		end
 		return false
 	end
+
 	self.movement:Set_g(self.basePower * 0.51 * hero_:GetAtkSpeed())
 	self.movement:Gravity(nil, landEvent, fallCond)
 	-- self.movement:Gravity(nil, landEvent)
 end
 
-function _State_HopSmash:AttackJudgement(hero_, _body, _dt)
-	if hero_:GetAttackBox() then
+function _State_HopSmash:AttackJudgement(hero_, _body, dt)
+	if self.hero_:GetAttackBox() then
 		if _body:GetCount() >= 3 and _body:GetCount() <= 4 then
-			-- local _judgeName = (_body:GetCount() == 5) and "hopsmash" or "hopsmash"
+			-- local _judgeName = (_body:GetCount() == 5) and "hopsmashfinal" or "hopsmash"
 			-- if not self.judgeEvents[_body:GetCount()] then
 			-- 	self.atkJudger:ClearDamageArr()
 			-- 	self.atkJudger:Judge(hero_, "MONSTER", _judgeName)
 			-- 	self.judgeEvents[_body:GetCount()] = true
 			-- end
 
-			-- self.atkJudgeTime = self.atkJudgeTime + _dt
-			-- if self.atkJudgeTime < self.atkJudgeTimer then
-			-- 	return
-			-- end
+			
+			if self.atkTimes < 3 then
 
-
-
-			if self.atkTimes < 2 then
-				self.atkJudger:ClearDamageArr()
-				local _attackName = "hopsmash"
-				if self.atkTimes == 1 then
-					_attackName = "hopsmashfinal"
+				
+				if self.atkJudgeTime < self.atkJudgeTimer then
+					self.atkJudgeTime = self.atkJudgeTime + dt
+					return
 				end
-				if self.atkJudger:Judge(hero_, "MONSTER", _attackName) then
+
+				
+
+				self.atkJudger:ClearDamageArr()
+				
+				local attackName = "hopsmash"
+				-- if self.atkTimes == 2 then
+					print("hero pos z", self.hero_.pos.z)
+					if self.hero_.pos.z >= 0 then
+						attackName = "hopsmashfinal"
+					-- else
+					-- 	return
+					end
+				-- end
+				-- local attackName = (self.atkTimes == 2 and ) and "hopsmashfinal" or "hopsmash"
+				
+				if self.atkJudger:Judge(hero_, "MONSTER", attackName) then
 					self.atkTimes = self.atkTimes + 1
+					self.atkJudgeTime = 0
 				end
 				self.judgeEvents[_body:GetCount()] = true
-				
+			-- elseif self.hero_.pos.z <= 0 then
+			-- 	self.atkJudger:ClearDamageArr()
+			-- 	self.atkJudger:Judge(hero_, "MONSTER", "hopsmashfinal")
 			end
-			self.atkJudgeTime = 0
+			
+			
+
 		end
 	end
 end
 
 function _State_HopSmash:SmashEffect(hero_, _body)
 	if self.land and _body:GetCount() == 4 and not self.effect[3] and not self.effect[4]  then
-		if not self.atkObj and self.smash then
+		if not self.atkObj and self.smash == true then
 			self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20050)
 			self.atkObj:SetHost(hero_)
 			self.atkObj:SetPos(hero_:GetPos().x + 140 * hero_:GetDir(), hero_:GetPos().y)

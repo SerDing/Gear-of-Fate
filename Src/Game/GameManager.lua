@@ -69,10 +69,9 @@ print("love.filesystem.isFused() = ", love.filesystem.isFused())
 
 love.graphics.setDefaultFilter( "linear","linear" ) -- nearest
 
--- local mri = require("Src.Lib.MemoryCheck.MemoryReferenceInfo")
-
--- collectgarbage("collect")
--- mri.m_cMethods.DumpMemorySnapshot("./", "1-Before", -1)
+local text = "Data/character/swordman/asd.lua"
+-- print("___string test = ", string.match(text, "(.+)/[^/]*%.%w+$"))
+print("___string test = ", string.match(text, "(.+)/[^/]*") .. "/")
 
 function _GAMEMGR.Ctor() --initialize
 	_RESMGR.Ctor()
@@ -86,29 +85,6 @@ function _GAMEMGR.Ctor() --initialize
 	_InitGUI(_GAMEMGR)
 
 
-
-	-- collectgarbage("stop")
-
-	-- _RESMGR.LoadTexture("/ImagePacks/1.png")
-
-	-- local bgm = _RESMGR.LoadSound("/Music/character_stage.ogg")
-	-- bgm:play()
-	-- bgm:setLooping(true)
-	-- love.graphics.setDefaultFilter( 'nearest', 'nearest' )
-
-	--[[ skillId filePath
-		8	`Swordman/TripleSlash.skl`
-		16	`Swordman/AshenFork.skl`
-		40	`Swordman/Reckless.skl`
-		46	`Swordman/UpperSlash.skl`
-		58	`Swordman/VaneSlash.skl`
-		64	`Swordman/GoreCross.skl`
-		65	`Swordman/HopSmash.skl`
-		76	`Swordman/Frenzy.skl`
-		77	`Swordman/MoonlightSlash.skl`
-		169	`Swordman/BackStep.skl`
-	]]
-	
 	-- _SkillMgr = _SCENEMGR.GetHero_():GetComponent('SkillMgr')
 	-- _SkillMgr:LearnSkills({8, 16, 46, 64, 65, 76, 77, 169})
 	local save_abskeys = {
@@ -135,62 +111,26 @@ function _GAMEMGR.Update(dt)
 		love.event.quit()
 	end
 
-	
-	-- if _KEYBOARD.Press("tab") then
-	-- 	collectgarbage("collect")
-	-- 	mri.m_cMethods.DumpMemorySnapshot("./", "2-After", -1)
-	-- end
 	if _gamePause then
 		return  
 	end 
 
 	_SCENEMGR.Update(dt)
-	_CAMERA.Update(dt)
-	_CAMERA.LookAt(_ACTORMGR.mainPlayer.pos.x, _ACTORMGR.mainPlayer.pos.y)
+	
 	-- _RESMGR.Update(dt)
 	_KEYBOARD.Update(dt)
 end
 
 function _GAMEMGR.Draw(x,y)	
 
-	_CAMERA.Draw(_SCENEMGR.Draw)
-
+	-- _CAMERA.Draw(_SCENEMGR.Draw)
+	_SCENEMGR.Draw()
 	_UIMGR.Draw()
-
-	-- _SCENEMGR.Draw()
-
-	-- love.graphics.draw(_HUD, (love.graphics.getWidth() - 800) / 2, love.graphics.getHeight() - 91) -- 91
 	
-	-- // debug panel draw
-	-- local r, g, b, a = love.graphics.getColor()
-	-- love.graphics.setColor(0, 0, 0, 180)
-	-- love.graphics.rectangle("fill", love.graphics.getWidth() / _CAMERA.scale.x - 300, 0, 300, 50)
-	-- love.graphics.setColor(r, g, b, a)
-
-	-- // memory draw
-	-- _time = _time + love.timer.getDelta()
-	-- if _time >= 0.016 * 150 then
-	-- 	_time = 0
-	-- 	_memory = collectgarbage("count")
-	-- end
-	-- love.graphics.print(strcat("lua memory:", tostring(_memory)), 10, 30)
-	-- love.graphics.print(love.timer.getDelta(), 10, 50, 0, 1, 1.1) -- Dt Draw
-	
-	-- // FPS draw
+	-- FPS draw
 	love.graphics.print(strcat("FPS:", tostring(love.timer.getFPS())), (love.graphics.getWidth() / _CAMERA.scale.x - 300 + 10) , 10)
-	
-	-- // mouse pos draw
-	-- local _mousePos = {x = love.mouse.getX(), y = love.mouse.getY()}
-	-- love.graphics.print(strcat(tostring(_mousePos.x), ",", tostring(_mousePos.y)), (_mousePos.x - 20) / _CAMERA.scale.x, (_mousePos.y - 10) / _CAMERA.scale.y)
-	
-	-- _UIMGR:Draw()
-
-	-- local r, g, b, a = love.graphics.getColor()
-	-- love.graphics.setColor(0, 0, 0, 255)
-	-- love.graphics.print("剑神", 100, 200, 0, 1.6, 1.6)
-	-- love.graphics.setColor(r, g, b, a)
-	-- love.graphics.print("剑神", 100, 200, 0, 1.5, 1.5)
-
+	-- mouse pos draw
+	love.graphics.print(strcat(love.mouse.getX(), ",", love.mouse.getY()), (love.mouse.getX() - 20) / _CAMERA.scale.x, (love.mouse.getY() - 10) / _CAMERA.scale.y)
 end
 
 function _GAMEMGR.KeyPressed(key)

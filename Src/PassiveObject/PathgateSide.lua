@@ -6,8 +6,11 @@
 	Docs: 
 		* Write more details here 
 ]]
-
+local _obj = require "Src.Scene.Object" 
 local _PathgateSide = require("Src.Core.Class")()
+
+local _Animation = require "Src.AniPack"
+local _Tile = require "Src.Scene.Blocks.Tile"
 
 function _PathgateSide:Ctor(dataPath, x, y, destMap)
 	--[[

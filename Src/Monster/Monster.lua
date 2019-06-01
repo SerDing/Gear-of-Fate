@@ -85,7 +85,7 @@ function _Monster:Ctor(path, nav)
 	self.AI_Control = _FSMAIControl.New(self.FSM, self, nav, self.input)
 
 	self.Models = {}
-	self.Models['HP'] = _HP_Model.New(6000, 6000)
+	self.Models['HP'] = _HP_Model.New(3000, 3000) -- 600 or 6000
 	self.HP_Bar = _HMP_Bar.New(self.pos.x, self.pos.y, require("Data.ui.progressbar.mon_hp"), self.Models["HP"], nil, true)
 
 	

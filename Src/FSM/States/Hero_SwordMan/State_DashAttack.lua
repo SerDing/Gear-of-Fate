@@ -6,41 +6,41 @@
 	Docs:
 		* wrap the logic of DashAttack state in this class
 ]]
-local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
-local _State_DashAttack = require("Src.Core.Class")(_State_AtkBase)
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_DashAttack = require("Src.Core.Class")(base)
 
-function _State_DashAttack:Ctor()
-	self:_Init()
+function _State_DashAttack:Ctor(...)
+	base.Ctor(self, ...)
 end 
 
-function _State_DashAttack:Enter(hero_)
+function _State_DashAttack:Enter()
 	self.name = "dashattack"
 	self.attackName = {"dashattack","dashattackmultihit"}
-	hero_:SetAnimation(self.name)
+	self.hero:SetAnimation(self.name)
 	self.attackCount = 1
-	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger = self.hero:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.input = hero_:GetComponent("Input")
-	self.movement = hero_:GetComponent('Movement')
-	self:_Enter(hero_)
+	self.input = self.hero:GetComponent("Input")
+	self.movement = self.hero:GetComponent('Movement')
+	base.Enter(self)
 end
 
-function _State_DashAttack:Update(hero_,FSM_)
+function _State_DashAttack:Update()
 
-	local _body = hero_:GetBody()
+	local _body = self.hero:GetBody()
 	local _dt = love.timer.getDelta()
 	
 	if _body:GetCount() >= 2 and _body:GetCount() <= 4 then
 		if self.attackCount == 1 then
-			self.movement:X_Move(hero_.spd.x * 2 * hero_.dir )
+			self.movement:X_Move(self.hero.spd.x * 2 * self.hero.dir )
 		elseif self.attackCount == 2 then
-			self.movement:X_Move(hero_.spd.x * 4 * hero_.dir )
+			self.movement:X_Move(self.hero.spd.x * 4 * self.hero.dir )
 		end 
 	end 
 
 	if _body:GetCount() > 3 and _body:GetCount() < 8 then -- 
-		if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) and self.attackCount == 1 then
-			hero_.animMap:SetFrame(2)
+		if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and self.attackCount == 1 then
+			self.hero.animMap:SetFrame(2)
 			self.attackCount = self.attackCount + 1
 			self.atkJudger:ClearDamageArr()
 		end 
@@ -52,18 +52,18 @@ function _State_DashAttack:Update(hero_,FSM_)
 	end 
 
 	for i,v in ipairs(self.effect) do
-		v.pos.x = hero_.pos.x
+		v.pos.x = self.hero.pos.x
 	end
 
 	
-	if hero_:GetAttackBox() then
-		self.atkJudger:Judge(hero_, "MONSTER", self.attackName[self.attackCount])
+	if self.hero:GetAttackBox() then
+		self.atkJudger:Judge(self.hero, "MONSTER", self.attackName[self.attackCount])
 	end
 	
 end 
 
-function _State_DashAttack:Exit(hero_)
-    for n=1,#self.effect do
+function _State_DashAttack:Exit()
+	for n=1,#self.effect do
 		self.effect[n] = nil
 	end 
 end

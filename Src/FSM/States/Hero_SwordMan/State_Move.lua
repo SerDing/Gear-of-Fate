@@ -9,7 +9,9 @@
 
 local _State_Move = require("Src.Core.Class")()
 
-function _State_Move:Ctor()
+function _State_Move:Ctor(FSM, hero)
+    self.FSM = FSM
+    self.hero = hero
     self.time_up = 0
     self.time_down = 0
     self.time_left = 0
@@ -27,18 +29,18 @@ function _State_Move:Ctor()
     self.KEYID = {}
 end 
 
-function _State_Move:Enter(hero_)
+function _State_Move:Enter()
     self.name = "move"
-	hero_:SetAnimation(self.name)
+	self.hero:SetAnimation(self.name)
 	self.time_up = 0
     self.time_down = 0
     self.time_left = 0
     self.time_right = 0
-    self.input = hero_:GetComponent("Input")
-    self.movement = hero_:GetComponent('Movement')
+    self.input = self.hero:GetComponent("Input")
+    self.movement = self.hero:GetComponent('Movement')
 end
 
-function _State_Move:Update(hero_,FSM_)
+function _State_Move:Update()
 	local up = self.input:IsHold("up")
 	local down = self.input:IsHold("down")
 	local left = self.input:IsHold("left")
@@ -47,34 +49,34 @@ function _State_Move:Update(hero_,FSM_)
     if up or down then
         if up and down then
             if self.time_up > self.time_down then
-                self.movement:Y_Move(-hero_.spd.y )
+                self.movement:Y_Move(-self.hero.spd.y )
             else 
-                self.movement:Y_Move(hero_.spd.y )
+                self.movement:Y_Move(self.hero.spd.y )
             end 
         elseif up then
-            self.movement:Y_Move(-hero_.spd.y )
+            self.movement:Y_Move(-self.hero.spd.y )
         else 
-            self.movement:Y_Move(hero_.spd.y )
+            self.movement:Y_Move(self.hero.spd.y )
         end 
     end 
     
     if left or right then
         if left and right then
             if self.time_left > self.time_right then
-                self.movement:X_Move(- hero_.spd.x)
-                hero_:SetDir(-1)
+                self.movement:X_Move(- self.hero.spd.x)
+                self.hero:SetDir(-1)
             elseif self.time_left == self.time_right then
-                self.movement:X_Move(hero_.spd.x * hero_:GetDir())
+                self.movement:X_Move(self.hero.spd.x * self.hero:GetDir())
             else 
-                self.movement:X_Move(hero_.spd.x)
-                hero_:SetDir(1)
+                self.movement:X_Move(self.hero.spd.x)
+                self.hero:SetDir(1)
             end 
         elseif left then
-            self.movement:X_Move(- hero_.spd.x)
-			hero_:SetDir(-1)
+            self.movement:X_Move(- self.hero.spd.x)
+			self.hero:SetDir(-1)
         else 
-            self.movement:X_Move(hero_.spd.x)
-            hero_:SetDir(1)
+            self.movement:X_Move(self.hero.spd.x)
+            self.hero:SetDir(1)
         end
     end
 
@@ -97,12 +99,12 @@ function _State_Move:Update(hero_,FSM_)
     
     
     if not up and not down and not left and not right then 
-        FSM_:SetState(FSM_.oriState,hero_)
+        self.FSM:SetState(self.FSM.oriState,self.hero)
     end 
 
 end 
 
-function _State_Move:Exit(hero_)
+function _State_Move:Exit()
 end
 
 function _State_Move:GetTrans()

@@ -106,11 +106,11 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 				local hitDir = _atkInfo["[attack direction]"] or ""
 				local animPath = self:GetEffectPath(hitType, hitDir)
 				local enemyBodyCenter = {x = 0, y = 0}
-				local effect = nil
 				if _weaponHitInfo or _atkInfo["[hit info]"] then
 					enemyBodyCenter.x = enemy:GetPos().x
 					enemyBodyCenter.y = enemy:GetPos().y + enemy:GetZ() - enemy:GetBody():GetHeight() / 2
-					effect = _EffectMgr.ExtraEffect(animPath, enemyBodyCenter.x, enemyBodyCenter.y, 1, enemy:GetDir(), enemy)
+					local effect = _EffectMgr.ExtraEffect(animPath, enemy)
+					effect:SetPos(enemyBodyCenter.x, enemyBodyCenter.y)
 					effect:SetLayer(1)
 				end
 				

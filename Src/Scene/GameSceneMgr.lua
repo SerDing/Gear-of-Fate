@@ -26,8 +26,8 @@ local _ACTORMGR = require "Src.Actor.ActorMgr"
 
 -- const
 local _res = {}
-local _Area = {town = {},dungeon = {}}
-local _sceneList = {town = {},dungeon = {}}
+local _Area = {town = {}, dungeon = {}}
+local _sceneList = {town = {}, dungeon = {}}
 local _Index = {-- Index = {area,map}
 	["elvengard"] = {1,0},
 	["d_elvengard"] = {1,2},
@@ -108,10 +108,8 @@ local drawFunc = function (x,y)
 			if this.curScene.Draw then
 				this.curScene:Draw(x, y)
 			end
-			
 		end
 	end
-	
 	if _cover.alpha > 0 then
 		_cover.sprite:Draw(- x, - y)
 		_cover.sprite:SetColor(0,0,0,_cover.alpha)

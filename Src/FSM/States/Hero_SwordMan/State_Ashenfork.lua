@@ -6,16 +6,16 @@
 	Docs: 
 		* Write notes here even more 
 ]]
-local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
-local _State_Ashenfork = require("Src.Core.Class")(_State_AtkBase)
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_Ashenfork = require("Src.Core.Class")(base)
 
 local _EffectMgr = require "Src.Scene.EffectManager" 
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 
-function _State_Ashenfork:Ctor()
+function _State_Ashenfork:Ctor(...)
+	base.Ctor(self, ...)
 	self.name = "ashenfork"
 	self.skillID = 16
-	self:_Init()
 	self.jumpPower = 0
 	self.g = 160 -- 130
 	self.speed = 140 * 1.3
@@ -24,79 +24,79 @@ function _State_Ashenfork:Ctor()
 	self:SetEffectKeyFrame(0, "jumpattackhold.lua")
 end 
 
-function _State_Ashenfork:Enter(hero_)
+function _State_Ashenfork:Enter()
 	self.attackName = "ashenfork"
-	hero_:SetAnimation("flowmindtwoattack1") -- waiting for changing a right one
+	self.hero:SetAnimation("flowmindtwoattack1") -- waiting for changing a right one
 	for i=1,3 do
-		hero_:NextFrame()
+		self.hero:NextFrame()
 	end
 
 	self.jumpPower = 0
 	self.landed = false
-	self.enoughHeight = (hero_:GetZ() < -120) and true or false
+	self.enoughHeight = (self.hero:GetZ() < -120) and true or false
 
-	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger = self.hero:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.atkObj = nil
-	self.movement = hero_:GetComponent('Movement')
+	self.movement = self.hero:GetComponent('Movement')
 	self.movement.dir_z = -1
-	self:_Enter(hero_)
-	hero_:SetActionStopTime(love.timer.getTime())
+	base.Enter(self)
+	self.hero:SetActionStopTime(love.timer.getTime())
 end
 
-function _State_Ashenfork:Update(hero_,FSM_)
-	local _body = hero_:GetBody()
+function _State_Ashenfork:Update()
+	local _body = self.hero:GetBody()
 	local _dt = love.timer.getDelta()
 
-	self:_Update(FSM_) -- super class update
+	base.Update(self) -- super class update
 	self:AtkObjBorn()
 	self:Gravity()
 	self:X_Move()
 	self:EffectPosFix()
 	
 	-- attack judgement
-    if hero_:GetAttackBox() then
-        self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
+    if self.hero:GetAttackBox() then
+        self.atkJudger:Judge(self.hero, "MONSTER", self.attackName)
     end
 end 
 
 function _State_Ashenfork:Gravity()
-	self.movement:Set_g(self.g, self.hero_:GetAtkSpeed())
+	self.movement:Set_g(self.g, self.hero:GetAtkSpeed())
 	local function landEvent()
-		self.hero_:SetAnimation("sit")
+		self.hero:SetAnimation("sit")
 	end
 	self.movement:Gravity(nil, landEvent)
 end
 
 function _State_Ashenfork:X_Move()
-    if self.hero_:GetZ() < 0 then
-		self.movement:X_Move( self.speed * self.hero_:GetDir())
+    if self.hero:GetZ() < 0 then
+		self.movement:X_Move( self.speed * self.hero:GetDir())
 	end 
 end
 
 function _State_Ashenfork:EffectPosFix()
     for n=1,2 do
 		if self.effect[n] then
-			self.effect[n].pos.x = self.hero_.pos.x  - self.hero_:GetDir() * 9
-			self.effect[n].pos.y = self.hero_.pos.y
-			self.effect[n]:SetOffset(0, self.hero_:GetZ())
+			self.effect[n].pos.x = self.hero.pos.x  - self.hero:GetDir() * 9
+			self.effect[n].pos.y = self.hero.pos.y
+			self.effect[n]:SetOffset(0, self.hero:GetZ())
 		end 
 	end 
 end
 
 function _State_Ashenfork:AtkObjBorn()
-	if self.hero_:GetZ() >= 0 then
+	if self.hero:GetZ() >= 0 then
 		if not self.atkObj and self.enoughHeight then
 			self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20016)
-			self.atkObj:SetHost(self.hero_)
-			self.atkObj:SetPos(self.hero_:GetPos().x + 0 * self.hero_:GetDir(), self.hero_:GetPos().y - 1, 0)
-			self.atkObj:SetDir(self.hero_:GetDir())
+			self.atkObj:SetHost(self.hero)
+			self.atkObj:SetPos(self.hero:GetPos().x + 0 * self.hero:GetDir(), self.hero:GetPos().y - 1, 0)
+			self.atkObj:SetDir(self.hero:GetDir())
 		end
 	end
 end
 
-function _State_Ashenfork:Exit(hero_)
-    self:_Exit()
+function _State_Ashenfork:Exit()
+    base.Exit(self)
 end
 
 return _State_Ashenfork 

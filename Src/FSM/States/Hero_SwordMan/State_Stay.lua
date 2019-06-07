@@ -12,7 +12,9 @@ local _State_Stay = require("Src.Core.Class")()
 local _EffectMgr = require "Src.Scene.EffectManager" 
 local _HOLD_SPACE = 0.4
 
-function _State_Stay:Ctor()
+function _State_Stay:Ctor(FSM, hero)
+	self.FSM = FSM
+    self.hero = hero
 	self.keyPressTime = {left = 0, right = 0}
 	self.KEYID = {}
 	self.trans = {
@@ -28,43 +30,43 @@ function _State_Stay:Ctor()
 	}
 end 
 
-function _State_Stay:Enter(hero_)
+function _State_Stay:Enter()
     self.name = "stay"
-	hero_:SetAnimation(self.name)
-	self.input = hero_:GetComponent("Input")
+	self.hero:SetAnimation(self.name)
+	self.input = self.hero:GetComponent("Input")
 end
 
-function _State_Stay:Update(hero_,FSM_)
+function _State_Stay:Update()
     
-	local _up = FSM_.HotKeyMgr_.KEY["UP"]
-	local _down = FSM_.HotKeyMgr_.KEY["DOWN"]
-	local _left = FSM_.HotKeyMgr_.KEY["LEFT"]
-	local _right = FSM_.HotKeyMgr_.KEY["RIGHT"]
+	local _up = self.FSM.HotKeyMgr_.KEY["UP"]
+	local _down = self.FSM.HotKeyMgr_.KEY["DOWN"]
+	local _left = self.FSM.HotKeyMgr_.KEY["LEFT"]
+	local _right = self.FSM.HotKeyMgr_.KEY["RIGHT"]
 	
 	if self.input:IsHold(_up) or self.input:IsHold(_down) then
-		FSM_:SetState("move",hero_)
+		self.FSM:SetState("move",self.hero)
 	end 
 	
 	if self.input:IsHold(_left) then
 		if love.timer.getTime() - self.keyPressTime.left <= _HOLD_SPACE then
-			FSM_:SetState("dash",hero_)
+			self.FSM:SetState("dash",self.hero)
 		else
 			self.keyPressTime.left = love.timer.getTime()
-			hero_:SetDir(-1)
-			FSM_:SetState("move",hero_)
+			self.hero:SetDir(-1)
+			self.FSM:SetState("move",self.hero)
 		end 
 	elseif self.input:IsHold(_right) then
 		if love.timer.getTime() - self.keyPressTime.right <= _HOLD_SPACE then
-			FSM_:SetState("dash",hero_)
+			self.FSM:SetState("dash",self.hero)
 		else 
 			self.keyPressTime.right = love.timer.getTime()
-			hero_:SetDir(1)
-			FSM_:SetState("move",hero_)
+			self.hero:SetDir(1)
+			self.FSM:SetState("move",self.hero)
 		end
 	end
 end 
 
-function _State_Stay:Exit(hero_)
+function _State_Stay:Exit()
 end
 
 function _State_Stay:GetTrans()

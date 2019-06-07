@@ -9,9 +9,10 @@
 
 local _State_Attack = require("Src.Core.Class")()
 
-function _State_Attack:Ctor()
+function _State_Attack:Ctor(FSM, hero)
+    self.FSM = FSM
+    self.hero = hero
     self.name = "attack"
-
     self.childName = {"attack1", "attack2", "attack3"}
     self.trans = {
         {"NORMAL", "BACK", "jump", true}, 
@@ -28,78 +29,74 @@ function _State_Attack:Ctor()
     self.input = {}
 end
 
-function _State_Attack:Enter(hero_, FSM_)
+function _State_Attack:Enter()
     self.attackNum = 1
     self.attackName = self.childName[self.attackNum]
-    self.atkJudger = hero_:GetAtkJudger()
+    self.atkJudger = self.hero:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
-    self.input = hero_:GetComponent("Input")
-    self.movement = hero_:GetComponent('Movement')
+    self.input = self.hero:GetComponent("Input")
+    self.movement = self.hero:GetComponent('Movement')
 
-    hero_:SetAnimation(self.attackName)
+    self.hero:SetAnimation(self.attackName)
 
-    if hero_:GetAttackMode() == "frenzy" then
-        FSM_:SetState("frenzyattack",hero_)
+    if self.hero:GetAttackMode() == "frenzy" then
+        self.FSM:SetState("frenzyattack",self.hero)
         return
     end
 end
 
-function _State_Attack:Update(hero_, FSM_)
-    local _body = hero_:GetBody()
+function _State_Attack:Update()
+    local _body = self.hero:GetBody()
     local _dt = love.timer.getDelta()
     
-    local _leftHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"])
-    local _rightHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"])
+    local _leftHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"])
+    local _rightHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"])
     local _movable = true
 
-    if (self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) and hero_.dir == 1) or
-    (self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) and hero_.dir == -1) then
+    if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == 1) or
+    (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == -1) then
         _movable = false
     end
 
     if self.attackNum == 1 then
-        if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 2
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
-            hero_:SetAnimation(self.childName[self.attackNum])
+            self.hero:SetAnimation(self.childName[self.attackNum])
         end
     elseif self.attackNum == 2 then
-        if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
-            hero_:SetAnimation(self.childName[self.attackNum])
+            self.hero:SetAnimation(self.childName[self.attackNum])
         end
     end
     if self.attackNum == 2 or self.attackNum == 3 then
         if _movable then
             if _body:GetCount() <= self.attackNum then
-                self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
+                self.movement:X_Move(self.hero.spd.x * 0.75 * self.hero.dir )
             end
-            if (self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-            (self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) and hero_.dir == 1 ) then
-                self.movement:X_Move(hero_.spd.x * 0.75 * hero_.dir )
+            if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == -1 ) or 
+            (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == 1 ) then
+                self.movement:X_Move(self.hero.spd.x * 0.75 * self.hero.dir )
             end
         end
     end
     -- attack judgement
-    if hero_:GetAttackBox() then
-        self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
+    if self.hero:GetAttackBox() then
+        self.atkJudger:Judge(self.hero, "MONSTER", self.attackName)
     end
 
-    -- memory release
-    _body = nil
-    _dt = nil
-    
-    _leftHold = nil
-    _rightHold = nil
-    _movable = nil
+    if self.hero:GetBody():GetCurrentPlayNum() == 0 then
+        self.FSM:SetState(self.FSM.oriState,self.hero)
+    end
     
 end 
 
-function _State_Attack:Exit(hero_)
-    --body
+function _State_Attack:Exit()
+    
 end
 
 function _State_Attack:GetTrans()

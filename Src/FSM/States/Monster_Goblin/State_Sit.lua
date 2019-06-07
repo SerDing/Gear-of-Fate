@@ -9,21 +9,22 @@
 
 local _State_Sit = require("Src.Core.Class")()
 
-function _State_Sit:Ctor()
-    --body
+function _State_Sit:Ctor(FSM, entity)
+    self.FSM = FSM
+    self.entity = entity
 end 
 
-function _State_Sit:Enter(entity)
+function _State_Sit:Enter()
     self.name = "sit"
-	entity:SetAnimation("[sit motion]")
+	self.entity:SetAnimation("[sit motion]")
 	
 end
 
-function _State_Sit:Update(entity,FSM_)
+function _State_Sit:Update()
     --body
 end 
 
-function _State_Sit:Exit(entity)
+function _State_Sit:Exit()
     --body
 end
 

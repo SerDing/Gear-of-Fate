@@ -50,7 +50,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- ints
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.2 + 0.2 -- 0.26  0.40  0.70
+	self.atkSpeed = 1.2 + 0.4 -- 0.26  0.40  0.70
 	self.hitRecovery = 22.5 -- 45 65
 	self.hitRecovery = 50 --0.86 1.3 -- 45 65 70 100 
 	self.hitTime = 0
@@ -97,7 +97,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- hsword	lswd	0500	0100	0001	4200
 	-- ssword	sswd	4200c	
 	
-	self.Components['Weapon']:SetSingle(true)
+	-- self.Components['Weapon']:SetSingle(true)
 	
 	-- load anim data file
 	for i = 1,#_aniName do
@@ -329,7 +329,6 @@ function Hero_SwordMan:Update(dt)
 end
 
 function Hero_SwordMan:Draw()
-	
 	for n=1,#self.extraEffects do
 		if self.extraEffects[n] and self.extraEffects[n].Draw and self.extraEffects[n].layer == 0 then
 			self.extraEffects[n]:Draw()
@@ -362,13 +361,8 @@ function Hero_SwordMan:Draw()
 		-- love.graphics.line(self.pos.x - 200, self.pos.y - 151, self.pos.x + 200, self.pos.y - 151)
 	-- end
 
-	local r, g, b, a = love.graphics.getColor()
-	love.graphics.setColor(255, 255, 0, 255)
-	-- love.graphics.print("初夏流光", self.drawPos.x, self.drawPos.y, 0, 1.5, 1.5) 
-	love.graphics.setColor(r, g, b, a)
-	
 	self.AttackJudger:Draw()
-	
+
 end
 
 function Hero_SwordMan:Damage()

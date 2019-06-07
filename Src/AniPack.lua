@@ -58,7 +58,7 @@ function _Animator:Ctor(_type) --initialize
         ['dir'] = -1,
         ['speed'] = 6,
         ['ARGB'] = {['A'] = 255, ['R'] = 255, ['G'] = 0, ['B'] = 0},
-        ['scale'] = {x = 1.5, y = 1.5, spd = 0.05},
+        ['scale'] = {x = 1.5, y = 1.5, spd = 0.048},
         ['sprite'] = {
             _Sprite.New(_RESMGR.imageNull),
             _Sprite.New(_RESMGR.imageNull),
@@ -112,6 +112,10 @@ function _Animator:Ctor(_type) --initialize
 			]]
         )
     }
+    self.focus.sprite[1]:SetColorEx(255, 0, 0, 255)
+    self.focus.sprite[2]:SetColorEx(255, 0, 0, 255)
+    self.focus.sprite[3]:SetColorEx(255, 0, 0, 255)
+    self.focus.sprite[4]:SetColorEx(255, 0, 0, 255)
 
     --[[
 	vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
@@ -319,8 +323,8 @@ function _Animator:SuperArmor_Switch(s)
         end
         if self.focus['focus'] == false then
             self.focus['focus'] = true
-            self.focus['scale'].x = 1.5
-            self.focus['scale'].y = 1.5
+            self.focus['scale'].x = 1.6
+            self.focus['scale'].y = 1.6
             self.focus['ARGB']['G'] = 0
         end
     else
@@ -345,8 +349,7 @@ function _Animator:SuperArmor_Update()
                 end
             end
         end
-        self.focus['ARGB']['G'] =
-            self.focus['ARGB']['G'] + self.focus['dir'] * self.focus['speed'] * love.timer.getDelta()
+        self.focus['ARGB']['G'] = self.focus['ARGB']['G'] + self.focus['dir'] * self.focus['speed'] * love.timer.getDelta()
         if self.focus['ARGB']['G'] >= self.focus['max'] then
             self.focus['dir'] = -1
         elseif self.focus['ARGB']['G'] <= self.focus['min'] then
@@ -364,6 +367,11 @@ function _Animator:SuperArmor_Draw()
             v:SetCenter(self.center.x, self.center.y)
         end
         love.graphics.setShader(self.focus['shader'])
+        -- self.focus['sprite'][1]:SetColor(255, 255, 255, 50)
+        -- self.focus['sprite'][2]:SetColor(255, 255, 255, 50)
+        -- self.focus['sprite'][3]:SetColor(255, 255, 255, 50)
+        -- self.focus['sprite'][4]:SetColor(255, 255, 255, 50)
+
         self.focus['sprite'][1]:Draw(
             _baseX - 1,
             _baseY - 1,

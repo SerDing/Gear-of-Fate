@@ -4,7 +4,7 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
-		*Write notes here even more
+		* effect factory
 ]]
 
 local _EffectMgr = {}
@@ -19,25 +19,14 @@ function _EffectMgr.Ctor()
 	}
 end 
 
--- _EffectMgr.GenerateEffect(animPath,x,y,playNum,dir)
--- animPath must contain the suffix".lua"
-function _EffectMgr.GenerateEffect(animPath, x, y, playNum, dir)
-	local effect = _Effect.New(animPath)
-	effect:SetPos(x,y)
-	effect:SetDir(dir)
-	effect:GetAni():SetCurrentPlayNum(playNum) 
-	_ObjectMgr.AddObject(effect)
-
-	return effect
-end
-
 -- generate an extra effect to hero class
-function _EffectMgr.ExtraEffect(animPath, x, y, playNum, dir, entity_)
+-- animPath must contain the suffix".lua"
+function _EffectMgr.ExtraEffect(animPath, entity)
 	local effect = _Effect.New(animPath)
-	effect:SetPos(x,y)
-	effect:SetDir(dir)
-	effect:GetAni():SetCurrentPlayNum(playNum) 
-	entity_:AddExtraEffect(effect)
+	effect:SetPos(entity.pos.x, entity.pos.y)
+	effect:SetDir(entity.dir)
+	effect:GetAni():SetCurrentPlayNum(1)
+	entity:AddExtraEffect(effect)
 
 	return effect
 end

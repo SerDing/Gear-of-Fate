@@ -9,7 +9,9 @@
 
 local _State_Dash = require("Src.Core.Class")()
 
-function _State_Dash:Ctor()
+function _State_Dash:Ctor(FSM, hero)
+    self.FSM = FSM
+    self.hero = hero
     self.KEYID = {}
     self.trans = {
         {"NORMAL", "ATTACK", "dashattack"},
@@ -23,15 +25,15 @@ function _State_Dash:Ctor()
     }
 end 
 
-function _State_Dash:Enter(hero_)
+function _State_Dash:Enter()
     self.name = "dash"
-    hero_:SetAnimation(self.name)
-    self.input = hero_:GetComponent("Input")
-    self.movement = hero_:GetComponent('Movement')
-    self.animator = hero_:GetBody()
+    self.hero:SetAnimation(self.name)
+    self.input = self.hero:GetComponent("Input")
+    self.movement = self.hero:GetComponent('Movement')
+    self.animator = self.hero:GetBody()
 end
 
-function _State_Dash:Update(hero_,FSM_)
+function _State_Dash:Update()
 	
     local up = self.input:IsHold("up")
 	local down = self.input:IsHold("down")
@@ -39,12 +41,12 @@ function _State_Dash:Update(hero_,FSM_)
 	local right = self.input:IsHold("right")
 	
     if up then
-        self.movement:Y_Move(- hero_.spd.y * 1.5 )
+        self.movement:Y_Move(- self.hero.spd.y * 1.5 )
     elseif down then
-        self.movement:Y_Move( hero_.spd.y * 1.5 )
+        self.movement:Y_Move( self.hero.spd.y * 1.5 )
     end 
     
-    local realSpdX = hero_.spd.x * 2
+    local realSpdX = self.hero.spd.x * 2
 
     -- if self.animator:GetCount() == 2 or 
     -- self.animator:GetCount() == 3 or 
@@ -52,39 +54,39 @@ function _State_Dash:Update(hero_,FSM_)
     -- -- self.animator:GetCount() == 0 or
     -- self.animator:GetCount() == 6 or 
     -- self.animator:GetCount() == 7 then
-    --     realSpdX = hero_.spd.x * 1.5 
+    --     realSpdX = self.hero.spd.x * 1.5 
     -- end
 
     if left then
         self.movement:X_Move(- realSpdX)
-        hero_:SetDir(-1)
+        self.hero:SetDir(-1)
     elseif right then
         self.movement:X_Move( realSpdX)
-        hero_:SetDir(1)
+        self.hero:SetDir(1)
     end 
 
     
     if self.input:IsPressed("left") then
         if self.input:IsHold("right") then
-            FSM_:SetState("move",hero_)
-            hero_:SetDir(-1)
+            self.FSM:SetState("move",self.hero)
+            self.hero:SetDir(-1)
         end 
     end 
    
     if self.input:IsPressed("right") then
         if self.input:IsHold("left") then
-            FSM_:SetState("move",hero_)
-            hero_:SetDir(1)
+            self.FSM:SetState("move",self.hero)
+            self.hero:SetDir(1)
         end 
     end 
     
     if not up and not down and not left and not right then 
-        FSM_:SetState(FSM_.oriState,hero_)
+        self.FSM:SetState(self.FSM.oriState,self.hero)
     end 
     
 end 
 
-function _State_Dash:Exit(hero_)
+function _State_Dash:Exit()
 end
 
 function _State_Dash:GetTrans()

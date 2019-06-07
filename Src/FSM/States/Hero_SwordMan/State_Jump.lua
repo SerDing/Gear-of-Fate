@@ -11,7 +11,9 @@ local _State_Jump = require("Src.Core.Class")()
 
 local _AUDIOMGR = require "Src.Audio.AudioManager"
 
-function _State_Jump:Ctor()
+function _State_Jump:Ctor(FSM, hero)
+	self.FSM = FSM
+    self.hero = hero
     self.jumpPower = 0
 	self.jumpDir = 0
 	self.jumpAttack = false
@@ -27,12 +29,12 @@ function _State_Jump:Ctor()
 	self.landMsg = false
 end 
 
-function _State_Jump:Enter(hero_, FSM_, backJump)
+function _State_Jump:Enter(backJump)
     self.name = "jump"
-	hero_:SetAnimation(self.name)
+	self.hero:SetAnimation(self.name)
 	self.jumpDir = 0
 
-	if FSM_.preState.name == "dash" then
+	if self.FSM.preState.name == "dash" then
 		self.jumpPower = 12 * self.stableFPS
 	else 
 		self.jumpPower = 11 * self.stableFPS
@@ -41,17 +43,17 @@ function _State_Jump:Enter(hero_, FSM_, backJump)
 	self.backJump = backJump
 	if backJump then
 		self.jumpPower = (3.5 + 1.5) * self.stableFPS
-		hero_.animMap:SetFrame(8)
+		self.hero.animMap:SetFrame(8)
 	end
 	
 	self.dirLock = false
 	self.hasHit = false
 	self.jumpAtkTimes = 0
 	
-	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger = self.hero:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.input = hero_:GetComponent("Input")
-	self.movement = hero_:GetComponent('Movement')
+	self.input = self.hero:GetComponent("Input")
+	self.movement = self.hero:GetComponent('Movement')
 
 	self.jumpStart = false
 	self.topMsg = false
@@ -59,20 +61,20 @@ function _State_Jump:Enter(hero_, FSM_, backJump)
 
 end
 
-function _State_Jump:Update(hero_, FSM_)
+function _State_Jump:Update()
     
-	local _body = hero_:GetBody()
+	local _body = self.hero:GetBody()
 	local _dt = love.timer.getDelta()
 
 	self:StartJump(_body)	
-	self:Gravity(hero_, _body, _dt) -- rising and fall
-	self:Movement(FSM_, hero_) -- move logic in jump
-	self:JumpATK(FSM_, hero_, _body) -- jump attack logic (contain animation handle)
+	self:Gravity(_body, _dt) -- rising and fall
+	self:Movement() -- move logic in jump
+	self:JumpATK(_body) -- jump attack logic (contain animation handle)
 	
 	-- attack judgement
 	if not self.hasHit then
-		if hero_:GetAttackBox() then
-			self.hasHit = self.atkJudger:Judge(hero_, "MONSTER", "jumpattack")
+		if self.hero:GetAttackBox() then
+			self.hasHit = self.atkJudger:Judge(self.hero, "MONSTER", "jumpattack")
 		end
 	end
 	
@@ -108,7 +110,7 @@ function _State_Jump:StartJump(_body)
 	end 
 end
 
-function _State_Jump:Gravity(hero_, _body, _dt)
+function _State_Jump:Gravity(_body, _dt)
 	
 	local function topEvent()
 		self.topMsg = true
@@ -123,7 +125,7 @@ function _State_Jump:Gravity(hero_, _body, _dt)
 	if self.topMsg then
 		if not self.jumpAttack and not self.backJump then
 			while _body:GetCount() <= 7 and _body:GetCount() > 0 do
-				hero_:NextFrame()
+				self.hero:NextFrame()
 			end
 		end
 	end
@@ -131,51 +133,51 @@ function _State_Jump:Gravity(hero_, _body, _dt)
 	if self.landMsg then
 		if not self.jumpAttack then
 			while _body:GetCount() <= 14 and _body:GetCount() > 7 do
-				hero_:NextFrame()
+				self.hero:NextFrame()
 			end
 		end
 	end
 
 end
 
-function _State_Jump:Movement(FSM_, hero_)
+function _State_Jump:Movement()
 	self.jumpDir = self.movement.dir_z
 	if not self.backJump then
 		if self.jumpDir == 1 or self.jumpDir == -1 then
 			local v = 0.9 -- rate of movement
-			if FSM_.preState.name == "dash" then
+			if self.FSM.preState.name == "dash" then
 				v = 2
 			end 
-			if self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) then
+			if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) then
 				if not self.jumpAttack and not self.dirLock then
-					hero_:SetDir(-1)
+					self.hero:SetDir(-1)
 				end
-				self.movement:X_Move(hero_.spd.x * v * -1)
-			elseif self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) then
+				self.movement:X_Move(self.hero.spd.x * v * -1)
+			elseif self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) then
 				if not self.jumpAttack and not self.dirLock then
-					hero_:SetDir(1)
+					self.hero:SetDir(1)
 				end
-				self.movement:X_Move(hero_.spd.x * v * 1)
+				self.movement:X_Move(self.hero.spd.x * v * 1)
 			end
 
-			if self.input:IsHold(FSM_.HotKeyMgr_.KEY["UP"]) then
-				self.movement:Y_Move(hero_.spd.y * v * 0.5 * -1)
-			elseif self.input:IsHold(FSM_.HotKeyMgr_.KEY["DOWN"]) then
-				self.movement:Y_Move(hero_.spd.y * v * 0.5 * 1)
+			if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["UP"]) then
+				self.movement:Y_Move(self.hero.spd.y * v * 0.5 * -1)
+			elseif self.input:IsHold(self.FSM.HotKeyMgr_.KEY["DOWN"]) then
+				self.movement:Y_Move(self.hero.spd.y * v * 0.5 * 1)
 			end
 		end 
 	else 
 		if self.jumpDir == 1 or self.jumpDir == -1 then
-			self.movement:X_Move( 2 * hero_.spd.x * hero_:GetDir() * -1)
+			self.movement:X_Move( 2 * self.hero.spd.x * self.hero:GetDir() * -1)
 		end
 	end 
 end
 
-function _State_Jump:JumpATK(FSM_, hero_, _body)
+function _State_Jump:JumpATK(_body)
 	if not self.jumpAttack then
-		if  hero_:GetZ() < -2  then
-			if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) then
-				hero_:SetAnimation("jumpattack")
+		if  self.hero:GetZ() < -2  then
+			if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) then
+				self.hero:SetAnimation("jumpattack")
 				self.dirLock = true
 				self.jumpAttack = true
 				self.hasHit = false
@@ -188,30 +190,30 @@ function _State_Jump:JumpATK(FSM_, hero_, _body)
 
 	if self.jumpAttack then -- multiple slash
 		if _body:GetCount() >= 5 then --   _body.playNum == 0
-			if self.input:IsPressed(FSM_.HotKeyMgr_.KEY["ATTACK"]) and hero_:GetZ() < -2 then
+			if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and self.hero:GetZ() < -2 then
 				_body.playNum = 1
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
 				self.atkJudger:ClearDamageArr()
-				hero_:SetAnimation("jumpattack")
+				self.hero:SetAnimation("jumpattack")
 				self:PlaySound()
 				self.hasHit = false
 				-- self:PlaySound()
 			else
 				self.jumpAttack = false
-				if hero_:GetZ() >= 0 then  --[[	hero has been on land  ]]
-					FSM_:SetState(FSM_.oriState, hero_)
+				if self.hero:GetZ() >= 0 then  --[[	hero has been on land  ]]
+					self.FSM:SetState(self.FSM.oriState, self.hero)
 				else 
-					hero_:SetAnimation(self.name) -- trans to jump state
-					hero_.animMap:SetFrame(8)
+					self.hero:SetAnimation(self.name) -- trans to jump state
+					self.hero.animMap:SetFrame(8)
 				end 
 			end 
 			
 		end 
 
 		--[[	Hero has been on land, then set state to oriState	]]
-		if hero_:GetZ() >= 0 then
+		if self.hero:GetZ() >= 0 then
 			self.jumpAttack = false
-			FSM_:SetState(FSM_.oriState, hero_)
+			self.FSM:SetState(self.FSM.oriState, self.hero)
 		end 
 
 	end 
@@ -221,7 +223,7 @@ function _State_Jump:PlaySound()
 	_AUDIOMGR.PlaySound(self.sounds[math.random(1, 2)])
 end
 
-function _State_Jump:Exit(hero_)
+function _State_Jump:Exit()
     self.jumpDir = ""
 	self.jumpAttack = false
 end

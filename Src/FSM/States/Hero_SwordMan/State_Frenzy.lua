@@ -13,63 +13,65 @@ local _EffectMgr = require "Src.Scene.EffectManager"
 local _BuffMgr = require "Src.Heroes.BuffManager" 
 local _AUDIOMGR = require "Src.Audio.AudioManager"
 
-function _State_Frenzy:Ctor()
+function _State_Frenzy:Ctor(FSM, hero)
+	self.FSM = FSM
+    self.hero = hero
 	self.name = "frenzy"
 	self.effect = {}
 	self.stateColor = {255,150,0,255}
 	self.switch = false
 end 
 
-function _State_Frenzy:Enter(hero_,FSM_)
+function _State_Frenzy:Enter()
 	
 	if self.switch then
 		
 		self.switch = false
 		
-		hero_:GetBody():SetColor(255, 255, 255, 255)
-		-- hero_:GetAvatar():GetWidget("weapon_b1"):SetColor(255, 255, 255, 255)
-		-- hero_:GetAvatar():GetWidget("weapon_c1"):SetColor(255, 255, 255, 255)
+		self.hero:GetBody():SetColor(255, 255, 255, 255)
+		-- self.hero:GetAvatar():GetWidget("weapon_b1"):SetColor(255, 255, 255, 255)
+		-- self.hero:GetAvatar():GetWidget("weapon_c1"):SetColor(255, 255, 255, 255)
 
-		_BuffMgr.OffBuff(hero_, "frenzy")
+		_BuffMgr.OffBuff(self.hero, "frenzy")
 		
-		FSM_:SetState(FSM_.oriState, hero_)
+		self.FSM:SetState(self.FSM.oriState, self.hero)
 		
-		hero_:SetAttackMode("normal")
+		self.hero:SetAttackMode("normal")
 
 		return 
 	end 
 	
-	hero_:SetAnimation("grab")
+	self.hero:SetAnimation("grab")
 	
-	hero_:GetBody():SetColor(unpack(self.stateColor))
-	-- hero_:GetAvatar():GetWidget("weapon_b1"):SetColor(unpack(self.stateColor))
-	-- hero_:GetAvatar():GetWidget("weapon_c1"):SetColor(unpack(self.stateColor))
+	self.hero:GetBody():SetColor(unpack(self.stateColor))
+	-- self.hero:GetAvatar():GetWidget("weapon_b1"):SetColor(unpack(self.stateColor))
+	-- self.hero:GetAvatar():GetWidget("weapon_c1"):SetColor(unpack(self.stateColor))
 
-	self.effect[1] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/cast.lua", hero_.pos.x, hero_.pos.y, 1, hero_:GetDir())	
-	self.effect[1]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+	self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/cast.lua", self.hero)	
+	self.effect[1]:GetAni():SetBaseRate(self.hero:GetAtkSpeed())
 
 
 	self.switch = true
-	hero_:SetAttackMode("frenzy")
+	self.hero:SetAttackMode("frenzy")
 	_AUDIOMGR.PlaySound("SM_FLENSE")
 end
 
-function _State_Frenzy:Update(hero_,FSM_)
-	local _body = hero_:GetBody()
+function _State_Frenzy:Update()
+	local _body = self.hero:GetBody()
 	local _dt = love.timer.getDelta()
 	
 	if not self.effect[2] and _body:GetCount() == 6 then
-		self.effect[2] = _EffectMgr.GenerateEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/blast.lua",hero_.pos.x,hero_.pos.y,1,hero_:GetDir())	
-		self.effect[2]:GetAni():SetBaseRate(hero_:GetAtkSpeed())
+		self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/blast.lua", self.hero)	
+		self.effect[2]:GetAni():SetBaseRate(self.hero:GetAtkSpeed())
 	end 
 
 	if _body:GetCount() == 16 then
-		_BuffMgr.AddBuff(hero_,"frenzy")
+		_BuffMgr.AddBuff(self.hero,"frenzy")
 	end 
 
 end 
 
-function _State_Frenzy:Exit(hero_)
+function _State_Frenzy:Exit()
 	for n=1,#self.effect do
 		self.effect[n] = nil
 	end 

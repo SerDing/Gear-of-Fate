@@ -116,13 +116,10 @@ function _GAMEMGR.Update(dt)
 	end 
 
 	_SCENEMGR.Update(dt)
-	
-	-- _RESMGR.Update(dt)
 	_KEYBOARD.Update(dt)
 end
 
 function _GAMEMGR.Draw(x,y)	
-
 	-- _CAMERA.Draw(_SCENEMGR.Draw)
 	_SCENEMGR.Draw()
 	_UIMGR.Draw()

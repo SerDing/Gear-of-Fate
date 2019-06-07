@@ -8,10 +8,11 @@
 ]]
 -- Remember to change self.input:IsHold() to Press() 
 
-local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
-local _State_FrenzyAttack = require("Src.Core.Class")(_State_AtkBase)
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_FrenzyAttack = require("Src.Core.Class")(base)
 
-function _State_FrenzyAttack:Ctor()
+function _State_FrenzyAttack:Ctor(...)
+    base.Ctor(self, ...)
     self.name = "frenzyattack"
     self.childName ={"frenzy1", "frenzy2", "frenzy3", "frenzy4"}
     self.trans = {
@@ -25,66 +26,59 @@ function _State_FrenzyAttack:Ctor()
     self.hitTimes = 0
     self.KEYID = {}
     self.spdRate = 0.55
-    self:_Init()
 end 
 
-function _State_FrenzyAttack:Enter(hero_)
+function _State_FrenzyAttack:Enter()
     
-	hero_:SetAnimation(self.childName[1])
+	self.hero:SetAnimation(self.childName[1])
 	self.attackNum = 1
     
-    self.atkJudger = hero_:GetAtkJudger()
+    self.atkJudger = self.hero:GetAtkJudger()
     self.atkJudger:ClearDamageArr()
     self.hitTimes = 0
-    self.movement = hero_:GetComponent('Movement')
+    self.movement = self.hero:GetComponent('Movement')
 
     ----[[  Call base class function  ]]
-    self:_Enter(hero_)
+    base.Enter(self)
     self:Effect("frenzy/sword1-1.lua", 1, 1)
     self:Effect("frenzy/sword1-3.lua", 1, 1)
     self:Effect("frenzy/sword1-4.lua", 1, 1)
 
-    hero_.animMap:GetWidget("weapon_b1").OnChangeFrame = function (frame)
-        
-        if not hero_:GetAttackBox() or self.hitTimes >= 2 then
+    local function attack_event(frame)
+        if not self.hero:GetAttackBox() or self.hitTimes >= 2 then
             return
         end
-
-        -- if self.attackNum == 1 then
-        --     if frame == 3 or frame == 4 then
-                self.atkJudger:ClearDamageArr()
-                
-                if self.atkJudger:Judge(hero_, "MONSTER", self.childName[self.attackNum]) then
-                    self.hitTimes = self.hitTimes + 1
-                end
-                
-        --     end
-        -- end
-
+        self.atkJudger:ClearDamageArr()
+        if self.atkJudger:Judge(self.hero, "MONSTER", self.childName[self.attackNum]) then
+            self.hitTimes = self.hitTimes + 1
+        end
     end
+
+    self.hero.animMap:GetWidget("weapon_c1").OnChangeFrame = attack_event
+    self.hero.animMap:GetWidget("weapon_b1").OnChangeFrame = attack_event
 
 end
 
-function _State_FrenzyAttack:Update(hero_,FSM_)
-    local _body = hero_:GetBody()
+function _State_FrenzyAttack:Update()
+    local _body = self.hero:GetBody()
     local _dt = love.timer.getDelta()
     
-    local _leftHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"])
-    local _rightHold = self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"])
+    local _leftHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"])
+    local _rightHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"])
     local _movable = true
 
-    if (_leftHold and hero_.dir == 1) or
-    (_rightHold and hero_.dir == -1) then
+    if (_leftHold and self.hero.dir == 1) or
+    (_rightHold and self.hero.dir == -1) then
         _movable = false
     end
 
     if self.attackNum == 1 then
         
-        if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 4 then
+        if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 4 then
             self.attackNum = 2
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
-            hero_:SetAnimation(self.childName[self.attackNum])
+            self.hero:SetAnimation(self.childName[self.attackNum])
             
            
             for n=1,#self.effect do
@@ -105,20 +99,20 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
         
         if _movable then
             if _body:GetCount() <= 2 then
-                self.movement:X_Move(hero_.spd.x * hero_.dir )
+                self.movement:X_Move(self.hero.spd.x * self.hero.dir )
             end 
     
-            if (_leftHold and hero_.dir == -1 ) or 
-            (_rightHold and hero_.dir == 1 )   then  
-                self.movement:X_Move(hero_.spd.x * self.spdRate * hero_.dir )
+            if (_leftHold and self.hero.dir == -1 ) or 
+            (_rightHold and self.hero.dir == 1 )   then  
+                self.movement:X_Move(self.hero.spd.x * self.spdRate * self.hero.dir )
             end 
         end
 
-        if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
-            hero_:SetAnimation(self.childName[self.attackNum])
+            self.hero:SetAnimation(self.childName[self.attackNum])
             
             
             for n=1,#self.effect do
@@ -139,23 +133,23 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
         if _movable then
             if _body:GetCount() < 4 then
-                self.movement:X_Move(hero_.spd.x * hero_.dir )
+                self.movement:X_Move(self.hero.spd.x * self.hero.dir )
             end 
             
-            if (_leftHold and hero_.dir == -1 ) or 
-            (_rightHold and hero_.dir == 1 )   then
+            if (_leftHold and self.hero.dir == -1 ) or 
+            (_rightHold and self.hero.dir == 1 )   then
                 
-                self.movement:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
+                self.movement:X_Move(self.hero.spd.x * self.spdRate  * self.hero.dir )
             end
         end
 
-        if self.input:IsHold(FSM_.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 4
 
             -- self.atkJudger:ClearDamageArr()
 
             self.hitTimes = 0
-            hero_:SetAnimation(self.childName[self.attackNum])
+            self.hero:SetAnimation(self.childName[self.attackNum])
             
             
             for n=1,#self.effect do
@@ -175,19 +169,19 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
     elseif self.attackNum == 4 then
         if _body:GetCount() < 3 then
             if _movable then
-                self.movement:X_Move(hero_.spd.x * hero_.dir )
+                self.movement:X_Move(self.hero.spd.x * self.hero.dir )
                 
-                if (_leftHold and hero_.dir == -1 ) or 
-                (_rightHold and hero_.dir == 1 )   then
+                if (_leftHold and self.hero.dir == -1 ) or 
+                (_rightHold and self.hero.dir == 1 )   then
                     
-                    self.movement:X_Move(hero_.spd.x * self.spdRate  * hero_.dir )
+                    self.movement:X_Move(self.hero.spd.x * self.spdRate  * self.hero.dir )
                 end
             end
         end 
     end 
    
-    -- if hero_:GetAttackBox() then
-    --     local _hit = self.atkJudger:Judge(hero_, "MONSTER", self.childName[self.attackNum])
+    -- if self.hero:GetAttackBox() then
+    --     local _hit = self.atkJudger:Judge(self.hero, "MONSTER", self.childName[self.attackNum])
     --     if _hit then
     --         self.hitTimes = self.hitTimes + 1
     --         if self.hitTimes < 2 then
@@ -198,18 +192,19 @@ function _State_FrenzyAttack:Update(hero_,FSM_)
 
     for n=1,#self.effect do
         if self.effect[n] then
-            self.effect[n].pos.x = hero_.pos.x
+            self.effect[n].pos.x = self.hero.pos.x
         end 
     end 
     
 end 
 
-function _State_FrenzyAttack:Exit(hero_)
-    hero_.animMap:GetWidget("weapon_b1").OnChangeFrame = nil
+function _State_FrenzyAttack:Exit()
+    self.hero.animMap:GetWidget("weapon_b1").OnChangeFrame = nil
+    self.hero.animMap:GetWidget("weapon_c1").OnChangeFrame = nil
     for n=1,#self.effect do
         self.effect[n].over = true
     end 
-    self:_Exit()
+    base.Exit(self)
 end
 
 function _State_FrenzyAttack:GetTrans()

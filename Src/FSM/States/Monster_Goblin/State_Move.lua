@@ -11,7 +11,10 @@ local _State_Move = require("Src.Core.Class")()
 
 local _GDB = require "Src.Game.GameDataBoard"
 
-function _State_Move:Ctor()
+function _State_Move:Ctor(FSM, entity)
+    self.FSM = FSM
+    self.entity = entity
+    
 	self.name = "move"
 	self.stopRange = 3
 
@@ -21,35 +24,35 @@ function _State_Move:Ctor()
     self.time_right = 0
 end 
 
-function _State_Move:Enter(entity, FSM_)
+function _State_Move:Enter()
     
-	entity:SetAnimation("[move motion]")
-	self.speed = entity:GetSpeed()
-	self.pos = entity:GetPos()
-	self.input = entity:GetComponent("Input")
+	self.entity:SetAnimation("[move motion]")
+	self.speed = self.entity:GetSpeed()
+	self.pos = self.entity:GetPos()
+	self.input = self.entity:GetComponent("Input")
 	self.time_up = 0
     self.time_down = 0
     self.time_left = 0
     self.time_right = 0
 end
 
-function _State_Move:Update(entity,FSM_)
+function _State_Move:Update()
 	
-	self.aim = entity:GetAim()
-	self.pos = entity:GetPos()
+	self.aim = self.entity:GetAim()
+	self.pos = self.entity:GetPos()
 
 	local dir_x = (math.floor(self.pos.x) < math.floor(self.aim.x)) and 1 or -1
 	local dir_y = (math.floor(self.pos.y) < math.floor(self.aim.y)) and 1 or -1	
 
 	if self.aim.x ~= 0 and self.aim.y ~= 0 then
 		if math.abs(self.pos.x - self.aim.x) > self.stopRange then
-			if entity:X_Move(self.speed.x * dir_x) == false then
-				FSM_:SetState("waiting", entity)
+			if self.entity:X_Move(self.speed.x * dir_x) == false then
+				self.FSM:SetState("waiting", self.entity)
 			end
 		end
 		if math.abs(self.pos.y - self.aim.y) > self.stopRange then
-			if entity:Y_Move(self.speed.y * dir_y) == false then
-				FSM_:SetState("waiting", entity)
+			if self.entity:Y_Move(self.speed.y * dir_y) == false then
+				self.FSM:SetState("waiting", self.entity)
 			end
 		end
 	end
@@ -62,34 +65,34 @@ function _State_Move:Update(entity,FSM_)
     -- if up or down then
     --     if up and down then
     --         if self.time_up > self.time_down then
-    --             entity:Y_Move(-entity.speed.y )
+    --             self.entity:Y_Move(-self.entity.speed.y )
     --         else 
-    --             entity:Y_Move(entity.speed.y )
+    --             self.entity:Y_Move(self.entity.speed.y )
     --         end 
     --     elseif up then
-    --         entity:Y_Move(-entity.speed.y )
+    --         self.entity:Y_Move(-self.entity.speed.y )
     --     else 
-    --         entity:Y_Move(entity.speed.y )
+    --         self.entity:Y_Move(self.entity.speed.y )
     --     end 
     -- end 
     
     -- if left or right then
     --     if left and right then
     --         if self.time_left > self.time_right then
-    --             entity:X_Move(- entity.speed.x)
-    --             entity:SetDir(-1)
+    --             self.entity:X_Move(- self.entity.speed.x)
+    --             self.entity:SetDir(-1)
     --         elseif self.time_left == self.time_right then
-    --             entity:X_Move(entity.speed.x * entity:GetDir())
+    --             self.entity:X_Move(self.entity.speed.x * self.entity:GetDir())
     --         else 
-    --             entity:X_Move(entity.speed.x)
-    --             entity:SetDir(1)
+    --             self.entity:X_Move(self.entity.speed.x)
+    --             self.entity:SetDir(1)
     --         end 
     --     elseif left then
-    --         entity:X_Move(- entity.speed.x)
-	-- 		entity:SetDir(-1)
+    --         self.entity:X_Move(- self.entity.speed.x)
+	-- 		self.entity:SetDir(-1)
     --     else 
-    --         entity:X_Move(entity.speed.x)
-    --         entity:SetDir(1)
+    --         self.entity:X_Move(self.entity.speed.x)
+    --         self.entity:SetDir(1)
     --     end
     -- end
 
@@ -112,12 +115,12 @@ function _State_Move:Update(entity,FSM_)
     
     
     -- if not up and not down and not left and not right then 
-    --     FSM_:SetState(FSM_.oriState, entity)
+    --     self.FSM:SetState(self.FSM.oriState, self.entity)
     -- end 
 	
 end 
 
-function _State_Move:Exit(entity)
+function _State_Move:Exit()
     -- 
 end
 

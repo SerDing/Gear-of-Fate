@@ -9,16 +9,18 @@
 
 local _State_Attack = require("Src.Core.Class")()
 
-function _State_Attack:Ctor()
+function _State_Attack:Ctor(FSM, entity)
+	self.FSM = FSM
+    self.entity = entity
     self.name = "attack"
 end 
 
-function _State_Attack:Enter(entity, FSM_, ...)
-    entity:SetAnimation("[attack motion 1]")
+function _State_Attack:Enter(...)
+    self.entity:SetAnimation("[attack motion 1]")
 
 end
 
-function _State_Attack:Update(entity,FSM_)
+function _State_Attack:Update()
     --body
 end 
 

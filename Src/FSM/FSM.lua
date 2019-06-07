@@ -9,45 +9,45 @@
 
 local _FSM = require("Src.Core.Class")()
 
-function _FSM:Ctor(entity_, state_name, entityType)
+function _FSM:Ctor(entity, state_name, entityType)
 	
-	self.entity_ = entity_
+	self.entity = entity
 	self.state = {}
 	self.entityType = entityType
 	self:InitStates(entityType)
 
 	self.KEYID = {}
-	self.input = entity_:GetComponent("Input")
+	self.input = entity:GetComponent("Input")
 
 	self:OnConstruct()
 
 	self.oriState = state_name
 	self.preState = nil
 	self.curState = self.state[state_name]
-	self.curState:Enter(entity_,self)
+	self.curState:Enter(entity,self)
 	
 	if self.OnNewStateEnter then
-		self:OnNewStateEnter(entity_)
+		self:OnNewStateEnter(entity)
 	end
 end
 
-function _FSM:Update(entity_)
+function _FSM:Update()
 	
-	self.curState:Update(entity_,self)
+	self.curState:Update(self.entity, self)
 	
-	self:LateUpdate(entity_)
+	self:LateUpdate(self.entity)
 
-	if entity_:GetBody():GetCurrentPlayNum() == 0 and self.curState ~= "die" then
-		if entity_:GetBody():GetAniId() == "[down motion]" then
-			self:SetState("sit",entity_)
+	if self.entity:GetBody():GetCurrentPlayNum() == 0 and self.curState ~= "die" then
+		if self.entity:GetBody():GetAniId() == "[down motion]" then
+			self:SetState("sit", self.entity)
 		else
-			self:SetState(self.oriState,entity_)
+			self:SetState(self.oriState, self.entity)
 		end
 	end 
 
 end
 
-function _FSM:LateUpdate(entity_)
+function _FSM:LateUpdate()
 end
 
 ---@param state_name string 
@@ -60,11 +60,11 @@ function _FSM:SetState(state_name, entity_, ...)
 	end
 
 	self.preState = self.curState
-	self.curState:Exit(entity_)
-	self:OnCurStateExit(entity_)
+	self.curState:Exit()
+	self:OnCurStateExit()
 	self.curState = self.state[state_name]
-	self.curState:Enter(entity_, self, ...)
-	self:OnNewStateEnter(entity_)
+	self.curState:Enter(...)
+	self:OnNewStateEnter()
 end
 
 function _FSM:InitStates(entityType)
@@ -92,8 +92,8 @@ end
 ---@param class_name string 
 function _FSM:RegState(state_name, class_path)
 	assert(self.state, "state list in FSM was not initialized.")
-	local _tmpState = require(class_path).New()
-	self.state[state_name] = _tmpState
+	local tmpState = require(class_path).New(self, self.entity)
+	self.state[state_name] = tmpState
 end
 
 function _FSM:SetOriState(state_name)

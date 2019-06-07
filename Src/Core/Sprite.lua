@@ -94,9 +94,8 @@ function _Sprite:Draw(x, y, rotation, sx, sy)
 	if self.scissor then
 		_Scissor()
 	end
-	
 
-	love.graphics.setColor(r,g,b,a)
+	love.graphics.setColor(r, g, b, a)
 	love.graphics.setBlendMode(_blendMode)
 
 	self.rect:SetPos(self.pos.x,self.pos.y)
@@ -160,7 +159,10 @@ function _Sprite:SetDrawArea(x, y, w, h, cam_x, cam_y)
 end
 
 function _Sprite:SetColor(r, g, b, a)
-	self.color = {r = r, g = g, b = b, a = a}
+	self.color.r = r
+	self.color.g = g
+	self.color.b = b
+	self.color.a = a
 end
 
 function _Sprite:SetColorEx(r, g, b, a)

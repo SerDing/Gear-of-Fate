@@ -6,13 +6,14 @@
 	Docs:
 		* wrap the logic of tmp state in this class
 ]]
-local _State_AtkBase  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
-local _State_MoonSlash = require("Src.Core.Class")(_State_AtkBase)
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_MoonSlash = require("Src.Core.Class")(base)
 
 local _EffectMgr = require "Src.Scene.EffectManager"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 
-function _State_MoonSlash:Ctor()
+function _State_MoonSlash:Ctor(...)
+	base.Ctor(self, ...)
 	self.name = "moonlightslash"
 	self.skillID = 77
 	self.childName ={
@@ -22,26 +23,26 @@ function _State_MoonSlash:Ctor()
     self.KEYID = {}
 	self.effect = {}
 	self.moveSpd = 1.5
-	self:_Init()
+
 end 
 
-function _State_MoonSlash:Enter(hero_)
-	hero_:SetAnimation(self.childName[1])
+function _State_MoonSlash:Enter()
+	self.hero:SetAnimation(self.childName[1])
 	self.atkNum = 1
 	self.attackName = self.childName[self.atkNum]
-	self.atkJudger = hero_:GetAtkJudger()
+	self.atkJudger = self.hero:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
-	self.input = hero_:GetComponent("Input")
-	self.movement = hero_:GetComponent('Movement')
-	self:_Enter(hero_)
+	self.input = self.hero:GetComponent("Input")
+	self.movement = self.hero:GetComponent('Movement')
+	base.Enter(self)
 end
 
-function _State_MoonSlash:Update(hero_,FSM_)
-	local _body = hero_:GetBody()
+function _State_MoonSlash:Update()
+	local _body = self.hero:GetBody()
 	local _dt = love.timer.getDelta()
 	
-	if hero_:GetAttackBox() then
-		self.atkJudger:Judge(hero_, "MONSTER", self.attackName)
+	if self.hero:GetAttackBox() then
+		self.atkJudger:Judge(self.hero, "MONSTER", self.attackName)
 	end
 
 	self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
@@ -51,14 +52,14 @@ function _State_MoonSlash:Update(hero_,FSM_)
 	end
 	
 	if _body:GetCount() <= 3  and self.atkNum == 1 then
-		self.movement:X_Move(hero_.spd.x * self.moveSpd * hero_.dir )
+		self.movement:X_Move(self.hero.spd.x * self.moveSpd * self.hero.dir )
 	elseif _body:GetCount() <= 3  and self.atkNum == 2 then
-		self.movement:X_Move(hero_.spd.x * self.moveSpd * hero_.dir )
+		self.movement:X_Move(self.hero.spd.x * self.moveSpd * self.hero.dir )
 	end 
 
 	if _body:GetCount() >= 2 and self.atkNum == 1 then
 		if self.input:IsPressed(self.KEYID) then
-			hero_:SetAnimation(self.childName[2])
+			self.hero:SetAnimation(self.childName[2])
 			self.atkNum = 2
 			self.atkJudger:ClearDamageArr()
 			self.attackName = self.childName[self.atkNum]
@@ -67,14 +68,14 @@ function _State_MoonSlash:Update(hero_,FSM_)
 		
 	end 
 	
-	if (self.input:IsHold(FSM_.HotKeyMgr_.KEY["LEFT"]) and hero_.dir == -1 ) or 
-	(self.input:IsHold(FSM_.HotKeyMgr_.KEY["RIGHT"]) and hero_.dir == 1 )   then
-		self.movement:X_Move(hero_.spd.x * 20 * _dt * hero_.dir )
+	if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == -1 ) or 
+	(self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == 1 )   then
+		self.movement:X_Move(self.hero.spd.x * 20 * _dt * self.hero.dir )
 	end
 
 end 
 
-function _State_MoonSlash:Exit(hero_)
+function _State_MoonSlash:Exit()
 	for n=1,#self.effect do
 		self.effect[n] = nil
     end 

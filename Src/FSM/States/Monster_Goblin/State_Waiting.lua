@@ -18,11 +18,11 @@ end
 
 function _State_Waiting:Enter()
     self.name = "waiting"
-	self.entity:SetAnimation("[waiting motion]")
+	self.entity:Play("[waiting motion]")
 	self.input = self.entity:GetComponent("Input")
 end
 
-function _State_Waiting:Update()
+function _State_Waiting:Update(dt)
 	
 	local _up = _GDB.GetKey("UP")
 	local _down = _GDB.GetKey("DOWN")

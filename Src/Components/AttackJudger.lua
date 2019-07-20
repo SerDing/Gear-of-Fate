@@ -111,10 +111,7 @@ function _AttackJudger:Judge(atker, enemyType, attackName, atkInfo)
 					enemyBodyCenter.y = enemy:GetPos().y + enemy:GetZ() - enemy:GetBody():GetHeight() / 2
 					local effect = _EffectMgr.ExtraEffect(animPath, enemy)
 					effect:SetPos(enemyBodyCenter.x, enemyBodyCenter.y)
-					effect:SetLayer(1)
 				end
-				
-				
 			end
 
 			if not hitRet and hit == true then
@@ -147,8 +144,8 @@ function _AttackJudger:IsHit(atker, enemy)
 		-- get position scale data of both sides
 		_atkPos = atker:GetPos()
 		_oppPos = enemy:GetPos()
-		_atkScale = atker:GetBody():GetScale()
-		_oppScale = enemy:GetBody():GetScale()
+		_atkScale = atker:GetBody().scale
+		_oppScale = enemy:GetBody().scale
 		
 		-- collision detection
 		for q=1, #_attackBoxs, 6 do

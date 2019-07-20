@@ -1,13 +1,15 @@
 --[[
-	Desc: methods about system operations
- 	Author: Night_Walker
+	Desc: utility functions set
+ 	Author: SerDing
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 	Docs:
 		* 
 ]]
 
-function GetRunPath()
+local _Utility = {}
+
+function _Utility.GetRunPath()
     os.execute("cd > cd.tmp")
     local f = io.open("cd.tmp", r)
     local cwd = f:read("*a")
@@ -16,9 +18,8 @@ function GetRunPath()
     return string.sub(cwd, 1, -2)
 end
 
---Cut Text(text,cutter)
 string.split = function (str, delimiter)
-	if str  then
+	if str then
 	    local result = {}
 	    str = str..delimiter
 	    delimiter = "(.-)"..delimiter
@@ -30,7 +31,9 @@ string.split = function (str, delimiter)
 	return {}
 end
 
-function GetDistance(p1, p2) -- Get distance between two points
+function _Utility.GetDistance(p1, p2) -- Get distance between two points
 	return math.sqrt(math.pow(math.abs(p1.x - p2.x),2) + math.pow(math.abs(p1.y - p2.y),2))
 end
+
+return _Utility;
 

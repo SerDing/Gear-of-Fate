@@ -6,11 +6,11 @@
 	Docs: 
 		* Write more details here 
 ]]
-local _obj = require "Src.Scene.Object" 
+local _obj = require "Src.Objects.GameObject"
 local _PathgateSide = require("Src.Core.Class")()
 
-local _Animation = require "Src.AniPack"
-local _Tile = require "Src.Scene.Blocks.Tile"
+local _Animator = require "Src.Engine.Animation.Animator"
+local _Tile = require "Src.Scene.Objects.Tile"
 
 function _PathgateSide:Ctor(dataPath, x, y, destMap)
 	--[[
@@ -43,8 +43,8 @@ function _PathgateSide:Ctor(dataPath, x, y, destMap)
     local _pathArr = split(dataPath, "/")
 	self.pathHead = string.gsub(dataPath, _pathArr[#_pathArr], "")
 
-    self.aniUp = _Animation.New()
-    self.aniDown = _Animation.New()
+    self.aniUp = _Animator.New()
+    self.aniDown = _Animator.New()
     
     
     self.dir = 0
@@ -58,11 +58,11 @@ function _PathgateSide:Ctor(dataPath, x, y, destMap)
     self.aniData["up"] = require(string.gsub(self.pathHead .. self.data["[string data]"][1], "%.ani", ""))
     self.aniData["down"] = require(string.gsub(self.pathHead .. self.data["[string data]"][2], "%.ani", ""))
     
-    self.aniUp:SetFileNum(self.data["[int data]"][1], self.data["[int data]"][2])
-    self.aniDown:SetFileNum(self.data["[int data]"][1], self.data["[int data]"][2])
+    self.aniUp:SetImgPathArg(self.data["[int data]"][1], self.data["[int data]"][2])
+    self.aniDown:SetImgPathArg(self.data["[int data]"][1], self.data["[int data]"][2])
     
-    self.aniUp:SetAnimation(self.aniData["up"])
-    self.aniDown:SetAnimation(self.aniData["down"])
+    self.aniUp:Play(self.aniData["up"])
+    self.aniDown:Play(self.aniData["down"])
     self.aniUp:SetPos(self.pos.x , self.pos.y + 200)
     self.aniDown:SetPos(self.pos.x , self.pos.y + 200)
     

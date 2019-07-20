@@ -16,7 +16,7 @@ local _Image = require("Src.GUI.Widgets.Image")
 local _Label = require("Src.GUI.Widgets.Label")
 local _HMP_Bar = require("Src.GUI.Widgets.HMP_Bar")
 local _Grid_Skill = require("Src.GUI.Widgets.Grid_Skill")
-local _ACTORMGR = require "Src.Actor.ActorMgr"
+local _ACTORMGR = require "Src.Managers.ActorMgr"
 
 local function InitFrames(interface, frames)
     --[[

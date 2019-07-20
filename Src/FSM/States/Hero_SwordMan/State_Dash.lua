@@ -27,7 +27,7 @@ end
 
 function _State_Dash:Enter()
     self.name = "dash"
-    self.hero:SetAnimation(self.name)
+    self.hero:Play(self.name)
     self.input = self.hero:GetComponent("Input")
     self.movement = self.hero:GetComponent('Movement')
     self.animator = self.hero:GetBody()

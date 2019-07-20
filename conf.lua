@@ -16,11 +16,11 @@ function love.conf(t)
 
 	t.window.title = "Gear Of Fate (Ver:Beta)"
 	-- t.window.msaa = 12 -- 超过8才有效
-	
+	-- t.window.fullscreen = true
+
 	-- t.window.vsync = false
 
-	-- t.console = true
-	-- t.window.fullscreen = true
+	--t.console = true
 	t.window.fullscreentype = "exclusive"
 	t.gammacorrect = false              -- Enable gamma-correct rendering, when supported by the system (boolean)
 end

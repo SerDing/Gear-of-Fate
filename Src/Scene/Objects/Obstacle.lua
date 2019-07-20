@@ -6,58 +6,34 @@
 	Docs: 
 		* Write notes here even more 
 ]]
-local _obj = require "Src.Scene.Object" 
+local _obj = require "Src.Objects.GameObject"
 local _Obstacle = require("Src.Core.Class")(_obj)
 
-local _AniPack = require "Src.AniPack" 
-local _Rect = require "Src.Core.Rect" 
-local _KEYBOARD = require "Src.Core.KeyBoard"
-local _ObjectMgr = require "Src.Scene.ObjectManager"
+local _Animation = require "Src.Engine.Animation.Animation"
+local _Rect = require "Src.Core.Rect"
+local _ACTORMGR = require "Src.Managers.ActorMgr"
 
-function _Obstacle:Ctor(_path)
+function _Obstacle:Ctor(path)
 	
-	self.hero_ = _ObjectMgr.GetHero()
-	
-	self.path = _path
-	
-	self:LoadData(_path)
+	self.hero_ = _ACTORMGR.mainPlayer
 
-	if self.property["[layer]"] == "[normal]" then
-		self:SetType("OBJECT")
-	end
-	
+	self.path = path
+	self:LoadData(path)
+
+	self:SetType("OBJECT")
+
 	self.subType = "OBSTACLE"
-
-	self.anima = require(self.property["[basic motion]"])
-
-	if self.anima['[FRAME MAX]'] == 1 then
-		self.ani = _AniPack.New("MAP_ANI_BLOCK")
-	else
-		self.ani = _AniPack.New()
-	end
-	
-	self.ani:SetAnimation(self.anima)
-	
-	self.ani:SetFilter(true)
+	self.anim = require(self.property["[basic motion]"])
+	self.ani = _Animation.New(self.anim)
+	self.ani:Play()
 
 	self.rect = _Rect.New(0,0,self.property["[width]"][1],self.property["[width]"][2])
 	self.rect:SetCenter(self.property["[width]"][1] / 2, self.property["[width]"][2] / 2)
-
 	self.rect:SetDrawType(0)
 
-	self.pos = {
-		x = 0,
-		y = 0,
-		z = 0,
-	}
-
-	self.offset = {
-		x = 0,
-		y = 0,
-	}
-
+	self.pos = { x = 0, y = 0, z = 0 }
+	self.offset = { x = 0, y = 0 }
 	self.debug = false
-	
 	self.display = 1
 	self.alpha = 255
 
@@ -199,16 +175,13 @@ function _Obstacle:Debug()
 end
 
 function _Obstacle:SetPos(x, y, z)
-    self.pos = {
-		x = x or 0,
-		y = y or 0,
-		z = z or 0,
-	}
+	self.pos.x = x or 0
+	self.pos.y = y or 0
+	self.pos.z = z or 0
 	self.rect:SetPos(
 		math.floor(self.pos.x + self.offset.x),
 		math.floor(self.pos.y + self.offset.y) + self.pos.z
 	)
-	-- print("obstacle vertex", self.rect:GetVertex()[1].x, self.rect:GetVertex()[1].y)
 end
 
 function _Obstacle:SetOffset(x, y)

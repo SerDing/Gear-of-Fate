@@ -33,17 +33,18 @@ local function _Clone(object, table)
     return _copy(object, table)
 end
 
+
 local function _Class(...) -- super list
     local cls
 	local superList = {...}
 
-    if (#superList > 0) then
+    if (#superList > 0) then -- inherit
 		cls = _Clone(superList[1])
 
         for n=2, #superList do
 			cls = _Clone(superList[n], cls)
 		end
-    else
+    else -- normal class
         cls = {Ctor = function() end}
     end
 

@@ -2,7 +2,7 @@
 ### 1.基本动画结构：
     这一块主要分析equ文件是如何组织其动画相关数据的以便实现自动化动态创建animation对象并加入avatar组保持正常层次更新绘制。
 
-
+```html
     [animation job]
     `[swordman]`
     [variation]
@@ -15,6 +15,7 @@
     650	`katanab`
     [equipment ani script]
     `equipment/character/swordman.lay`
+```
 
 
     1）[animation job]划分不同职业的动画数据
@@ -23,7 +24,7 @@
     
     3）[layer variation]和[equipment ani script]组成一个animation对象的数据块
     
-    4）[layer variation]中第一个值为绘制层次(排序用)，第二个值为animationLayerName，作为avatar组中的key使用。
+    4）[layer variation]中第一个值为绘制层次(排序用)，第二个值为动画文件子路径名/资源分卷名，具体由装备类型决定，比如weapon需要和上一项[variation]编号组合(sswdc -> sswd800c)，growtype则不需要。也可以作为avatar组中的key使用。
 
     5）[equipment ani script]为animation对象的ani路径表文件的路径
 

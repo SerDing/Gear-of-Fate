@@ -9,7 +9,6 @@
 local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_MoonSlash = require("Src.Core.Class")(base)
 
-local _EffectMgr = require "Src.Scene.EffectManager"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 
 function _State_MoonSlash:Ctor(...)
@@ -27,7 +26,7 @@ function _State_MoonSlash:Ctor(...)
 end 
 
 function _State_MoonSlash:Enter()
-	self.hero:SetAnimation(self.childName[1])
+	self.hero:Play(self.childName[1])
 	self.atkNum = 1
 	self.attackName = self.childName[self.atkNum]
 	self.atkJudger = self.hero:GetAtkJudger()
@@ -48,7 +47,7 @@ function _State_MoonSlash:Update()
 	self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
 
 	if _body:GetCount() == 2 and not self.effect[1] then
-		self:Effect("moonlightslash1.lua", 1, 1)
+		self:Effect("moonlightslash1.lua")
 	end
 	
 	if _body:GetCount() <= 3  and self.atkNum == 1 then
@@ -59,11 +58,11 @@ function _State_MoonSlash:Update()
 
 	if _body:GetCount() >= 2 and self.atkNum == 1 then
 		if self.input:IsPressed(self.KEYID) then
-			self.hero:SetAnimation(self.childName[2])
+			self.hero:Play(self.childName[2])
 			self.atkNum = 2
 			self.atkJudger:ClearDamageArr()
 			self.attackName = self.childName[self.atkNum]
-			self:Effect("moonlightslash2.lua", 1, 1)
+			self:Effect("moonlightslash2.lua")
 		end 
 		
 	end 

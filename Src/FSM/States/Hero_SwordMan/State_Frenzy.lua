@@ -6,24 +6,23 @@
 	Docs:
 		* wrap the logic of tmp state in this class
 ]]
-
-local _State_Frenzy = require("Src.Core.Class")()
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_Frenzy = require("Src.Core.Class")(base)
 
 local _EffectMgr = require "Src.Scene.EffectManager" 
 local _BuffMgr = require "Src.Heroes.BuffManager" 
 local _AUDIOMGR = require "Src.Audio.AudioManager"
 
-function _State_Frenzy:Ctor(FSM, hero)
-	self.FSM = FSM
-    self.hero = hero
+function _State_Frenzy:Ctor(...)
+	base.Ctor(self, ...)
 	self.name = "frenzy"
 	self.effect = {}
-	self.stateColor = {255,150,0,255}
+	self.stateColor = {255, 150, 0, 255}
 	self.switch = false
 end 
 
 function _State_Frenzy:Enter()
-	
+	base.Enter(self)
 	if self.switch then
 		
 		self.switch = false
@@ -31,25 +30,20 @@ function _State_Frenzy:Enter()
 		self.hero:GetBody():SetColor(255, 255, 255, 255)
 		-- self.hero:GetAvatar():GetWidget("weapon_b1"):SetColor(255, 255, 255, 255)
 		-- self.hero:GetAvatar():GetWidget("weapon_c1"):SetColor(255, 255, 255, 255)
-
 		_BuffMgr.OffBuff(self.hero, "frenzy")
-		
 		self.FSM:SetState(self.FSM.oriState, self.hero)
-		
 		self.hero:SetAttackMode("normal")
 
 		return 
 	end 
 	
-	self.hero:SetAnimation("grab")
+	self.hero:Play("grab")
 	
 	self.hero:GetBody():SetColor(unpack(self.stateColor))
 	-- self.hero:GetAvatar():GetWidget("weapon_b1"):SetColor(unpack(self.stateColor))
 	-- self.hero:GetAvatar():GetWidget("weapon_c1"):SetColor(unpack(self.stateColor))
 
-	self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/cast.lua", self.hero)	
-	self.effect[1]:GetAni():SetBaseRate(self.hero:GetAtkSpeed())
-
+	base.Effect(self, "frenzy/cast.lua")
 
 	self.switch = true
 	self.hero:SetAttackMode("frenzy")
@@ -61,8 +55,7 @@ function _State_Frenzy:Update()
 	local _dt = love.timer.getDelta()
 	
 	if not self.effect[2] and _body:GetCount() == 6 then
-		self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "frenzy/blast.lua", self.hero)	
-		self.effect[2]:GetAni():SetBaseRate(self.hero:GetAtkSpeed())
+		base.Effect(self, "frenzy/blast.lua")
 	end 
 
 	if _body:GetCount() == 16 then
@@ -75,6 +68,9 @@ function _State_Frenzy:Exit()
 	for n=1,#self.effect do
 		self.effect[n] = nil
 	end 
+	-- if self.switch then
+	-- 	self.hero:GetBody():SetColor(unpack(self.stateColor))
+	-- end
 end
 
 return _State_Frenzy 

@@ -9,8 +9,9 @@
 
 local _EffectMgr = {}
 
-local _Effect = require "Src.Scene.Blocks.Effect" 
-local _ObjectMgr = require "Src.Scene.ObjectManager"
+local _Effect = require "Src.Scene.Objects.Effect"
+local _RESMGR = require "Src.Resource.ResManager"
+local _Animation = require "Src.Engine.Animation.Animation"
 
 function _EffectMgr.Ctor()
 	_EffectMgr.pathHead = {
@@ -22,12 +23,16 @@ end
 -- generate an extra effect to hero class
 -- animPath must contain the suffix".lua"
 function _EffectMgr.ExtraEffect(animPath, entity)
-	local effect = _Effect.New(animPath)
+	--local effect = _Effect.New(animPath)
+	--effect:SetPos(entity.pos.x, entity.pos.y)
+	--effect:SetDir(entity.dir)
+	--entity:AddExtraEffect(effect)
+	--return effect
+
+	local effect = _Animation.New(_RESMGR.LoadDataFile(animPath))
 	effect:SetPos(entity.pos.x, entity.pos.y)
 	effect:SetDir(entity.dir)
-	effect:GetAni():SetCurrentPlayNum(1)
 	entity:AddExtraEffect(effect)
-
 	return effect
 end
 

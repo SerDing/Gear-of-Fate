@@ -5,6 +5,7 @@ local _Pathfinder = require "Src.Navigation.Jumper.pathfinder" -- The pathfinder
 local _Node = require "Src.Navigation.Node"
 local _Grid = require "Src.Navigation.Jumper.grid" -- The grid class
 local _Collider = require "Src.Core.Collider"
+local _Utility = require "Src.Core.Utility"
 
 function _Navigation:Ctor(area, scene)
 
@@ -228,7 +229,7 @@ function _Navigation:GetNodeIndexByPos(x, y)
     local _d_min = 3000
     local _min_id
     for i=1,#self.linearGraph do
-        _d = GetDistance(self.linearGraph[i]:GetPos(), {x = x, y = y})
+        _d = _Utility.GetDistance(self.linearGraph[i]:GetPos(), {x = x, y = y})
         if _d < _d_min then
             _d_min = _d
             _min_id = i

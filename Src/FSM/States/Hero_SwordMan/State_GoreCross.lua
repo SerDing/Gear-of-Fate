@@ -6,26 +6,25 @@
 	Docs:
 		* 
 ]]
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_GoreCross = require("Src.Core.Class")(base)
 
-local _State_GoreCross = require("Src.Core.Class")()
-
-local _EffectMgr = require "Src.Scene.EffectManager" 
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 
-function _State_GoreCross:Ctor(FSM, hero)
-	self.FSM = FSM
-    self.hero = hero
+function _State_GoreCross:Ctor(...)
+	base.Ctor(self, ...)
 	self.name = "gorecross"
 	self.skillID = 64
 	self.effect = {}
 	self.KEYID = ""
 	self.plusAtk = false
+	self.input = nil
 end 
 
 function _State_GoreCross:Enter()
     
-	self.hero:SetAnimation(self.name)
+	self.hero:Play(self.name)
 
 	self.KEYID = ""
 	self.plusAtk = false
@@ -35,6 +34,7 @@ function _State_GoreCross:Enter()
 	self.attackName = "gorecross1"
 	self.atkObj = nil
 	self.input = self.hero:GetComponent("Input")
+	base.Enter(self)
 end
 
 function _State_GoreCross:Update()
@@ -52,42 +52,41 @@ function _State_GoreCross:Update()
 	end
 
 	-- jump the next frames
-	if _body:GetCount() == 10 then 
+	if _body:GetCount() == 10 then -- slash action play over
 		if self.effect[2] then
-			self.effect[2]:GetAni():SetCurrentPlayNum(0)
+			self.effect[2].playOver = true
 		end 
 	end 
 	
-	-- effect generate
+	-- generate effect
 	if _body:GetCount() == 1 and not self.effect[1] and not self.effect[2] then
-		
-		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash1.lua", self.hero)
-		self.effect[1]:GetAni():SetBaseRate(self.hero:GetAtkSpeed() )
-		
-		self.effect[2] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "gorecross/slash2.lua", self.hero) 
-		self.effect[2]:GetAni():SetBaseRate(self.hero:GetAtkSpeed() * 1.05)
-		
+		self:Effect("gorecross/slash1.lua")
+		self:Effect("gorecross/slash2.lua")
 	end 
 	
-	if self.effect[2] and self.effect[2]:GetAni():GetCurrentPlayNum() == 0 then -- 
+	if self.effect[2] and self.effect[2].playOver then
 		if not self.atkObj then
 			self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20028)
 			self.atkObj:SetHost(self.hero)
 			self.atkObj:SetPos(self.hero:GetPos().x + 85 * self.hero:GetDir(), self.hero:GetPos().y, - 85) -- x + 70 * dir, y - 85
 			self.atkObj:SetDir(self.hero:GetDir())
 			self.atkObj:SetMoveSpeed(4)
+			-- for k,v in pairs(self.atkObj.aniArr) do
+			-- 	v:SetPlayRate(self.hero:GetAtkSpeed())
+			-- end
+			print("gorecross effect2 playover")
 		end
-		-- table.remove(self.effect, 2)
-		self.effect[2].over = false
 	end 
 
 	if self.atkObj then
 		if self.atkObj:IsOver() then
 			self.atkObj = nil
+			-- self.hero.animMap:Continue()
+			-- self.FSM:SetState(self.FSM.oriState)
 		end
 	end
 	
-	-- check whether attack
+	-- check whether add attack
 	if _body:GetCount() >= 9 then 
 		if self.input:IsPressed(_HotKeyMgr.GetSkillKey(self.skillID)) then
 			self.plusAtk = true
@@ -96,11 +95,11 @@ function _State_GoreCross:Update()
 
 	if _body:GetCount() == 11 then
 		if not self.plusAtk then -- jump the next frames
-			self.hero.animMap:SetCurrentPlayNum(0)
+			self.hero.animMap:SetPlayOver(true)
 		else
 			-- if self.effect[3] and self.effect[4] then
-				self.hero.animMap:NextFrame() 
-				self.hero.animMap:NextFrame() 
+				self.hero.animMap:NextFrame()
+				self.hero.animMap:NextFrame()
 			-- end
 		end
 	end
@@ -108,9 +107,8 @@ function _State_GoreCross:Update()
 end 
 
 function _State_GoreCross:Exit()
-	for n=1,#self.effect do
-		self.effect[n] = nil
-	end 
+	self.effect = {}
+
 end
 
 return _State_GoreCross 

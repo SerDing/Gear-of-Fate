@@ -6,45 +6,26 @@
 	Docs:
 		* Game Manager is the Manager of other managers like SceneMgr, ResMgr, ...
 ]]
-
-local _GAMEMGR = {
-	period = 0, 
-	mousePos = {x = 0, y = 0},
-	runPath = "",
-	debug = false,
-	modules = {},
-}
-
-_GAMEMGR.modules = {
-	["AniPack"] = "Src.Animation.AniPack",
-	["SCENEMGR"] = "Src.Scene.GameSceneMgr",
-	["EFFECTMGR"] = "Src.Scene.EffectManager",
-	["GameScene"] = "Src.Scene.GameScene",
-	["Object"] = "Src.Scene.AniPack",
-	["AniPack"] = "Src.Animation.AniPack",
-	["AniPack"] = "Src.Animation.AniPack",
-	["AniPack"] = "Src.Animation.AniPack",
-}
-
 require "Src.Core.TextHandle"
 require "Src.Core.FileSystem"
-require "Src.Core.System"
-
 local _RESMGR = require "Src.Resource.ResManager"
 local _AUDIOMGR = require "Src.Audio.AudioManager"
 local _KEYBOARD = require "Src.Core.KeyBoard"
-local _INPUTHANDLER = require "Src.Input.InputHandler"
+local _InputMgr = require "Src.Input.InputMgr"
 local _GDBOARD = require "Src.Game.GameDataBoard"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
 local _CAMERA = require "Src.Game.GameCamera"
 local _UIMGR = require "Src.GUI.UI_Manager"
 local _InitGUI = require "Src.GUI.GUI_Init"
 local _HotKeyMgr = require "Src.Input.HotKeyMgr"
+local _ACTORMGR = require "Src.Managers.ActorMgr"
 
-local _ACTORMGR = require "Src.Actor.ActorMgr"
-
-
-local _HUD = love.graphics.newImage("ImagePacks/interface/hud/0.png") 
+local _GAMEMGR = {
+	period = 0, 
+	mousePos = {x = 0, y = 0},
+	runPath = "",
+	debug = false,
+}
 
 --[[ Key Note:
 	* F1 -- Debug 
@@ -61,13 +42,7 @@ local _gamePause = false
 
 log = print
 
-local _sourceDir = love.filesystem.getSourceBaseDirectory()
-local _success = love.filesystem.mount(_sourceDir, "ImagePacks")
-print("mount result = ", _success, "_sourceDir = ", _sourceDir)
-print("love.filesystem.isFused() = ", love.filesystem.isFused())
-
-
-love.graphics.setDefaultFilter( "linear","linear" ) -- nearest
+-- love.graphics.setDefaultFilter("linear", "linear") -- nearest
 
 local text = "Data/character/swordman/asd.lua"
 -- print("___string test = ", string.match(text, "(.+)/[^/]*%.%w+$"))
@@ -123,16 +98,19 @@ function _GAMEMGR.Draw(x,y)
 	-- _CAMERA.Draw(_SCENEMGR.Draw)
 	_SCENEMGR.Draw()
 	_UIMGR.Draw()
-	
+
+	love.graphics.setColor(0 , 255, 0, 255)
+
 	-- FPS draw
 	love.graphics.print(strcat("FPS:", tostring(love.timer.getFPS())), (love.graphics.getWidth() / _CAMERA.scale.x - 300 + 10) , 10)
 	-- mouse pos draw
 	love.graphics.print(strcat(love.mouse.getX(), ",", love.mouse.getY()), (love.mouse.getX() - 20) / _CAMERA.scale.x, (love.mouse.getY() - 10) / _CAMERA.scale.y)
+	--love.graphics.setColor(255, 255,255, 255)
 end
 
 function _GAMEMGR.KeyPressed(key)
 	_KEYBOARD.PressHandle(key)
-	_INPUTHANDLER.PressHandle(key)
+	_InputMgr.PressHandle(key)
 	_UIMGR.KeyPressed(key)
 
 	if key == "rctrl" then
@@ -147,7 +125,7 @@ end
 
 function _GAMEMGR.KeyReleased(key)
 	_KEYBOARD.ReleaseHandle(key)
-	_INPUTHANDLER.ReleaseHandle(key)
+	_InputMgr.ReleaseHandle(key)
 end
 
 function _GAMEMGR.MousePressed(x, y, button, istouch)

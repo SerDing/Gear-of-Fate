@@ -9,7 +9,6 @@
 
 local _State_Stay = require("Src.Core.Class")()
 
-local _EffectMgr = require "Src.Scene.EffectManager" 
 local _HOLD_SPACE = 0.4
 
 function _State_Stay:Ctor(FSM, hero)
@@ -32,7 +31,7 @@ end
 
 function _State_Stay:Enter()
     self.name = "stay"
-	self.hero:SetAnimation(self.name)
+	self.hero:Play(self.name)
 	self.input = self.hero:GetComponent("Input")
 end
 

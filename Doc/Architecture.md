@@ -6,7 +6,7 @@ Note: "* xxx" is a folder, "- xxx" is a source code file.
     - ResMgr
     - PoolMgr
     - AudioMgr
-    * Base
+    * Core
         - class
         - sprite
         - font
@@ -36,7 +36,7 @@ Note: "* xxx" is a folder, "- xxx" is a source code file.
         - GameMgr
         - GameStateMgr
         - LevelMgr
-        - ActorMgr
+        - EntityMgr
         - SkillMgr
         - InventoryMgr
         - HotKeyMgr
@@ -47,9 +47,9 @@ Note: "* xxx" is a folder, "- xxx" is a source code file.
         - FSM
         - FSMAIControl
     * Objects
-        - Object
-        * Actors
-            - Actor
+        - GameObject
+        * Character
+            - Character
             - Hero
             - Monster
             - Npc
@@ -58,6 +58,7 @@ Note: "* xxx" is a folder, "- xxx" is a source code file.
             - Obstacle
         * Combat
             - Skill
+            - AtkObj
     * States
         * Game
             - Startup
@@ -75,5 +76,3 @@ Note: "* xxx" is a folder, "- xxx" is a source code file.
 ## Utility
     - math
     - string
-
-

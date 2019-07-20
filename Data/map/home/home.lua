@@ -23,7 +23,11 @@ return  {
 
 	["[sound]"] ={"m_forest_town","amb_forest_01"},
 
-	["[animation]"] ={"animation/a.ani","[normal]",0,380,0,"animation/b.ani","[normal]",31,140,0,"animation/c.ani","[closeback]",147,152-27,0,"../elvengard/animation/serialight01.ani","[normal]",1030,170,0},
+	["[animation]"] ={
+		"animation/a.ani","[normal]",0,380,0,
+		"animation/b.ani","[normal]",31,140,0,
+		"animation/c.ani","[closeback]",147,152-27,0,
+		"../elvengard/animation/serialight01.ani","[normal]",1030,170,0},
 
 	["[passive object]"] ={5,150,150,0,6,330,230,500,5,650,190,0,6,830,270,500,5,1150,170,0,6,1330,250,500},
 

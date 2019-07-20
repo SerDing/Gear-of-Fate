@@ -1,17 +1,17 @@
 --[[
-	Desc: Input Handler class
+	Desc: Input Manager
 	Author: Night_Walker 
 	Since: 2018-04-06 16:21:59 
 	Last Modified time: 2018-04-06 16:21:59 
 	Docs: 
-		* This class run as the interface for some actor's input components
+		* handle input messages and register input observer
 ]]
 
-local _InputHandler = {}
+local _InputMgr = {}
 
 local _Inputs = {}
 
-function _InputHandler.PressHandle(key)
+function _InputMgr.PressHandle(key)
     for i=1,#_Inputs do
         if not _Inputs[i]:GetActor():IsAI() then
             _Inputs[i]:Press(key)
@@ -19,7 +19,7 @@ function _InputHandler.PressHandle(key)
     end
 end 
 
-function _InputHandler.ReleaseHandle(key)
+function _InputMgr.ReleaseHandle(key)
     for i=1,#_Inputs do
         if not _Inputs[i]:GetActor():IsAI() then
             _Inputs[i]:Release(key)
@@ -27,8 +27,8 @@ function _InputHandler.ReleaseHandle(key)
     end
 end
 
-function _InputHandler.Register(input)
+function _InputMgr.Register(input)
     _Inputs[#_Inputs + 1] = input
 end
 
-return _InputHandler 
+return _InputMgr

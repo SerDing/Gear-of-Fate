@@ -16,7 +16,7 @@ function _State_Attack:Ctor(FSM, entity)
 end 
 
 function _State_Attack:Enter(...)
-    self.entity:SetAnimation("[attack motion 1]")
+    self.entity:Play("[attack motion 1]")
 
 end
 

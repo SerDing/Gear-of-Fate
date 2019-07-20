@@ -16,7 +16,7 @@ end
 function _State_DashAttack:Enter()
 	self.name = "dashattack"
 	self.attackName = {"dashattack","dashattackmultihit"}
-	self.hero:SetAnimation(self.name)
+	self.hero:Play(self.name)
 	self.attackCount = 1
 	self.atkJudger = self.hero:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
@@ -47,15 +47,16 @@ function _State_DashAttack:Update()
 	end 
 
 	if _body:GetCount() == 2 and not self.effect[1] and self.attackCount > 1 then
-		self:Effect("dashattackmultihit1.lua", 0, 1)
-		self:Effect("dashattackmultihit2.lua", 0, 1)
-	end 
-
-	for i,v in ipairs(self.effect) do
-		v.pos.x = self.hero.pos.x
+		base.Effect(self, "dashattackmultihit1.lua")
+		base.Effect(self, "dashattackmultihit2.lua")
 	end
 
-	
+	for n = 1, 2 do
+		if self.effect[n] then
+			self.effect[n]:SetPos(self.hero.pos.x)
+		end
+	end
+
 	if self.hero:GetAttackBox() then
 		self.atkJudger:Judge(self.hero, "MONSTER", self.attackName[self.attackCount])
 	end

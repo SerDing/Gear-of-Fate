@@ -19,8 +19,9 @@ function _State_Jump:Ctor(FSM, hero)
 	self.jumpAttack = false
 	self.dirLock = false -- direction lock
 	self.g = 25
+	-- self.g = 10
 	self.input = {}
-	self.stableFPS = 60
+	-- self.stableFPS = 60
 	self.sounds = {"SM_JUMP_ATK_01", "SM_JUMP_ATK_02"}
 	self.trans = {
 		{"SKILL", 16, "ashenfork"}, 
@@ -31,18 +32,18 @@ end
 
 function _State_Jump:Enter(backJump)
     self.name = "jump"
-	self.hero:SetAnimation(self.name)
+	self.hero:Play(self.name)
 	self.jumpDir = 0
 
 	if self.FSM.preState.name == "dash" then
-		self.jumpPower = 12 * self.stableFPS
+		self.jumpPower = 720 -- 12 * 60
 	else 
-		self.jumpPower = 11 * self.stableFPS
+		self.jumpPower = 660 -- 11 * 60
 	end 
 	
 	self.backJump = backJump
 	if backJump then
-		self.jumpPower = (3.5 + 1.5) * self.stableFPS
+		self.jumpPower = 300 -- 5 * 60
 		self.hero.animMap:SetFrame(8)
 	end
 	
@@ -177,7 +178,7 @@ function _State_Jump:JumpATK(_body)
 	if not self.jumpAttack then
 		if  self.hero:GetZ() < -2  then
 			if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) then
-				self.hero:SetAnimation("jumpattack")
+				self.hero:Play("jumpattack")
 				self.dirLock = true
 				self.jumpAttack = true
 				self.hasHit = false
@@ -194,7 +195,7 @@ function _State_Jump:JumpATK(_body)
 				_body.playNum = 1
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
 				self.atkJudger:ClearDamageArr()
-				self.hero:SetAnimation("jumpattack")
+				self.hero:Play("jumpattack")
 				self:PlaySound()
 				self.hasHit = false
 				-- self:PlaySound()
@@ -203,7 +204,7 @@ function _State_Jump:JumpATK(_body)
 				if self.hero:GetZ() >= 0 then  --[[	hero has been on land  ]]
 					self.FSM:SetState(self.FSM.oriState, self.hero)
 				else 
-					self.hero:SetAnimation(self.name) -- trans to jump state
+					self.hero:Play(self.name) -- trans to jump state
 					self.hero.animMap:SetFrame(8)
 				end 
 			end 

@@ -6,10 +6,13 @@
 	Docs:
 		*Write notes here even more
 ]]
-local _obj = require "Src.Scene.Object" 
+
+---@class Monster
+
+local _obj = require "Src.Objects.GameObject"
 local _Monster = require("Src.Core.Class")(_obj)
 
-local _AniPack = require "Src.AniPack"
+local _Animator = require "Src.Engine.Animation.Animator"
 local _Input = require "Src.Input.Input"
 local _FSM = require "Src.FSM.FSM"
 local _FSMAIControl = require "Src.FSM.FSMAIControl"
@@ -43,8 +46,8 @@ function _Monster:Ctor(path, nav)
 	self.AI = true
 	self.debug = false
 
-	self.aniArr = {
-		["body"] = _AniPack.New(),
+	self.animators = {
+		["body"] = _Animator.New(),
 	}
 	self.extraEffects = {}
 
@@ -62,7 +65,7 @@ function _Monster:Ctor(path, nav)
 		"[overturn motion]",
 	}
 
-	for k,v in pairs(self.aniArr) do
+	for k,v in pairs(self.animators) do
 		for i=1,#_motions do
 			self.property[_motions[i]] = string.gsub(self.property[_motions[i]], ".ani","")
 			v:AddAnimation(strcat(_pathHead, _pathMid, self.property[_motions[i]]), 1, _motions[i])
@@ -71,10 +74,10 @@ function _Monster:Ctor(path, nav)
 			self.property["[attack motion]"][j] = string.gsub(self.property["[attack motion]"][j], ".ani","")
 			v:AddAnimation(strcat(_pathHead, _pathMid, self.property["[attack motion]"][j]), 1, strcat("[attack motion ", tostring(j), "]"))
 		end
-		v:SetBaseRate(self.property["[attack speed]"][1] / 1000)
+		v:SetPlayRate(self.property["[attack speed]"][1] / 1000)
 	end
 
-	self.aniArr["body"]:SetAnimation("[move motion]")
+	self.animators["body"]:Play("[move motion]")
 
 	self.Components = {}
 	self.Components["Input"] = _Input.New(self)
@@ -85,7 +88,7 @@ function _Monster:Ctor(path, nav)
 	self.AI_Control = _FSMAIControl.New(self.FSM, self, nav, self.input)
 
 	self.Models = {}
-	self.Models['HP'] = _HP_Model.New(3000, 3000) -- 600 or 6000
+	self.Models['HP'] = _HP_Model.New(1000, 1000) -- 600 or 6000
 	self.HP_Bar = _HMP_Bar.New(self.pos.x, self.pos.y, require("Data.ui.progressbar.mon_hp"), self.Models["HP"], nil, true)
 
 	
@@ -98,7 +101,7 @@ function _Monster:Update(dt)
 		return
 	end
 	
-	for k,v in pairs(self.aniArr) do
+	for k,v in pairs(self.animators) do
 		v:Update(dt)
 	end
 	
@@ -108,12 +111,18 @@ function _Monster:Update(dt)
 		end 
 	end 
 	
+	--for n = #self.extraEffects,1,-1 do
+	--	if self.extraEffects[n]:IsOver() then
+	--		self.extraEffects[n] = nil
+	--		table.remove(self.extraEffects,n)
+	--	end
+	--end
+
 	for n = #self.extraEffects,1,-1 do
-		if self.extraEffects[n]:IsOver() then
-			self.extraEffects[n] = nil
+		if self.extraEffects[n].playOver then
 			table.remove(self.extraEffects,n)
-		end 
-	end 
+		end
+	end
 
 	self.FSM:Update(self)
 	
@@ -129,25 +138,18 @@ function _Monster:Draw(x, y)
 	-- love.graphics.rectangle("line", self.pos.x - 320, self.pos.y - 150, 320 * 2, 150 * 2)
 	-- love.graphics.rectangle("line", self.pos.x - 400, self.pos.y - 85, 400 * 2, 85 * 2)
 	
-	
-	for n=1,#self.extraEffects do
-		if self.extraEffects[n] and self.extraEffects[n].Draw and self.extraEffects[n].layer == 0 then
-			self.extraEffects[n]:Draw()
-		end 
-	end 
-	
-	for k,v in pairs(self.aniArr) do
+	for k,v in pairs(self.animators) do
 		v:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z)
 	end
 
 	for n=1,#self.extraEffects do
-		if self.extraEffects[n] and self.extraEffects[n].Draw and self.extraEffects[n].layer == 1 then
+		if self.extraEffects[n] and self.extraEffects[n].Draw then
 			self.extraEffects[n]:Draw()
 		end 
 	end 
 
 	if not self.dead then
-		self.HP_Bar:Draw(self.pos.x - self.HP_Bar:GetWidth() / 2, self.pos.y + self.pos.z - self.aniArr["body"]:GetHeight() - self.HP_Bar:GetHeight(), x, y)
+		self.HP_Bar:Draw(self.pos.x - self.HP_Bar:GetWidth() / 2, self.pos.y + self.pos.z - self.animators["body"]:GetHeight() - self.HP_Bar:GetHeight(), x, y)
 	end
 	
 	-- move aim debug drawing
@@ -264,7 +266,7 @@ end
 
 function _Monster:Die()
 	self.dead = true
-	self.aniArr["body"]:SetColor(100, 100, 100, 255)
+	self.animators["body"]:SetColor(100, 100, 100, 255)
 	print("_Monster: i'm really dead!")
 end
 
@@ -296,19 +298,19 @@ end
 
 function _Monster:SetDir(dir)
 	self.dir = dir or self.dir
-	for k,v in pairs(self.aniArr) do
+	for k,v in pairs(self.animators) do
 		v:SetDir(dir)
 	end
 end
 
-function _Monster:SetAnimation(aniName)
-	for k,v in pairs(self.aniArr) do
-		v:SetAnimation(aniName)
+function _Monster:Play(aniName)
+	for k,v in pairs(self.animators) do
+		v:Play(aniName)
 	end
 end
 
 function _Monster:NextFrame()
-	for k,v in pairs(self.aniArr) do
+	for k,v in pairs(self.animators) do
 		v:NextFrame()
 	end
 end
@@ -352,7 +354,7 @@ function _Monster:GetSpeed()
 end
 
 function _Monster:GetBody()
-	return self.aniArr["body"]
+	return self.animators["body"]
 end
 
 function _Monster:IsDead()
@@ -364,7 +366,7 @@ function _Monster:IsAI()
 end
 
 function _Monster:GetDamageBox()
-	return self.aniArr["body"]:GetDamageBox()
+	return self.animators["body"]:GetDamageBox()
 end
 
 function _Monster:GetProperty(index)
@@ -374,7 +376,6 @@ end
 function _Monster:AddExtraEffect(effect)
 	assert(effect,"Warning: Hero_SwordMan:AddExtraEffect() got a nil effect!")
 	self.extraEffects[#self.extraEffects + 1] = effect
-	self.extraEffects[#self.extraEffects]:SetLayerId(1000 + #self.extraEffects)
 end
 
 function _Monster:AddComponent(key, component)

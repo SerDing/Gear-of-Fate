@@ -7,11 +7,11 @@
 		* Write more details here 
 ]]
 
-local _obj = require "Src.Scene.Object" 
+local _obj = require "Src.Objects.GameObject"
 local _PathgateWall = require("Src.Core.Class")(_obj)
 
-local _Animation = require "Src.AniPack"
-local _Tile = require "Src.Scene.Blocks.Tile"
+local _Animator = require "Src.Engine.Animation.Animator"
+local _Tile = require "Src.Scene.Objects.Tile"
 
 --@param table data
 function _PathgateWall:Ctor(dataPath, x, y)
@@ -20,9 +20,7 @@ function _PathgateWall:Ctor(dataPath, x, y)
         潜在的问题：
 
             文件转换有错误：多出 ‘}’ 符号
-
             路径处理太过麻烦：要获取一个文件所在路径再获取附属的动画等其它文件，还要替换各种拓展格式名。
-
             图像资源文件 每个img每次都要手动整理偏移文件 有时候还会忘掉 直接导致 ResPack崩掉 游戏运行不起来
     ]]
     self:SetType("PASSIVEOBJ")
@@ -33,8 +31,8 @@ function _PathgateWall:Ctor(dataPath, x, y)
     local _pathArr = split(dataPath, "/")
 	self.pathHead = string.gsub(dataPath, _pathArr[#_pathArr], "")
 
-    self.aniUp = _Animation.New()
-    self.aniDown = _Animation.New()
+    self.aniUp = _Animator.New()
+    self.aniDown = _Animator.New()
     
     
     self.dir = 0
@@ -48,11 +46,11 @@ function _PathgateWall:Ctor(dataPath, x, y)
     self.aniData["up"] = require(string.gsub(self.pathHead .. self.data["[string data]"][1], "%.ani", ""))
     self.aniData["down"] = require(string.gsub(self.pathHead .. self.data["[string data]"][2], "%.ani", ""))
     
-    self.aniUp:SetFileNum(self.data["[int data]"][1], self.data["[int data]"][2])
-    self.aniDown:SetFileNum(self.data["[int data]"][1], self.data["[int data]"][2])
+    self.aniUp:SetImgPathArg(self.data["[int data]"][1], self.data["[int data]"][2])
+    self.aniDown:SetImgPathArg(self.data["[int data]"][1], self.data["[int data]"][2])
     
-    self.aniUp:SetAnimation(self.aniData["up"])
-    self.aniDown:SetAnimation(self.aniData["down"])
+    self.aniUp:Play(self.aniData["up"])
+    self.aniDown:Play(self.aniData["down"])
     self.aniUp:SetPos(self.pos.x , self.pos.y + 200)
     self.aniDown:SetPos(self.pos.x , self.pos.y + 200)
     
@@ -61,13 +59,13 @@ function _PathgateWall:Ctor(dataPath, x, y)
 
     local _tilePath = self.pathHead .. self.data["[string data]"][3]
     self.tile = _Tile.New(_tilePath)
-    self.tile:SetPos(self.pos.x, 80 * 2)
+    self.tile:SetPos(self.pos.x, 150 - 16 * 2)
     if self.dir == 1 then
         self.tile:SetOffset(-224 * self.dir, 0)
         self.tile:SetOffset_2(-224 * self.dir, 0) -- set grid data offset  80 + 80 - self.pos.y   + self.data["[int data]"][6]
     end
-   
     -- self.tile.debug = true
+    -- self.tile.debug = false
 end 
 
 function _PathgateWall:Update(dt)

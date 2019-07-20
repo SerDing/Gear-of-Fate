@@ -28,9 +28,7 @@ function _State_AtkBase:Ctor(FSM, hero)
 	self.atkBaseInit = true
 	self.effect = {}
 	self.effectInfo = {}
-
 	self.EffectMgr = require "Src.Scene.EffectManager"
-	_EffectMgr = require "Src.Scene.EffectManager"
 end 
 
 function _State_AtkBase:Enter()
@@ -43,20 +41,17 @@ end
 
 function _State_AtkBase:Update()
 	self.dt = love.timer.getDelta()
-	-- Add effects by info
 	for i=1,#self.effectInfo do
 		if self.effectInfo[i].born == false then
-			-- print(strcat("atk base effect generate:", self.EffectMgr.pathHead[self.heroType], self.effectInfo[i].subPath))
-			self:Effect(self.effectInfo[i].subPath, 1, 1)
+			self:Effect(self.effectInfo[i].subPath)
 			self.effectInfo[i].born = true
 		end
 	end
 end 
 
 function _State_AtkBase:Exit()
-	for n=1,#self.effect do
-		self.effect[n] = nil
-	end 
+	self:ClearEffects()
+
 	for i=1,#self.effectInfo do -- Reset born state of effects
 		self.effectInfo[i].born = false
 	end
@@ -66,15 +61,26 @@ function _State_AtkBase:SetEffectKeyFrame(frame, subPath)
     self.effectInfo[#self.effectInfo + 1] = {frame = frame, subPath = subPath, born = false}
 end
 
-function _State_AtkBase:Effect(path, layer, num, atkSpdPercent)
-	assert(self.hero, "hero ref is nil")
-	
-	self.effect[#self.effect + 1] = _EffectMgr.ExtraEffect(strcat(_EffectMgr.pathHead[self.heroType], path), self.hero)
+---@param path string
+---@param layer number
+---@param num number
+---@param playRate number
+function _State_AtkBase:Effect(path, playRate)
+	assert(self.hero, "Hero reference is null!")
+	local effect = _EffectMgr.ExtraEffect(strcat(_EffectMgr.pathHead[self.heroType], path), self.hero)
+	effect:SetPlayRate(self.hero:GetAtkSpeed() * (playRate or 1.00))
+	self.effect[#self.effect + 1] = effect
+	return effect
+end
 
-	-- print("_State_AtkBase:Effect() --> effect_num:",#self.effect)
-	atkSpdPercent = atkSpdPercent or 1.00
-	self.effect[#self.effect]:GetAni():SetBaseRate(self.hero:GetAtkSpeed() * atkSpdPercent)
-	self.effect[#self.effect]:SetLayer(layer or 1)
+function _State_AtkBase:ClearEffects()
+	for n=1,#self.effect do
+		self.effect[n].playOver = true
+	end
+
+	for n=1,#self.effect do
+		table.remove(self.effect,n)
+	end
 end
 
 return _State_AtkBase 

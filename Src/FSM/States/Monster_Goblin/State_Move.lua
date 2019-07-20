@@ -26,7 +26,7 @@ end
 
 function _State_Move:Enter()
     
-	self.entity:SetAnimation("[move motion]")
+	self.entity:Play("[move motion]")
 	self.speed = self.entity:GetSpeed()
 	self.pos = self.entity:GetPos()
 	self.input = self.entity:GetComponent("Input")
@@ -36,7 +36,7 @@ function _State_Move:Enter()
     self.time_right = 0
 end
 
-function _State_Move:Update()
+function _State_Move:Update(dt)
 	
 	self.aim = self.entity:GetAim()
 	self.pos = self.entity:GetPos()

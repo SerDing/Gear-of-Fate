@@ -22,7 +22,7 @@ local _Hero_SwordMan = require "Src.Heroes.Hero_SwordMan"
 local _CAMERA = require "Src.Game.GameCamera"
 local _RESMGR = require("Src.Resource.ResManager")
 
-local _ACTORMGR = require "Src.Actor.ActorMgr"
+local _ACTORMGR = require "Src.Managers.ActorMgr"
 
 -- const
 local _res = {}
@@ -122,8 +122,7 @@ function _SCENEMGR.Draw(x, y)
 end
 
 function _SCENEMGR.LoadScene(area, map, type)
-	----[[  preDefine  ]]
-	
+
 	if not _sceneList[type][area] then
 		_sceneList[type][area] = {}
 	end

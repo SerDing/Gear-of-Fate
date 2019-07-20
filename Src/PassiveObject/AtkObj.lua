@@ -6,11 +6,12 @@
 	Docs: 
 		* Write notes here even more 
 ]]
-local _obj = require "Src.Scene.Object" 
+local _obj = require "Src.Objects.GameObject"
 local _AtkObj = require("Src.Core.Class")(_obj)
 local _AttackJudger = require "Src.Components.AttackJudger"
 
-local _AniPack = require "Src.AniPack" 
+local _RESMGR = require "Src.Resource.ResManager" 
+local _Animator = require "Src.Engine.Animation.Animator" 
 
 function _AtkObj:Ctor(path)
 
@@ -19,7 +20,8 @@ function _AtkObj:Ctor(path)
 	local _pathArr = split(path, "/")
 	local _rootPath = string.gsub(path, _pathArr[#_pathArr], "")
 
-	self.data = require(string.sub(path, 1, string.len(path) - 4))
+	self.data = _RESMGR.LoadDataFile(path)
+
 	self.pathInfo = {} -- storage pathinfo in datafile
 	self.aniFiles = {}
 	self.aniArr = {}
@@ -28,13 +30,13 @@ function _AtkObj:Ctor(path)
 	-- load attack info by paths
 	self.pathInfo["[attack info]"] = strcat(_rootPath, string.sub(self.data["[attack info]"], 1, string.len(self.data["[attack info]"]) - 4))
 	self.atkInfo = require(self.pathInfo["[attack info]"])
-
+	
 	-- init add object effect
 	if self.data["[add object effect]"] then
 		self.pathInfo["[add object effect]"] = strcat(_rootPath, string.sub(self.data["[add object effect]"][1], 1, string.len(self.data["[add object effect]"][1]) - 4))
 		self.aniFiles["[add object effect]"] = require(self.pathInfo["[add object effect]"])
-		self.aniArr["addAni"] = _AniPack.New()
-		self.aniArr["addAni"]:SetAnimation(self.aniFiles["[add object effect]"], 1)
+		self.aniArr["addAni"] = _Animator.New()
+		self.aniArr["addAni"]:Play(self.aniFiles["[add object effect]"], 1)
 		-- self.aniArr["addAni"]:SetActive(false)
 	end
 	-- add object effect data format:{aniPath, int, int, delayFrames}
@@ -49,8 +51,8 @@ function _AtkObj:Ctor(path)
 			_str, count = string.gsub(v, ".ani", "")
 			self.pathInfo["[etc motion]"][i] = strcat(_rootPath, _str) -- delete suffixv
 			self.aniFiles["[etc motion]"][i] = require(self.pathInfo["[etc motion]"][i])
-			self.etcAniArr[i] = _AniPack.New()
-			self.etcAniArr[i]:SetAnimation(self.aniFiles["[etc motion]"][i], 1)
+			self.etcAniArr[i] = _Animator.New()
+			self.etcAniArr[i]:Play(self.aniFiles["[etc motion]"][i], 1)
 		end
 		
 	end
@@ -58,24 +60,24 @@ function _AtkObj:Ctor(path)
 	-- init basic motion
 	self.pathInfo["[basic motion]"] = strcat(_rootPath, string.sub(self.data["[basic motion]"], 1, string.len(self.data["[basic motion]"]) - 4))
 	self.aniFiles["[basic motion]"] = require(self.pathInfo["[basic motion]"])
-	self.aniArr["basicAni"] = _AniPack.New()
-	self.aniArr["basicAni"]:SetAnimation(self.aniFiles["[basic motion]"], 1)
+	self.aniArr["basicAni"] = _Animator.New()
+	self.aniArr["basicAni"]:Play(self.aniFiles["[basic motion]"], 1)
 	
 	-- play animations in order
 	if self.data["[add object effect]"] and self.data["[add object effect]"][2] < 0 then
 		self.aniArr["basicAni"]:SetActive(false) -- [add object effect] is prioritized, delay [basic motion]
 	else
-		self.aniArr["basicAni"]:SetAnimation(self.aniFiles["[basic motion]"], 1)
+		self.aniArr["basicAni"]:Play(self.aniFiles["[basic motion]"], 1)
 	end
 
 
 	for _,v in pairs(self.aniArr) do
-		if self.data["[object destroy condition]"] and 
-		self.data["[object destroy condition]"][2] == "[on end of animation]" then
-			v:SetCurrentPlayNum(1)
-		else
-			v:SetCurrentPlayNum(-1)
-		end
+		--if self.data["[object destroy condition]"] and
+		--self.data["[object destroy condition]"][2] == "[on end of animation]" then
+		--	v:SetCurrentPlayNum(1)
+		--else
+		--	v:SetCurrentPlayNum(-1)
+		--end
 		-- v.debug = true
 	end
 
@@ -97,7 +99,7 @@ function _AtkObj:Update(dt)
 	if self.aniArr["basicAni"].active == false then
 		print("self.aniArr[addAni]:GetCount() = ", self.aniArr["addAni"]:GetCount())
 		if self.aniArr["addAni"]:GetCount() == - self.data["[add object effect]"][2] then
-			self.aniArr["basicAni"]:SetAnimation(self.aniFiles["[basic motion]"], 1)
+			self.aniArr["basicAni"]:Play(self.aniFiles["[basic motion]"], 1)
 			self.aniArr["basicAni"]:SetActive(true)
 		end
 	end
@@ -117,7 +119,7 @@ function _AtkObj:Update(dt)
 	local _overNum = 0
 	local _elementNum = 0
 	for _,v in pairs(self.aniArr) do
-		if v:GetCurrentPlayNum() == 0 then
+		if v.playOver then
 			_overNum = _overNum + 1
 		end
 		_elementNum = _elementNum + 1
@@ -168,7 +170,7 @@ function _AtkObj:SetHost(host)
 	-- self:SetHitRecovery(host:GetHitRecovery())
 	self.attackJudger:ClearDamageArr()
 	for _,v in pairs(self.aniArr) do
-		v:SetBaseRate(host:GetAtkSpeed())
+		v:SetPlayRate(host:GetAtkSpeed())
 		v:Draw()
 	end
 end

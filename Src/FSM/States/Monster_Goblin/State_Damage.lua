@@ -34,7 +34,7 @@ end
 
 function _State_Damage:SetDamageAnimR()
 	local _motion = strcat("[damage motion ", tostring(math.random(1, 2)), "]")
-	self.entity:SetAnimation(_motion)
+	self.entity:Play(_motion)
 end
 
 function _State_Damage:Enter(damageInfo, obj)
@@ -87,7 +87,7 @@ function _State_Damage:Enter(damageInfo, obj)
 		end
 		self.dir_Y = "up"
 
-		self.entity:SetAnimation("[down motion]")
+		self.entity:Play("[down motion]")
 		self.bounce = true
 
 	else -- no float effect
@@ -96,7 +96,7 @@ function _State_Damage:Enter(damageInfo, obj)
 			self.lift_V = 2
 			self.dir_Y = "up"
 			-- self.push_V = self.push_V / 2
-			self.entity:SetAnimation("[down motion]")
+			self.entity:Play("[down motion]")
 			self.entity:NextFrame()
 
 		end
@@ -104,7 +104,7 @@ function _State_Damage:Enter(damageInfo, obj)
 
 	if _hasDown then
 		self.lift_V = self.liftPower * 0.2
-		self.entity:SetAnimation("[down motion]")
+		self.entity:Play("[down motion]")
 		self.entity:NextFrame()
 		self.entity:NextFrame()
 		self.bounce = false
@@ -131,7 +131,7 @@ function _State_Damage:Enter(damageInfo, obj)
 	-- 	self.lift_V = self.liftPower -- 无论是在空中 还是 在地面上 都应用真实的浮空力
 	-- 	self.timer2 = 0
 	-- 	self.dir_Y = "up" -- 强制变更为上升状态
-	-- 	self.entity:SetAnimation("[down motion]") 
+	-- 	self.entity:Play("[down motion]") 
 
 	-- else -- 非挑空
 
@@ -140,7 +140,7 @@ function _State_Damage:Enter(damageInfo, obj)
 	-- 		self.lift_V = self.liftPower
 	-- 		print("self.entity:GetZ() < 0  apply liftup power", self.lift_V)
 	-- 		self.timer2 = 0
-	-- 		self.entity:SetAnimation("[down motion]")
+	-- 		self.entity:Play("[down motion]")
 	-- 		self.entity:NextFrame()
 	-- 	-- else
 	-- 	-- 	self.lift_V = self.liftPower * 0.2 -- 否则 在地面上时 只给一个微小的浮空力
@@ -150,7 +150,7 @@ function _State_Damage:Enter(damageInfo, obj)
 	-- -- self.bounce = true
 	-- if _hasDown then
 	-- 	self.lift_V = self.liftPower * 0.2
-	-- 	self.entity:SetAnimation("[down motion]")
+	-- 	self.entity:Play("[down motion]")
 	-- 	self.entity:NextFrame()
 	-- 	self.entity:NextFrame()
 	-- 	self.bounce = false
@@ -178,7 +178,7 @@ function _State_Damage:Enter(damageInfo, obj)
 
 end
 
-function _State_Damage:Update()
+function _State_Damage:Update(dt)
 	local _dt = love.timer.getDelta()
 
 	-- if self.dir_Y == "null" then
@@ -226,8 +226,8 @@ function _State_Damage:HitFlyEffect(_dt)
 				-- self.lift_V = 0 -- v = 0
 				self.lift_V = - self.lift_V
 				self.dir_Y = "down"
-				if self.entity:GetBody():GetAniId() ~= "[down motion]" then
-					self.entity:SetAnimation("[down motion]")
+				if self.entity:GetBody().aniID ~= "[down motion]" then
+					self.entity:Play("[down motion]")
 				end
 			end
 
@@ -259,7 +259,7 @@ function _State_Damage:HitFlyEffect(_dt)
 			-- print("monster damage [dir_Y == down], self.entity:GetZ() >= 0")
 		end
 
-	elseif self.dir_Y == "null" and self.entity:GetBody():GetAniId() == "[down motion]" then
+	elseif self.dir_Y == "null" and self.entity:GetBody().aniID == "[down motion]" then
 		while self.entity:GetBody():GetCount() < 4 do
 			self.entity:NextFrame()
 			-- self.timer = 0
@@ -270,7 +270,7 @@ function _State_Damage:HitFlyEffect(_dt)
 end
 
 function _State_Damage:HitRecovery(_dt)
-	if self.lift_V == 0 and self.entity:GetBody():GetAniId() ~= "[down motion]" then  --  self.liftPower == 0  
+	if self.lift_V == 0 and self.entity:GetBody().aniID ~= "[down motion]" then  --  self.liftPower == 0  
 		self.timer = self.timer + _dt
 		if self.timer >= self.hit_recovery / 1000 then 
 			self.FSM:SetState(self.FSM.oriState, self.entity)
@@ -281,7 +281,7 @@ function _State_Damage:HitRecovery(_dt)
 end
 
 function _State_Damage:IsDown()
-	if self.entity:GetBody():GetAniId() == "[down motion]" and self.dir_Y == "null" then
+	if self.entity:GetBody().aniID == "[down motion]" and self.dir_Y == "null" then
 		return true
 	end
 	return false

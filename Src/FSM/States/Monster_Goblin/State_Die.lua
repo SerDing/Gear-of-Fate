@@ -9,14 +9,14 @@ function _State_Die:Ctor(FSM, entity)
 end 
 
 function _State_Die:Enter()
-	self.entity:SetAnimation("[down motion]")
-    self.entity.aniArr["body"]:SetFrame(4)
+	self.entity:Play("[down motion]")
+    self.entity.animators["body"]:SetFrame(4)
     self.entity:Update(love.timer.getDelta())
     
 end
 
-function _State_Die:Update()
-    if self.entity.aniArr["body"]:GetCount() == 4 and #self.entity.extraEffects == 0 then
+function _State_Die:Update(dt)
+    if self.entity.animators["body"]:GetCount() == 4 and #self.entity.extraEffects == 0 then
         self.entity:Die()
     end
 end 

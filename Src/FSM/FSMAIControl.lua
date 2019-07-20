@@ -9,8 +9,9 @@
 
 local _FSMAIControl = require("Src.Core.Class")()
 
-local _ACTORMGR = require "Src.Actor.ActorMgr"
+local _ACTORMGR = require "Src.Managers.ActorMgr"
 local _GDB = require "Src.Game.GameDataBoard"
+local _Utility = require "Src.Core.Utility"
 
 function _FSMAIControl:Ctor(FSM_, entity, nav, input)
     
@@ -53,7 +54,7 @@ function _FSMAIControl:Update(dt, entity)
     self:UpdatePerceptions(dt, entity)
 
     -- in the sight of the monster
-    if GetDistance(self.hero_:GetPos(), entity:GetPos()) <= entity.property["[sight]"] then
+    if _Utility.GetDistance(self.hero_:GetPos(), entity:GetPos()) <= entity.property["[sight]"] then
         self:Action(entity)
         self:SelectDestination(entity)
         self:MoveMethod(entity)    

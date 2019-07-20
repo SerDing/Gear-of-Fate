@@ -25,7 +25,9 @@ return {
 		['[DAMAGE TYPE]'] = "superarmor",
 		['[IMAGE POS]'] = {-232,-333,},
 		['[DAMAGE BOX]'] = {17,-5,0,46,10,54,-16,-10,0,37,10,25,},
+		
 		['[ATTACK BOX]'] = {-10,-20,-2,86,40,49,},
+		
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",206,},
 	},
 	['[FRAME004]'] = {
@@ -34,7 +36,9 @@ return {
 		['[DAMAGE TYPE]'] = "superarmor",
 		['[IMAGE POS]'] = {-232,-333,},
 		['[DAMAGE BOX]'] = {17,-5,0,46,10,54,-16,-10,0,37,10,25,},
+
 		['[ATTACK BOX]'] = {-10,-20,-2,86,40,49,},
+
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",207,},
 	},
 	['[FRAME005]'] = {
@@ -42,7 +46,9 @@ return {
 		['[DAMAGE TYPE]'] = "superarmor",
 		['[IMAGE POS]'] = {-232,-333,},
 		['[DAMAGE BOX]'] = {17,-5,0,46,10,54,-16,-10,0,37,10,25,},
+
 		['[ATTACK BOX]'] = {-10,-20,-2,86,40,49,},
+		
 		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",208,},
 	},
 	['[FRAME006]'] = {

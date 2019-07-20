@@ -1,32 +1,24 @@
 --[[
 	Desc: A manager to manage all resource in the game
- 	Author: Night_Walker
+ 	Author: SerDing
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 22:10:59
 	Docs:
-		* LoadTexture(filePath) find repeated resource by filePath
-		* LoadSound(filePath) is similar to LoadTexture()
 ]]
 
-local _RESMGR = {
-	imageCachePool = {},
-	soundCachePool = {},
-	count = 0,
-	maxSize = 1200,
-	pathHead = "/ImagePacks/"
-}
+---@class _RESMGR
+---@public field imageNull image
+---@public field pathHead string
+local _RESMGR = {}
+local this = _RESMGR
 
-local _time = 0
-function _RESMGR.Ctor() --initialize
-	_RESMGR.soundPathList = require "Config.SoundPack" 
-	-- print(_RESMGR.soundPathList.SM_ATK_01) -- OK
-
-	-- [[ caching texture in some img packages advanced ]]
-	
-	-- for n=0, 209 do
-	-- 	local _tmpPath = "/ImagePacks/character/swordman/equipment/avatar/skin/sm_body0001.img/"
-	-- 	_RESMGR.LoadTexture(strcat(_tmpPath, tostring(n), ".png"),true)
-	-- end 
+function _RESMGR.Ctor()
+	this.imageCachePool = {}
+	this.soundCachePool = {}
+	this.count = 0
+	this.maxSize = 700
+	this.pathHead = "/ImagePacks/"
+	this.soundPathList = require "Config.SoundPack"
 
 	local _cacheNameList = {
 		"/ImagePacks/character/swordman/equipment/avatar/skin/sm_body0001.img/",
@@ -38,48 +30,51 @@ function _RESMGR.Ctor() --initialize
 		"/ImagePacks/character/swordman/effect/gorecross/gorecross_obj_cross_ldodge.img/",
 		"/ImagePacks/character/swordman/effect/gorecross/gorecross_obj_cross_none.img/",
 		"/ImagePacks/character/swordman/effect/gorecross/gorecross_slash.img/",
-		
 	}
-
-	for n=1,#_cacheNameList do
-		_RESMGR.LoadTextureByImg(_cacheNameList[n])
+	-- cache some images by img pack
+	for n = 1, #_cacheNameList do
+		this.LoadTextureByImg(_cacheNameList[n])
 	end 
+
+	local imgData = love.image.newImageData(1, 1)
+	this.imageNull = love.graphics.newImage(imgData)
+	this._timer = 0
 end
 
 function _RESMGR.Update(dt)
-	-- Display the amount of the resource pool
-	_time = _time + dt
-	if _time > 0.016 * 60 then
-		_time = 0
+	-- print the amount of the resource pool
+	this._timer = this._timer + dt
+	if this._timer > 0.016 * 60 then
+		this._timer = 0
 		print("ResPool_Count:", _RESMGR.count)
 	end
 end
 
 function _RESMGR.LoadTexture(path, cache)
-	local texture = _RESMGR.imageCachePool[path]
+	local texture = this.imageCachePool[path]
 	if texture then
 		return texture
 	end
 	-- not found in pool, create one.
-	_RESMGR.imageCachePool[path] = love.graphics.newImage(path)
-	_RESMGR.count = _RESMGR.count + 1
-	-- proc overflow of pool size
-	if _RESMGR.count > _RESMGR.maxSize then
-		table.remove(_RESMGR.imageCachePool, 1)
+	this.imageCachePool[path] = love.graphics.newImage(path)
+	this.count = this.count + 1
+	-- proc overflow of pool.
+	if this.count > this.maxSize then
+		table.remove(this.imageCachePool, 1)
 	end
-	return _RESMGR.imageCachePool[path]
+	return this.imageCachePool[path]
 end
 
 function _RESMGR.LoadSound(path, cache)
 	if not cache then
-		local sound = _RESMGR.soundCachePool[path]
+		local sound = this.soundCachePool[path]
 		if sound then
 			return sound
 		end
 	end
 	-- not found in pool or force to reload, then create new one.
-	_RESMGR.soundCachePool[path] = love.audio.newSource(path)
-	return _RESMGR.soundCachePool[path]
+	this.soundCachePool[path] = love.audio.newSource(path)
+	return this.soundCachePool[path]
 end
 
 function _RESMGR.LoadTextureByImg(filePath)
@@ -103,11 +98,11 @@ function _RESMGR.LoadTextureByImg(filePath)
 	end 
 
 	if _offset_text == nil then
-		print("Error:_ResPack:Ctor() --> Can not get offset data!" .. filePath)
+		print("_RESMGR.LoadTextureByImg():Can not get offset data!" .. filePath)
 		return
 	end
 	
-	local  first_cut = CutText(_offset_text, "\n")
+	local  first_cut = split(_offset_text, "\n")
 
 	local _num = table.getn(first_cut)
 
@@ -116,14 +111,18 @@ function _RESMGR.LoadTextureByImg(filePath)
 	end 
 	
 	for n=0,_num - 1 do
-		_RESMGR.LoadTexture(strcat(filePath, tostring(n), ".png"),true)
+		this.LoadTexture(strcat(filePath, tostring(n), ".png"),true)
 	end 
 
 end
 
+function _RESMGR.LoadDataFile(path)
+	return require(string.sub(path, 1, string.len(path) - 4))
+end
+
 function _RESMGR.InstantiateImageData(imagedata)
 	--[[
-		all of pixel value in imagedata are zero, 
+		all of pixel value in imagedata are zero,
 		this method will set them to a non-zero value to 
 		make them can be visible when they are draw
 	]]

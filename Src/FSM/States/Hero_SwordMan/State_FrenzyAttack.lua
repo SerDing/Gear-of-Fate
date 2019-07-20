@@ -30,7 +30,7 @@ end
 
 function _State_FrenzyAttack:Enter()
     
-	self.hero:SetAnimation(self.childName[1])
+	self.hero:Play(self.childName[1])
 	self.attackNum = 1
     
     self.atkJudger = self.hero:GetAtkJudger()
@@ -40,9 +40,9 @@ function _State_FrenzyAttack:Enter()
 
     ----[[  Call base class function  ]]
     base.Enter(self)
-    self:Effect("frenzy/sword1-1.lua", 1, 1)
-    self:Effect("frenzy/sword1-3.lua", 1, 1)
-    self:Effect("frenzy/sword1-4.lua", 1, 1)
+    self:Effect("frenzy/sword1-1.lua")
+    self:Effect("frenzy/sword1-3.lua")
+    self:Effect("frenzy/sword1-4.lua")
 
     local function attack_event(frame)
         if not self.hero:GetAttackBox() or self.hitTimes >= 2 then
@@ -78,20 +78,13 @@ function _State_FrenzyAttack:Update()
             self.attackNum = 2
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
-            self.hero:SetAnimation(self.childName[self.attackNum])
-            
-           
-            for n=1,#self.effect do
-                self.effect[n].over = true
-            end 
+            self.hero:Play(self.childName[self.attackNum])
 
-            for n=1,#self.effect do
-                table.remove(self.effect,n)
-            end 
+            self:ClearEffects()
 
-            self:Effect("frenzy/sword2-1.lua", 1, 1)
-            self:Effect("frenzy/sword2-3.lua", 1, 1)
-            self:Effect("frenzy/sword2-4.lua", 1, 1)
+            self:Effect("frenzy/sword2-1.lua")
+            self:Effect("frenzy/sword2-3.lua")
+            self:Effect("frenzy/sword2-4.lua")
            
         end 
         
@@ -112,20 +105,13 @@ function _State_FrenzyAttack:Update()
             self.attackNum = 3
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
-            self.hero:SetAnimation(self.childName[self.attackNum])
+            self.hero:Play(self.childName[self.attackNum])
             
-            
-            for n=1,#self.effect do
-                self.effect[n].over = true
-            end 
-           
-            for n=1,#self.effect do
-                table.remove(self.effect,n)
-            end 
+            self:ClearEffects()
 
-            self:Effect("frenzy/sword3-1.lua", 1, 1)
-            self:Effect("frenzy/sword3-2.lua", 1, 1)
-            self:Effect("frenzy/sword3-3.lua", 1, 1)
+            self:Effect("frenzy/sword3-1.lua")
+            self:Effect("frenzy/sword3-2.lua")
+            self:Effect("frenzy/sword3-3.lua")
 
         end 
         
@@ -149,20 +135,14 @@ function _State_FrenzyAttack:Update()
             -- self.atkJudger:ClearDamageArr()
 
             self.hitTimes = 0
-            self.hero:SetAnimation(self.childName[self.attackNum])
+            self.hero:Play(self.childName[self.attackNum])
             
             
-            for n=1,#self.effect do
-                self.effect[n].over = true
-            end 
-            
-            for n=1,#self.effect do
-                table.remove(self.effect,n)
-            end 
+            self:ClearEffects()
 
-            self:Effect("frenzy/sword4-1.lua", 1, 1)
-            self:Effect("frenzy/sword4-2.lua", 1, 1)
-            self:Effect("frenzy/sword4-3.lua", 1, 1)        
+            self:Effect("frenzy/sword4-1.lua")
+            self:Effect("frenzy/sword4-2.lua")
+            self:Effect("frenzy/sword4-3.lua")
 
         end 
 
@@ -192,7 +172,7 @@ function _State_FrenzyAttack:Update()
 
     for n=1,#self.effect do
         if self.effect[n] then
-            self.effect[n].pos.x = self.hero.pos.x
+            self.effect[n]:SetPos(self.hero.pos.x)
         end 
     end 
     
@@ -202,8 +182,8 @@ function _State_FrenzyAttack:Exit()
     self.hero.animMap:GetWidget("weapon_b1").OnChangeFrame = nil
     self.hero.animMap:GetWidget("weapon_c1").OnChangeFrame = nil
     for n=1,#self.effect do
-        self.effect[n].over = true
-    end 
+        self.effect[n].playOver = true
+    end
     base.Exit(self)
 end
 

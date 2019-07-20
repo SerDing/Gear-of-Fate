@@ -29,28 +29,28 @@ function _Weapon:SetEquID(id) -- set equipment id
 	end
 end
 
-function _Weapon:SetRes(weaponType, fileNum)
-	local _resPathHead = self.pathHead .. weaponType .. "/" .. weaponType .. string.format("%04d", fileNum)
+function _Weapon:SetRes(weaponType, filePathArg)
+	local _resPathHead = self.pathHead .. weaponType .. "/" .. weaponType .. string.format("%04d", filePathArg)
 	local _resPathEnd = ".img"
 	local _path_b = _resPathHead .. "b" .. _resPathEnd
 	local _path_c = _resPathHead .. "c" .. _resPathEnd
 	if self.single then
 		if love.filesystem.exists(_RESMGR.pathHead .. _path_b) then
-			self.actor_.animMap:GetWidget("weapon_b1"):SetFileNum(_path_b)
+			self.actor_.animMap:GetWidget("weapon_b1"):SetImgPathArg(_path_b)
 		elseif love.filesystem.exists(_RESMGR.pathHead .. _path_c) then
-			self.actor_.animMap:GetWidget("weapon_c1"):SetFileNum(_path_c)
+			self.actor_.animMap:GetWidget("weapon_c1"):SetImgPathArg(_path_c)
 		else
 			print(_path_b)
 			print(_path_c)
 			error("_Weapon:SetRes()  no useable file path")
 		end
 	else
-		self.actor_.animMap:GetWidget("weapon_b1"):SetFileNum(_path_b)
-		self.actor_.animMap:GetWidget("weapon_c1"):SetFileNum(_path_c)
+		self.actor_.animMap:GetWidget("weapon_b1"):SetImgPathArg(_path_b)
+		self.actor_.animMap:GetWidget("weapon_c1"):SetImgPathArg(_path_c)
 	end
 
 	-- in default, we set b2 and c2 to inactive unless the 
-	-- weapon of hero is light sword or a complex weapon 
+	-- weapon is a light sword or a complex weapon
 	-- like ming-dao or Evil Sword：Apophis
 	self.actor_.animMap:GetWidget("weapon_b2"):SetActive(false)
 	self.actor_.animMap:GetWidget("weapon_c2"):SetActive(false)

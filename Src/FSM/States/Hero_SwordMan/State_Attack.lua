@@ -6,12 +6,11 @@
 	Docs:
 		* wrap the logic of Attack state in this class
 ]]
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_Attack = require("Src.Core.Class")(base)
 
-local _State_Attack = require("Src.Core.Class")()
-
-function _State_Attack:Ctor(FSM, hero)
-    self.FSM = FSM
-    self.hero = hero
+function _State_Attack:Ctor(...)
+    base.Ctor(self, ...)
     self.name = "attack"
     self.childName = {"attack1", "attack2", "attack3"}
     self.trans = {
@@ -37,7 +36,7 @@ function _State_Attack:Enter()
     self.input = self.hero:GetComponent("Input")
     self.movement = self.hero:GetComponent('Movement')
 
-    self.hero:SetAnimation(self.attackName)
+    self.hero:Play(self.attackName)
 
     if self.hero:GetAttackMode() == "frenzy" then
         self.FSM:SetState("frenzyattack",self.hero)
@@ -63,14 +62,14 @@ function _State_Attack:Update()
             self.attackNum = 2
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
-            self.hero:SetAnimation(self.childName[self.attackNum])
+            self.hero:Play(self.childName[self.attackNum])
         end
     elseif self.attackNum == 2 then
         if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
             self.attackNum = 3
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
-            self.hero:SetAnimation(self.childName[self.attackNum])
+            self.hero:Play(self.childName[self.attackNum])
         end
     end
     if self.attackNum == 2 or self.attackNum == 3 then
@@ -89,7 +88,7 @@ function _State_Attack:Update()
         self.atkJudger:Judge(self.hero, "MONSTER", self.attackName)
     end
 
-    if self.hero:GetBody():GetCurrentPlayNum() == 0 then
+    if self.hero:GetBody().playOver then
         self.FSM:SetState(self.FSM.oriState,self.hero)
     end
     

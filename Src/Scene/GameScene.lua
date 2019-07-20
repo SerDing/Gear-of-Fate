@@ -11,13 +11,14 @@
 local _GameScene = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
-local _Tile = require "Src.Scene.Blocks.Tile"
-local _AniBlock = require "Src.Scene.Blocks.AniBlock" 
+local _Tile = require "Src.Scene.Objects.Tile"
+local _AnimObj = require "Src.Scene.Objects.AnimObj"
+local _Animation = require "Src.Engine.Animation.Animation"
 local _ObjectMgr = require "Src.Scene.ObjectManager"
 local _Collider = require "Src.Core.Collider"
-local _KEYBOARD = require "Src.Core.KeyBoard" 
-local _GAMEINI = require "Src.Config.GameConfig" 
+local _KEYBOARD = require "Src.Core.KeyBoard"
 
+local _RESMGR = require "Src.Resource.ResManager"
 local _AUDIOMGR = require "Src.Audio.AudioManager"
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 local _MonsterSpawner = require "Src.Monster.MonsterSpawner"
@@ -84,7 +85,8 @@ function _GameScene:Ctor(path, SCENEMGR) --initialize
     self.directory = string.split(path,"/")
     self.directory = self.directory[#self.directory - 1] .. "/"
 
-    self:LoadBackGround()
+    self:LoadBackGround("[far]")
+    self:LoadBackGround("[mid]")
     self:LoadTiles()
     self:LoadAnimations()
     self:LoadPassiveObjects()
@@ -100,7 +102,7 @@ function _GameScene:LoadTiles()
         self.tiles[n] = _Tile.New(_tilePath)
         self.tiles[n]:SetPos((n - 1) * 224, 0)
         self.tiles[n]:SetOffset(0, 80) -- set draw offset
-        self.tiles[n]:SetOffset_2(0, 80 * 2) -- set grid data offset
+        self.tiles[n]:SetOffset_2(0, 160) -- set grid data offset
 
     end
 
@@ -113,7 +115,7 @@ function _GameScene:LoadTiles()
             self.extendedTiles[i] = _Tile.New(strcat(self.pathHead, self.directory, filePath))
             self.extendedTiles[i]:SetPos(((i - 1) % n) * 224, math.floor(i / n) * self.extendedTiles[i].sprite:GetHeight())
             self.extendedTiles[i]:SetOffset(0, 80) -- set draw offset
-            self.extendedTiles[i]:SetOffset_2(0, 480 + 80 + math.floor(i / n) * 120) -- set obstacle grid offset, 120 is default height of any extile.
+            self.extendedTiles[i]:SetOffset_2(0, 480 + 60 + math.floor(i / n) * 120) -- set obstacle grid offset, 120 is default height of any extile.
         end
         self.drawExTile = true
     end
@@ -122,14 +124,12 @@ end
 
 function _GameScene:LoadAnimations()
     local mapAnimation = self.map["[animation]"]
-    local aniPath 
-    local animation 
+    local aniPath
+    local animation
     for n=1,#mapAnimation,5 do
         aniPath = self.pathHead .. self.directory .. mapAnimation[n]
-        animation = _AniBlock.New(aniPath, mapAnimation[n + 1])
-        animation:SetOffset_2(0, 200)
-        animation:SetPos(mapAnimation[n + 2], mapAnimation[n + 3])
-        animation:SetFilter(true)
+        animation = _AnimObj.New(aniPath, mapAnimation[n + 1])
+        animation:SetPos(mapAnimation[n + 2], mapAnimation[n + 3] + 200)
         animation:SetLayer(mapAnimation[n + 1])
         self.animations[#self.animations + 1] = animation
         table.insert(self.layers[mapAnimation[n + 1]], animation)
@@ -168,34 +168,19 @@ function _GameScene:LoadPathgate()
     end
 end
 
-function _GameScene:LoadBackGround()
-    
-    local _bgLayer = {
-        "[far]",
-        "[mid]"
-    }
-    
+---@param bgLayer string
+function _GameScene:LoadBackGround(bgLayer)
     if self.map["[background animation]"] then
-        
-        for n=1,#_bgLayer do
-            if not self.res[ _bgLayer[n]] then
-                self.res[ _bgLayer[n]] = {}
-            end 
-            local _bgFileName = self.map["[background animation]"]["[ani info]"]["[filename]"]
-            if n==2 then
-                _bgFileName = self.map["[background animation]"]["[ani info2]"]["[filename]"]
-            end 
-            local _bgAniPath = self.pathHead .. self.directory .. _bgFileName
-            if not self.res[ _bgLayer[n]][ _bgFileName] then
-                self.res[ _bgLayer[n]][ _bgFileName] = _AniBlock.New(_bgAniPath)
-                self.res[ _bgLayer[n]][ _bgFileName]:SetOffset_2(0,self.map["[background pos"] or 80)
-                self.res[ _bgLayer[n]][ _bgFileName]:SetFilter(true)
-                self.res[ _bgLayer[n]][ _bgFileName]:SetSubType("MAP_ANI_BACK")
-            end 
-        end 
-        
-    end 
- 
+        if not self.res[ bgLayer] then
+            self.res[ bgLayer] = {}
+        end
+        local filename = self.map["[background animation]"][bgLayer]["[filename]"]
+        local animPath = self.pathHead .. self.directory .. filename
+        if not self.res[ bgLayer][filename] then
+            self.res[ bgLayer][filename] = _Animation.New(_RESMGR.LoadDataFile(animPath))
+            self.res[ bgLayer][filename]:Play()
+        end
+    end
 end
 
 function _GameScene:LoadMonster()
@@ -274,80 +259,69 @@ function _GameScene:Update(dt)
     _ObjectMgr.Update(dt)
 end
 
----@param cam_x float 
----@param cam_y float 
+---@param cam_x number
+---@param cam_y number
 function _GameScene:Draw(cam_x,cam_y)
 
-    self:DrawBackGround("[far]", cam_x, cam_y)
-    self:DrawBackGround("[mid]", cam_x, cam_y)
+    self:DrawBackGround("[far]", "[far sight scroll]", cam_x)
+    self:DrawBackGround("[mid]", "[middle sight scroll]", cam_x)
     self:DrawTile(cam_x, cam_y)
     self:DrawExtendedTile(cam_x, cam_y)
 
-    self:DrawLayer("[bottom]",cam_x, cam_y)
-    self:DrawLayer("[closeback]",cam_x, cam_y)
+    self:DrawLayer("[bottom]", cam_x, cam_y)
+    self:DrawLayer("[closeback]", cam_x, cam_y)
 
     if GDebug then
-        self:DrawSpecialArea("movable")
+        --self:DrawSpecialArea("movable")
         self:DrawSpecialArea("event")
     end 
 
     self.nav:Draw()
     _ObjectMgr.Draw(cam_x, cam_y)
-    self:DrawLayer("[close]",cam_x, cam_y)
-    
-    -- love.graphics.line(100, 0, 100, 480 + 80)
+    self:DrawLayer("[close]", cam_x, cam_y)
 end
 
 ---@param layer string 
----@param dt float 
+---@param dt number
 function _GameScene:UpdateLayer(layer, dt)
     for n=1,#self.layers[layer] do
         self.layers[layer][n]:Update(dt)
-    end  
+    end
 end
 
 ---@param layer string 
----@param x float 
----@param y float 
+---@param x number
+---@param y number
 function _GameScene:DrawLayer(layer, x, y)
     for n=1,#self.layers[layer] do
         self.layers[layer][n]:Draw(x, y)
     end 
 end
 
----@param type string 
----@param ex float 
----@param ey float 
-function _GameScene:DrawBackGround(type, ex, ey)
-    local _scroll = ""
-    local _ani_info = ""
-    
-    if type == "[far]" then
-        _scroll = "[far sight scroll]"
-        _ani_info = "[ani info]"
-    else -- "[mid]"
-        _scroll = "[middle sight scroll]"
-        _ani_info = "[ani info2]"
-    end 
-    
+---@param type string
+---@param scroll string
+---@param ex number
+---@param ey number
+function _GameScene:DrawBackGround(type, scroll, ex)
+
     if self.map["[background animation]"] then
-        local name = self.map["[background animation]"][_ani_info]["[filename]"]
+        local name = self.map["[background animation]"][type]["[filename]"]
         local bganim = self.res[type][name]
-        local x = ex * (self.map[_scroll] - 100) / 100
-        local y = 0
+        local x = ex * (self.map[scroll] - 100) / 100
+        local y = self.map["[background pos]"] or 80
         local imageWidth = bganim:GetWidth()
         x = (x % - imageWidth)
         
-        while x < -ex + _GAMEINI.winSize.width do
-			bganim:Draw(x,y)
+        while x < -ex + love.graphics.getWidth() do
+			bganim:Draw(x, y)
             -- print("x:", x, "ex...:", -ex + love.graphics.getWidth())
             x = x + imageWidth
 		end
     end
 end
 
----@param ex float 
----@param ey float 
+---@param ex number
+---@param ey number
 function _GameScene:DrawTile(ex, ey)
 
     if ex >= 480 + 80 then
@@ -355,8 +329,8 @@ function _GameScene:DrawTile(ex, ey)
     end
     
     -- horizental
-    local index = mathFloor(mathAbs(ex) / 224) + 1 -- 向下取整
-	local num = mathCeil(_GAMEINI.winSize.width / 224) - 2 -- 向上取整
+    local index = mathFloor(mathAbs(ex) / 224) + 1 -- plus 1 because of floor() maybe return 0
+	local num = mathCeil(love.graphics.getWidth() / 224)
     local endl = (index + num > #self.map["[tile]"]) and (#self.map["[tile]"]) or index + num
     -- print("index:", index, "endl:", endl)
     for n = index, endl do
@@ -365,8 +339,8 @@ function _GameScene:DrawTile(ex, ey)
 
 end
 
----@param ex float 
----@param ey float 
+---@param ex number
+---@param ey number
 function _GameScene:DrawExtendedTile(ex, ey)
     
     if not self.drawExTile then
@@ -374,12 +348,12 @@ function _GameScene:DrawExtendedTile(ex, ey)
     end
     -- horizental
     local XStart = math.floor(math.abs(ex) / 224) + 1 -- 向下取整
-	local num = math.ceil(_GAMEINI.winSize.width / 224) - 2 -- 向上取整
+	local num = math.ceil(love.graphics.getWidth() / 224) -- 向上取整
     local XEnd = (XStart + num > #self.map["[tile]"]) and (#self.map["[tile]"]) or XStart + num
     -- vertical
     local tileNum = #self.map["[tile]"]
     local YStart = (ey <= 480) and 1 or math.floor((ey - (480 + 80)) / 120) + 1
-    local YEnd = math.ceil((ey + _GAMEINI.winSize.height - (480 + 80)) / 120) --#self.extendedTiles / tileNum、
+    local YEnd = math.ceil((ey + love.graphics.getHeight() - (480 + 80)) / 120) --#self.extendedTiles / tileNum、
     YEnd = (YEnd > #self.extendedTiles / tileNum) and YEnd - 1 or YEnd
     for i = YStart, YEnd do
         for n = XStart, XEnd do
@@ -389,7 +363,7 @@ function _GameScene:DrawExtendedTile(ex, ey)
     
 end
 
---@param string type
+---@param type string
 function _GameScene:DrawSpecialArea(type)
     local _head = ""
     local _count = 0
@@ -405,7 +379,7 @@ function _GameScene:DrawSpecialArea(type)
 	if not tab then
 		return false
     end
-	for n=1,#tab,_count do
+	for n = 1, #tab, _count do
         self.rect:SetPos(tab[n],200 + tab[n+1])
         self.rect:SetSize(tab[n+2],tab[n+3])
         if type == "movable" then
@@ -430,8 +404,8 @@ function _GameScene:GetHeight()
 	return 600
 end
 
----@param x float 
----@param y float 
+---@param x number
+---@param y number
 function _GameScene:GetTileByPos(x, y)
     local nx = 0
     local ny = 0
@@ -445,9 +419,9 @@ function _GameScene:GetTileByPos(x, y)
     end
 end
 
----@param x float 
----@param y float 
----@return result bool
+---@param x number
+---@param y number
+---@return boolean
 function _GameScene:IsPassable(x, y)
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
         return false
@@ -462,8 +436,8 @@ function _GameScene:IsPassable(x, y)
     return self:GetTileByPos(x, y):IsPassable(x, y)
 end
 
----@param x float 
----@param y float 
+---@param x number
+---@param y number
 function _GameScene:IsInMoveableArea(x, y) 
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
         return false 
@@ -474,8 +448,8 @@ function _GameScene:IsInMoveableArea(x, y)
 end
 
 ---@param areaType string 
----@param x float 
----@param y float 
+---@param x number
+---@param y number
 function _GameScene:IsInArea(areaType, x, y)
 	local _head = ""
     local _count = 0
@@ -510,8 +484,8 @@ function _GameScene:IsInArea(areaType, x, y)
     return false
 end
 
----@param x float 
----@param y float
+---@param x number
+---@param y number
 function _GameScene:CheckEvent(x, y)
     local _result = self:IsInArea("event",x,y)
     
@@ -521,8 +495,8 @@ function _GameScene:CheckEvent(x, y)
     end 
 end
 
----@param x float 
----@param y float
+---@param x number
+---@param y number
 function _GameScene:IsInObstacles(x, y)
     -- out of scene
     if x > self:GetWidth() or x < 0 or y > self.GetHeight() or y < 0 then
@@ -533,17 +507,9 @@ function _GameScene:IsInObstacles(x, y)
         return {false, "no obstacles"}
     end
 
-    -- for n=1,#self.layers["[normal]"]["[passive object]"] do
-    --     if self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].subType == "OBSTACLE" then
-    --         if _Collider.Point_Rect(x, y, self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect) then
-    --             return {true,self.res["[passive object]"][self.layers["[normal]"]["[passive object]"][n]].rect}
-    --         end 
-    --     end 
-    -- end 
-
     for n=1,#self.obstacles do
         if _Collider.Point_Rect(x, y, self.obstacles[n].rect) then
-            return {true,self.obstacles[n].rect}
+            return {true, self.obstacles[n].rect}
         end 
     end 
 
@@ -552,18 +518,6 @@ end
 
 ---@param rect_a table 
 function _GameScene:CollideWithObstacles(rect_a)
-    -- local _Layer = self.layers["[normal]"]["[passive object]"]
-    -- local _res = self.res["[passive object]"]
-    
-    -- for n=1,#_Layer do
-    --     if _res[_Layer[n]].subType == "OBSTACLE" then
-    --         local rect_b = _res[_Layer[n]]:GetRect()
-    --         if _Collider.Rect_Rect(rect_a, rect_b) then
-    --             return true
-    --         end
-    --     end
-    -- end 
-
     for n=1,#self.obstacles do
         local rect_b = self.obstacles[n]:GetRect()
         if _Collider.Rect_Rect(rect_a, rect_b) then

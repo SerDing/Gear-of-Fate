@@ -9,13 +9,15 @@
         * Register some callbacks of self into the SCENEMGR to implement response for some scene event works
 ]]
 
+---@class ACTORMGR
+---@public field mainPlayer Hero_SwordMan
+
 local _ACTORMGR = {}
 local this = _ACTORMGR
 
 local _SwordMan = require "Src.Heroes.Hero_SwordMan"
 
-
-local _Avatar = require "Src.Animation.AnimGrp"
+local _Avatar = require "Src.Engine.Animation.Avatar"
 local _Weapon = require "Src.Components.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Components.AttackJudger"
@@ -28,12 +30,11 @@ local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
 -- 1.采用配置文件的形式避免硬编码，只需实现NewActor()
 -- 2.暂时采用硬编码，实现 NewHero() 和 NewMonster()，
 
---@field table  mainPlayer
---@field list   monsters
 function _ACTORMGR.Ctor()
-    this.mainPlayer = nil
-    this.monsters = {}
-end 
+    this.mainPlayer = nil ---@type Hero_SwordMan
+    this.monsters = {} ---@type Monster[]
+
+end
 
 function _ACTORMGR.NewActor()
     -- body
@@ -44,6 +45,7 @@ function _ACTORMGR.DestructActor(actor)
     this._SCENEMGR.DelEventListener("OnSwitchScene", _movement, _movement.SetSceneRef)
 end
 
+---@return Hero_SwordMan
 function _ACTORMGR.NewHero()
     local hero = _SwordMan.New(400, 460)
     local _movement = hero:GetComponent("Movement")
@@ -77,7 +79,7 @@ function _ACTORMGR._NewHero()
 	_avatar:AddWidget("weapon_b2")
 	_avatar:AddWidget("weapon_c1")
 	_avatar:AddWidget("weapon_c2")
-	_avatar:GetWidget("body"):SetFileNum(0001)
+	_avatar:GetWidget("body"):SetImgPathArg(0001)
 
 	_weapon:SetType("katana", "katana")  -- mainType, subType
 	_weapon:SetRes("katana", 0001)  -- subType, fileNum

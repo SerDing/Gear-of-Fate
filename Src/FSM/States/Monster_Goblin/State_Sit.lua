@@ -16,11 +16,11 @@ end
 
 function _State_Sit:Enter()
     self.name = "sit"
-	self.entity:SetAnimation("[sit motion]")
+	self.entity:Play("[sit motion]")
 	
 end
 
-function _State_Sit:Update()
+function _State_Sit:Update(dt)
     --body
 end 
 

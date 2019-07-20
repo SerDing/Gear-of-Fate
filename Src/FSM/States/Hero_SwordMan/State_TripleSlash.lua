@@ -33,15 +33,15 @@ end
 
 function _State_TripleSlash:Enter()
     
-	self.hero:SetAnimation(self.childName[1])
+	self.hero:Play(self.childName[1])
 	self.attackNum = 1
 	self.attackName = self.childName[self.attackNum]
 	self.nextDir = self.hero:GetDir()
 	self.slideX = 0
 	----[[  Call base class function  ]] 
     base.Enter(self)
-    self:Effect("tripleslash/move1.lua", 1, 1)
-	self:Effect("tripleslash/slash1.lua", 1, 1)
+    self:Effect("tripleslash/move1.lua")
+	self:Effect("tripleslash/slash1.lua")
 	self:ReSetSpeed()
 
 	-- Get Components
@@ -69,22 +69,16 @@ function _State_TripleSlash:Update()
 				self:ChangeDir()
 				self.hero:SetDir(self.nextDir)
 				
-				self.hero:SetAnimation(self.childName[2])
+				self.hero:Play(self.childName[2])
 				self.attackNum = 2
 
 				self.atkJudger:ClearDamageArr()
 				self.attackName = self.childName[self.attackNum]
 
-				for n=1,#self.effect do
-					self.effect[n].over = true
-				end 
-				
-				for n=1,#self.effect do
-					table.remove(self.effect,n)
-				end 
+				self:ClearEffects()
 
-				self:Effect("tripleslash/move2.lua", 1, 1)
-				self:Effect("tripleslash/slash2.lua", 1, 1)
+				self:Effect("tripleslash/move2.lua")
+				self:Effect("tripleslash/slash2.lua")
 				self:ReSetSpeed()
 			end 
 		end 
@@ -95,23 +89,17 @@ function _State_TripleSlash:Update()
 				self:ChangeDir()
 				self.hero:SetDir(self.nextDir)
 
-				self.hero:SetAnimation(self.childName[3])
+				self.hero:Play(self.childName[3])
 				
 				self.attackNum = 3
 
 				self.atkJudger:ClearDamageArr()
 				self.attackName = self.childName[self.attackNum]
 
-				for n=1,#self.effect do
-					self.effect[n].over = true
-				end 
-				
-				for n=1,#self.effect do
-					table.remove(self.effect,n)
-				end 
+				self:ClearEffects()
 
-				self:Effect("tripleslash/move2.lua", 1, 1)
-				self:Effect("tripleslash/slash3.lua", 1, 1)
+				self:Effect("tripleslash/move2.lua")
+				self:Effect("tripleslash/slash3.lua")
 				self:ReSetSpeed()
 			end 
 
@@ -119,16 +107,11 @@ function _State_TripleSlash:Update()
 
 	end 
 
-	-- animation control
-	-- if self.hero:GetBody():GetCount() == 4 then
-	-- 	self.hero.animMap:Stop()
-	-- end
-
 	self:Movement()
 
 	for n=1,#self.effect do
         if self.effect[n] then
-            self.effect[n].pos.x = self.hero.pos.x
+            self.effect[n]:SetPos(self.hero.pos.x, self.hero.pos.y)
         end 
 	end 
 	
@@ -158,7 +141,7 @@ function _State_TripleSlash:Movement()
 
 		print("movement:  tripslash move speed = ", self.speed)
 
-		-- if self.speed == 0 and self.heroBody:GetCurrentPlayNum() == 0 then
+		-- if self.speed == 0 and self.heroBody.playOver then
 		-- 	print("triplslash slide x = ", self.slideX)
 		-- 	self.FSM:SetState(self.FSM.oriState, self.hero)
 		-- end

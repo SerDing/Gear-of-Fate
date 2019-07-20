@@ -1,5 +1,5 @@
 --[[
-	Desc: A new lua class
+	Desc: buff manager
  	Author: Night_Walker
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
@@ -9,17 +9,17 @@
 
 local _BuffMgr = {}
 
-local _AniPack = require "Src.AniPack" 
+local _Animation = require "Src.Engine.Animation.Animation"
 
-_buffAnis = {
+local _buffAnis = {
 	["frenzy"] = "/Data/character/swordman/effect/animation/frenzy/buff", 
-
 }
+
 function _BuffMgr.Ctor()
     --body
 end
 
-function _BuffMgr.AddBuff(object,buffName)
+function _BuffMgr.AddBuff(object, buffName)
 	
 	if object.buff[buffName].switch then
 		-- print("The buff " .. buffName .. " has been added.")
@@ -32,14 +32,14 @@ function _BuffMgr.AddBuff(object,buffName)
 	if not object.buff[buffName].ani then
 		local _aniLua = require (_buffAnis[buffName])
 	
-		object.buff[buffName].ani = _AniPack.New()
-		object.buff[buffName].ani:SetAnimation(_aniLua)
+		object.buff[buffName].ani = _Animation.New(_aniLua)
+		object.buff[buffName].ani:Play()
 		object.buff[buffName].ani:SetFilter(true)
 	end 
 
 end
 
-function _BuffMgr.OffBuff(object,buffName)
+function _BuffMgr.OffBuff(object, buffName)
 	
 	if not object.buff[buffName] then
 		print("Error:The objected buff is not existing!")

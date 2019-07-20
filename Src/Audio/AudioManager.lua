@@ -19,14 +19,15 @@ local music_ = {
 local sound_ = {id = "", source = nil}
 
 function _AudioMgr.Init(bgmVol, soundVol)
-    _AudioMgr.bgmVol = bgmVol or 0.5--0.005  0.65
-    _AudioMgr.soundVol = soundVol or 0.85--0.0085   1
+    _AudioMgr.bgmVol = bgmVol or 0.0 -- 0.005  0.65
+    _AudioMgr.soundVol = soundVol or 0.85 -- 0.0085   1
     _AudioMgr.pathHead = "/SoundPacks/"
     _AudioMgr.pathList = require("/Config/audio")
 end 
 
+---@param id string 
 local function _randomSoundID(randomID)
-    local _realID = string.sub(randomID, 3, string.len(randomID))
+    local _realID = string.sub(randomID, 3, string.len(randomID)) -- skip "R_"
     
     local i = 1
     while _AudioMgr.pathList[strcat(_realID, string.format("_%02d", i))] do
@@ -38,6 +39,7 @@ local function _randomSoundID(randomID)
     return _rstr
 end
 
+---@param id string 
 function _AudioMgr.PlaySound(id)
     id = string.upper(id)
 

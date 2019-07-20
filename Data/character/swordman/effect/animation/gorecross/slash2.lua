@@ -60,7 +60,7 @@ return {
 	},
 	["[FRAME011]"]={
 		["[IMAGE POS]"]={-164,-218},
-		["[DELAY]"]=500, -- 950
+		["[DELAY]"]=950, -- 950
 		["[IMAGE]"]={"character/swordman/effect/gorecross/gorecross_cross.img",8},
 	},
 

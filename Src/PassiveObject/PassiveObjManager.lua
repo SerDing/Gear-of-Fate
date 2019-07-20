@@ -10,7 +10,7 @@
 local _PassiveObjMgr = {}
 
 local _ObjectMgr = require "Src.Scene.ObjectManager"
-local _Obstacle = require "Src.Scene.Blocks.Obstacle"
+local _Obstacle = require "Src.Scene.Objects.Obstacle"
 local _AtkObj = require "Src.PassiveObject.AtkObj"
 local _PathgateWall = require "Src.PassiveObject.PathgateWall"
 
@@ -28,7 +28,7 @@ end
 function _PassiveObjMgr.GeneratePassiveObj(id)
 	
 	local _objPath = _GetObjPath(id)
-	local _objPathPieces = CutText(_objPath,"/")
+	local _objPathPieces = split(_objPath, "/")
 	local _obj
 	if _objPathPieces[#_objPathPieces - 1] == "obstacle" then
 		_obj = _Obstacle.New(_objPath)
@@ -47,7 +47,7 @@ end
 function _PassiveObjMgr.AtkObj(id, x, y, dir)
 	
 	local _objPath = _GetObjPath(id)
-	local _objPathPieces = CutText(_objPath,"/")
+	local _objPathPieces = split(_objPath, "/")
 	local _obj
 	if _objPathPieces[#_objPathPieces - 2] == "character" then
 		_obj = _AtkObj.New(_objPath)

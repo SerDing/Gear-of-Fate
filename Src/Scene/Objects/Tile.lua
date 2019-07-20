@@ -12,12 +12,11 @@ local _Tile = require("Src.Core.Class")()
 local _Sprite = require "Src.Core.Sprite" 
 local _Rect = require "Src.Core.Rect" 
 local _RESMGR = require "Src.Resource.ResManager" 
-local _ResPack = require "Src.Resource.ResPack"
-local _Collider = require "Src.Core.Collider"
+local _ResPack = require "Src.Resource.ImgPack"
 
 function _Tile:Ctor(path)
     
-    self.tile = require(string.sub(path, 1, string.len(path) - 4)) 
+    self.tile = _RESMGR.LoadDataFile(path)
     self.sprite = _Sprite.New(_RESMGR.imageNull,0,0,1,1)
     
     self.pos = {x = 0, y = 0}
@@ -35,10 +34,10 @@ function _Tile:Ctor(path)
     end
     
     self.rect = _Rect.New(0,0,16,16)
-    self.rect:SetDrawType(1)
+    self.rect:SetDrawType(0)
 
     self.debug = false
-    -- self.debug = true
+    --self.debug = true
 end 
 
 function _Tile:Update(dt)
@@ -68,7 +67,7 @@ function _Tile:Draw(x, y)
                 if self.tile["[pass type]"][j] == 0 then
                     -- self.rect:SetColor(255,255,255,100) -- passable area
                 else
-                    self.rect:SetColor(0, 130, 255, 255) -- unpassable area -- 0, 130, 255, 100
+                    self.rect:SetColor(0, 130, 255, 200) -- unpassable area -- 0, 130, 255, 100
                     self.rect:SetSize(16, 16)
                     self.rect:SetPos(lx, ly)
                     self.rect:Draw()

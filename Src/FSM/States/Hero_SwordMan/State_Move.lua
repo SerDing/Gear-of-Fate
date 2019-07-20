@@ -31,7 +31,7 @@ end
 
 function _State_Move:Enter()
     self.name = "move"
-	self.hero:SetAnimation(self.name)
+	self.hero:Play(self.name)
 	self.time_up = 0
     self.time_down = 0
     self.time_left = 0

@@ -23,10 +23,10 @@ function _State:Update()
     
 end
 
----@return stateName string
-function _State:Return()
-    if self.body:GetCurrentPlayNum() == 0 then
-        self.FSM:SetState(self.FSM.oriState, self.entity)
+---@return transInfo table {state_name, ...}
+function _State:Transition()
+    if self.body.playOver then
+        self.FSM:SetState(self.FSM.oriState)
     end
 end
 

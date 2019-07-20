@@ -12,9 +12,7 @@
 
 local _GameCamera = {}
 
-local _KEYBOADR = require "Src.Core.KeyBoard" 
-
-local _GAMEINI = require "Src.Config.GameConfig" 
+local _KEYBOADR = require "Src.Core.KeyBoard"
 
 local _targetPos = {x = 0, y = 0}
 

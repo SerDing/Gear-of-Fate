@@ -25,8 +25,8 @@ function _MonsterSpawner.LoadLstData()
     _MonsterSpawner.pathHead = "/Data/monster/"
 	_MonsterSpawner.monPathArr = {}
 	_MonsterSpawner.monsterList = LoadFile("/Data/monster/monster.lst")
-	_MonsterSpawner.monsterList = CutText(_MonsterSpawner.monsterList,"\n")
-	_MonsterSpawner.monsterList = CutText(_MonsterSpawner.monsterList[2],"\t")
+	_MonsterSpawner.monsterList = split(_MonsterSpawner.monsterList,"\n")
+	_MonsterSpawner.monsterList = split(_MonsterSpawner.monsterList[2],"\t")
 	
 	for i=1,#_MonsterSpawner.monsterList do
 		

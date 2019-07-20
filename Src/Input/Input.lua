@@ -5,11 +5,11 @@
 	Last Modified time: 2018-04-06 16:11:06 
 	Docs: 
         * An abstract class of input layer for every game actor
-        * When you create an implementation for an actor, it will register itself to InputHandler
+        * When you create an implementation for an actor, it will register itself to InputMgr
 ]]
 
 local _Input = require("Src.Core.Class")()
-local _InputHandler = require "Src.Input.InputHandler"
+local _InputMgr = require "Src.Input.InputMgr"
 local _enum = {pressed = 0, hold = 1, released = 2}
 
 function _Input:Ctor(actor)
@@ -18,7 +18,7 @@ function _Input:Ctor(actor)
     self.time = {}
     self.stayTime = 1 / 60 * 2
     self.actor = actor
-    _InputHandler.Register(self)
+    _InputMgr.Register(self)
 end 
 
 function _Input:Update(dt)
@@ -29,6 +29,7 @@ function _Input:Update(dt)
 			self.keys[k] = nil
 		end
     end
+
     -- for k in pairs(self.previous) do
     --     if self.previous[k] == _enum.pressed then
     --         self.time[k] = self.time[k] + dt

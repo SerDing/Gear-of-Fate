@@ -35,7 +35,7 @@ return {--[[ #PVF_File ]]
 
 	["[background animation]"]={ 
 
-		["[ani info]"]={ 
+		["[far]"]={
 
 			["[filename]"]="Animation/far1.ani",
 
@@ -44,7 +44,7 @@ return {--[[ #PVF_File ]]
 			["[order]"]="[below]",
 		},
 
-		["[ani info2]"]={ 
+		["[mid]"]={
 
 			["[filename]"]="Animation/mid1.ani",
 
@@ -84,7 +84,7 @@ return {--[[ #PVF_File ]]
 		"Animation/BurntTree2.ani","[normal]",713,167,0,
 		"Animation/Flower0.ani","[normal]",151,143,0,
 		"Animation/Flower1.ani","[normal]",484,141,0,
-		-- "Animation/BurntTree5.ani","[normal]",227,139,0,
+		"Animation/BurntTree5.ani","[normal]",227,139,0,
 		"Animation/Tree3.ani","[closeback]",802,149,0,
 		"Animation/Tree0.ani","[closeback]",401,138,0,
 		"Animation/smallTree1.ani","[closeback]",574,137,0,
@@ -105,11 +105,11 @@ return {--[[ #PVF_File ]]
 	["[monster]"]={
 		1,1,0,372,184,0,1,1,"[fixed]","[normal]",
 		1,1,0,300,221,0,1,1,"[fixed]","[normal]",
-		-- 1,1,0,241,328,0,1,1,"[fixed]","[normal]",
-		-- 1,1,0,496,330,0,1,1,"[fixed]","[normal]",
+		1,1,0,241,328,0,1,1,"[fixed]","[normal]",
+		1,1,0,496,330,0,1,1,"[fixed]","[normal]",
 
-		-- 1,1,0,372,184,0,1,1,"[fixed]","[normal]",
-		-- 1,1,0,300,221,0,1,1,"[fixed]","[normal]",
+		1,1,0,372,184,0,1,1,"[fixed]","[normal]",
+		1,1,0,300,221,0,1,1,"[fixed]","[normal]",
 		-- 1,1,0,241,328,0,1,1,"[fixed]","[normal]",
 		-- 1,1,0,496,330,0,1,1,"[fixed]","[normal]",
 

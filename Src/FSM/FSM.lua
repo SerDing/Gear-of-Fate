@@ -9,6 +9,7 @@
 
 local _FSM = require("Src.Core.Class")()
 
+---@param entity table
 function _FSM:Ctor(entity, state_name, entityType)
 	
 	self.entity = entity
@@ -31,14 +32,14 @@ function _FSM:Ctor(entity, state_name, entityType)
 	end
 end
 
-function _FSM:Update()
+function _FSM:Update(dt)
 	
-	self.curState:Update(self.entity, self)
+	self.curState:Update(dt)
 	
 	self:LateUpdate(self.entity)
 
-	if self.entity:GetBody():GetCurrentPlayNum() == 0 and self.curState ~= "die" then
-		if self.entity:GetBody():GetAniId() == "[down motion]" then
+	if self.entity:GetBody().playOver and self.curState ~= "die" then
+		if self.entity:GetBody().aniID == "[down motion]" then
 			self:SetState("sit", self.entity)
 		else
 			self:SetState(self.oriState, self.entity)

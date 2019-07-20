@@ -34,15 +34,13 @@ end
 function _ObjectMgr.Update(dt)
 
 	for n=1,#_ObjectMgr.objects do
-		if _ObjectMgr.objects[n] and _ObjectMgr.objects[n].Update  then -- and _ObjectMgr.objects[n]:GetType() ~= "HERO"
-			-- print("_ObjectMgr update object", _ObjectMgr.objects[n]:GetType())
+		if _ObjectMgr.objects[n] and _ObjectMgr.objects[n].Update  then
 			_ObjectMgr.objects[n]:Update(dt)
 		end 
 	end 
 
-	for n=#_ObjectMgr.objects,1,-1 do
-		if _ObjectMgr.objects[n]:GetType() == "EFFECT" or 
-		   _ObjectMgr.objects[n]:GetType() == "ATKOBJ" then
+	for n = #_ObjectMgr.objects, 1, -1 do
+		if _ObjectMgr.objects[n]:GetType() == "ATKOBJ" then
 			if _ObjectMgr.objects[n]:IsOver() then
 				if _ObjectMgr.objects[n].Destroy then
 					_ObjectMgr.objects[n]:Destroy()
@@ -84,15 +82,6 @@ end
 
 function _ObjectMgr.GetObjects()
     return _ObjectMgr.objects 
-end
-
-function _ObjectMgr.GetHero()
-	for n=1,#_ObjectMgr.objects do
-		if _ObjectMgr.objects[n]:GetType() == "HERO" then
-			return _ObjectMgr.objects[n]
-		end 
-	end
-	
 end
 
 return _ObjectMgr 

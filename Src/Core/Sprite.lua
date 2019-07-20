@@ -36,7 +36,7 @@ function _Sprite:Ctor(path, x, y, w, h) --initialize
 	self.y = y or 0
 	self.size = {}
 	self.center = {}
-	self.pos = {x = x, y = y}
+	self.pos = {x = 0, y = 0}
 	self.scale = {x = 1, y = 1}
 	self.size.w = w or 1
 	self.size.h = h or 1
@@ -99,8 +99,6 @@ function _Sprite:Draw(x, y, rotation, sx, sy)
 	love.graphics.setBlendMode(_blendMode)
 
 	self.rect:SetPos(self.pos.x,self.pos.y)
-
-	-- self.rect:Draw()
 
 end
 
@@ -174,21 +172,10 @@ function _Sprite:SetColorEx(r, g, b, a)
 	end
 	imagedata:mapPixel(replacePixel)
 	self.texture:refresh()
-	--[[  mapPixel() protoType
-		for x = 0, w - 1 do
-			for y = 0, h - 1 do
-				local _r,_g,_b,_a = imagedata:getPixel(x, y)
-				-- print("x, y, a", x, y, _a)
-				if _a > 0 then
-					imagedata:setPixel(x, y, r, g, b, a) -- set color of pixel to white
-				end		
-			end
-		end
-	]]
 end
 
----Turn on or off nearest filter of the sprite
----@param bool switch
+---ON/OFF nearest filter of the sprite
+---@param switch boolean
 function _Sprite:SetFilter(switch)
 	if switch then
 		self.texture:setFilter( "linear", "nearest" )

@@ -6,14 +6,11 @@
 	Docs:
 		* wrap the logic of UpperSlash state in this class
 ]]
+local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
+local _State_UpperSlash = require("Src.Core.Class")(base)
 
-local _State_UpperSlash = require("Src.Core.Class")()
-
-local _EffectMgr = require "Src.Scene.EffectManager" 
-
-function _State_UpperSlash:Ctor(FSM, hero)
-	self.FSM = FSM
-    self.hero = hero
+function _State_UpperSlash:Ctor(...)
+	base.Ctor(self, ...)
 	self.name = "upperslash"
 	self.skillID = 46
 	self.effect = {}
@@ -21,11 +18,12 @@ function _State_UpperSlash:Ctor(FSM, hero)
 end 
 
 function _State_UpperSlash:Enter()
-	self.hero:SetAnimation("hitback")
+	self.hero:Play("hitback")
 	self.atkJudger = self.hero:GetAtkJudger()
 	self.atkJudger:ClearDamageArr()
 	self.movement = self.hero:GetComponent('Movement')
 	self.input = self.hero:GetComponent("Input")
+	base.Enter(self)
 end
 
 function _State_UpperSlash:Update()
@@ -49,13 +47,13 @@ function _State_UpperSlash:Update()
 			self.movement:X_Move(self.hero.spd.x * self.smooth * 0.5 * self.hero.dir )
 		end 
 		if self.effect[1] then
-			self.effect[1].pos.x = self.effect[1].pos.x + _dt * self.hero.spd.x * self.smooth * self.hero.dir
+			--self.effect[1].pos.x = self.effect[1].pos.x + _dt * self.hero.spd.x * self.smooth * self.hero.dir
+			self.effect[1]:SetPos(self.hero.pos.x)
 		end 
 	end
 
 	if _body:GetCount() == 2 and not self.effect[1] then
-		self.effect[1] = _EffectMgr.ExtraEffect(_EffectMgr.pathHead["SwordMan"] .. "upperslash1.lua", self.hero)	
-		self.effect[1]:GetAni():SetBaseRate(self.hero:GetAtkSpeed())
+		self:Effect("upperslash1.lua")
 	end 
 	
 	if self.hero:GetAttackBox() then

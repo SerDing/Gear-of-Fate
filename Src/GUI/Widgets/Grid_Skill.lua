@@ -11,7 +11,7 @@ local _Grid_Skill = require("Src.Core.Class")(_Widget)
 
 local _RESMGR = require "Src.Resource.ResManager"
 local _Sprite = require "Src.Core.Sprite"
-local _ACTORMGR = require "Src.Actor.ActorMgr"
+local _ACTORMGR = require "Src.Managers.ActorMgr"
 
 
 function _Grid_Skill:Ctor(id, x, y, skillid, absKey,origin)

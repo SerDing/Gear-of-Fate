@@ -27,10 +27,10 @@ function _State_Rest:Ctor()
 	}
 end 
 
-function _State_Rest:Enter(hero_,_keyRlstime)
+function _State_Rest:Enter(hero)
     self.name = "rest"
-	hero_:SetAnimation(self.name)
-	self.input = hero_:GetComponent("Input")
+	hero:Play(self.name)
+	self.input = hero:GetComponent("Input")
 end
 
 function _State_Rest:Update(hero_,FSM_)

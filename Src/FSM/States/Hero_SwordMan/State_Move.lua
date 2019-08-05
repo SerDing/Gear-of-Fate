@@ -17,9 +17,9 @@ function _State_Move:Ctor(FSM, hero)
     self.time_left = 0
     self.time_right = 0
     self.trans = {
-		{"NORMAL", "JUMP", "jump"}, 
-		{"NORMAL", "ATTACK", "attack"}, 
-        {"NORMAL", "BACK", "jump", true}, 
+		{"NORMAL", "JUMP", "jump"},
+		{"NORMAL", "ATTACK", "attack"},
+        {"NORMAL", "BACK", "jump", true},
         {"SKILL", 46, "upperslash"}, 
 		{"SKILL", 64, "gorecross"}, 
 		{"SKILL", 65, "hopsmash"}, 
@@ -41,10 +41,10 @@ function _State_Move:Enter()
 end
 
 function _State_Move:Update()
-	local up = self.input:IsHold("up")
-	local down = self.input:IsHold("down")
-	local left = self.input:IsHold("left")
-	local right = self.input:IsHold("right")
+	local up = self.input:IsHold("UP")
+	local down = self.input:IsHold("DOWN")
+	local left = self.input:IsHold("LEFT")
+	local right = self.input:IsHold("RIGHT")
 	
     if up or down then
         if up and down then
@@ -81,25 +81,25 @@ function _State_Move:Update()
     end
 
 
-    if self.input:IsPressed("up") then
+    if self.input:IsPressed("UP") then
         self.time_up = love.timer.getTime()
     end 
     
-    if self.input:IsPressed("down") then
+    if self.input:IsPressed("DOWN") then
         self.time_down = love.timer.getTime()
     end 
     
-    if self.input:IsPressed("left") then
+    if self.input:IsPressed("LEFT") then
         self.time_left = love.timer.getTime()
     end 
    
-    if self.input:IsPressed("right") then
+    if self.input:IsPressed("RIGHT") then
         self.time_right = love.timer.getTime()
     end 
     
     
     if not up and not down and not left and not right then 
-        self.FSM:SetState(self.FSM.oriState,self.hero)
+        self.FSM:SetState(self.FSM.oriState)
     end 
 
 end 

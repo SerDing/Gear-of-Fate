@@ -73,7 +73,7 @@ function _RESMGR.LoadSound(path, cache)
 		end
 	end
 	-- not found in pool or force to reload, then create new one.
-	this.soundCachePool[path] = love.audio.newSource(path)
+	this.soundCachePool[path] = love.audio.newSource(path, "static")
 	return this.soundCachePool[path]
 end
 

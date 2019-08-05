@@ -9,8 +9,6 @@
 local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_MoonSlash = require("Src.Core.Class")(base)
 
-local _HotKeyMgr = require "Src.Input.HotKeyMgr"
-
 function _State_MoonSlash:Ctor(...)
 	base.Ctor(self, ...)
 	self.name = "moonlightslash"
@@ -19,7 +17,6 @@ function _State_MoonSlash:Ctor(...)
         "moonlightslash1",
         "moonlightslash2",
     }
-    self.KEYID = {}
 	self.effect = {}
 	self.moveSpd = 1.5
 
@@ -44,8 +41,6 @@ function _State_MoonSlash:Update()
 		self.atkJudger:Judge(self.hero, "MONSTER", self.attackName)
 	end
 
-	self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
-
 	if _body:GetCount() == 2 and not self.effect[1] then
 		self:Effect("moonlightslash1.lua")
 	end
@@ -57,7 +52,7 @@ function _State_MoonSlash:Update()
 	end 
 
 	if _body:GetCount() >= 2 and self.atkNum == 1 then
-		if self.input:IsPressed(self.KEYID) then
+		if self.input:IsPressed("moonslash") then
 			self.hero:Play(self.childName[2])
 			self.atkNum = 2
 			self.atkJudger:ClearDamageArr()
@@ -67,8 +62,8 @@ function _State_MoonSlash:Update()
 		
 	end 
 	
-	if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == -1 ) or 
-	(self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == 1 )   then
+	if (self.input:IsHold("LEFT") and self.hero.dir == -1 ) or
+	(self.input:IsHold("RIGHT") and self.hero.dir == 1 )   then
 		self.movement:X_Move(self.hero.spd.x * 20 * _dt * self.hero.dir )
 	end
 

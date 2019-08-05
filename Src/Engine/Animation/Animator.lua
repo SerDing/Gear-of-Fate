@@ -168,7 +168,7 @@ function _Animator:Update(dt)
     self.frameHead = string.format('[FRAME%03d]', self._count)
 
     self._time = self._time + (dt or 0) * self.playRate
-    if self._time >= (self.curAnim[self.frameHead]['[DELAY]'] or 100) / (1000 ) then
+    if self._time >= (self.curAnim[self.frameHead]['[DELAY]'] or 100) / 1000 then
         self._time = 0
         self._count = self._count + 1
         if self._count >= self.frameNum then
@@ -237,14 +237,8 @@ function _Animator:Draw(x, y, r, sx, sy)
 
     self:_DrawSuperArmor()
 
-    self.sprite:SetCenter(self._imgPos.x, self._imgPos.y)
-    self.sprite:Draw(
-        self.pos.x + self._imgOffset.x * self.dir * self.scale.x,
-        self.pos.y + self._imgOffset.y * self.scale.y,
-        self.angle or 0,
-        self.scale.x * self.dir,
-        self.scale.y
-    )
+    self.sprite:SetCenter(self._imgPos.x - self._imgOffset.x, self._imgPos.y - self._imgOffset.y)
+    self.sprite:Draw(self.pos.x, self.pos.y, self.angle or 0, self.scale.x * self.dir, self.scale.y)
 
     if GDebug then
         self:DrawBox("[ATTACK BOX]", {255, 0, 180, 150})

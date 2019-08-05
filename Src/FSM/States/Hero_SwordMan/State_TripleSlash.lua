@@ -10,8 +10,6 @@
 local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_TripleSlash = require("Src.Core.Class")(base)
 
-local _HotKeyMgr = require "Src.Input.HotKeyMgr"
-
 function _State_TripleSlash:Ctor(...)
 	base.Ctor(self, ...)
 	self.name = "tripleslash"
@@ -22,7 +20,6 @@ function _State_TripleSlash:Ctor(...)
         "tripleslash3",
 	} 
 	self.attackNum = 0
-	self.KEYID = {}
 
 	
 	self.time_left = 0
@@ -54,7 +51,6 @@ function _State_TripleSlash:Update()
 
 	base.Update(self) -- super class update
 
-	self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
 
 	self:ChangeDir()
 
@@ -65,7 +61,7 @@ function _State_TripleSlash:Update()
 
 	if self.attackNum == 1 then
 		if self.heroBody:GetCount() >= 3 then
-			if self.input:IsPressed(self.KEYID) then
+			if self.input:IsPressed("tripleslash") then
 				self:ChangeDir()
 				self.hero:SetDir(self.nextDir)
 				
@@ -85,7 +81,7 @@ function _State_TripleSlash:Update()
 
 	elseif self.attackNum == 2 then
 		if self.heroBody:GetCount() >= 2 then
-			if self.input:IsPressed(self.KEYID) then
+			if self.input:IsPressed("tripleslash") then
 				self:ChangeDir()
 				self.hero:SetDir(self.nextDir)
 
@@ -212,8 +208,8 @@ end
 
 function _State_TripleSlash:ChangeDir()
 	
-	local left = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"])
-	local right = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"])
+	local left = self.input:IsHold("LEFT")
+	local right = self.input:IsHold("RIGHT")
 
 	if left or right then
         if left and right then

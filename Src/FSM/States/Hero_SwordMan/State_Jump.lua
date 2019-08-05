@@ -44,7 +44,7 @@ function _State_Jump:Enter(backJump)
 	self.backJump = backJump
 	if backJump then
 		self.jumpPower = 300 -- 5 * 60
-		self.hero.animMap:SetFrame(8)
+		self.hero.avatar:SetFrame(8)
 	end
 	
 	self.dirLock = false
@@ -149,21 +149,21 @@ function _State_Jump:Movement()
 			if self.FSM.preState.name == "dash" then
 				v = 2
 			end 
-			if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) then
+			if self.input:IsHold("LEFT") then
 				if not self.jumpAttack and not self.dirLock then
 					self.hero:SetDir(-1)
 				end
 				self.movement:X_Move(self.hero.spd.x * v * -1)
-			elseif self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) then
+			elseif self.input:IsHold("RIGHT") then
 				if not self.jumpAttack and not self.dirLock then
 					self.hero:SetDir(1)
 				end
 				self.movement:X_Move(self.hero.spd.x * v * 1)
 			end
 
-			if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["UP"]) then
+			if self.input:IsHold("UP") then
 				self.movement:Y_Move(self.hero.spd.y * v * 0.5 * -1)
-			elseif self.input:IsHold(self.FSM.HotKeyMgr_.KEY["DOWN"]) then
+			elseif self.input:IsHold("DOWN") then
 				self.movement:Y_Move(self.hero.spd.y * v * 0.5 * 1)
 			end
 		end 
@@ -177,7 +177,7 @@ end
 function _State_Jump:JumpATK(_body)
 	if not self.jumpAttack then
 		if  self.hero:GetZ() < -2  then
-			if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) then
+			if self.input:IsPressed("ATTACK") then
 				self.hero:Play("jumpattack")
 				self.dirLock = true
 				self.jumpAttack = true
@@ -191,7 +191,7 @@ function _State_Jump:JumpATK(_body)
 
 	if self.jumpAttack then -- multiple slash
 		if _body:GetCount() >= 5 then --   _body.playNum == 0
-			if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and self.hero:GetZ() < -2 then
+			if self.input:IsPressed("ATTACK") and self.hero:GetZ() < -2 then
 				_body.playNum = 1
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
 				self.atkJudger:ClearDamageArr()
@@ -205,7 +205,7 @@ function _State_Jump:JumpATK(_body)
 					self.FSM:SetState(self.FSM.oriState, self.hero)
 				else 
 					self.hero:Play(self.name) -- trans to jump state
-					self.hero.animMap:SetFrame(8)
+					self.hero.avatar:SetFrame(8)
 				end 
 			end 
 			

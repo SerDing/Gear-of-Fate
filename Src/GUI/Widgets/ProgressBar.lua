@@ -45,8 +45,8 @@ function _ProgressBar:SetPercent(v)
     self.percent = v
 end
 
-function _ProgressBar:MessageEvent(msg, x, y)
-    -- print("_Button:MessageEvent(msg, x, y)", msg, x, y)
+function _ProgressBar:HandleEvent(msg, x, y)
+    -- print("_Button:HandleEvent(msg, x, y)", msg, x, y)
     if msg == "MOUSE_MOVED" then
         if love.mouse.isDown(1) and self.draggable then
             self.x, self.y = love.mouse.getPosition()

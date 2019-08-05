@@ -11,13 +11,12 @@ require "Src.Core.FileSystem"
 local _RESMGR = require "Src.Resource.ResManager"
 local _AUDIOMGR = require "Src.Audio.AudioManager"
 local _KEYBOARD = require "Src.Core.KeyBoard"
-local _InputMgr = require "Src.Input.InputMgr"
+local _InputMgr = require "Src.Engine.Input.InputMgr"
 local _GDBOARD = require "Src.Game.GameDataBoard"
 local _SCENEMGR = require "Src.Scene.GameSceneMgr" 
 local _CAMERA = require "Src.Game.GameCamera"
 local _UIMGR = require "Src.GUI.UI_Manager"
 local _InitGUI = require "Src.GUI.GUI_Init"
-local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 local _ACTORMGR = require "Src.Managers.ActorMgr"
 
 local _GAMEMGR = {
@@ -56,22 +55,7 @@ function _GAMEMGR.Ctor() --initialize
 	_SCENEMGR.Ctor()
 	
 	_CAMERA.Ctor(_SCENEMGR)
-	_HotKeyMgr.Ctor(_ACTORMGR.mainPlayer:GetProperty('job'))
 	_InitGUI(_GAMEMGR)
-
-
-	-- _SkillMgr = _SCENEMGR.GetHero_():GetComponent('SkillMgr')
-	-- _SkillMgr:LearnSkills({8, 16, 46, 64, 65, 76, 77, 169})
-	local save_abskeys = {
-		[46] = "SKL_Q", -- UpperSlash
-		[16] = "SKL_R", -- Ashenfork
-		[65] = "SKL_A",	-- HopSmash
-		[64] = "SKL_S",	-- GoreCross
-		[8] = "SKL_F",	-- TripleSlash
-		[76] = "SKL_H",	-- Frenzy
-		[77] = "SKL_E",	-- MoonLightSlash
-	}
-	_HotKeyMgr.InitSklAbsKey(save_abskeys)
 
 end
 

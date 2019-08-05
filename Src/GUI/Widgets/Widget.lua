@@ -7,7 +7,7 @@ function _Widget:Ctor()
     print("_Widget:Ctor()  self.debug", self.debug)
 end 
 
-function _Widget:MessageEvent(msg, x, y)
+function _Widget:HandleEvent(msg, x, y)
     -- body
 end 
 

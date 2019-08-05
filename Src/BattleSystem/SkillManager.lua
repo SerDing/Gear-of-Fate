@@ -6,7 +6,7 @@
 	Docs: 
 		* this is a component for actor 
 		* main feature: load all skills'path and use them to create skill objects 
-		* it will help cooldown skills and decide whether they can be used by actor
+		* it will help cooldown skills and decide if they are usable.
 ]]
 
 local _SkillMgr = require("Src.Core.Class")()
@@ -28,20 +28,22 @@ end
 function _SkillMgr:InitData(job)
 	job = string.gsub(job,'%[', "") -- delete "["
 	job = string.gsub(job,'%]', "") -- delete "]"
-	self.sklPathArr = {} -- < id, path >
-	self.skills = {} -- < id, skillObj >
+	self.skillPathList = {} ---@type table<number, string> -- map<id, path>
+	self.skillNameList = {} ---@type table<number, string> -- map<id, name>
+	self.skills = {} ---@type table<number, Skill> -- map<id, skillObj>
 	self.skillList = require("/Data/skill/" .. job .. "skill") -- load skill list file
 	
-	-- Construct skill file path list
-	local pathSplit = ""
+	-- Construct skill file path list and skill name list
+	local pathSplit = {}
 	for id, path in pairs(self.skillList) do
 		pathSplit = split(path, "/") -- separate path by '/', the second part is skill's name
-		self.sklPathArr[id] = strcat(self.pathHead, string.lower(path))
+		self.skillNameList[id] = pathSplit[2]
+		self.skillPathList[id] = self.pathHead .. string.lower(path)
 	end
 
 	-- Create skill objects
 	self.skills = {}
-	for k,v in pairs(self.sklPathArr) do
+	for k,v in pairs(self.skillPathList) do
 		if love.filesystem.exists(v .. ".lua") then -- only create skills which has a real file
 			self.skills[k] = _Skill.New(v, k)
 		end 
@@ -68,9 +70,9 @@ function _SkillMgr:HandleAvailability(stateTransList)
 		skill:SetState(2)
 	end
 
-	-- Check whether the skill cool down finished by transition list
+	-- Check whether the skill cool down finished via transition list
 	local skill
-	if stateTransList then 
+	if stateTransList then
 		for i,v in ipairs(stateTransList) do
 			if v[1] == "SKILL" then -- v[1] = stateType, v[2] = skillID v[3] = stateName
 				skill = self:GetSkillById(v[2])
@@ -84,7 +86,7 @@ function _SkillMgr:HandleAvailability(stateTransList)
 	-- Check whether the mp of actor is enough to use skill
 	local consume_mp = 0
 	local mp = self.actor:GetModel('MP'):GetCur()
-	for k, skill in pairs(self.skills) do
+	for _, skill in pairs(self.skills) do
 		consume_mp = skill.property['[consume MP]'] or skill.property['[dungeon]']['[consume MP]']
 		if skill:GetState() == 1 then -- the skill has been available state 
 			if skill:WasLearned() and skill.coolTimer <= 0 and mp >= consume_mp[1] then
@@ -115,15 +117,19 @@ function _SkillMgr:DoSkill(sklID)
 	self.actor:GetModel('MP'):Decrease(consume_mp[1])
 end
 
-function _SkillMgr:StartCoolSkl(sklID)
-	assert(self.skills[sklID], "skill not exist: " .. sklID)
-	self.skills[sklID]:Done()
+function _SkillMgr:StartCoolSkl(id)
+	assert(self.skills[id], "skill not found: " .. id)
+	self.skills[id]:Done()
 end
 
 function _SkillMgr:GetSkillById(id)
-	local skl = self.skills[id]
-	assert(skl, "_SkillMgr.GetSkillById()  no skill:" .. id)
-	return skl
+	assert(self.skills[id], "skill not found:" .. id)
+	return self.skills[id]
+end
+
+function _SkillMgr:GetSkillNameByID(id)
+	assert(self.skillNameList[id], "skill not found:" .. id)
+	return self.skillNameList[id]
 end
 
 function _SkillMgr:LearnSkill(id)
@@ -132,7 +138,7 @@ function _SkillMgr:LearnSkill(id)
 end
 
 function _SkillMgr:LearnSkills(ids)
-	for i,v in ipairs(ids) do
+	for _,v in ipairs(ids) do
 		self:LearnSkill(v)
 	end
 end

@@ -26,11 +26,11 @@ function _Button:Ctor(text, x, y, imageInfo, callback)
         [_ENUM.BUTTON_PRESSED] = _Sprite.New(_RESMGR.pathHead .. imageInfo[3]),
     }
 
-    if imageInfo[4] then -- exists a disable image
+    if imageInfo[4] then -- disable image
         self.spriteArr[_ENUM.BUTTON_DISABLE] = _Sprite.New(_RESMGR.pathHead .. imageInfo[4])
     end
 
-    if imageInfo[5] then -- exists a flash image
+    if imageInfo[5] then -- flash image
         self.spriteArr["flash"] = _Sprite.New(_RESMGR.pathHead .. imageInfo[5])
     end
 
@@ -41,15 +41,10 @@ end
 function _Button:Draw()
     self.spriteArr[self.state]:Draw(self.x, self.y)
     if self.text then
-
-        -- local r, g, b, a = love.graphics.getColor()
         -- love.graphics.setColor(250, 179, 0, 255)
-        
         local _x = math.floor(self.x + (self.spriteArr[_ENUM.BUTTON_NORMAL]:GetWidth() - love.graphics.getFont():getWidth(self.text)) / 2) 
         local _y = math.floor(self.y + (self.spriteArr[_ENUM.BUTTON_NORMAL]:GetHeight()- love.graphics.getFont():getHeight()) / 2) 
         love.graphics.print(self.text, _x, _y)
-
-        -- love.graphics.setColor(r, g, b, a)
     end
     if self.spriteArr["flash"] then
         if self.flash.alpha >= 255 or self.flash.alpha <= 0 then
@@ -61,8 +56,8 @@ function _Button:Draw()
     end
 end
 
-function _Button:MessageEvent(msg, x, y)
-    print("_Button:MessageEvent(msg, x, y)", msg, x, y)
+function _Button:HandleEvent(msg, x, y)
+    print("_Button:HandleEvent(msg, x, y)", msg, x, y)
     if msg == "MOUSE_MOVED" then
         if love.mouse.isDown(1) and self.state == _ENUM.BUTTON_PRESSED then
             self.x, self.y = love.mouse.getPosition()

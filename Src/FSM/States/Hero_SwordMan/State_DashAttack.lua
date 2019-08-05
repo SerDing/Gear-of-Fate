@@ -39,8 +39,8 @@ function _State_DashAttack:Update()
 	end 
 
 	if _body:GetCount() > 3 and _body:GetCount() < 8 then -- 
-		if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and self.attackCount == 1 then
-			self.hero.animMap:SetFrame(2)
+		if self.input:IsPressed("ATTACK") and self.attackCount == 1 then
+			self.hero.avatar:SetFrame(2)
 			self.attackCount = self.attackCount + 1
 			self.atkJudger:ClearDamageArr()
 		end 

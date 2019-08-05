@@ -6,7 +6,7 @@
 	Docs: 
 		* Write more details here 
 ]]
-
+---@class Skill
 local _Skill = require("Src.Core.Class")()
 
 function _Skill:Ctor(path, id)

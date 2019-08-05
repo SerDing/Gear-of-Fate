@@ -17,13 +17,13 @@ function _State_Stay:Ctor(FSM, hero)
 	self.keyPressTime = {left = 0, right = 0}
 	self.KEYID = {}
 	self.trans = {
-		{"NORMAL", "JUMP", "jump"}, 
-		{"NORMAL", "ATTACK", "attack"}, 
-		{"NORMAL", "BACK", "jump", true}, 
+		{"NORMAL", "JUMP", "jump"},
+		{"NORMAL", "ATTACK", "attack"},
+		{"NORMAL", "BACK", "jump", true},
 		{"SKILL", 46, "upperslash"}, 
-		{"SKILL", 64, "gorecross"}, 
+		{"SKILL", 64, "gorecross"},
 		{"SKILL", 65, "hopsmash"}, 
-		{"SKILL", 76, "frenzy"}, 
+		{"SKILL", 76, "frenzy"},
 		{"SKILL", 77, "moonslash"}, 
 		{"SKILL", 8, "tripleslash"}, 
 	}
@@ -36,17 +36,12 @@ function _State_Stay:Enter()
 end
 
 function _State_Stay:Update()
-    
-	local _up = self.FSM.HotKeyMgr_.KEY["UP"]
-	local _down = self.FSM.HotKeyMgr_.KEY["DOWN"]
-	local _left = self.FSM.HotKeyMgr_.KEY["LEFT"]
-	local _right = self.FSM.HotKeyMgr_.KEY["RIGHT"]
 	
-	if self.input:IsHold(_up) or self.input:IsHold(_down) then
+	if self.input:IsHold("UP") or self.input:IsHold("DOWN") then
 		self.FSM:SetState("move",self.hero)
 	end 
 	
-	if self.input:IsHold(_left) then
+	if self.input:IsHold("LEFT") then
 		if love.timer.getTime() - self.keyPressTime.left <= _HOLD_SPACE then
 			self.FSM:SetState("dash",self.hero)
 		else
@@ -54,7 +49,7 @@ function _State_Stay:Update()
 			self.hero:SetDir(-1)
 			self.FSM:SetState("move",self.hero)
 		end 
-	elseif self.input:IsHold(_right) then
+	elseif self.input:IsHold("RIGHT") then
 		if love.timer.getTime() - self.keyPressTime.right <= _HOLD_SPACE then
 			self.FSM:SetState("dash",self.hero)
 		else 

@@ -119,10 +119,10 @@ function _Animation:Draw(x, y, r, sx, sy)
     if sx and sy then self:SetScale(sx, sy) end
     if r then self:SetAngle(r) end
 
-    self._sprite:SetCenter(self._imgPos.x, self._imgPos.y)
+    self._sprite:SetCenter(self._imgPos.x - self._imgOffset.x, self._imgPos.y - self._imgOffset.y)
     self._sprite:Draw(
-            self.pos.x + self._imgOffset.x * self.dir * self.scale.x,
-            self.pos.y + self._imgOffset.y * self.scale.y + self.pos.z,
+            self.pos.x ,
+            self.pos.y + self.pos.z,
             self.angle or 0,
             self.scale.x * self.dir,
             self.scale.y

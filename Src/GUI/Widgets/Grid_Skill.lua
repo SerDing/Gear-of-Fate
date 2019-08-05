@@ -53,7 +53,7 @@ function _Grid_Skill:SetSkill(id)
 	self.sprites[3]:SetColorEx(0, 0, 0, 122)
 end 
 
-function _Grid_Skill:MessageEvent(msg)
+function _Grid_Skill:HandleEvent(msg, x, y)
 	
 end 
 

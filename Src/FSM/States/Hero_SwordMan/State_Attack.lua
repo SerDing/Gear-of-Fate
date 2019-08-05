@@ -47,25 +47,25 @@ end
 function _State_Attack:Update()
     local _body = self.hero:GetBody()
     local _dt = love.timer.getDelta()
-    
-    local _leftHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"])
-    local _rightHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"])
+
+    local _leftHold = self.input:IsHold("LEFT")
+    local _rightHold = self.input:IsHold("RIGHT")
     local _movable = true
 
-    if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == 1) or
-    (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == -1) then
+    if (self.input:IsHold("LEFT") and self.hero.dir == 1) or
+    (self.input:IsHold("RIGHT") and self.hero.dir == -1) then
         _movable = false
     end
 
     if self.attackNum == 1 then
-        if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed("ATTACK") and _body:GetCount() > 3 then
             self.attackNum = 2
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
             self.hero:Play(self.childName[self.attackNum])
         end
     elseif self.attackNum == 2 then
-        if self.input:IsPressed(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsPressed("ATTACK") and _body:GetCount() > 3 then
             self.attackNum = 3
             self.attackName = self.childName[self.attackNum]
             self.atkJudger:ClearDamageArr()
@@ -77,8 +77,8 @@ function _State_Attack:Update()
             if _body:GetCount() <= self.attackNum then
                 self.movement:X_Move(self.hero.spd.x * 0.75 * self.hero.dir )
             end
-            if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == -1 ) or 
-            (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == 1 ) then
+            if (self.input:IsHold("LEFT") and self.hero.dir == -1 ) or
+            (self.input:IsHold("RIGHT") and self.hero.dir == 1 ) then
                 self.movement:X_Move(self.hero.spd.x * 0.75 * self.hero.dir )
             end
         end

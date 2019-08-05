@@ -21,7 +21,7 @@ local _Avatar = require "Src.Engine.Animation.Avatar"
 local _Weapon = require "Src.Components.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Components.AttackJudger"
-local _Input = require "Src.Input.Input"
+local _Input = require "Src.Components.Input"
 local _Movement = require "Src.Components.Movement"
 local _SkillHandler = require "Src.BattleSystem.SkillManager"
 local _HP_Model = require "Src.Components.Model.HP"
@@ -33,7 +33,6 @@ local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
 function _ACTORMGR.Ctor()
     this.mainPlayer = nil ---@type Hero_SwordMan
     this.monsters = {} ---@type Monster[]
-
 end
 
 function _ACTORMGR.NewActor()

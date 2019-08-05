@@ -13,7 +13,7 @@ local _obj = require "Src.Objects.GameObject"
 local _Monster = require("Src.Core.Class")(_obj)
 
 local _Animator = require "Src.Engine.Animation.Animator"
-local _Input = require "Src.Input.Input"
+local _Input = require "Src.Components.Input"
 local _FSM = require "Src.FSM.FSM"
 local _FSMAIControl = require "Src.FSM.FSMAIControl"
 local _HP_Model = require "Src.Components.Model.HP"
@@ -91,7 +91,10 @@ function _Monster:Ctor(path, nav)
 	self.Models['HP'] = _HP_Model.New(1000, 1000) -- 600 or 6000
 	self.HP_Bar = _HMP_Bar.New(self.pos.x, self.pos.y, require("Data.ui.progressbar.mon_hp"), self.Models["HP"], nil, true)
 
-	
+	self.skillShortcutsMap = {
+		["SKILL_SHORTCUT_1"] = nil,
+		["SKILL_SHORTCUT_EX_1"] = nil,
+	}
 
 	love.graphics.setPointSize(5)
 end 
@@ -253,15 +256,13 @@ function _Monster:Damage(obj, damageInfo)
 		end
 	end
 	
-	self:SetDir(d)-- fix direction
-	self.FSM:SetState("damage", self, damageInfo, obj)
+	self:SetDir(d) -- fix direction
+	self.FSM:SetState("damage", damageInfo, obj)
 
-	-- decrease hp
 	if not damageInfo["[damage bonus]"] then
 		damageInfo["[damage bonus]"] = 35
 	end
 	self.Models["HP"]:Decrease(damageInfo["[damage bonus]"])
-
 end
 
 function _Monster:Die()

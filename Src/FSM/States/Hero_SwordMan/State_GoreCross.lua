@@ -10,14 +10,12 @@ local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_GoreCross = require("Src.Core.Class")(base)
 
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
-local _HotKeyMgr = require "Src.Input.HotKeyMgr"
 
 function _State_GoreCross:Ctor(...)
 	base.Ctor(self, ...)
 	self.name = "gorecross"
 	self.skillID = 64
 	self.effect = {}
-	self.KEYID = ""
 	self.plusAtk = false
 	self.input = nil
 end 
@@ -26,7 +24,6 @@ function _State_GoreCross:Enter()
     
 	self.hero:Play(self.name)
 
-	self.KEYID = ""
 	self.plusAtk = false
 
 	self.atkJudger = self.hero:GetAtkJudger()
@@ -81,25 +78,25 @@ function _State_GoreCross:Update()
 	if self.atkObj then
 		if self.atkObj:IsOver() then
 			self.atkObj = nil
-			-- self.hero.animMap:Continue()
+			-- self.hero.avatar:Continue()
 			-- self.FSM:SetState(self.FSM.oriState)
 		end
 	end
 	
 	-- check whether add attack
 	if _body:GetCount() >= 9 then 
-		if self.input:IsPressed(_HotKeyMgr.GetSkillKey(self.skillID)) then
+		if self.input:IsPressed("gorecross") then
 			self.plusAtk = true
 		end
 	end
 
 	if _body:GetCount() == 11 then
 		if not self.plusAtk then -- jump the next frames
-			self.hero.animMap:SetPlayOver(true)
+			self.hero.avatar:SetPlayOver(true)
 		else
 			-- if self.effect[3] and self.effect[4] then
-				self.hero.animMap:NextFrame()
-				self.hero.animMap:NextFrame()
+				self.hero.avatar:NextFrame()
+				self.hero.avatar:NextFrame()
 			-- end
 		end
 	end

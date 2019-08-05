@@ -54,8 +54,8 @@ function _State_FrenzyAttack:Enter()
         end
     end
 
-    self.hero.animMap:GetWidget("weapon_c1").OnChangeFrame = attack_event
-    self.hero.animMap:GetWidget("weapon_b1").OnChangeFrame = attack_event
+    self.hero.avatar:GetWidget("weapon_c1").OnChangeFrame = attack_event
+    self.hero.avatar:GetWidget("weapon_b1").OnChangeFrame = attack_event
 
 end
 
@@ -63,8 +63,8 @@ function _State_FrenzyAttack:Update()
     local _body = self.hero:GetBody()
     local _dt = love.timer.getDelta()
     
-    local _leftHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"])
-    local _rightHold = self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"])
+    local _leftHold = self.input:IsHold("LEFT")
+    local _rightHold = self.input:IsHold("RIGHT")
     local _movable = true
 
     if (_leftHold and self.hero.dir == 1) or
@@ -74,7 +74,7 @@ function _State_FrenzyAttack:Update()
 
     if self.attackNum == 1 then
         
-        if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 4 then
+        if self.input:IsHold("ATTACK") and _body:GetCount() > 4 then
             self.attackNum = 2
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
@@ -101,7 +101,7 @@ function _State_FrenzyAttack:Update()
             end 
         end
 
-        if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold("ATTACK") and _body:GetCount() > 3 then
             self.attackNum = 3
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
@@ -129,7 +129,7 @@ function _State_FrenzyAttack:Update()
             end
         end
 
-        if self.input:IsHold(self.FSM.HotKeyMgr_.KEY["ATTACK"]) and _body:GetCount() > 3 then
+        if self.input:IsHold("ATTACK") and _body:GetCount() > 3 then
             self.attackNum = 4
 
             -- self.atkJudger:ClearDamageArr()
@@ -179,8 +179,8 @@ function _State_FrenzyAttack:Update()
 end 
 
 function _State_FrenzyAttack:Exit()
-    self.hero.animMap:GetWidget("weapon_b1").OnChangeFrame = nil
-    self.hero.animMap:GetWidget("weapon_c1").OnChangeFrame = nil
+    self.hero.avatar:GetWidget("weapon_b1").OnChangeFrame = nil
+    self.hero.avatar:GetWidget("weapon_c1").OnChangeFrame = nil
     for n=1,#self.effect do
         self.effect[n].playOver = true
     end

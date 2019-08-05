@@ -12,9 +12,9 @@ local _UI_Interface = require("Src.Core.Class")()
 local _Button = require("Src.GUI.Widgets.Button")
 local _Frame = require("Src.GUI.Widgets.Frame")
 
-function _UI_Interface:Ctor(index, tag, layout)
+function _UI_Interface:Ctor(index, name, layout)
     self.index = index
-    self.tag = tag
+    self.name = name
     self.widgets = {}
     self.frames = {}
     if layout then
@@ -33,20 +33,20 @@ function _UI_Interface:Ctor(index, tag, layout)
 end 
 
 function _UI_Interface:Draw(x, y)
-    for i,v in ipairs(self.frames) do
+    for _,v in ipairs(self.frames) do
         v:Draw()
     end
-    for i,v in ipairs(self.widgets) do
+    for _,v in ipairs(self.widgets) do
         v:Draw()
     end
 end
 
 function _UI_Interface:DispatchMessage(msg, x, y)
-    for i,v in ipairs(self.frames) do
+    for _,v in ipairs(self.frames) do
         v:DispatchMessage(msg, x, y)
     end
-    for i,v in ipairs(self.widgets) do
-        v:MessageEvent(msg, x, y)
+    for _,v in ipairs(self.widgets) do
+        v:HandleEvent(msg, x, y)
     end
 end
 

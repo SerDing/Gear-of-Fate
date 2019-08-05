@@ -10,6 +10,7 @@
 ]]
 
 ---@class Hero_SwordMan
+---@field public SetPos function(self, x, y)
 local _obj = require "Src.Objects.GameObject"
 local Hero_SwordMan = require("Src.Core.Class")(_obj)
 
@@ -18,7 +19,7 @@ local _Avatar = require "Src.Engine.Animation.Avatar"
 local _Weapon = require "Src.Components.Weapon"
 local _FSM = require "Src.FSM.FSM_Hero"
 local _AttackJudger = require "Src.Components.AttackJudger"
-local _Input = require "Src.Input.Input"
+local _Input = require "Src.Components.Input"
 local _Movement = require "Src.Components.Movement"
 local _SkillMgr = require "Src.BattleSystem.SkillManager"
 local _HP_Model = require "Src.Components.Model.HP"
@@ -44,7 +45,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	self:SetType("HERO")
 	self.pos = {x = x, y = y, z = 0}
 	self.drawPos = {x = math.floor(x), y = math.floor(y), z = 0}
-	self.spd = {x = 60 * 2.5, y = 37.5 * 2} -- 125 125
+	self.spd = {x = 120, y = 37.5 * 2} -- 125 125
 
 	-- property
 	self.property = require("Data/character/swordman/swordman")
@@ -52,7 +53,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- ints / doubles
 	self.dir = 1
 	self.Y = self.pos.y
-	self.atkSpeed = 1.2 + 0.3 -- 0.26  0.40  0.70
+	self.atkSpeed = 1.2 + 0.2 -- 0.26  0.40  0.70
 	self.hitRecovery = 22.5 -- 45 65
 	self.hitRecovery = 40 --0.86 1.3 -- 45 65 70 100 
 	self.hitTime = 0
@@ -83,14 +84,14 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 
 	self.AttackJudger = _AttackJudger.New(self, self.subType)
 
-	self.animMap = _Avatar.New()
-	self.animMap:AddWidget("body")
-	self.animMap:AddWidget("weapon_b1")
-	self.animMap:AddWidget("weapon_b2")
-	self.animMap:AddWidget("weapon_c1")
-	self.animMap:AddWidget("weapon_c2")
+	self.avatar = _Avatar.New()
+	self.avatar:AddWidget("body")
+	self.avatar:AddWidget("weapon_b1")
+	self.avatar:AddWidget("weapon_b2")
+	self.avatar:AddWidget("weapon_c1")
+	self.avatar:AddWidget("weapon_c2")
 
-	self.animMap:GetWidget("body"):SetImgPathArg(0001)
+	self.avatar:GetWidget("body"):SetImgPathArg(0001)
 
 	self.Components['Weapon']:SetType("hsword", "lswd")  -- mainType, subType
 	self.Components['Weapon']:SetRes("lswd", 4200)  -- subType, fileNum
@@ -104,26 +105,24 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	
 	-- load anim data file
 	for i = 1,#_aniName do
-		self.animMap:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
+		self.avatar:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
 	end
 
 	local _wpMainTp, _wpSubTp = self.Components['Weapon']:GetType()
 	for i = 1,#_aniName do
-		self.animMap:GetWidget("weapon_b1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+		self.avatar:GetWidget("weapon_b1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
 	for i = 1,#_aniName do
-		self.animMap:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+		self.avatar:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
-	self.animMap:GetWidget("body"):SetPlayRate(self.atkSpeed)
-	self.animMap:GetWidget("weapon_b1"):SetPlayRate(self.atkSpeed)
-	self.animMap:GetWidget("weapon_c1"):SetPlayRate(self.atkSpeed)
-
-
+	self.avatar:GetWidget("body"):SetPlayRate(self.atkSpeed)
+	self.avatar:GetWidget("weapon_b1"):SetPlayRate(self.atkSpeed)
+	self.avatar:GetWidget("weapon_c1"):SetPlayRate(self.atkSpeed)
 
 
 	-- fight with your own dark side
 	-- local darkDepth = 50
-	-- self.animMap:SetColor(darkDepth, darkDepth, darkDepth, 255)
+	-- self.avatar:SetColor(darkDepth, darkDepth, darkDepth, 255)
 
 	-- Components
 	self.Components["Input"] = _Input.New(self)
@@ -132,13 +131,26 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 	-- self.Components["FSM"]:OnNewStateEnter(self)
 
 	--------------- test ani file
-	self.animMap:Play("outragebreakslash")
-	--self.animMap:Play("down")
-	--self.animMap:NextFrame()
-	--self.animMap:NextFrame()
-	--self.animMap:Play("gorecross")
+	self.avatar:Play("outragebreakslash")
 	-----------------------------
-	self.extraEffects = {}
+	self.effects = {}
+
+	self.skillShortcutsMap = {
+		["SKILL_SHORTCUT_1"] = "hopsmash",
+		["SKILL_SHORTCUT_2"] = "gorecross",
+		["SKILL_SHORTCUT_3"] = nil,
+		["SKILL_SHORTCUT_4"] = "tripleslash",
+		["SKILL_SHORTCUT_5"] = nil,
+		["SKILL_SHORTCUT_6"] = "frenzy",
+
+		["SKILL_SHORTCUT_EX_1"] = "upperslash",
+		["SKILL_SHORTCUT_EX_2"] = nil,
+		["SKILL_SHORTCUT_EX_3"] = "moonslash",
+		["SKILL_SHORTCUT_EX_4"] = "ashenfork",
+		["SKILL_SHORTCUT_EX_5"] = nil,
+		["SKILL_SHORTCUT_EX_6"] = nil,
+	}
+
 end
 
 function Hero_SwordMan:LoadAnimData()
@@ -237,43 +249,40 @@ function Hero_SwordMan:LoadAnimData()
 	}
 
 	for k,v in pairs(_basicAniRealDir) do
-		self.animMap:GetWidget("body"):AddAnimation(_aniDir[1] .. v, 1, k)
+		self.avatar:GetWidget("body"):AddAnimation(_aniDir[1] .. v, 1, k)
 	end
 	
 	-- 装备应该独立出来 不应混在这里  由一个equipment组件类来专门通过equ文件及其指定的lay文件来初始化animation
-	--	-- 这里的独立单指逻辑的独立，对应的anim对象仍然放在在这里的animMap中，这才符合object-component的思想
+	--	-- 这里的独立单指逻辑的独立，对应的anim对象仍然放在在这里的avatar中，这才符合object-component的思想
 	local _wpMainTp, _wpSubTp = self.Components['Weapon']:GetType()
 	local _wpAniPath = ""
 	for i = 1,#_aniName do
 		_wpAniPath = strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i])
-		self.animMap:GetWidget("weapon_b1"):AddAnimation(_wpAniPath, 1, _aniName[i])
+		self.avatar:GetWidget("weapon_b1"):AddAnimation(_wpAniPath, 1, _aniName[i])
 	end
 	for i = 1,#_aniName do
-		self.animMap:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+		self.avatar:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
 
 
 
 	for i = 1,#_aniName do
-		self.animMap:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
+		self.avatar:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
 	end
 
 	local _wpMainTp, _wpSubTp = self.Components['Weapon']:GetType()
 	for i = 1,#_aniName do
-		self.animMap:GetWidget("weapon_b1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+		self.avatar:GetWidget("weapon_b1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
 	for i = 1,#_aniName do
-		self.animMap:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
+		self.avatar:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
 
 end
 
 function Hero_SwordMan:Update(dt)
 
-
-
 	self.Components['SkillMgr']:Update(dt)
-
 
 	if love.timer.getTime() - self.hitTime <= self.hitRecovery / 1000 then -- hit stop effect
 		return
@@ -289,17 +298,15 @@ function Hero_SwordMan:Update(dt)
 	
 	self.Components["FSM"]:Update(dt)
 	self.Components["Input"]:Update(dt)
-	self.animMap:Update(dt)
+	self.avatar:Update(dt)
 
-    --self.animMap:GetWidget("body"):SwitchSuperArmor(true)
+    --self.avatar:GetWidget("body"):SwitchSuperArmor(true)
 
 	for _,v in pairs(self.buff) do
 		if v.switch then
 			v.ani:Update(dt)
 		end 
 	end
-
-
 
 	for _,v in pairs(self.Models) do
 		if v.Update then
@@ -311,24 +318,24 @@ function Hero_SwordMan:Update(dt)
 
 	-- HP_ModelUnitTest(self)
 
-
-	for n = 1,#self.extraEffects do
-		if self.extraEffects[n] then
-			self.extraEffects[n]:Update(dt)
+	for n = 1,#self.effects do
+		if self.effects[n] then
+			self.effects[n]:SetPos(self.pos.x, self.pos.y, self.pos.z)
+			self.effects[n]:Update(dt)
 		end
 	end
 
-	for n = #self.extraEffects,1,-1 do
-		if self.extraEffects[n].playOver then
-			self.extraEffects[n] = nil
-			table.remove(self.extraEffects,n)
+	for n = #self.effects,1,-1 do
+		if self.effects[n].playOver then
+			self.effects[n] = nil
+			table.remove(self.effects,n)
 		end
 	end
 end
 
 function Hero_SwordMan:Draw()
 
-	self.animMap:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z, 0, self.scale.x, self.scale.y)
+	self.avatar:Draw(self.drawPos.x, self.drawPos.y + self.drawPos.z, 0, self.scale.x, self.scale.y)
 
 	for k,v in pairs(self.buff) do
 		if v.switch then
@@ -339,9 +346,9 @@ function Hero_SwordMan:Draw()
 		end 
 	end 
 
-	for n=1,#self.extraEffects do
-		if self.extraEffects[n] then-- and self.extraEffects[n].layer == 1
-			self.extraEffects[n]:Draw()
+	for n=1,#self.effects do
+		if self.effects[n] then
+			self.effects[n]:Draw()
 		end 
 	end 
 
@@ -359,7 +366,7 @@ function Hero_SwordMan:Die()
 	self.dead = true
 end
 
-function Hero_SwordMan:SetPosition(x,y)
+function Hero_SwordMan:SetPosition(x, y)
 	self.pos.x = x or self.pos.x
 	self.pos.y = y or self.pos.y
 	self.drawPos.x = math.floor(self.pos.x)
@@ -377,15 +384,15 @@ end
 
 function Hero_SwordMan:SetDir(dir_)
 	self.dir = dir_ 
-	self.animMap:SetDir(dir_)
+	self.avatar:SetDir(dir_)
 end
 
 function Hero_SwordMan:Play(ani)
-	self.animMap:Play(ani)
+	self.avatar:Play(ani)
 end
 
 function Hero_SwordMan:NextFrame()
-	self.animMap:NextFrame()
+	self.avatar:NextFrame()
 end
 
 function Hero_SwordMan:SetScenePtr(ptr)
@@ -399,7 +406,7 @@ end
 
 function Hero_SwordMan:SetAtkSpeed(spd)
 	self.atkSpeed = spd
-	self.animMap:SetPlayRate(spd)
+	self.avatar:SetPlayRate(spd)
 end
 
 function Hero_SwordMan:SetHitTime(time)
@@ -436,7 +443,7 @@ function Hero_SwordMan:GetY()
 end
 ---@return _Animator
 function Hero_SwordMan:GetBody()
-	return self.animMap:GetWidget("body")
+	return self.avatar:GetWidget("body")
 end
 
 function Hero_SwordMan:GetWeapon()
@@ -448,7 +455,7 @@ function Hero_SwordMan:GetAttackMode()
 end
 
 function Hero_SwordMan:GetAttackBox()
-	return self.animMap:GetAttackBox()
+	return self.avatar:GetAttackBox()
 end
 
 function Hero_SwordMan:GetAtkJudger()
@@ -465,7 +472,7 @@ end
 
 function Hero_SwordMan:AddExtraEffect(effect)
 	assert(effect,"Warning: Hero_SwordMan:AddExtraEffect() got a nil effect!")
-	self.extraEffects[#self.extraEffects + 1] = effect
+	self.effects[#self.effects + 1] = effect
 	--self.extraEffects[#self.extraEffects]:SetLayerId(1000 + #self.extraEffects)
 end
 

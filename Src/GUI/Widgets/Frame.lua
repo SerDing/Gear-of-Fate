@@ -39,7 +39,7 @@ end
 
 function _Frame:DispatchMessage(msg, x, y)
     for i,v in ipairs(self.widgets) do
-        v:MessageEvent(msg, x, y)
+        v:HandleEvent(msg, x, y)
     end
 end
 

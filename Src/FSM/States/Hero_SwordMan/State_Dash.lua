@@ -35,10 +35,10 @@ end
 
 function _State_Dash:Update()
 	
-    local up = self.input:IsHold("up")
-	local down = self.input:IsHold("down")
-	local left = self.input:IsHold("left")
-	local right = self.input:IsHold("right")
+    local up = self.input:IsHold("UP")
+	local down = self.input:IsHold("DOWN")
+	local left = self.input:IsHold("LEFT")
+	local right = self.input:IsHold("RIGHT")
 	
     if up then
         self.movement:Y_Move(- self.hero.spd.y * 1.5 )
@@ -66,15 +66,15 @@ function _State_Dash:Update()
     end 
 
     
-    if self.input:IsPressed("left") then
-        if self.input:IsHold("right") then
+    if self.input:IsPressed("LEFT") then
+        if self.input:IsHold("RIGHT") then
             self.FSM:SetState("move",self.hero)
             self.hero:SetDir(-1)
         end 
     end 
    
-    if self.input:IsPressed("right") then
-        if self.input:IsHold("left") then
+    if self.input:IsPressed("RIGHT") then
+        if self.input:IsHold("LEFT") then
             self.FSM:SetState("move",self.hero)
             self.hero:SetDir(1)
         end 

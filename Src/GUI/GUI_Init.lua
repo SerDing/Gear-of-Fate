@@ -12,7 +12,7 @@ local _UIMGR = require "Src.GUI.UI_Manager"
 
 local _LayoutMgr = require "Src.GUI.LayoutManager"
 
-local _Interface = require("Src.GUI.UI_Interface")
+local _Panel = require("Src.GUI.Panel")
 local _Frame = require("Src.GUI.Widgets.Frame")
 local _Button = require("Src.GUI.Widgets.Button")
 local _Image = require("Src.GUI.Widgets.Image")
@@ -21,10 +21,10 @@ local _HMP_Bar = require("Src.GUI.Widgets.HMP_Bar")
 local _Grid_Skill = require("Src.GUI.Widgets.Grid_Skill")
 local _ENUM = require "Src.GUI.ENUM"
 
-local function InitInterface_HUD()
+local function InitHUD()
     local _key = "HUD"
-    local _Interface_HUD = _Interface.New(_ENUM.INDEX_HUD, "HUD")
-    _LayoutMgr.InitLayout(_Interface_HUD, "HUD")
+    local _HUD = _Panel.New(_ENUM.INDEX_HUD, "HUD")
+    _LayoutMgr.InitLayout(_HUD, "HUD")
 
     --[[ skill_id  skl_file_path
 		8	`Swordman/TripleSlash.skl`
@@ -63,25 +63,25 @@ local function InitInterface_HUD()
     local _skillGrid -- temp skill grid ref
     for y = 1, 2 do
         for x = 1, 6 do
-            _skillGrid = _Interface_HUD:GetWidgetById("skill_grid_" .. tostring(y) .. tostring(x))
+            _skillGrid = _HUD:GetWidgetById("skill_grid_" .. tostring(y) .. tostring(x))
             _skillGrid:SetSkill(_sklGUIData[y][x])
         end
     end
 
-    return _key, _Interface_HUD
+    return _key, _HUD
 end
 
-local function InitInterface_Loading()
+local function InitLoadingPanel()
     local _key = "Loading"
-    local _Interface_Loading = _Interface.New(_ENUM.INDEX_LOADING, "Loading")
+    local _Interface_Loading = _Panel.New(_ENUM.INDEX_LOADING, "Loading")
     _LayoutMgr.InitLayout(_Interface_HUD, "Loading")
     
     return _key, _Interface_Loading
 end
 
-local function InitInterface_Inventory()
+local function InitInventoryPanel()
     local _key = "Inventory"
-    local _Panel_Inventory = _Interface.New(_ENUM.INDEX_LOADING, "Inventory")
+    local _Panel_Inventory = _Panel.New(_ENUM.INDEX_LOADING, "Inventory")
     _LayoutMgr.InitLayout(_Panel_Inventory, "Inventory")
     local _button = _Button.New("学习技能", 690, 40, require("Data/ui/buttons/small"))
     _Panel_Inventory:AddWidget(_button)
@@ -93,8 +93,8 @@ local function InitGUI()
     love.graphics.setFont(love.graphics.newFont("Font/simsun_bitmap_fnt/simsun12.fnt"))
     _UIMGR.Ctor()
     _LayoutMgr.Ctor()
-    _UIMGR.AddInterface(InitInterface_HUD())
-    _UIMGR.AddInterface(InitInterface_Inventory())
+    _UIMGR.AddInterface(InitHUD())
+    _UIMGR.AddInterface(InitInventoryPanel())
 end
 
 return InitGUI

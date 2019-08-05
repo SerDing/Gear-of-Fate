@@ -32,8 +32,8 @@ function _State_UpperSlash:Update()
 
 	local _movable = true
 
-    if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == 1) or
-    (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == -1) then
+    if (self.input:IsHold("LEFT") and self.hero.dir == 1) or
+    (self.input:IsHold("RIGHT") and self.hero.dir == -1) then
         _movable = false
     end
 
@@ -41,8 +41,8 @@ function _State_UpperSlash:Update()
 		if _body:GetCount() >= 2 and _body:GetCount() <=4 then
 			self.movement:X_Move(self.hero.spd.x * self.smooth * self.hero.dir )
 		end 
-		if (self.input:IsHold(self.FSM.HotKeyMgr_.KEY["LEFT"]) and self.hero.dir == -1 ) or 
-		(self.input:IsHold(self.FSM.HotKeyMgr_.KEY["RIGHT"]) and self.hero.dir == 1 )   then
+		if (self.input:IsHold("LEFT") and self.hero.dir == -1 ) or
+		(self.input:IsHold("RIGHT") and self.hero.dir == 1 )   then
 			
 			self.movement:X_Move(self.hero.spd.x * self.smooth * 0.5 * self.hero.dir )
 		end 

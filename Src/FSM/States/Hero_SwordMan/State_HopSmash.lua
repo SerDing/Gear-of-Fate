@@ -10,8 +10,7 @@ local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_HopSmash = require("Src.Core.Class")(base)
 
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
-local _CAMERA = require "Src.Game.GameCamera" 
-local _HotKeyMgr = require "Src.Input.HotKeyMgr"
+local _CAMERA = require "Src.Game.GameCamera"
 
 local _GetTime = love.timer.getTime
 
@@ -60,7 +59,7 @@ function _State_HopSmash:Enter()
 	
 	self.period = 1
 	self.increment = 1.2
-	self.KEYID = ""
+
 	self.time = _GetTime() -- time of key pressing
 
 	self.start = false
@@ -91,10 +90,9 @@ function _State_HopSmash:Update()
 	
 -----[[  HopSmash Ready period  ]]
 	if self.period == 1 then
-		self.KEYID = _HotKeyMgr.GetSkillKey(self.skillID)
-		if self.input:IsReleased(self.KEYID) or _GetTime() - self.time >= self.timer then 
+		if self.input:IsReleased("hopsmash") or _GetTime() - self.time >= self.timer then
 			local t = 0
-			if _GetTime() - self.time < self.timer and self.input:IsReleased(self.KEYID) then
+			if _GetTime() - self.time < self.timer and self.input:IsReleased("hopsmash") then
 				t = 0.9
 			else
 				t = 0.75

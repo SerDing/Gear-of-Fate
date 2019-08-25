@@ -12,10 +12,14 @@ local _InputHandler = require("Src.Core.Class")()
 function _InputHandler:Ctor()
 end 
 
-function _InputHandler:Press(key)
+---@param action string
+function _InputHandler:Press(action)
 end
 
-function _InputHandler:Release(key)
+---@param action string
+function _InputHandler:Release(action)
 end
+
+
 
 return _InputHandler

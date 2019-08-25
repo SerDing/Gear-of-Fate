@@ -47,7 +47,7 @@ function _FSM_Hero:SwitchSkillState(sklID, stateName, ...)
 	if self.input:IsPressed(stateName) then -- IsPressed
 		if self.SkillMgr_:IsSklUseable(self.states[stateName].skillID) then -- self.SkillMgr_:IsSklUseable(self.states[stateName].skillID)
 			self:SetState(stateName, ...)
-			self.SkillMgr_:DoSkill(self.curState.skillID) -- self.states[stateName].skillID / self.curState.skillID
+			self.SkillMgr_:DoSkill(self.states[stateName].skillID)
 		end
 	end
 end

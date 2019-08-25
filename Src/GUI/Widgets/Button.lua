@@ -7,35 +7,36 @@
 		* Write more details here
 ]]
 local _Widget = require("Src.GUI.Widgets.Widget")
-local _Button = require("Src.Core.Class")(_Widget)
+local _Button = require("Src.Core.Class")(_Widget) ---@class Button : Widget
 
 local _RESMGR = require("Src.Resource.ResManager")
 local _Sprite = require("Src.Core.Sprite")
 local _ENUM = require("Src.GUI.ENUM")
 
-function _Button:Ctor(text, x, y, imageInfo, callback)
+function _Button:Ctor(name, text, x, y, stylePath)
+    _Widget.Ctor(self, name, x, y)
+
     self.text = text
-    self.x = x or 0
-    self.y = y or 0
-    assert(imageInfo, "_Button:Ctor()  imageInfo is nil!")
+    self.styleTable = require(stylePath)
+    assert(self.styleTable, "style table is null!")
     assert(_ENUM, "_Button:Ctor()  _ENUM is nil!")
     self.state = _ENUM.BUTTON_NORMAL
     self.spriteArr = {
-        [_ENUM.BUTTON_NORMAL] = _Sprite.New(_RESMGR.pathHead .. imageInfo[1]),
-        [_ENUM.BUTTON_LIGGHT] = _Sprite.New(_RESMGR.pathHead .. imageInfo[2]),
-        [_ENUM.BUTTON_PRESSED] = _Sprite.New(_RESMGR.pathHead .. imageInfo[3]),
+        [_ENUM.BUTTON_NORMAL] = _Sprite.New(_RESMGR.pathHead .. self.styleTable[1]),
+        [_ENUM.BUTTON_LIGHT] = _Sprite.New(_RESMGR.pathHead .. self.styleTable[2]),
+        [_ENUM.BUTTON_PRESSED] = _Sprite.New(_RESMGR.pathHead .. self.styleTable[3]),
     }
 
-    if imageInfo[4] then -- disable image
-        self.spriteArr[_ENUM.BUTTON_DISABLE] = _Sprite.New(_RESMGR.pathHead .. imageInfo[4])
+    if self.styleTable[4] then -- disable image
+        self.spriteArr[_ENUM.BUTTON_DISABLE] = _Sprite.New(_RESMGR.pathHead .. self.styleTable[4])
     end
 
-    if imageInfo[5] then -- flash image
-        self.spriteArr["flash"] = _Sprite.New(_RESMGR.pathHead .. imageInfo[5])
+    if self.styleTable[5] then -- flash image
+        self.spriteArr["flash"] = _Sprite.New(_RESMGR.pathHead .. self.styleTable[5])
     end
 
     self.flash = {alpha = 255, v = 5}
-    self.ClickEvent = callback or function( ... ) end
+    self.ClickEvent = function( ... ) end ---@type function
 end 
 
 function _Button:Draw()
@@ -52,7 +53,7 @@ function _Button:Draw()
         end
         self.flash.alpha = self.flash.alpha + self.flash.v
         self.spriteArr["flash"]:SetColor(255, 255, 255, self.flash.alpha)
-        self.spriteArr["flash"]:Draw(x, y)
+        self.spriteArr["flash"]:Draw(self.x, self.y)
     end
 end
 
@@ -67,7 +68,7 @@ function _Button:HandleEvent(msg, x, y)
             return
         end
         if self.spriteArr[self.state]:GetRect():CheckPoint(x, y) then
-            self:SetState(_ENUM.BUTTON_LIGGHT)
+            self:SetState(_ENUM.BUTTON_LIGHT)
         else 
             self:SetState(_ENUM.BUTTON_NORMAL)
         end
@@ -77,7 +78,7 @@ function _Button:HandleEvent(msg, x, y)
         end
     elseif msg == "MOUSE_LEFT_RELEASED" then
         if self.spriteArr[self.state]:GetRect():CheckPoint(x, y) then
-            self:SetState(_ENUM.BUTTON_LIGGHT)
+            self:SetState(_ENUM.BUTTON_LIGHT)
             self.ClickEvent(self)
         else
             self:SetState(_ENUM.BUTTON_NORMAL)

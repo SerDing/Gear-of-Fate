@@ -15,7 +15,7 @@ local _InputMap = require("Data.input.InputMap")
 local _InputHandlers = {} ---@type InputHandler[]
 
 function _InputMgr.PressHandle(key)
-    key = _InputMap[key] or key -- translate key to action, if there is a key-value pair for key
+    key = _InputMap.keyboard[key] or key -- translate key to action, if there is a key-value pair for key
     for i=1,#_InputHandlers do
         if not _InputHandlers[i]:GetActor():IsAI() then
             _InputHandlers[i]:Press(key)
@@ -24,7 +24,7 @@ function _InputMgr.PressHandle(key)
 end 
 
 function _InputMgr.ReleaseHandle(key)
-    key = _InputMap[key] or key -- translate key to action, if there is a key-value pair for key
+    key = _InputMap.keyboard[key] or key -- translate key to action, if there is a key-value pair for key
     for i=1,#_InputHandlers do
         if not _InputHandlers[i]:GetActor():IsAI() then
             _InputHandlers[i]:Release(key)

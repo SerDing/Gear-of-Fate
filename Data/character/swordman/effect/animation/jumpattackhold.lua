@@ -7,7 +7,6 @@ return {--[[ #PVF_File --]]
 		["[IMAGE RATE]"]={1.30, 1.30},
 		["[INTERPOLATION]"]=1, -- 窜改; 添写，插补 插值
 		["[RGBA]"]={255, 255, 255, 150},
-		['[PLAY SOUND]'] = "SKYRADE_SWING",
 		["[GRAPHIC EFFECT]"]="LINEARDODGE",
 		["[DELAY]"]=200,
 	},

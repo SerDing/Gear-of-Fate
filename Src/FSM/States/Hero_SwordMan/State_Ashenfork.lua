@@ -9,7 +9,7 @@
 local base  = require "Src.FSM.States.Hero_SwordMan.State_AtkBase"
 local _State_Ashenfork = require("Src.Core.Class")(base)
 
-
+local _AUDIOMGR = require("Src.Audio.AudioManager")
 local _PassiveObjMgr = require "Src.PassiveObject.PassiveObjManager"
 
 function _State_Ashenfork:Ctor(...)
@@ -21,7 +21,6 @@ function _State_Ashenfork:Ctor(...)
 	self.speed = 140 * 1.3
 	self.landed = false
 	self.enoughHeight = false
-	-- self:SetEffectKeyFrame(0, "jumpattackhold.lua")
 end 
 
 function _State_Ashenfork:Enter()
@@ -42,7 +41,6 @@ function _State_Ashenfork:Enter()
 	self.movement.dir_z = -1
 	base.Enter(self)
 	self.hero:SetActionStopTime(love.timer.getTime())
-	self.generateEffect = false
 end
 
 function _State_Ashenfork:Update()
@@ -52,7 +50,7 @@ function _State_Ashenfork:Update()
 		local effect = self:Effect("jumpattackhold.lua")
 		effect:SetScale(1.4, 1.4)
 		self:EffectPosFix()
-		--self.generateEffect = true
+		_AUDIOMGR.PlaySound("SKYRADE_SWING")
 	end
 
 	self:AtkObjBorn()

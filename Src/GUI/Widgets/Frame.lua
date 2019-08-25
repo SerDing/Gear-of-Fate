@@ -7,19 +7,16 @@
 		* Write more details here 
 ]]
 local _Widget = require("Src.GUI.Widgets.Widget")
-local _Frame = require("Src.Core.Class")(_Widget)
-
+local _Frame = require("Src.Core.Class")(_Widget) ---@class Frame : Widget
 
 local _Pop = require("Src.GUI.Widgets.Pop")
 
-function _Frame:Ctor(x, y, w, h, imageInfo)
-    self.x = x or 0
-    self.y = y or 0
+function _Frame:Ctor(name, x, y, w, h, stylePath)
+    _Widget.Ctor(self, name, x, y)
     self.w = w or 0
     self.h = h or 0
-    assert(imageInfo, "_Frame:Ctor()  imageInfo is nil!")
-    self.pop = _Pop.New(w, h, imageInfo)
-    self.widgets = {}
+    assert(stylePath, "_Frame:Ctor()  imageInfo is nil!")
+    self.pop = _Pop.New(w, h, stylePath)
     self.area = {
         self.x + self.pop.spriteArr[0]:GetWidth() * 0.4, 
         self.y + self.pop.spriteArr[1]:GetHeight() * 0.35, 
@@ -31,20 +28,12 @@ end
 function _Frame:Draw()
     self.pop:Draw(self.x, self.y)
     -- love.graphics.setScissor(unpack(self.area))
-    for i,v in ipairs(self.widgets) do
-        v:Draw()
-    end
+    _Widget.Draw(self)
     -- love.graphics.setScissor()
 end
 
-function _Frame:DispatchMessage(msg, x, y)
-    for i,v in ipairs(self.widgets) do
-        v:HandleEvent(msg, x, y)
-    end
-end
-
-function _Frame:AddWidget(w)
-    self.widgets[#self.widgets + 1] = w
+function _Frame:HandleEvent(msg, x, y)
+    _Widget.HandleEvent(self, msg, x, y)
 end
 
 return _Frame 

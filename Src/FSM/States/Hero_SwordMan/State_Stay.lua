@@ -24,7 +24,7 @@ function _State_Stay:Ctor(FSM, hero)
 		{"SKILL", 64, "gorecross"},
 		{"SKILL", 65, "hopsmash"}, 
 		{"SKILL", 76, "frenzy"},
-		{"SKILL", 77, "moonslash"}, 
+		{"SKILL", 77, "moonlightslash"},
 		{"SKILL", 8, "tripleslash"}, 
 	}
 end 

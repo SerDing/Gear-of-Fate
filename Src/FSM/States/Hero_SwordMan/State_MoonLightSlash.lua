@@ -52,7 +52,7 @@ function _State_MoonSlash:Update()
 	end 
 
 	if _body:GetCount() >= 2 and self.atkNum == 1 then
-		if self.input:IsPressed("moonslash") then
+		if self.input:IsPressed("moonlightslash") then
 			self.hero:Play(self.childName[2])
 			self.atkNum = 2
 			self.atkJudger:ClearDamageArr()

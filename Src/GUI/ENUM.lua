@@ -1,7 +1,7 @@
 return {
     -- Button state const
     BUTTON_NORMAL = 1,
-    BUTTON_LIGGHT = 2,
+    BUTTON_LIGHT = 2,
     BUTTON_PRESSED = 3,
     BUTTON_DISABLE = 4,
 

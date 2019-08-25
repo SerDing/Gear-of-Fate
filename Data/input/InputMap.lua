@@ -5,31 +5,45 @@
 ---
 
 return {
-    -- [key] = action
-    ["up"] = "UP",
-    ["down"] = "DOWN",
-    ["left"] = "LEFT",
-    ["right"] = "RIGHT",
 
-    ["x"] = "ATTACK",
-    ["c"] = "JUMP",
-    ["z"] = "SKILL",
-    ["v"] = "BACK",
+    keyboard = {
+        -- [key] = action
+        ["up"] = "UP",
+        ["down"] = "DOWN",
+        ["left"] = "LEFT",
+        ["right"] = "RIGHT",
 
-    ["esc"] = "MENU",
+        ["x"] = "ATTACK",
+        ["c"] = "JUMP",
+        ["z"] = "SKILL",
+        ["v"] = "BACK",
 
-    ["a"] = "SKILL_SHORTCUT_1",
-    ["s"] = "SKILL_SHORTCUT_2",
-    ["d"] = "SKILL_SHORTCUT_3",
-    ["f"] = "SKILL_SHORTCUT_4",
-    ["g"] = "SKILL_SHORTCUT_5",
-    ["h"] = "SKILL_SHORTCUT_6",
+        ["esc"] = "MENU",
 
-    ["q"] = "SKILL_SHORTCUT_EX_1",
-    ["w"] = "SKILL_SHORTCUT_EX_2",
-    ["e"] = "SKILL_SHORTCUT_EX_3",
-    ["r"] = "SKILL_SHORTCUT_EX_4",
-    ["t"] = "SKILL_SHORTCUT_EX_5",
-    ["y"] = "SKILL_SHORTCUT_EX_6",
+        ["a"] = "SKILL_SHORTCUT_1",
+        ["s"] = "SKILL_SHORTCUT_2",
+        ["d"] = "SKILL_SHORTCUT_3",
+        ["f"] = "SKILL_SHORTCUT_4",
+        ["g"] = "SKILL_SHORTCUT_5",
+        ["h"] = "SKILL_SHORTCUT_6",
+
+        ["q"] = "SKILL_SHORTCUT_EX_1",
+        ["w"] = "SKILL_SHORTCUT_EX_2",
+        ["e"] = "SKILL_SHORTCUT_EX_3",
+        ["r"] = "SKILL_SHORTCUT_EX_4",
+        ["t"] = "SKILL_SHORTCUT_EX_5",
+        ["y"] = "SKILL_SHORTCUT_EX_6",
+    },
+
+    gamepad = {
+        -- [button] = action
+        ["a"] = "SKILL",
+        ["b"] = "BACK",
+        ["x"] = "ATTACK",
+        ["y"] = "JUMP",
+
+        ["back"] = "ESC",
+        ["start"] = "START",
+    },
 
 }

@@ -89,7 +89,8 @@ function _Monster:Ctor(path, nav)
 
 	self.Models = {}
 	self.Models['HP'] = _HP_Model.New(1000, 1000) -- 600 or 6000
-	self.HP_Bar = _HMP_Bar.New(self.pos.x, self.pos.y, require("Data.ui.progressbar.mon_hp"), self.Models["HP"], nil, true)
+	--self.HP_Bar = _HMP_Bar.New("monster_hp", 0, 0, "Data.ui.progressbar.mon_hp") ---@type HMP_Bar
+	--self.HP_Bar:SetModel(self.Models["HP"])
 
 	self.skillShortcutsMap = {
 		["SKILL_SHORTCUT_1"] = nil,
@@ -152,7 +153,12 @@ function _Monster:Draw(x, y)
 	end 
 
 	if not self.dead then
-		self.HP_Bar:Draw(self.pos.x - self.HP_Bar:GetWidth() / 2, self.pos.y + self.pos.z - self.animators["body"]:GetHeight() - self.HP_Bar:GetHeight(), x, y)
+		--self.HP_Bar:SetTranslate(x, y)
+		--self.HP_Bar:SetPos(
+		--		self.pos.x - self.HP_Bar:GetWidth() / 2,
+		--		self.pos.y + self.pos.z - self.animators["body"]:GetHeight() - self.HP_Bar:GetHeight()
+		--)
+		--self.HP_Bar:Draw()
 	end
 	
 	-- move aim debug drawing
@@ -162,8 +168,6 @@ function _Monster:Draw(x, y)
 	-- love.graphics.setColor(200, 0, 0, 255)
 	-- love.graphics.circle("fill", self.aim.x, self.aim.y, 5, 20)
 	-- love.graphics.setColor(r, g, b, a)
-	love.graphics.points(self.pos.x, self.pos.y + self.pos.z)
-
 
 	-- tween test drawing
 	-- love.graphics.line(self.pos.x, self.pos.y, self.pos.x, self.pos.y - 100)

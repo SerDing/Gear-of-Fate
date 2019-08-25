@@ -13,14 +13,17 @@ function _Stack:Ctor(MAX_SIZE)
     self.MAX_SIZE = MAX_SIZE or 10
     self.top = 0
     self.stack = {}
-end 
-
+end
+---@generic T : Panel
+---@param e T
 function _Stack:Push(e)
     assert(self.top ~= self.MAX_SIZE, "_Stack:Push(e)  stack is full!")
     self.stack[#self.stack + 1] = e
     self.top = self.top + 1
-end 
+end
 
+---@generic T : Panel
+---@return T
 function _Stack:Pop() -- return the element deleted
     assert(self.top ~= 0, "_Stack:Pop()  stack is empty!")
     local e = self.stack[#self.stack]
@@ -33,7 +36,10 @@ function _Stack:IsEmpty()
     return #self.stack == 0
 end
 
-function _Stack:GetTopE() -- get top element
+--- get top element
+---@generic T : Panel
+---@return T
+function _Stack:GetTopE()
     return self.stack[self.top]
 end
 

@@ -12,16 +12,17 @@ local _Image = require("Src.Core.Class")(_Widget)
 local _Sprite = require("Src.Core.Sprite")
 local _RESMGR = require("Src.Resource.ResManager")
 
-function _Image:Ctor(path, x, y, rotation, sx, sy)
+function _Image:Ctor(name, path, x, y, rotation, sx, sy)
+    _Widget.Ctor(self, name, x, y)
     self.spr = _Sprite.New(_RESMGR.pathHead .. path)
-    self.x = x or 0
-    self.y = y or 0
     self.rotation = rotation or 0
     self.sx = sx or 1
     self.sy = sy or 1
     self.area = {x = 0, y = 0, w = self.spr:GetWidth(), h = self.spr:GetHeight()}
-end 
+end
 
+---@param px number parent x
+---@param py number parent y
 function _Image:Draw()
     self.spr:Draw(self.x - self.area.x, self.y - self.area.y, self.rotation, self.sx, self.sy)
 end

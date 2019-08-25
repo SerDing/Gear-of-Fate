@@ -41,6 +41,24 @@ function love.mousemoved(x, y, dx, dy)
 	_GAMEMGR.MouseMoved(x, y, key, istouch)
 end
 
+function love.joystickadded(joystick)
+	_GAMEMGR.JoystickAdded(joystick)
+end
+
+function love.gamepadpressed(joystick, button)
+	_GAMEMGR.GamePadPressed(joystick, button)
+end
+
+function love.gamepadreleased(joystick, button)
+	_GAMEMGR.GamePadReleased(joystick, button)
+end
+
+function love.joystickpressed( joystick, button )
+	--print("____ joystick pressed:", button)
+end
+
+
+
 function love.run()
 
 	if love.math then

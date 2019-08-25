@@ -19,6 +19,7 @@ function _State_Frenzy:Ctor(...)
 	self.effect = {}
 	self.stateColor = {255, 150, 0, 255}
 	self.switch = false
+	self.skillID = 76
 end 
 
 function _State_Frenzy:Enter()

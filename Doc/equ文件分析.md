@@ -45,7 +45,7 @@
 
 ## 非道具类equ文件
 
-    这类equ文件的特征是，不保护道具属性和特殊效果之类的东西，只是单纯的一个animation组的抽象对象
+    这类equ文件的特征是，不包括道具属性和特殊效果之类的东西，只是单纯的一个animation对象
     
     以Monster的为例，包含了monster的基本动作的ani路径( [xxx motion] )和层次信息( [layer] )
     

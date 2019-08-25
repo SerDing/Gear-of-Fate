@@ -20,7 +20,7 @@ function _State_Dash:Ctor(FSM, hero)
         {"SKILL", 46, "upperslash"},
 		{"SKILL", 64, "gorecross"},
 		{"SKILL", 65, "hopsmash"},
-		{"SKILL", 77, "moonslash"},
+		{"SKILL", 77, "moonlightslash"},
 		{"SKILL", 8, "tripleslash"},
     }
 end 

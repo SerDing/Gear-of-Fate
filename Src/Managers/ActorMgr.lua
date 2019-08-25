@@ -9,11 +9,8 @@
         * Register some callbacks of self into the SCENEMGR to implement response for some scene event works
 ]]
 
----@class ACTORMGR
----@public field mainPlayer Hero_SwordMan
-
-local _ACTORMGR = {}
-local this = _ACTORMGR
+local _ACTORMGR = {} ---@class ACTORMGR
+local this = _ACTORMGR ---@type ACTORMGR
 
 local _SwordMan = require "Src.Heroes.Hero_SwordMan"
 

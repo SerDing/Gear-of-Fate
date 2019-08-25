@@ -5,14 +5,10 @@
 	Alter: 2017-08-09 01:53:21
 	Docs:
 		* used Finite State Machine to manage the states of hero.
-		
-
 ]]
 
----@class Hero_SwordMan
----@field public SetPos function(self, x, y)
 local _obj = require "Src.Objects.GameObject"
-local Hero_SwordMan = require("Src.Core.Class")(_obj)
+local Hero_SwordMan = require("Src.Core.Class")(_obj) ---@class Hero_SwordMan
 
 -- Components
 local _Avatar = require "Src.Engine.Animation.Avatar"
@@ -27,8 +23,8 @@ local HP_ModelUnitTest = require("Src.Components.Model.HP_UnitTest")
 
 -- const
 local _aniPath = {
-"/Data/character/swordman/animation/",
-"/Data/equipment/character/swordman/weapon/"
+	"/Data/character/swordman/animation/",
+	"/Data/equipment/character/swordman/weapon/"
 }
 
 local _aniName = {"attack1", "attack2", "attack3","frenzy1","frenzy2","frenzy3","frenzy4",
@@ -93,6 +89,8 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 
 	self.avatar:GetWidget("body"):SetImgPathArg(0001)
 
+
+
 	self.Components['Weapon']:SetType("hsword", "lswd")  -- mainType, subType
 	self.Components['Weapon']:SetRes("lswd", 4200)  -- subType, fileNum
 	-- katana	katana	0001
@@ -145,7 +143,7 @@ function Hero_SwordMan:Ctor(x, y) --initialize
 
 		["SKILL_SHORTCUT_EX_1"] = "upperslash",
 		["SKILL_SHORTCUT_EX_2"] = nil,
-		["SKILL_SHORTCUT_EX_3"] = "moonslash",
+		["SKILL_SHORTCUT_EX_3"] = "moonlightslash",
 		["SKILL_SHORTCUT_EX_4"] = "ashenfork",
 		["SKILL_SHORTCUT_EX_5"] = nil,
 		["SKILL_SHORTCUT_EX_6"] = nil,
@@ -264,8 +262,6 @@ function Hero_SwordMan:LoadAnimData()
 		self.avatar:GetWidget("weapon_c1"):AddAnimation(strcat(_aniPath[2], _wpMainTp, "/", _wpSubTp, "/", _aniName[i]), 1, _aniName[i])
 	end
 
-
-
 	for i = 1,#_aniName do
 		self.avatar:GetWidget("body"):AddAnimation(strcat(_aniPath[1], _aniName[i]), 1, _aniName[i])
 	end
@@ -316,7 +312,7 @@ function Hero_SwordMan:Update(dt)
 
 	self.Y = self.pos.y
 
-	-- HP_ModelUnitTest(self)
+	 --HP_ModelUnitTest(self)
 
 	for n = 1,#self.effects do
 		if self.effects[n] then

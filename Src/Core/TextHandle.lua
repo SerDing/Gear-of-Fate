@@ -37,3 +37,8 @@ function strcat(str_1, str_2, ...)
 	_newStr = table.concat(_strs, "") -- table.concat(table tab, string separator)
 	return _newStr
 end
+
+-- get the path of directory that file in
+local text = "Data/character/swordman/asd.lua"
+-- print("___string test = ", string.match(text, "(.+)/[^/]*%.%w+$"))
+print("___string test = ", string.match(text, "(.+)/[^/]*") .. "/")

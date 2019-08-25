@@ -97,7 +97,7 @@ function _AtkObj:Update(dt)
 	-- resume playing basic motion
 	
 	if self.aniArr["basicAni"].active == false then
-		print("self.aniArr[addAni]:GetCount() = ", self.aniArr["addAni"]:GetCount())
+		--print("self.aniArr[addAni]:GetCount() = ", self.aniArr["addAni"]:GetCount())
 		if self.aniArr["addAni"]:GetCount() == - self.data["[add object effect]"][2] then
 			self.aniArr["basicAni"]:Play(self.aniFiles["[basic motion]"], 1)
 			self.aniArr["basicAni"]:SetActive(true)

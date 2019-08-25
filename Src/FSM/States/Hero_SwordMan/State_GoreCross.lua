@@ -71,7 +71,7 @@ function _State_GoreCross:Update()
 			-- for k,v in pairs(self.atkObj.aniArr) do
 			-- 	v:SetPlayRate(self.hero:GetAtkSpeed())
 			-- end
-			print("gorecross effect2 playover")
+			--print("gorecross effect2 playover")
 		end
 	end 
 

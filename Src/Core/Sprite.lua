@@ -7,7 +7,7 @@
 		* when do Ctor() you should give it a null texture or a file path
 ]]
 
-
+---@class Sprite
 local _Sprite = require("Src.Core.Class")()
 
 local _Rect = require "Src.Core.Rect"
@@ -26,11 +26,11 @@ function _Sprite:Ctor(path, x, y, w, h) --initialize
 
 	if tp == "string" then
 	    self.texture = _RESMGR.LoadTexture(path)
-	else -- path为空纹理时
+	else -- path is null texture
 	   self.texture = path
 	end
 
-	self.rect = _Rect.New(x,y,w,h)
+	self.rect = _Rect.New(x,y,w,h) ---@type Rect
 
 	self.x = x or 0
 	self.y = y or 0
@@ -49,10 +49,14 @@ function _Sprite:Ctor(path, x, y, w, h) --initialize
 
 	local tWidth = self.texture:getWidth()
 	local tHeight = self.texture:getHeight()
-	self.area = {x = 0, y = 0, w = tWidth, h = tHeight}
+
+	-- scissor is unaffected by graphics transform, so we should add this manually.
+	self.area = { x = 0, y = 0, w = tWidth, h = tHeight, translateX = 0, translateY = 0}
 	self.scissor = false
+
 	self.rect:SetSize(tWidth,tHeight)
-	self.rect:SetColor(0,0,255,50)
+	self.rect:SetColor(0,0,255,150)
+	self.rect:SetDrawType(1)
 	
 	_spriteCount = _spriteCount + 1
 
@@ -74,8 +78,8 @@ function _Sprite:Draw(x, y, rotation, sx, sy)
 	
 	if self.scissor then
 		_Scissor(
-			self.pos.x * _GameCamera.scale.x - self.center.x * self.scale.x + self.area.cam_x, 
-			self.pos.y * _GameCamera.scale.y - self.center.y * self.scale.y + self.area.cam_y, 
+			self.pos.x * _GameCamera.scale.x - self.center.x * self.scale.x + self.area.translateX,
+			self.pos.y * _GameCamera.scale.y - self.center.y * self.scale.y + self.area.translateY,
 			self.area.w * _GameCamera.scale.x, 
 			self.area.h * _GameCamera.scale.y
 		)
@@ -98,8 +102,8 @@ function _Sprite:Draw(x, y, rotation, sx, sy)
 	love.graphics.setColor(r, g, b, a)
 	love.graphics.setBlendMode(_blendMode)
 
-	self.rect:SetPos(self.pos.x,self.pos.y)
-
+	self.rect:SetPos(self.pos.x, self.pos.y)
+	--self.rect:Draw()
 end
 
 function _Sprite:SetTexture(tex)
@@ -143,7 +147,7 @@ end
 function _Sprite:SetCenter(x, y)
 	self.center.x = x or 0
 	self.center.y = y or 0
-	self.rect:SetCenter(x,y)
+	--self.rect:SetCenter(x,y)
 end
 
 function _Sprite:SetDrawArea(x, y, w, h, cam_x, cam_y)
@@ -151,8 +155,8 @@ function _Sprite:SetDrawArea(x, y, w, h, cam_x, cam_y)
     self.area.y = y or 0
     self.area.w = w or 0
 	self.area.h = h or 0
-	self.area.cam_x = cam_x or 0
-	self.area.cam_y = cam_y or 0
+	self.area.translateX = cam_x or self.area.translateX
+	self.area.translateY = cam_y or self.area.translateY
 	self.scissor = true
 end
 

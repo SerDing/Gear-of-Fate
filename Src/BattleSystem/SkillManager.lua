@@ -9,7 +9,7 @@
 		* it will help cooldown skills and decide if they are usable.
 ]]
 
-local _SkillMgr = require("Src.Core.Class")()
+local _SkillMgr = require("Src.Core.Class")() ---@class SkillComponent
 
 local _Skill = require "Src.BattleSystem.Skill"
 local _fileExists = love.filesystem.exists
@@ -22,7 +22,7 @@ function _SkillMgr:Ctor(actor, skills)
 		self:LearnSkills(skills)
 	end
 	self.debug = true
-	-- self.debug = false
+	self.debug = false
 end 
 
 function _SkillMgr:InitData(job)
@@ -37,7 +37,7 @@ function _SkillMgr:InitData(job)
 	local pathSplit = {}
 	for id, path in pairs(self.skillList) do
 		pathSplit = split(path, "/") -- separate path by '/', the second part is skill's name
-		self.skillNameList[id] = pathSplit[2]
+		self.skillNameList[id] = string.lower(pathSplit[2])
 		self.skillPathList[id] = self.pathHead .. string.lower(path)
 	end
 
@@ -130,6 +130,16 @@ end
 function _SkillMgr:GetSkillNameByID(id)
 	assert(self.skillNameList[id], "skill not found:" .. id)
 	return self.skillNameList[id]
+end
+
+---@return number
+function _SkillMgr:GetSkillIDByName(name)
+	for id, skillName in pairs(self.skillNameList) do
+		if skillName == name then
+			return id
+		end
+	end
+	return 0
 end
 
 function _SkillMgr:LearnSkill(id)

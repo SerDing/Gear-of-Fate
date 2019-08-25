@@ -8,7 +8,7 @@
 ]]
 
 
-local _Rect = require("Src.Core.Class")()
+local _Rect = require("Src.Core.Class")() ---@class Rect
 
 function _Rect:Ctor(x, y, w, h) --initialize
 	self.pos = {x = 0.0, y = 0.0}
@@ -106,14 +106,14 @@ function _Rect:SetColor(r, g, b, a)
 		a = a
 	}
 end
-
-function _Rect:SetDrawType(_type) -- _type: 0 --> fill  1 --> line
-	self.type = self.drawTypes[_type]
+--- type: 0 --> fill  1 --> line
+function _Rect:SetDrawType(type)
+	self.type = self.drawTypes[type]
 end
 
 function _Rect:GetVertex()
 
-	local _vertex = {{x, y}, {x,y}}
+	local _vertex = {{x, y}, {x, y}}
 
 	_vertex[1].x = (self.x1 < self.x2) and self.x1 or self.x2
 	_vertex[1].y = (self.y1 < self.y2) and self.y1 or self.y2
@@ -135,6 +135,8 @@ function _Rect:CheckPoint(x, y)
 	
 	self:Update()
 
+	--print("__rect check point:", self.x1, self.x2, self.y1, self.y2)
+
 	if x >= self.x1 and x <= self.x2  then
 		if y >= self.y1 and y <= self.y2 then
 			return true
@@ -144,15 +146,12 @@ function _Rect:CheckPoint(x, y)
 	return false 
 end
 
-function _Rect:Destroy(x, y)
-	
+function _Rect:Destroy()
 	self.pos = nil
 	self.size = nil
 	self.cenPos = nil
 	self.color = nil
 	self.dir = nil
-	
-	_Rect = nil
 end
 
 return _Rect

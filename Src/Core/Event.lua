@@ -7,23 +7,24 @@
 		* Remember Delete listener reference if it has been destroyed.
 ]]
 
-local _Event = require("Src.Core.Class")()
+local _Event = require("Src.Core.Class")() ---@class Event
 
---@field protected list _listeners
+---@field protected _listeners @list
+
 function _Event:Ctor()
     self._listeners = {}
 end 
 
---@param table obj
---@param function func
+---@param obj table
+---@param func function
 function _Event:AddListener(obj, func)
 	assert(func, "Function is null.")
     self._listeners[#self._listeners + 1] = {obj = obj, Func = func}
 end 
 
---@param table obj
---@param function func
---@return bool whether successful
+---@param obj table
+---@param func function
+---@return boolean whether successful
 function _Event:DelListener(obj, func)
     for n=#self._listeners, 1, -1 do
 		if self._listeners[n].obj == obj and self._listeners[n].Func == func then

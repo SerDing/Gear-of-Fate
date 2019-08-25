@@ -4,55 +4,32 @@
 	Since: 2018-08-14 15:41:03 
 	Last Modified time: 2018-08-14 15:41:03 
     Docs: 
-        * Draw all interfaces
+        * Manage all panels
 		* Dispatch messages by three callbacks (mousemoved(), mousepressed(), mousereleased())
 ]]
-local _UI_Manager = {}
+local _UI_Manager = {} ---@class UI_Manager
 
-local this = _UI_Manager
-local _Button = require("Src.GUI.Widgets.Button")
+local this = _UI_Manager ---@type UI_Manager
 local _Sprite = require("Src.Core.Sprite")
 local _Stack = require("Src.Core.Stack")
 local _RESMGR = require("Src.Resource.ResManager")
-
-local _ENUM = require "Src.GUI.ENUM"
+local _LayoutMgr = require("Src.GUI.LayoutManager")
 
 function _UI_Manager.Ctor()
-    this.interfaces = {}
+    this.panels = {} ---@type Panel[]
+
     this.curIndex = 1
-    imagedata = love.image.newImageData(love.graphics.getWidth(), love.graphics.getHeight())
+    local imagedata = love.image.newImageData(love.graphics.getWidth(), love.graphics.getHeight())
     _RESMGR.InstantiateImageData(imagedata)
     this.backGround = _Sprite.New(love.graphics.newImage(imagedata))
     this.backGround:SetColor(0, 0, 0,200)
 
     this.stack = _Stack.New(10)
     this.backKey = "f2" -- esc default
-    this.panels = {}
-    -- this.InitPanels()
-end 
 
-function _UI_Manager.Update(dt)
-    
-end 
+    love.graphics.setFont(love.graphics.newFont("Font/simsun_bitmap_fnt/simsun12.fnt"))
 
-function _UI_Manager.MessageHandler(msg) -- CallBack
-    if msg.type == "OPEN" then -- msg = {type = "", name = ""}
-        this.Enter(msg.name)
-    end
-end
-
-function _UI_Manager.Enter(name)
-    local backAnimation
-    this.stack:Push(this.GetPanelRefByName(name))
-end
-
-function _UI_Manager.Back()
-    this.stack:Pop()
-end
-
-function _UI_Manager.Find(frameID, compArrName, compID)
-    --Find(PanelID, tag)
-    -- this.interfaces[this.curIndex].frames[frameID].
+    _LayoutMgr.Ctor()
 end
 
 function _UI_Manager.Draw()
@@ -62,25 +39,53 @@ function _UI_Manager.Draw()
         _topPanel:Draw()
     end
 
-    this.interfaces["HUD"]:Draw()
+    this.panels["HUD"]:Draw()
+end
+
+function _UI_Manager.MessageHandler(msg) -- CallBack
+    if msg.type == "OPEN" then -- msg = {type = "", name = ""}
+        this.Enter(msg.name)
+    end
+end
+
+function _UI_Manager.Enter(name)
+    this.stack:Push(this.GetPanel(name))
+end
+
+function _UI_Manager.Back()
+    this.stack:Pop()
+end
+
+---@param name string
+---@param panel Panel
+function _UI_Manager.AddPanel(name, panel)
+    this.panels[name] = panel
+    print("UI_Manager.AddPanel(): ", name)
+end
+
+---@param name string
+function _UI_Manager.GetPanel(name)
+    assert(this.panels[name], "not found panel:" .. name)
+    return this.panels[name]
+end
+
+function _UI_Manager.GetWidget(panelName, widgetName)
+    return this.panels[panelName]:GetWidgetById(widgetName)
 end
 
 function _UI_Manager.DispatchMessage(msg, x, y)
-    -- for k,v in pairs(this.interfaces) do
-    --     v:DispatchMessage(msg, x, y)
-    -- end
 
     local _topPanel = this.stack:GetTopE()
     if _topPanel then
         _topPanel:DispatchMessage(msg, x, y)
     end
-    this.interfaces["HUD"]:DispatchMessage(msg, x, y)
+    this.panels["HUD"]:DispatchMessage(msg, x, y)
 end
 
 function _UI_Manager.KeyPressed(key)
     if key == this.backKey then
         if this.stack:IsEmpty() then
-            this.stack:Push(this.GetPanelRefByName("Inventory"))
+            this.stack:Push(this.GetPanel("Inventory"))
         else
             --[[
                 local funciton Back()
@@ -110,15 +115,7 @@ function _UI_Manager.MouseMoved(x, y, dx, dy)
     _UI_Manager.DispatchMessage("MOUSE_MOVED", x, y)
 end
 
-function _UI_Manager.AddInterface(k, i)
-    this.interfaces[k] = i
-    print("UI_Manager.AddInterface()  ", k)
-end
 
-function _UI_Manager.GetPanelRefByName(name)
-    assert(this.interfaces[name], "_UI_Manager.GetPanelRefByName() no panel:" .. name)
-    return this.interfaces[name]
-end
 
 
 return _UI_Manager 

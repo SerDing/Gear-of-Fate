@@ -9,7 +9,7 @@
 
 local _Grid_Item = require("Src.Core.Class")()
 
-function _Grid_Item:Ctor(x, y, id)
+function _Grid_Item:Ctor(name, x, y)
     -- body
 end 
 

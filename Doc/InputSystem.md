@@ -18,7 +18,7 @@ Generally, skill is started by shortcut(hot key), so we need a table to store ga
     eg: "a" --> "skill_shortcut_1" --> hero.skillShortcutsMap["skill_shortcut_1"]
     --> skill_action(skill_name)
     
-    InputMgr(key_msg)-->Input(skill_shortcut_name)-->Hero.skillShortcutsMap(skill_name)-->Input(skill_action)
+    INPUT(key_msg)-->Input(skill_shortcut_name)-->Hero.skillShortcutsMap(skill_name)-->Input(skill_action)
     
     SkillMgr: skillShortcutsMap<string, string> = { [skill_shortcut_name] = skill_name }
     
@@ -28,5 +28,5 @@ Generally, skill is started by shortcut(hot key), so we need a table to store ga
         SkillShortcuts[i]:SetSkill(id)
     
     SkillShortcutController(shortcut, btn, x, y):
-        skillMgr = ACTORMGR.mainPlayer.Components.SkillMgr
+        skillMgr = EntityManager.mainPlayer.Components.SkillMgr
         hero.skillShortcutsMap[shortcut.name] = skillMgr:GetSkillNameByID(shortcut:GetSkillID())

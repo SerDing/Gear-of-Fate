@@ -1,6 +1,6 @@
 return {
-    "interface/windowcommon.img/12.png",
-    "interface/windowcommon.img/13.png",
-    "interface/windowcommon.img/14.png",
-    "interface/windowcommon.img/15.png",
+    "interface/windowcommon.img/12",
+    "interface/windowcommon.img/13",
+    "interface/windowcommon.img/14",
+    "interface/windowcommon.img/15",
 }

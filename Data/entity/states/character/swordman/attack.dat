@@ -1,0 +1,87 @@
+return {
+    script = 'swordman/attack',
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    nextState = 'stay',
+    keyFrames = {6, 6, 5},
+    ticks = {9, 10, 5},
+    animPathSet = {
+        "attack1",
+        "attack2",
+        "attack3ex",
+        "attack4ex",
+    },
+    -- entity = {
+    --     "effect/swordman/attack/bloodslash1",
+    --     "effect/swordman/attack/bloodslash2",
+    --     "effect/swordman/attack/bloodslash3",
+    --     "effect/swordman/attack/bloodslash4",
+    -- },
+    sound = {
+        voice = {
+            "voice/swordman/sm_atk_01",
+            "voice/swordman/sm_atk_02",
+            "voice/swordman/sm_atk_03",
+        },
+        swing = {
+            hsword = {
+                "swing/swordman/hsword/1",
+                "swing/swordman/hsword/2",
+            },
+            katana = {
+                "swing/swordman/katana/1",
+                "swing/swordman/katana/2",
+                "swing/swordman/katana/3",
+            },
+        },
+        hitting = {
+            hsword = {
+                "hitting/swordman/hsword/1",
+                "hitting/swordman/hsword/2",
+            },
+        },
+    },
+    easeMoveData = {
+        {
+            process = 2,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 160, -- 95
+                a = -800, -- -200
+            }
+        },
+        {
+            process = 3,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 150,
+                a = -750,
+            }
+        },
+        {
+            process = 4,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 400,
+                a = -4000,
+            }
+        },
+    },
+    attack = {
+
+    },
+    trans = {
+        {"NORMAL", "BACK", "jump", true},
+        {"SKILL", 46, "upperslash"},
+        {"SKILL", 64, "gorecross"},
+        {"SKILL", 65, "hopsmash"},
+        {"SKILL", 77, "moonlightslash"},
+        {"SKILL", 8, "tripleslash"},
+    },
+}

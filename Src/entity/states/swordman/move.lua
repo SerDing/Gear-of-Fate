@@ -1,0 +1,104 @@
+--[[
+	Desc: Dash state (run)
+ 	Author: SerDing
+	Since: 2017-07-28 21:54:14
+	Alter: 2017-07-30 12:40:40
+]]
+
+local _Vector2 = require("utils.vector2")
+local _Base  = require "entity.states.base"
+
+---@class State.Move : State.Base
+local _Move = require("core.class")(_Base)
+
+function _Move:Ctor(data, ...)
+    _Base.Ctor(self, data, ...)
+    self.name = "dash"
+    self.time_up = 0
+    self.time_down = 0
+    self.time_left = 0
+    self.time_right = 0
+    self.speed = _Vector2.New()
+end 
+
+function _Move:Enter()
+    _Base.Enter(self)
+end
+
+function _Move:Update(dt, rate)
+	
+    local up = self.input:IsHold("UP")
+	local down = self.input:IsHold("DOWN")
+	local left = self.input:IsHold("LEFT")
+    local right = self.input:IsHold("RIGHT")
+    
+    self.render.rate = self._entity.stats.moveRate * (rate or 1.0)
+    local moveSpeed = self._entity.stats.moveSpeed * (rate or 1.0)
+    self.speed:Set(moveSpeed, moveSpeed * 0.6)
+    local axisX, axisY = 0, 0
+
+    if up or down then
+        if up and down then
+            if self.time_up > self.time_down then
+                axisY = -1
+            else
+                axisY = 1
+            end 
+        elseif up then
+            axisY = -1
+        else 
+            axisY = 1
+        end 
+    end 
+    
+    if left or right then
+        if left and right then
+            if self.time_left > self.time_right then
+                axisX = -1
+            else 
+                axisX = 1
+            end 
+        elseif left then
+            axisX = -1
+        else 
+            axisX = 1
+        end
+    end
+
+    if axisX ~= 0 and self._entity.transform.direction ~= axisX then
+        self._entity.transform.direction = axisX
+    end
+    self.movement:X_Move(axisX * self.speed.x)
+    self.movement:Y_Move(axisY * self.speed.y)
+
+    if self.input:IsPressed("UP") then
+        self.time_up = love.timer.getTime()
+    end 
+    
+    if self.input:IsPressed("DOWN") then
+        self.time_down = love.timer.getTime()
+    end 
+    
+    if self.input:IsPressed("LEFT") then
+        self.time_left = love.timer.getTime()
+    end 
+   
+    if self.input:IsPressed("RIGHT") then
+        self.time_right = love.timer.getTime()
+    end 
+
+    if not up and not down and not left and not right then 
+        self.STATE:SetState(self._nextState)
+    end 
+    
+end 
+
+function _Move:Exit()
+    self.render.rate = 1.0
+end
+
+function _Move:GetTrans()
+	return self._trans
+end
+
+return _Move 

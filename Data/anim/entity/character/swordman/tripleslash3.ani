@@ -1,0 +1,35 @@
+return {
+	['[FRAME MAX]'] = 5,
+	['[FRAME000]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-6,-5,0,45,10,93,},
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",195,},
+	},
+ 	['[FRAME001]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-5,-5,0,66,10,61,},
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",196,},
+	},
+	['[FRAME002]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-5,-5,0,58,10,61,},
+		['[DELAY]'] = 70,
+		['[PLAY SOUND]'] = "SM_TRIPLE3",
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",197,},
+	},
+	['[FRAME003]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-5,-5,0,58,10,61,},
+		['[DELAY]'] = 70,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",198,},
+	},
+	['[FRAME004]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE BOX]'] = {-5,-5,0,58,10,61,},
+		['[DELAY]'] = 300,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",198,},
+	},
+
+}

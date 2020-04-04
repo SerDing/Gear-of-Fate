@@ -8,7 +8,7 @@ definitely, all of them are states that receive player input messages to generat
 ## 2.Demo 
 
 ```lua
-    local _PlayerController = require("Src.Engine.Core.Class")()
+    local _PlayerController = require("Engine.Core.Class")()
     
     function _PlayerController:SetPlayer(playerEntity)
         self.entity = playerEntity

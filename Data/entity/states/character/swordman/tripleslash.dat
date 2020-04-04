@@ -1,0 +1,71 @@
+return {
+    script = "swordman/tripleslash",
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    keyFrames = {2, 2},
+    nextState = 'stay',
+    animPathSet = {
+        "tripleslash1",
+        "tripleslash2",
+        "tripleslash3",
+    },
+    entity = {
+        slash = {
+            "effect/swordman/tripleslash/slash1",
+            "effect/swordman/tripleslash/slash2",
+            "effect/swordman/tripleslash/slash3",
+        },
+        move = {
+            "effect/swordman/tripleslash/move1",
+            "effect/swordman/tripleslash/move2",
+        },
+    },
+    sound = {
+        voice = {
+            "voice/swordman/sm_triple1",
+            "voice/swordman/sm_triple2",
+            "voice/swordman/sm_triple3",
+        },
+        swing = {
+            "swing/swordman/tslash_01",
+            "swing/swordman/tslash_02",
+            "swing/swordman/tslash_03",
+        },
+        hitting = {
+            "hitting/swordman/hsword/3",
+            "hitting/swordman/hsword/4",
+        },
+    },
+    easeMoveData = {
+        {
+            process = 1,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 500, 
+                a = -900,
+            }
+        },
+        {
+            process = 2,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 500, 
+                a = -900,
+            }
+        },
+        {
+            process = 3,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 500, 
+                a = -900,
+            }
+        },
+    },
+}

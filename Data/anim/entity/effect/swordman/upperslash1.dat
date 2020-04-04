@@ -1,0 +1,21 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "entity/effect/swordman/upperslash/0",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/upperslash/1",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/upperslash/2",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/upperslash/3",
+            time = 50,
+        },
+    },
+}

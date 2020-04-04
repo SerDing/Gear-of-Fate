@@ -22,7 +22,7 @@ return {--[[ #PVF_File ]]
 
 	["[ani info]"]={ 
 
-	["[filename]"]="Animation/far1.ani",
+	["[filename]"]="animation/far1.ani",
 
 	["[layer]"]="[distantback]",
 
@@ -30,7 +30,7 @@ return {--[[ #PVF_File ]]
 
 	["[ani info]"]={ 
 
-	["[filename]"]="Animation/mid1.ani",
+	["[filename]"]="animation/mid1.ani",
 
 	["[layer]"]="[middleback]",
 
@@ -42,7 +42,7 @@ return {--[[ #PVF_File ]]
 
 	["[sound]"]={"G_LORIEN","RM_FOREST",},
 
-	["[animation]"]={"Animation/DeadTree1.ani","[close]",245,558,0,"Animation/Flower1.ani","[normal]",333,289,0,"Animation/Flower2.ani","[normal]",541,281,0,"Animation/Flower2.ani","[normal]",425,262,0,"Animation/Flower1.ani","[normal]",288,234,0,"Animation/Flower0.ani","[normal]",559,226,0,"Animation/Flower1.ani","[normal]",551,200,0,"Animation/Flower2.ani","[normal]",608,195,0,"Animation/Grass2.ani","[bottom]",541,244,0,"Animation/smallTree0.ani","[closeback]",250,129,0,"Animation/BurntTree2.ani","[closeback]",530,128,0,"Animation/Tree4.ani","[closeback]",377,135,0,"Animation/Tree2.ani","[closeback]",681,137,0,},
+	["[animation]"]={"animation/DeadTree1.ani","[close]",245,558,0,"animation/Flower1.ani","[normal]",333,289,0,"animation/Flower2.ani","[normal]",541,281,0,"animation/Flower2.ani","[normal]",425,262,0,"animation/Flower1.ani","[normal]",288,234,0,"animation/Flower0.ani","[normal]",559,226,0,"animation/Flower1.ani","[normal]",551,200,0,"animation/Flower2.ani","[normal]",608,195,0,"animation/Grass2.ani","[bottom]",541,244,0,"animation/smallTree0.ani","[closeback]",250,129,0,"animation/BurntTree2.ani","[closeback]",530,128,0,"animation/Tree4.ani","[closeback]",377,135,0,"animation/Tree2.ani","[closeback]",681,137,0,},
 
 	["[passive object]"]={5,150,150,0,6,330,230,500,5,650,190,0,6,830,270,500,5,1150,170,0,6,1330,250,500,},
 

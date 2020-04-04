@@ -1,0 +1,77 @@
+return {
+    transform = {
+        position = {x = 400, y = 460},
+        scale = {x = 1, y = 1},
+        rotation = 0, direction = 1
+    },
+    identity = {     
+        name = "鬼剑士", -- 狂战士
+        type = "character"
+    },
+    input = {
+        skillInputMap = {
+            SKILL_SHORTCUT_1 = "hopsmash",
+            SKILL_SHORTCUT_2 = "gorecross",
+            SKILL_SHORTCUT_3 = nil,
+            SKILL_SHORTCUT_4 = "tripleslash",
+            SKILL_SHORTCUT_5 = nil,
+            SKILL_SHORTCUT_6 = "frenzy",
+            SKILL_SHORTCUT_EX_1 = "upperslash",
+            SKILL_SHORTCUT_EX_2 = nil,
+            SKILL_SHORTCUT_EX_3 = "moonlightslash",
+            SKILL_SHORTCUT_EX_4 = "ashenfork",
+            SKILL_SHORTCUT_EX_5 = nil,
+            SKILL_SHORTCUT_EX_6 = nil,
+            GAMEPAD_SKILL_A = 'hopsmash',
+            GAMEPAD_SKILL_B = 'gorecross',
+            GAMEPAD_SKILL_X = 'tripleslash',
+            GAMEPAD_SKILL_Y = 'moonlightslash',
+        },
+    },
+    render = {
+        obj = 'avatar',
+        path = "entity/character/swordman",
+        subpath = {
+            skin = "skin/awake", -- origin
+        },
+        order = {
+            skin = 0,
+            face_b = 1,
+            weapon_b1 = 30,
+            weapon_c1 = 30,
+        },
+    },
+    equipment = {
+        "character/swordman/weapon/hsword_2", -- katana_ hsword_
+    },
+    skills = {
+        job = "swordman",
+        skills = {8, 16, 46, 64, 65, 76, 77, 169}, 
+    },
+    stats = {
+        hp = 100,
+		mp = 100,
+		maxhp = 100,
+		maxmp = 100,
+		hpRecovery = 7.5, 
+		mpRecovery = 7.5,
+		attackRate = 1.0,
+		moveRate = 1.0,
+		moveSpeed = 210,
+    },
+    state = {
+        stay = "character/swordman/stay",
+		move = "character/swordman/move",
+		attack = "character/swordman/attack",
+		jump = "character/swordman/jump",
+		moonlightslash = "character/swordman/moonlightslash",
+		hopsmash = "character/swordman/hopsmash",
+		gorecross = "character/swordman/gorecross",
+		tripleslash = "character/swordman/tripleslash",
+		upperslash = "character/swordman/upperslash",
+    },
+    combat = {},
+    hitstop = {},
+    movement = {},
+    buff = {},
+}

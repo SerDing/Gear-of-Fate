@@ -1,0 +1,12 @@
+return {
+--["[NAME]"]= "str04.ani"
+["[FRAME MAX]"]= 1,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-220,-233}
+,
+	["[DELAY]"]=120,
+	["[IMAGE]"]={"map/hendonmyre/hmalberthouse.img",0}
+,
+},
+
+}

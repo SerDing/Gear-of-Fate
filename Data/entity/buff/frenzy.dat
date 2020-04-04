@@ -1,0 +1,4 @@
+return {
+    script = "",
+    anim = "Data/character/swordman/effect/animation/frenzy/buff.ani",
+}

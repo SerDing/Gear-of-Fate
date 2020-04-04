@@ -1,0 +1,24 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            time = 70,
+        },
+        {
+            sprite = "entity/effect/swordman/tripleslash/move/0",
+            time = 70,
+        },
+        {
+            sprite = "entity/effect/swordman/tripleslash/move/1",
+            time = 70,
+        },
+        {
+            sprite = "entity/effect/swordman/tripleslash/move/2",
+            time = 70,
+        },
+        {
+            sprite = "entity/effect/swordman/tripleslash/move/3",
+            time = 70,
+        },
+    },
+}

@@ -1,0 +1,38 @@
+return {
+    script = "swordman/upperslash",
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    ticks = {2},
+    nextState = 'stay',
+    animPathSet = {
+        "upperslash",
+    },
+    entity = {
+        "effect/swordman/upperslash1",
+    },
+    sound = {
+        voice = "voice/swordman/sm_upslash",
+        swing = "swing/swordman/upper_slash_01",
+        hitting = {
+            hsword = {
+                "hitting/swordman/hsword/1",
+                "hitting/swordman/hsword/2",
+            },
+        },
+    },
+    easeMoveData = {
+        {
+            process = 1,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 270, -- 210, 0.9 * 300
+				a = -1650, -- -1260, -5.5 * 300
+				addRate = 0.5
+            }
+        },
+	},
+}

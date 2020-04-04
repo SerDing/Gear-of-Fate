@@ -1,0 +1,32 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            time = 420,
+        },
+        {
+            sprite = "entity/effect/swordman/hopsmash/d-end/0",
+            time = 180,
+        },
+        {
+            sprite = "entity/effect/swordman/hopsmash/d-end/1",
+            time = 60,
+        },
+        {
+            sprite = "entity/effect/swordman/hopsmash/d-end/2",
+            time = 60,
+        },
+        {
+            sprite = "entity/effect/swordman/hopsmash/d-end/3",
+            time = 60,
+        },
+        {
+            sprite = "entity/effect/swordman/hopsmash/d-end/4",
+            time = 60,
+        },
+        {
+            sprite = "entity/effect/swordman/hopsmash/d-end/5",
+            time = 60,
+        },
+    },
+}

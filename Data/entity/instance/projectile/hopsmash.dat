@@ -1,0 +1,13 @@
+return {
+    avatar = {
+        path = "entity/projectile/swordman",
+        animPathSet = {
+            main = "hopsmash/main",
+            light = "hopsmash/light",
+        },
+        order = {
+            main = 0,
+            light = 1,
+        }
+    },
+}

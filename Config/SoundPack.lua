@@ -1,13 +1,3 @@
---[[
-    Desc: Return SoundPack file directory table
-    Author: Night_Walker
-    Since: Sat Sep 02 2017 21:36:10 GMT+0800 (CST)
-    Alter: Sat Sep 02 2017 21:36:10 GMT+0800 (CST)
-    Docs: 
-        * 
-]]
-
-
 return {
 	
 	--[[	SwordMan 	]]

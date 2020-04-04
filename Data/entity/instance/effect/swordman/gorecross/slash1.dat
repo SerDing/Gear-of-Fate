@@ -1,0 +1,11 @@
+return {
+    render = {
+        obj = 'frameani',
+        path = "entity/effect/swordman/gorecross/slash1",
+    },
+    effect = {
+        lockDirection = true,
+        lockRate = true,
+        followType = "xy",
+    }
+}

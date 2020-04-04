@@ -45,7 +45,7 @@ FSM:
 
 PlayerController:
 ```lua
-    local _FSM = require("Src.Engine.FSM.FSM")
+    local _FSM = require(".Engine.FSM.FSM")
     local _PlayerContorller = Class(_FSM)
     
     function _PlayerContorller:SetEntity(entity)
@@ -54,7 +54,7 @@ PlayerController:
         end
         
         self.entity = entity
-        self.input = entity:GetComponent("Input")
+        self.input = entity.input
         self.input.onActionPressed:AddListener(self, self.Transition)
     end
 ```

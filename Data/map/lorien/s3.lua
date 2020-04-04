@@ -37,7 +37,7 @@ return {--[[ #PVF_File ]]
 
 		["[far]"]={
 
-			["[filename]"]="Animation/far1.ani",
+			["[filename]"]="animation/far1.ani",
 
 			["[layer]"]="[distantback]",
 
@@ -46,7 +46,7 @@ return {--[[ #PVF_File ]]
 
 		["[mid]"]={
 
-			["[filename]"]="Animation/mid1.ani",
+			["[filename]"]="animation/mid1.ani",
 
 			["[layer]"]="[middleback]",
 
@@ -78,17 +78,17 @@ return {--[[ #PVF_File ]]
 	["[sound]"]={"AMB_FOREST_01", "M_FOREST_01_NEW",}, -- M_FOREST_01_NEW  M_VILMARK_BOSS
 
 	["[animation]"]={
-		"Animation/BurntTree4.ani","[close]",896,454,0,
-		"Animation/Flower2.ani","[normal]",739,219,0,
-		"Animation/Flower1.ani","[normal]",463,189,0,
-		"Animation/BurntTree2.ani","[normal]",713,167,0,
-		"Animation/Flower0.ani","[normal]",151,143,0,
-		"Animation/Flower1.ani","[normal]",484,141,0,
-		"Animation/BurntTree5.ani","[normal]",227,139,0,
-		"Animation/Tree3.ani","[closeback]",802,149,0,
-		"Animation/Tree0.ani","[closeback]",401,138,0,
-		"Animation/smallTree1.ani","[closeback]",574,137,0,
-		"Animation/smallTree0.ani","[closeback]",908,126,0,
+		"animation/BurntTree4.ani","[close]",896,454,0,
+		"animation/Flower2.ani","[normal]",739,219,0,
+		"animation/Flower1.ani","[normal]",463,189,0,
+		"animation/BurntTree2.ani","[normal]",713,167,0,
+		"animation/Flower0.ani","[normal]",151,143,0,
+		"animation/Flower1.ani","[normal]",484,141,0,
+		"animation/BurntTree5.ani","[normal]",227,139,0,
+		"animation/Tree3.ani","[closeback]",802,149,0,
+		"animation/Tree0.ani","[closeback]",401,138,0,
+		"animation/smallTree1.ani","[closeback]",574,137,0,
+		"animation/smallTree0.ani","[closeback]",908,126,0,
 	},
 
 	["[passive object]"]={

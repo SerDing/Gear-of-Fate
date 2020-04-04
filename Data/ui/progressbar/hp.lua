@@ -1,4 +1,4 @@
 return {
-    "interface/hud/47.png", 
-    "interface/hud/44.png", 
+    "interface/hud/47", 
+    "interface/hud/44", 
 }

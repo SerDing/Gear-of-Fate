@@ -5,45 +5,52 @@
 ---
 
 return {
-
     keyboard = {
         -- [key] = action
-        ["up"] = "UP",
-        ["down"] = "DOWN",
-        ["left"] = "LEFT",
-        ["right"] = "RIGHT",
+        up = "UP",
+        down = "DOWN",
+        left = "LEFT",
+        right = "RIGHT",
 
-        ["x"] = "ATTACK",
-        ["c"] = "JUMP",
-        ["z"] = "SKILL",
-        ["v"] = "BACK",
+        x = "ATTACK",
+        -- c = "JUMP",
+        z = "SKILL",
+        v = "BACK",
+        lctrl = "GUARD",
 
-        ["esc"] = "MENU",
+        escape = "MENU",
 
-        ["a"] = "SKILL_SHORTCUT_1",
-        ["s"] = "SKILL_SHORTCUT_2",
-        ["d"] = "SKILL_SHORTCUT_3",
-        ["f"] = "SKILL_SHORTCUT_4",
-        ["g"] = "SKILL_SHORTCUT_5",
-        ["h"] = "SKILL_SHORTCUT_6",
+        a = "SKILL_SHORTCUT_1",
+        s = "SKILL_SHORTCUT_2",
+        d = "SKILL_SHORTCUT_3",
+        f = "SKILL_SHORTCUT_4",
+        g = "SKILL_SHORTCUT_5",
+        h = "SKILL_SHORTCUT_6",
+        q = "SKILL_SHORTCUT_EX_1",
+        w = "SKILL_SHORTCUT_EX_2",
+        e = "SKILL_SHORTCUT_EX_3",
+        r = "SKILL_SHORTCUT_EX_4",
+        t = "SKILL_SHORTCUT_EX_5",
+        y = "SKILL_SHORTCUT_EX_6",
 
-        ["q"] = "SKILL_SHORTCUT_EX_1",
-        ["w"] = "SKILL_SHORTCUT_EX_2",
-        ["e"] = "SKILL_SHORTCUT_EX_3",
-        ["r"] = "SKILL_SHORTCUT_EX_4",
-        ["t"] = "SKILL_SHORTCUT_EX_5",
-        ["y"] = "SKILL_SHORTCUT_EX_6",
+        space = "FREEZE",
+        f1 = "DEBUG",
+        rctrl = "PAUSE",
     },
 
     gamepad = {
         -- [button] = action
-        ["a"] = "SKILL",
-        ["b"] = "BACK",
-        ["x"] = "ATTACK",
-        ["y"] = "JUMP",
+        a = "GAMEPAD_SKILL_A",
+        b = "GAMEPAD_SKILL_B",
+        x = "GAMEPAD_SKILL_X",
+        y = "GAMEPAD_SKILL_Y",
 
-        ["back"] = "ESC",
-        ["start"] = "START",
+        leftshoulder = 'GUARD',
+        leftshoulder = 'BACK',
+        rightshoulder = "ATTACK",
+
+        back = "MENU",
+        start = "START",
     },
 
 }

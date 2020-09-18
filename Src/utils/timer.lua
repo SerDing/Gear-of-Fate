@@ -36,8 +36,8 @@ function _Timer:Tick(dt)
 end
 
 ---@param time milli
-function _Timer:Start(time)
-    self._count = 0
+function _Timer:Start(time, keepSurplus)
+    self._count = (keepSurplus and self._count > self._time) and self._count - self._time or 0
     self._time = time
     self.isRunning = true
 end
@@ -57,6 +57,10 @@ end
 function _Timer:Cancel()
     self:Stop()
     self._count = 0
+end
+
+function _Timer:GetCount()
+    return self._count
 end
 
 return _Timer

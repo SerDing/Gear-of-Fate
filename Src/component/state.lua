@@ -59,9 +59,9 @@ function _State:SetState(name, ...)
 	_Base.SetState(self, name, ...)
 end
 
-function _State:InitAnimDatas()
+function _State:ReloadAnimDatas(part)
 	for key, state in pairs(self.states) do
-		state:InitAnimData()
+		state:ReloadAnimData(part)
 	end
 end
 

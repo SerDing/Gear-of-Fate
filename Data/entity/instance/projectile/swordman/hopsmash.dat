@@ -1,0 +1,23 @@
+return {
+    render = {
+        obj = 'avatar',
+        path = "entity/projectile/swordman/",
+        dynamic = false,
+        animPathSet = {
+            mainBack = "hopsmash/main/back",
+            lightBack = "hopsmash/light/back",
+        },
+        order = {
+            mainBack = 0,
+            lightBack = 1,
+        },
+        offset = -12,
+    },
+    projectile = {
+        tags = {
+            combat = true,
+        },
+        playEnd = true,
+    },
+    combat = {},
+}

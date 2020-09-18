@@ -1,5 +1,5 @@
 return { 
 	image = "2",
-	ox = -256,
-	oy = -106,
+	ox = 12,
+	oy = 30,
 }

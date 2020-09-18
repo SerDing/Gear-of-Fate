@@ -13,11 +13,11 @@ function _Collider.Ctor()
     --body
 end 
 
-function _Collider.Point_Rect(x,y,rect)
+function _Collider.CheckPoint(x,y,rect)
 	return rect:CheckPoint(x, y)
 end 
 
-function _Collider.Rect_Rect(rect_a, rect_b, output)
+function _Collider.Collide(rect_a, rect_b, output)
 	
 	local vex_a = rect_a:GetVertex()
     local vex_b = rect_b:GetVertex()

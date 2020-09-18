@@ -37,6 +37,7 @@ function _Movement:Ctor(entity)
 		land = _Event.New(),
 	}
 
+	self._dt = 0
 	self.g = 0
 	self.vz = 0
 	self.directionZ = _DIRECTION_Z.NONE
@@ -53,6 +54,7 @@ function _Movement:Ctor(entity)
 end 
 
 function _Movement:Update(dt)
+	self._dt = dt
 	self:_Gravity(dt)
 	self:_EasemoveUpdate(dt)
 end
@@ -63,7 +65,7 @@ function _Movement:SetSceneRef(s)
 end
 
 function _Movement:X_Move(dx)
-    dx = dx * _GetDt()
+    dx = dx * self._dt--_GetDt()
 	local _pass, _result
 	local _next = self.position.x + dx
 
@@ -89,10 +91,10 @@ function _Movement:X_Move(dx)
 	-- scene_:CheckEvent(self.position.x, self.position.y)
 end
 
-function _Movement:Y_Move(offset)
-    offset = offset * _GetDt()
+function _Movement:Y_Move(dy)
+    dy = dy * self._dt--_GetDt()
 	local _result
-	local _next = self.position.y + offset
+	local _next = self.position.y + dy
 
 	-- if scene_:IsPassable(self.position.x, _next) then	-- IsInMoveableArea
 		
@@ -112,9 +114,9 @@ function _Movement:Y_Move(offset)
 	-- scene_:CheckEvent(self.position.x, self.position.y)
 end
 
-function _Movement:Z_Move(offset)
-    offset = offset * _GetDt()
-	self.position.z = self.position.z + offset
+function _Movement:Z_Move(dz)
+    dz = dz * self._dt--_GetDt()
+	self.position.z = self.position.z + dz
 	-- self.drawPos.z = math.floor(self.pos.z)
 end
 
@@ -179,8 +181,10 @@ function _Movement:EaseMove(type, v, a, addRate)
 	self.easeMoveParam.enable = true
 	if self.easeMoveParam.a < 0 then
 		self.easeMoveParam.dir = -1
-	else
+	elseif self.easeMoveParam.a > 0 then
 		self.easeMoveParam.dir = 1
+	else
+		self.easeMoveParam.dir = 0
 	end
 end
 
@@ -198,7 +202,7 @@ function _Movement:_EasemoveUpdate(dt)
 				self.easeMoveParam.v = 0
 				self.easeMoveParam.enable = false
 			end
-		else
+		elseif self.easeMoveParam.dir == 1 then
 			if self.easeMoveParam.v >= 0 then
 				self.easeMoveParam.v = 0
 				self.easeMoveParam.enable = false
@@ -206,11 +210,11 @@ function _Movement:_EasemoveUpdate(dt)
 		end
 
 		if self._entity.transform.direction == -1 then
-			if self.input:IsHold("LEFT") then
+			if self.input and self.input:IsHold("LEFT") then
 				self:X_Move(self.easeMoveParam.v * self.easeMoveParam.addRate)
 			end
 		elseif self._entity.transform.direction == 1 then
-			if self.input:IsHold("RIGHT") then
+			if self.input and self.input:IsHold("RIGHT") then
 				self:X_Move(self.easeMoveParam.v * self.easeMoveParam.addRate)
 			end
 		end

@@ -6,13 +6,15 @@ return {
         attackRate = true,
     },
     nextState = 'stay',
-    animPathSet = {
+    animNameSet = {
         "hopsmashready",
         "hopsmash",
     },
     entity = {
         "effect/swordman/hopsmash/sword",
         "effect/swordman/hopsmash/smash",
+        "projectile/swordman/hopsmash",
+        "effect/swordman/hopsmash/bloodfront",
     },
     sound = {
         voice = "voice/swordman/sm_boongsan",
@@ -23,4 +25,7 @@ return {
             },
         },
     },
+    varAttackRate = 0.3,
+    minTimePercent = 0.5,
+    forwardSpeed = 450,
 }

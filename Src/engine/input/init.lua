@@ -15,7 +15,19 @@ local _INPUT = {
         keyboard = {}, -- key states for keyboard
         gamepad = {}, -- button states for gamepad
     },
-    _mode = "keyboard"
+    _mode = "keyboard",
+    _axisMap = {
+        positive = {
+            leftx = "RIGHT",
+            lefty = "DOWN",
+            triggerleft = "USE_ITEM",
+            triggerright = "BACK",
+        },
+        negative = {
+            leftx = "LEFT",
+            lefty = "UP",
+        }
+    }
 }
 
 local _InputMap = require("Data.input.InputMap")
@@ -36,7 +48,7 @@ function _INPUT.Update(dt)
     end
 end
 
-local function _PressAction(action)
+local function _PressButton(action)
     for i=1,#_InputHandlers do
         _InputHandlers[i]:Press(action)
     end
@@ -55,7 +67,7 @@ function _INPUT.Press(inputType, key)
     _INPUT._inputStates[inputType][key] = STATE.PRESSED
     local action = _InputMap[inputType][key] or nil
     if action then
-        _PressAction(action)
+        _PressButton(action)
     end
 end
 
@@ -71,28 +83,16 @@ function _INPUT.Release(inputType, key)
 end
 
 function _INPUT.HandleAxis(axis, newValue)
-    local map = {
-        positive = {
-            leftx = "RIGHT",
-            lefty = "DOWN",
-            triggerleft = "USE_ITEM",
-            triggerright = "BACK",
-        },
-        negative = {
-            leftx = "LEFT",
-            lefty = "UP",
-        }
-    }
     local axisValue = _INPUT._gamepad:getGamepadAxis(axis)
     if axisValue > _AXIS_DEADBAND then
-        _PressAction(map.positive[axis])
+        _PressButton(_INPUT._axisMap.positive[axis])
     else
-        _ReleaseAction(map.positive[axis])
+        _ReleaseAction(_INPUT._axisMap.positive[axis])
     end
     if axisValue < -_AXIS_DEADBAND then
-        _PressAction(map.negative[axis])
+        _PressButton(_INPUT._axisMap.negative[axis])
     else
-        _ReleaseAction(map.negative[axis])
+        _ReleaseAction(_INPUT._axisMap.negative[axis])
     end
 end
 
@@ -155,18 +155,21 @@ function _INPUT.IsKeyReleased(key)
     return _INPUT._inputStates.keyboard[key] == STATE.RELEASED
 end
 
+--- Is gamepad key pressed.
 ---@param btn string @ gamepad button 
-function _INPUT.IsButtonPressed(btn)
+function _INPUT.IsGPKeyPressed(btn)
     return _INPUT._inputStates.gamepad[btn] == STATE.PRESSED
 end
 
----@param btn string @ gamepad button 
-function _INPUT.IsButtonHold(btn)
+--- Is gamepad key hold.
+---@param btn string @gamepad button 
+function _INPUT.IsGPKeyHold(btn)
     return _INPUT._inputStates.gamepad[btn] == STATE.HOLD
 end
 
+--- Is gamepad key released.
 ---@param btn string @ gamepad button 
-function _INPUT.IsButtonReleased(btn)
+function _INPUT.IsGPKeyReleased(btn)
     return _INPUT._inputStates.gamepad[btn] == STATE.RELEASED
 end
 

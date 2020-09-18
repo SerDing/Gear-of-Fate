@@ -9,7 +9,7 @@ local _Drawable = require("engine.graphics.drawable.base")
 local _Base = require("component.base")
 
 ---@class Entity.Component.Render : Entity.Component.Base
----@field public renderObj Engine.Graphics.Drawable.Base
+---@field public renderObj Entity.Drawable.Avatar | Entity.Drawable.Frameani
 local _Render = require("core.class")(_Base)
 
 function _Render.HandleData(data)
@@ -25,14 +25,14 @@ function _Render:Ctor(entity, data, param)
     _Base.Ctor(self, entity)
     self.renderObj = data.objClass.New(data)
     self.height = data.height or 0
+    self.offset = data.offset or 0 -- offset for render order
     self.color = data.color and _Color.New(data.color.red, data.color.green, data.color.blue, data.color.alpha) or _Color.White()
     self.rate = 1.0
 
     if data.obj == "frameani" or data.obj == "sprite" then
         self.layer = _Drawable.New()
         self.layer:AddChild(self.renderObj)
-    end    
-    
+    end
     -- link to other methods of renderObj
     -- for key, value in pairs(data.objClass) do
     --     if type(value) == "function" then
@@ -47,7 +47,7 @@ function _Render:Ctor(entity, data, param)
 end
 
 function _Render:Update(dt)
-
+    
     if self.renderObj.Update then
         self.renderObj:Update(dt, self.rate)
     end
@@ -57,14 +57,13 @@ function _Render:Update(dt)
     local sx, sy = e.transform.scale:Get()
 
     local obj = self.layer or self.renderObj
-    obj:SetRenderValue("position", px, py + pz)
+    obj:SetRenderValue("position", px, py, pz)
     obj:SetRenderValue("radian", e.transform.rotation)
     obj:SetRenderValue("scale", sx * e.transform.direction, sy)
     obj:SetRenderValue("color", self.color:Get())
 end
 
 function _Render:Draw()
-    local transform = self._entity.transform
     self.renderObj:Draw()
 end
 

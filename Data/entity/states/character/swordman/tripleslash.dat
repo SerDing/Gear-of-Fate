@@ -7,7 +7,7 @@ return {
     },
     keyFrames = {2, 2},
     nextState = 'stay',
-    animPathSet = {
+    animNameSet = {
         "tripleslash1",
         "tripleslash2",
         "tripleslash3",

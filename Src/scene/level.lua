@@ -8,7 +8,7 @@
         * Press space to freeze camera 
 ]]
 
-local _Rect = require("core.rect")
+local _Rect = require("engine.graphics.drawable.rect")
 local _Tile = require("scene.objects.tile")
 local _AnimObj = require("scene.objects.animobj")
 local _Animator = require("engine.animation.frameani")
@@ -30,6 +30,7 @@ local mathFloor = math.floor
 local mathCeil = math.ceil
 local mathAbs = math.abs
 
+---@class Level 
 local _Level = require("core.class")()
 
 function _Level:Ctor(path, LEVELMGR) --initialize
@@ -177,23 +178,23 @@ function _Level:LoadBackGround(bgLayer)
 end
 
 function _Level:LoadMonster()
-    local _mon
-    local _monDataArr = self.map["[monster]"]
-    if _monDataArr then
+    local mon
+    local monDataArr = self.map["[monster]"]
+    if monDataArr then
         self.isDgn = true
-        for q=1,#_monDataArr,10 do
-            _mon = _MonsterSpawner.Spawn(
-                _monDataArr[q], 
-                _monDataArr[q + 3], 
-                _monDataArr[q + 4],
+        for q=1,#monDataArr,10 do
+            mon = _MonsterSpawner.Spawn(
+                monDataArr[q], 
+                monDataArr[q + 3], 
+                monDataArr[q + 4],
                 self.nav
             )
-            _mon:SetPos(_monDataArr[q + 3], _monDataArr[q + 4] + 200)
-            if _mon ~= 0 then
-                self.monsters[#self.monsters + 1] = _mon
+            mon:SetPos(monDataArr[q + 3], monDataArr[q + 4] + 200)
+            if mon ~= 0 then
+                self.monsters[#self.monsters + 1] = mon
             end
         end
-        print("LoadMonster: ",#_monDataArr / 10,"monsters")
+        print("LoadMonster: ",#monDataArr / 10,"monsters")
     end
 end
 
@@ -374,14 +375,14 @@ function _Level:DrawSpecialArea(type)
 		return false
     end
 	for n = 1, #tab, _count do
-        self.rect:SetPos(tab[n],200 + tab[n+1])
+        self.rect:SetPosition(tab[n],200 + tab[n+1])
         self.rect:SetSize(tab[n+2],tab[n+3])
         if type == "movable" then
-            self.rect:SetColor(255,255,255,80)
+            -- self.rect:SetColor(255,255,255,80)
         else -- "event" : send hero to another map
-            self.rect:SetColor(255,0,0,80)
+            -- self.rect:SetColor(255,0,0,80)
         end 
-        self.rect:Draw()
+        self.rect:Draw(_, "fill")
 	end
 
 end
@@ -463,7 +464,7 @@ function _Level:IsInArea(areaType, x, y)
     end
 
 	for n=1,#tab,_count do
-        self.rect:SetPos( tab[n], 200 + tab[n + 1])
+        self.rect:SetPosition(tab[n], 200 + tab[n + 1])
         self.rect:SetSize(tab[n + 2] ,tab[n + 3])
         if self.rect:CheckPoint(x,y) then
             if _count == 4 then -- movable area
@@ -481,11 +482,11 @@ end
 ---@param x number
 ---@param y number
 function _Level:CheckEvent(x, y)
-    local _result = self:IsInArea("event",x,y)
+    local result = self:IsInArea("event",x,y)
     
-    if _result then
-        local _index = {area = _result[1], map = _result[2]}
-        self._LEVELMGR.SwitchScene(_result[1],_result[2],_result[3])
+    if result then
+        local index = {area = result[1], map = result[2]}
+        self._LEVELMGR.SwitchScene(result[1],result[2],result[3])
     end 
 end
 
@@ -502,7 +503,7 @@ function _Level:IsInObstacles(x, y)
     end
 
     for n=1,#self.obstacles do
-        if _Collider.Point_Rect(x, y, self.obstacles[n].rect) then
+        if _Collider.CheckPoint(x, y, self.obstacles[n].rect) then
             return {true, self.obstacles[n].rect}
         end 
     end 
@@ -514,7 +515,7 @@ end
 function _Level:CollideWithObstacles(rect_a)
     for n=1,#self.obstacles do
         local rect_b = self.obstacles[n]:GetRect()
-        if _Collider.Rect_Rect(rect_a, rect_b) then
+        if _Collider.Collide(rect_a, rect_b) then
             return true
         end
     end 

@@ -29,7 +29,7 @@ local _preFont
 local _curFont = love.graphics.getFont()
 
 love.graphics.setPointSize(5)
-love.graphics.setBackgroundColor(0, 0, 0, 255)
+love.graphics.setBackgroundColor(100, 100, 100, 255)
 function _GRAPHICS.Init()
 end
 

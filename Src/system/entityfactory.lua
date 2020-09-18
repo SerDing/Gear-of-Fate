@@ -27,11 +27,12 @@ local _creationOrder = {
     "combat", 
     "buff", 
     "render",
-    "equipment", 
     "skills", 
     "state", 
     "hitstop",
     "effect",
+    "projectile",
+    "equipment", 
 }
 
 ---@param data string @entity instance data path

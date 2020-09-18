@@ -5,7 +5,6 @@
 	Alter: 2017-07-30 23:36:07
 ]]
 local _Sprite = require('engine.graphics.drawable.sprite')
-local _Rect = require('core.rect')
 local _Event = require("core.event")
 local _ImgPack = require('system.resource.imgpack')
 local _RESMGR = require("system.resource.resmgr")
@@ -34,6 +33,7 @@ function _Frameani:Ctor()
     self._imgOffset = { x = 0, y = 0}
     self.scale = {x = 1, y = 1}
     self.blendmode = "alpha"
+    self.color = {r = 255, g = 255, b = 255, a = 255}
 
     self.playOver = false;
     self.imgPathArg = {0000}
@@ -54,11 +54,8 @@ function _Frameani:Ctor()
     self._imgPack = _ImgPack.New()
     self.OnChangeFrame = _Event.New()
     self.sprite = _Sprite.New()
-    self.box = _Rect.New(0, 0, 1, 1)
 
     self.debug = false
-
-    
 end
 
 function _Frameani:NextFrame()
@@ -225,7 +222,10 @@ function _Frameani:SetOrigin(x, y)
 end
 
 function _Frameani:SetColor(r, g, b, a)
-    self.color = {r = r, g = g, b = b, a = a}
+    self.color.r = r
+    self.color.g = g
+    self.color.b = b
+    self.color.a = a
     self.sprite:SetRenderValue("color", r, g, b, a)
 end
 

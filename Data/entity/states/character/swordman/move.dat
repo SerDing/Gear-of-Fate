@@ -3,7 +3,7 @@ return {
     tags = {
         autoPlay = true,
     },
-    animPathSet = {
+    animNameSet = {
         "dash",
     },
     nextState = "stay",

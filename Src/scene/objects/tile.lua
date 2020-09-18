@@ -8,7 +8,7 @@
 local _Tile = require("core.class")()
 
 local _Sprite = require "engine.graphics.drawable.sprite"
-local _Rect = require "core.rect"
+local _Rect = require "engine.graphics.drawable.rect"
 local _RESMGR = require "system.resource.resmgr"
 local _ImgPack = require "system.resource.imgpack"
 
@@ -32,7 +32,6 @@ function _Tile:Ctor(path)
     end
     
     self.rect = _Rect.New(0, 0, 16, 16)
-    self.rect:SetDrawType("fill")
 
     self.debug = false
     --self.debug = true
@@ -67,10 +66,10 @@ function _Tile:Draw(x, y)
                 if self.tile["[pass type]"][j] == 0 then
                     -- self.rect:SetColor(255,255,255,100) -- passable area
                 else
-                    self.rect:SetColor(0, 130, 255, 200) -- unpassable area -- 0, 130, 255, 100
+                    -- self.rect:SetColor(0, 130, 255, 200) -- unpassable area -- 0, 130, 255, 100
                     self.rect:SetSize(16, 16)
-                    self.rect:SetPos(lx, ly)
-                    self.rect:Draw()
+                    self.rect:SetPosition(lx, ly)
+                    self.rect:Draw(_, "fill")
                 end
                 
 				lx = lx + 16
@@ -82,9 +81,9 @@ function _Tile:Draw(x, y)
     end
 end
 
---@param float x
---@param float y
---@return bool result
+---@param float x
+---@param float y
+---@return bool result
 function _Tile:IsPassable(x, y)
     local nx = math.floor((x - (self.position.x + self.offset_2.x) ) / 16) + 1
     local ny = math.floor((y - (self.position.y + self.offset_2.y) ) / 16)

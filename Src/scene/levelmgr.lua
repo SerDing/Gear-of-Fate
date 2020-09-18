@@ -6,12 +6,12 @@
 ]]
 
 local _Event = require "core.event"
-local _Scene = require "scene.level"
-local _sendPos = require "scene.sendposition" -- new position in next scene
+local _Level = require "scene.level"
 local _CAMERA = require "scene.camera"
 local _RESMGR = require("system.resource.resmgr")
 
 local _FACTORY = require "system.entityfactory"
+local _sendPos = {}
 
 local _Index = {-- Index = {area,map}
 	["elvengard"] = {1,0},
@@ -23,13 +23,14 @@ local _Index = {-- Index = {area,map}
 -- _CAMERA.Ctor(_SCENEMGR)
 
 ---@class LevelManager
+---@field curLevel Level
 local _LEVELMGR = {}
 local this = _LEVELMGR
 
 function _LEVELMGR.Ctor()
 	
 	this.path = "Data/map/"
-	this.curScene = nil
+	this.curLevel = nil
 	this.offset = {x = 0, y = 0}
 	this.curIndex = _Index["elvengard"]
 	this.curType = "town"
@@ -47,17 +48,17 @@ function _LEVELMGR.Ctor()
 	this._curtain = { alpha = 240, speed = 3 }
 
 	this.eventMap = {}
-	this.eventMap.OnSwitchScene = _Event.New()
+	this.eventMap.OnSwitchingScene = _Event.New()
 
 	-- this.LoadScene(_Index["elvengard"][1], _Index["elvengard"][2], this.curType)
-	this.LoadScene(_Index["lorien"][1], _Index["lorien"][2], this.curType)
+	this.LoadLevel(_Index["lorien"][1], _Index["lorien"][2], this.curType)
 	
 end 
 
 function _LEVELMGR.Update(dt)
 	
-	if this.curScene.Update then
-		this.curScene:Update(dt)
+	if this.curLevel.Update then
+		this.curLevel:Update(dt)
 	else 
 		error("curScene is not existing !")
 	end
@@ -68,10 +69,10 @@ function _LEVELMGR.Update(dt)
 end 
 
 local drawFunc = function (x,y)
-	if this.curScene then
+	if this.curLevel then
 		if this._curtain.alpha <= 240 then --防止切换场景后 场景先于黑色封面显示
-			if this.curScene.Draw then
-				this.curScene:Draw(x, y)
+			if this.curLevel.Draw then
+				this.curLevel:Draw(x, y)
 			end
 		end
 	end
@@ -88,7 +89,7 @@ function _LEVELMGR.Draw(x, y)
 	drawFunc(x, y)
 end
 
-function _LEVELMGR.LoadScene(area, map, type)
+function _LEVELMGR.LoadLevel(area, map, type)
 
 	if not this._levelPool[type][area] then
 		this._levelPool[type][area] = {}
@@ -100,16 +101,16 @@ function _LEVELMGR.LoadScene(area, map, type)
 	end 
 
 	if this._levelPool[type][area][map] then
-		_LEVELMGR.curScene = this._levelPool[type][area][map]
+		_LEVELMGR.curLevel = this._levelPool[type][area][map]
 		_LEVELMGR.curIndex = {area,map}
-		_LEVELMGR.curScene:Awake()
+		_LEVELMGR.curLevel:Awake()
 	end 
 	
 	this.OnLoadScene()
 end
 
 function _LEVELMGR.OnLoadScene()
-	this.eventMap.OnSwitchScene:Notify(this.curScene)
+	this.eventMap.OnSwitchingScene:Notify(this.curLevel)
 end
 
 function _LEVELMGR.UnLoadScene()
@@ -124,7 +125,7 @@ function _LEVELMGR.CreatScene(area, map, type)
 			error("the map: " .. _path .. ".lua" .. " is not existing!")
 			return false
 		end
-		this._levelPool[type][area][map] = _Scene.New(_path, _LEVELMGR) 
+		this._levelPool[type][area][map] = _Level.New(_path, _LEVELMGR) 
 	end
 end
 
@@ -137,7 +138,7 @@ function _LEVELMGR.SwitchScene(area, map, posIndex)
 		if _pos then
 			this.PutCover()
 			this.UnLoadScene()
-			this.LoadScene(area, map, this.curType)
+			this.LoadLevel(area, map, this.curType)
 			-- this._playerEntity.transform.position:Set(_pos.x, _pos.y, 0)
 		end 
 		
@@ -177,7 +178,7 @@ function _LEVELMGR.PutCover()
 end 
 
 function _LEVELMGR.GetCurScene()
-	return _LEVELMGR.curScene
+	return _LEVELMGR.curLevel
 end
 
 return _LEVELMGR 

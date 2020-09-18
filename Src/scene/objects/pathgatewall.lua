@@ -24,8 +24,7 @@ function _PathgateWall:Ctor(dataPath, x, y)
 	self.pathHead = string.gsub(dataPath, pathArr[#pathArr], "")
 
     self.aniUp = _Animator.New()
-    self.aniDown = _Animator.New()
-    
+    self.aniDown = _Animator.New() 
     
     self.dir = 0
     if self.data["[layer]"] == "[normal]" then

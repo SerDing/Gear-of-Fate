@@ -7,7 +7,7 @@ return {
     },
     ticks = {2},
     nextState = 'stay',
-    animPathSet = {
+    animNameSet = {
         "upperslash",
     },
     entity = {

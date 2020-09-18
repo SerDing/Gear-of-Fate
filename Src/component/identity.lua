@@ -5,6 +5,8 @@
     Alter: 2019-12-02
 ]]
 
+local _Event = require("core.event")
+
 ---@class Entity.Component.Identity : Entity.Component.Base
 ---@field public name string
 ---@field public type string
@@ -22,7 +24,16 @@ function _Identity:Ctor(data, param)
     self.camp = param.camp or 0
     self.id = -1
     self.process = 2
+    self.destroyEvent = _Event.New()
 end
 
+-- function _Identity:Update(dt)
+    
+-- end
+
+function _Identity:StartDestroy()
+    self.process = 0
+    self.destroyEvent:Notify()
+end
 
 return _Identity

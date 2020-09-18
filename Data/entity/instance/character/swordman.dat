@@ -1,9 +1,4 @@
 return {
-    transform = {
-        position = {x = 400, y = 460},
-        scale = {x = 1, y = 1},
-        rotation = 0, direction = 1
-    },
     identity = {     
         name = "鬼剑士", -- 狂战士
         type = "character"
@@ -30,7 +25,8 @@ return {
     },
     render = {
         obj = 'avatar',
-        path = "entity/character/swordman",
+        path = "entity/character/swordman/",
+        dynamic = true,
         subpath = {
             skin = "skin/awake", -- origin
         },
@@ -55,7 +51,7 @@ return {
 		maxmp = 100,
 		hpRecovery = 7.5, 
 		mpRecovery = 7.5,
-		attackRate = 1.0,
+		attackRate = 0.90,
 		moveRate = 1.0,
 		moveSpeed = 210,
     },

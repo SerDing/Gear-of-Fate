@@ -5,19 +5,45 @@
 	Alter: 2017-07-30 23:36:07
 ]]
 local _RESOURCE = require("engine.resource")
+local _Collider = require("entity.collider")
 local _Base = require("engine.graphics.drawable.frameani")
 
 ---@class Entity.Drawable.Frameani:Engine.Graphics.Drawable.Frameani
+---@field protected _aniName string
+---@field protected _collider Entity.Collider
+---@field protected _colliderGroup table<int, Entity.Collider>
+---@field protected _colliderGroupPool table<string, table<int, Entity.Collider>>
 local _Frameani = require('core.class')(_Base)
 
 function _Frameani.HandleData(data)
     if data.path then
-        data.animData = _RESOURCE.LoadAnimData(data.path)
+        data.aniData = _RESOURCE.LoadAniData(data.path)
     end
 end
 
+---@param aniData Engine.Resource.AniData
+local function _NewColliderGroup(aniData)
+    local colliderData = aniData.colliderData
+    if colliderData then
+        local colliderGroup = {}
+        for i=1,#colliderData do
+            colliderGroup[i] = _Collider.New(colliderData[i])
+        end
+
+        return colliderGroup 
+    end
+
+    return nil
+end
+
 function _Frameani:Ctor(data)
-    _Base.Ctor(self, data and data.animData or nil)
+    _Base.Ctor(self, data and data.aniData or nil)
+    self._aniName = ""
+    self._colliderGroup = {}
+    self._colliderGroupPool = {}
+
+    self.eventMap.setPosition:AddListener(self, self.UpdateCollider)
+    self.eventMap.setScale:AddListener(self, self.UpdateCollider)
 
     self.focus = {
         focus = false,
@@ -66,15 +92,65 @@ function _Frameani:Ctor(data)
             ]]
         )
     }
-
+    
 end
 
--- function _Frameani:Update(dt)
---     _Base.Update(self, dt)
--- end
+function _Frameani:Draw()
+    _Base.Draw(self)
+    if self._collider then
+        self._collider:Draw()
+    end
+end
 
--- function _Frameani:Draw(x, y, r, sx, sy)
---     _Base.Draw(self, x, y, r, sx, sy)
--- end
+function _Frameani:Play(aniData, aniName)
+    if aniData then
+        if not self._colliderGroupPool then
+            self._colliderGroupPool = {}
+        end
+        self._colliderGroupPool[aniData] = self._colliderGroupPool[aniData] or _NewColliderGroup(aniData)
+        self._colliderGroup = self._colliderGroupPool[aniData]
+    end
+    
+    _Base.Play(self, aniData)
+    self._aniName = aniName or self._aniName    
+end
+
+---@param main Entity.Drawable.Frameani
+function _Frameani:Sync(main)
+    _Base.SetFrame(self, main._frame)
+    self._timer._count = main._timer._count
+end
+
+function _Frameani:SetData(data)
+    _Base.SetData(self, data)
+    if not self._colliderGroup then
+        self:SetCollider()
+    else
+        self:SetCollider(self._colliderGroup[self._frame])
+    end
+end
+
+function _Frameani:SetCollider(collider)
+    self._collider = collider
+    self:UpdateCollider()
+end
+
+function _Frameani:UpdateCollider()
+    if not self._collider then
+        return 
+    end
+
+    local x, y, z = self:GetRenderValue("position")
+    local sx, sy = self:GetRenderValue("scale")
+    self._collider:Set(x, y, z, sx, sy)
+end
+
+function _Frameani:GetCollider()
+    return self._collider
+end
+
+function _Frameani:GetAniName()
+    return self._aniName
+end
 
 return _Frameani

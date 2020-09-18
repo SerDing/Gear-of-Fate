@@ -17,16 +17,15 @@ local _LayoutMgr = require("system.gui.layoutmgr")
 ---@field protected _panels Panel[] @panel list
 local _UIMgr = {}
 
-function _UIMgr.Ctor(data)
+function _UIMgr.Init(data)
     _UIMgr._panels = {}
     _UIMgr._stack = _Stack.New(10)
     _UIMgr._scale = _Vector2.New(1, 1)
     _UIMgr._scale.x = _CAMERA._scale.x / 1.3
     _UIMgr._scale.y = _CAMERA._scale.y / 1.3
 
-    -- love.graphics.setFont(love.graphics.newFont("Font/simsun_bitmap_fnt/simsun12.fnt"))
-    love.graphics.setFont(love.graphics.newFont("Font/simsun.ttc", 12))
-    --TODO:制作12，14，16，18，20规格的bitmapfont字体，直接使用字体放大后会出现模糊现象。(1280 / 960 * 12 = 16)
+    -- love.graphics.setFont(love.graphics.newFont("resource/font/simsun_bitmap_fnt/simsun12.fnt"))
+    love.graphics.setFont(love.graphics.newFont("resource/font/simsun.ttc", 12))
     
     for key, value in pairs(data) do
         _UIMgr.AddPanel(key, require("system.gui." .. value).New())

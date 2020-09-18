@@ -10,10 +10,11 @@ local _RESOURCE = require("engine.resource")
 ---@class State.Base
 ---@field protected _name string
 ---@field protected _entity Entity
----@field public _animPathSet table<number, string>
+---@field public _animNameSet table<number, string>
+---@field public avatar Entity.Drawable.Avatar
 ---@field public body Entity.Drawable.Frameani
 ---@field public STATE Entity.Component.State
----@field public render Component.Render
+---@field public render Entity.Component.Render
 ---@field public input Entity.Component.Input
 ---@field public movement Entity.Component.Movement
 ---@field public combat Entity.Component.Combat
@@ -39,7 +40,7 @@ function _State:Ctor(data, name)
 	self._nextState = data.nextState
 	self._easeMoveData = data.easeMoveData
 	self._trans = data.trans
-	self._animPathSet = data.animPathSet
+	self._animNameSet = data.animNameSet
 	self._soundDataSet = data.soundDataSet
 	self._entityDataSet = data.entityDataSet
 end
@@ -59,12 +60,16 @@ function _State:Init(entity)
 end
 
 function _State:InitAnimData()
-	self.avatar:InitAnimDatas(self._animPathSet)
+	self.avatar:InitAnimDatas(self._animNameSet)
+end
+
+function _State:ReloadAnimData(part)
+	self.avatar:LoadAnimDatas(part, self._animNameSet)
 end
 
 function _State:Enter()
 	if self:HasTag("autoPlay") then
-		self.avatar:Play(self._animPathSet[1])
+		self.avatar:Play(self._animNameSet[1])
 	end
 	if self:HasTag("attackRate") then
 		self._entity.render.rate = self._entity.stats.attackRate

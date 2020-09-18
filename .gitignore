@@ -1,23 +1,8 @@
-# game pack files
-*.love
-
-# image resource
+resource/
 ImagePacks/
-
-# sound files
-SoundPacks/
-
-# music files
 Music/
-
-# font files
 Font/
-
-# build
 Build/
-
-# save
 Save/
-
-# idea config
 .idea/
+*.love

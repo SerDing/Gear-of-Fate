@@ -12,8 +12,8 @@ local _RESOURCE = require('engine.resource')
 local _AUDIO = {}
 
 local _music = {
-    ["BGM"] = {id = '', source = nil},
-    ["EVM"] = {id = '', source = nil},
+    BGM = {id = '', source = nil},
+    EVM = {id = '', source = nil},
 }
 
 function _AUDIO.Init(bgmVol, soundVol)
@@ -86,7 +86,7 @@ function _AUDIO.PlayMusic(tp, id) -- play music
         end
         
         -- file exists, make the source point to new source
-        --music_[tp].source = _RESMGR.LoadSound(_PATH)
+        -- music_[tp].source = _RESMGR.LoadSound(_PATH)
         _music[tp].source = _RESOURCE.LoadSound(_PATH)
         _music[tp].source:setLooping(true)
         _music[tp].source:play()

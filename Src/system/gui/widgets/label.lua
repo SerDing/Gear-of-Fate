@@ -5,10 +5,10 @@
 	Last Modified time: 2018-08-16 02:59:49 
 
 ]]
+local _GRAPHICS = require("engine.graphics.graphics") 
 local _Widget = require("system.gui.widgets.widget")
-local _Label = require("core.class")(_Widget)
 
-local _GPrint = love.graphics.print
+local _Label = require("core.class")(_Widget)
 
 function _Label:Ctor(text, x, y, rotation, sx, sy)
 	self.text = text
@@ -20,7 +20,7 @@ function _Label:Ctor(text, x, y, rotation, sx, sy)
 end 
 
 function _Label:Draw()
-    _GPrint(self.text, self.x, self.y, self.rotation, self.sx, self.sy)
+    _GRAPHICS.Print(self.text, self.x, self.y, self.rotation, self.sx, self.sy)
 end
 
 return _Label 

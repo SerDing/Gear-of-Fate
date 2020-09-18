@@ -12,9 +12,10 @@ local _keylist = {
         'skills',
         'state',
         'input',
-        'render',
         'effect',
+        'projectile',
         'movement',
+        'render',
     },
     draw = {
         'render', 
@@ -47,9 +48,11 @@ local _EntityMgr = {
 ---@field public hitstop Entity.Component.HitStop
 ---@field public buff Entity.Component.Buff
 ---@field public effect Entity.Component.Effect
+---@field public projectile Entity.Component.Projectile
 local _Entity = require("core.class")()
 
 ---@param entity Entity
+---@param dt number
 local function _UpdateEntity(entity, dt)
     local component = nil ---@type Component
     for i = 1, #_keylist.update do
@@ -72,8 +75,23 @@ local function _DrawEntity(entity)
 end
 
 function _EntityMgr.Update(dt)
-    for i = 1, #_EntityMgr._entities do
+    --[[
+        Using for loop to update entities will make the new entity 
+        which is created in current loop cannot be update, 
+        because the times of current for loop is fixed before you create new entity and add it into list, 
+        and its value won't be changed when new entity be added.
+        So it will make some bugs like the render component of a new effect entity cannot apply
+        data from transform component leading to the effect is not in right position when its first draw 
+        (first update of render component has not been performed).
+    ]]
+    -- for i = 1, #_EntityMgr._entities do
+    --     _UpdateEntity(_EntityMgr._entities[i], dt)
+    -- end 
+
+    local i = 1
+    while i <= #_EntityMgr._entities do
         _UpdateEntity(_EntityMgr._entities[i], dt)
+        i = i + 1
     end
 
     for n = #_EntityMgr._entities, 1, -1 do
@@ -86,8 +104,8 @@ end
 ---@param a Entity
 ---@param b Entity
 local _Sort = function (a, b)
-    local y1 = a.transform.position.y
-    local y2 = b.transform.position.y
+    local y1 = a.transform.position.y + a.render.offset
+    local y2 = b.transform.position.y + b.render.offset
 	if math.floor(y1) == math.floor(y2) then
 		return a.identity.id < b.identity.id
 	else

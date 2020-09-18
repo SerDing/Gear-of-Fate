@@ -60,24 +60,15 @@ function _Attack:SetProcess(keyFrame, nextProcess)
         self._process = nextProcess
         self._keypress = false
         self.combat:ClearDamageArr()
-        self.avatar:Play(self._animPathSet[self._process])
+        self.avatar:Play(self._animNameSet[self._process])
         self:_OnSetProcess(nextProcess)
     end
 end
 
 function _Attack:_OnSetProcess(process)
-    -- if process == 1 then
-    --     self:Effect("bloodinkanet/bloodinkanet_attack1.ani")
-    -- elseif process == 2 then
-    --     self:Effect("bloodinkanet/bloodinkanet_attack2.ani")
-    -- elseif process == 3 then
-    --     self:Effect("bloodinkanet/bloodinkanet_attack3.ani")
-    -- elseif process == 4 then
-    --     self:Effect("bloodinkanet/bloodinkanet_attack4.ani")
-    -- end
     -- local param = {master = self._entity}
     -- _FACTORY.NewEntity(self._entityDataSet[self._process], param)
-
+    
     _AUDIO.RandomPlay(self._soundDataSet.voice)
     local subtype = self._entity.equipment:GetSubtype("weapon")
     _AUDIO.RandomPlay(self._soundDataSet.swing[subtype])

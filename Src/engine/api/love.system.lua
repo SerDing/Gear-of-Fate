@@ -35,8 +35,7 @@ function m.getProcessorCount() end
 
 ---Opens a URL with the user's web or file browser.
 ---@param url string @The URL to open. Must be formatted as a proper URL.
-
-To open a file or folder, "file://" must be prepended to the path.
+---To open a file or folder, "file://" must be prepended to the path.
 ---@return boolean
 function m.openURL(url) end
 

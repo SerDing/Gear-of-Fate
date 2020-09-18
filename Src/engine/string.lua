@@ -41,6 +41,12 @@ function _STRING.concat(str_1, str_2, ...)
 	return newStr
 end
 
+function _STRING.FindCharReverse(str, char)
+	local revStr = string.reverse(str)
+	local i = string.find(revStr, char)
+	return string.len(str) - i + 1
+end
+
 function _STRING.GetFileDirectory(filePath)
 	-- return string.match(filePath, "(.+)/[^/]*%.%w+$")
 	local rs = string.reverse(filePath)

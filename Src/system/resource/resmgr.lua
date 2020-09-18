@@ -1,5 +1,5 @@
 --[[
-	Desc: Resource manager, load complex resource with pool.
+	Desc: Resource manager, load custom type resource with pool.
  	Author: SerDing
 	Since: 2017-07-28
 	Alter: 2020-01-19
@@ -9,8 +9,8 @@ local _STRING = require("engine.string")
 
 ---@class _RESMGR
 local _RESMGR = {
-	imgPathHead = "ImagePacks/",
-	dataPathHead = "Data/"
+	imgPathHead = "resource/image/", -- ImagePacks/
+	-- dataPathHead = "Data/"
 }
 local this = _RESMGR
 
@@ -86,11 +86,11 @@ end
 
 ---@param path string @specific anim data path (animPath + "|" + imgPath)
 ---@param imgPath string @avatar part image path
----@return Engine.Resource.AnimData 
+---@return Engine.Resource.AniData 
 local function _NewAvatarAnimData(path, imgPath)
 	local pos = string.find(path, "|")
 	path = string.sub(path, 1, pos - 1)
-	return _RESOURCE.NewAnimData(path, _RESOURCE.NewSpriteData, imgPath) 
+	return _RESOURCE.NewAniData(path, _RESOURCE.NewSpriteData, imgPath) 
 end
 
 ---@param path string
@@ -112,7 +112,7 @@ end
 
 ---@param path string @anim data path
 ---@param imgPath string @avatar part image path
----@return Engine.Resource.AnimData 
+---@return Engine.Resource.AniData 
 function _RESMGR.LoadAvatarAnimData(path, imgPath)
     return _RESOURCE.LoadResource(path .. "|" .. imgPath, _NewAvatarAnimData, _pools.anim, imgPath)
 end

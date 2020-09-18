@@ -6,7 +6,7 @@ return {
         attackRate = true,
     },
     nextState = 'stay',
-    animPathSet = {
+    animNameSet = {
         "jump",
     },
     trans = {

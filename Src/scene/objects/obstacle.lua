@@ -5,19 +5,18 @@
 	Last Modified time: 2020-02-05 18:37:03
 ]]
 
-
 local _STRING = require("engine.string")
 local _FILE = require('engine.filesystem')
 local _Animator = require("engine.animation.frameani")
-local _Rect = require("core.rect")
-local _FACTORY = require("system.entityfactory")
+local _Rect = require("engine.graphics.drawable.rect")
+local _ENTITYMGR = require("system.entitymgr")
 
 local _obj = require("entity.gameobject")
 local _Obstacle = require("core.class")(_obj)
 
 function _Obstacle:Ctor(path)
 	
-	self._entity = _FACTORY.mainPlayer --TODO: move mainPlayer to EntityManager
+	self._entity = _ENTITYMGR.mainPlayer
 
 	self._path = path
 	self:LoadData(path)
@@ -28,8 +27,6 @@ function _Obstacle:Ctor(path)
 	self.ani:Play(self.anim)
 
 	self.rect = _Rect.New(0,0,self.property["[width]"][1],self.property["[width]"][2])
-	self.rect:SetOrigin(self.property["[width]"][1] / 2, self.property["[width]"][2] / 2)
-	self.rect:SetDrawType("fill")
 
 	self.position = { x = 0, y = 0, z = 0 }
 	self.offset = { x = 0, y = 0 }
@@ -111,7 +108,7 @@ function _Obstacle:Update(dt)
 	--	math.floor(self.position.x + self.offset.x),
 	--	math.floor(self.position.y + self.offset.y)
 	--)
-	self.rect:SetPos(
+	self.rect:SetPosition(
 		math.floor(self.position.x + self.offset.x),
 		math.floor(self.position.y + self.offset.y) + self.position.z
 	)
@@ -143,8 +140,8 @@ end
 function _Obstacle:Debug()
 	if self.property["[layer]"] == "[normal]"  then
 		if self.debug then
-			self.rect:SetColor(255,255,0,200)
-			self.rect:Draw()
+			-- self.rect:SetColor(255,255,0,200)
+			self.rect:Draw(_, "fill")
 		end
 	end
 
@@ -154,17 +151,15 @@ function _Obstacle:SetPos(x, y, z)
 	self.position.x = x or 0
 	self.position.y = y or 0
 	self.position.z = z or 0
-	self.rect:SetPos(
+	self.rect:SetPosition(
 		math.floor(self.position.x + self.offset.x),
 		math.floor(self.position.y + self.offset.y) + self.position.z
 	)
 end
 
 function _Obstacle:SetOffset(x, y)
-    self.offset = {
-		x = x or 0,
-		y = y or 0,
-	}
+    self.offset.x = x or 0
+	self.offset.y = y or 0
 end
 
 function _Obstacle:GetY()

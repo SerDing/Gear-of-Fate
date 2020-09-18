@@ -38,7 +38,7 @@ function _Color:Get(channel)
 end
 
 function _Color:Apply()
-    -- _GRAPHICS.SetColor(self.red, self.green, self.blue, self.alpha)
+    _GRAPHICS.SetColor(self.red, self.green, self.blue, self.alpha)
 end
 
 function _Color:Reset()
@@ -52,5 +52,13 @@ end
 function _Color.Black()
     return _Color.New(0, 0, 0, 255)
 end
+
+_Color.const = {
+    white = _Color.White(),
+    black = _Color.Black(),
+    red = _Color.New(255, 0, 0, 255),
+    green = _Color.New(0, 255, 0, 255),
+    blue = _Color.New(0, 0, 255, 255),
+}
 
 return _Color

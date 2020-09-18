@@ -13,10 +13,10 @@ local _Event = require("core.event")
 local _Equipment = require("core.class")()
 
 local _EQU_TYPE_ENUM = {
-    ['weapon'] = 1,
-    ['ring'] = 2,
-    ['stone'] = 3, 
-    ['coat'] = 4,
+    weapon = 1,
+    ring = 2,
+    stone = 3, 
+    coat = 4,
 }
 
 function _Equipment.HandleData(data)
@@ -46,7 +46,7 @@ end
 ---@param equ table equipment data 
 ---@param slotIndex string 
 function _Equipment:Equip(equ)
-    if self._entity.type == "character" then
+    if self._entity.identity.type == "character" then
         local slotIndex = _EQU_TYPE_ENUM[equ.type]
         self.equipments[slotIndex] = equ
         self.onEquipmentChanged:Notify(equ, "equiped")
@@ -54,7 +54,11 @@ function _Equipment:Equip(equ)
         self.equipments[#self.equipments + 1] = equ
     end
     
-    self._entity.render.renderObj:Refresh(equ.avatar)
+    self._entity.render.renderObj:AddByData(equ.avatar)
+    for key, _ in pairs(equ.avatar) do
+        self._entity.state:ReloadAnimDatas(key)
+        self._entity.render.renderObj:SyncPart(key)
+    end
 end
 
 ---@param slot string 

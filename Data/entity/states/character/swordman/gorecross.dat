@@ -7,12 +7,13 @@ return {
     },
     nextState = 'stay',
     ticks = {3, 7},
-    animPathSet = {
+    animNameSet = {
         "gorecross",
     },
     entity = {
         "effect/swordman/gorecross/slash1",
         "effect/swordman/gorecross/slash2",
+        "projectile/swordman/gorecross",
     },
     sound = {
         voice = "voice/swordman/sm_gorecross",

@@ -34,7 +34,7 @@ local _constEffectPathArr = {
 local _Combat = require("core.class")()
 
 local _Collider = require "system.collider"
-local _Rect = require "core.rect"
+local _Rect = require "engine.graphics.drawable.rect"
 local _AUDIOMGR = require "engine.audio"
 
 local _specialList = {"ATK_OBJ",} -- storage some entities with special types that do not need load AtkInfo
@@ -60,29 +60,29 @@ function _Combat:Judge(atker, enemyType, attackName, atkInfo)
 	end
 	
 	self.atker = atker
-	local objArr =_ObjectMgr.GetObjects()
+	local entities = _ObjectMgr.GetObjects()
 	local hit = false
 	local hitRet = false
 	local attackInfo
-	local enemy
+	local e
 	
-	for n = 1, #objArr do
-		if objArr[n] and objArr[n]:GetType() == enemyType then
-			enemy = objArr[n] -- get pointer
+	for n = 1, #entities do
+		if entities[n] and entities[n]:GetType() == enemyType then
+			e = entities[n]
 			
 			-- judge whether the enemy is hit
 			hit = false
-			if not enemy.identity.dead then
-				if not self:IsInDamageArr(enemy:GetId()) then
+			if not e.identity.dead then
+				if not self:IsInDamageArr(e:GetId()) then
 					attackInfo = atkInfo or self.atkInfoArr[attackName]
-					hit = self:IsHit(atker, enemy)
+					hit = self:IsHit(atker, e)
 				end
 			end
 
 			-- hit process
 			if hit then
-				enemy:Damage(atker.host or atker, attackInfo)
-				self.damageArr[#self.damageArr + 1] = enemy:GetId()
+				e:Damage(atker.host or atker, attackInfo)
+				self.damageArr[#self.damageArr + 1] = e:GetId()
 				-- atker:SetHitTime(love.timer.getTime())
 				atker.components.hitstop:Enter(atker.stats.hitstopTime or 80)
 
@@ -113,10 +113,10 @@ function _Combat:Judge(atker, enemyType, attackName, atkInfo)
 				local animPath = self:GetEffectPath(hitType, hitDir)
 				local enemyBodyCenter = {x = 0, y = 0}
 				if weaponHitInfo or attackInfo["[hit info]"] then
-					enemyBodyCenter.x = enemy:GetPos().x
-					enemyBodyCenter.y = enemy:GetPos().y
-					enemyBodyCenter.z = enemy.pos.z - enemy:GetBody():GetHeight() / 2
-					local effect = _EffectMgr.NewEffect(animPath, enemy, false)
+					enemyBodyCenter.x = e:GetPos().x
+					enemyBodyCenter.y = e:GetPos().y
+					enemyBodyCenter.z = e.pos.z - e:GetBody():GetHeight() / 2
+					local effect = _EffectMgr.NewEffect(animPath, e, false)
 					effect:SetPos(enemyBodyCenter.x, enemyBodyCenter.y, enemyBodyCenter.z)
 				end
 			end
@@ -156,17 +156,17 @@ function _Combat:IsHit(atker, enemy)
 		-- detect if attack area box collide with enemy damage area box
 		for n=1, #attackBoxs, 6 do
 			
-			self.box_a:SetPos(atkerPos.x + attackBoxs[n] * atker:GetDir(), atkerPos.y + - attackBoxs[n+1])
+			self.box_a:SetPosition(atkerPos.x + attackBoxs[n] * atker:GetDir(), atkerPos.y + - attackBoxs[n+1])
 			self.box_a:SetSize(attackBoxs[n+3] * atkerScale.x, -attackBoxs[n+4] * atkerScale.y)
-			self.box_a:SetDir(atker:GetDir())
+			self.box_a:SetDirection(atker:GetDir())
 			
 			for m=1, #damageBoxs, 6 do
 				
-				self.box_b:SetPos(enemyPos.x + damageBoxs[m] * enemy:GetDir(),enemyPos.y + - damageBoxs[m+1])
+				self.box_b:SetPosition(enemyPos.x + damageBoxs[m] * enemy:GetDir(),enemyPos.y + - damageBoxs[m+1])
 				self.box_b:SetSize(damageBoxs[m+3] * enemyScale.x, -damageBoxs[m+4] * enemyScale.y)
-				self.box_b:SetDir(enemy:GetDir())
+				self.box_b:SetDirection(enemy:GetDir())
 
-				if not _Collider.Rect_Rect(self.box_a, self.box_b) then
+				if not _Collider.Collide(self.box_a, self.box_b) then
 					return false
 				end
 			end
@@ -175,17 +175,17 @@ function _Combat:IsHit(atker, enemy)
 		-- detect if attack side box collide with enemy damage side box
 		for n=1, #attackBoxs, 6 do
 			
-			self.box_a:SetPos(atkerPos.x + attackBoxs[n] * atker:GetDir(), atkerPos.y + atkerPos.z + - attackBoxs[n+2])
+			self.box_a:SetPosition(atkerPos.x + attackBoxs[n] * atker:GetDir(), atkerPos.y + atkerPos.z + - attackBoxs[n+2])
 			self.box_a:SetSize(attackBoxs[n+3] * atkerScale.x, -attackBoxs[n+5] * atkerScale.y)
-			self.box_a:SetDir(atker:GetDir())
+			self.box_a:SetDirection(atker:GetDir())
 			
 			for m=1, #damageBoxs, 6 do
 				
-				self.box_b:SetPos(enemyPos.x + damageBoxs[m] * enemy:GetDir(),enemyPos.y + - damageBoxs[m+2] + enemyPos.z)
+				self.box_b:SetPosition(enemyPos.x + damageBoxs[m] * enemy:GetDir(),enemyPos.y + - damageBoxs[m+2] + enemyPos.z)
 				self.box_b:SetSize(damageBoxs[m+3] * enemyScale.x, -damageBoxs[m+5] * enemyScale.y)
-				self.box_b:SetDir(enemy:GetDir())
+				self.box_b:SetDirection(enemy:GetDir())
 
-				if _Collider.Rect_Rect(self.box_a, self.box_b) then
+				if _Collider.Collide(self.box_a, self.box_b) then
 					return true
 				end
 			end
@@ -207,8 +207,8 @@ function _Combat:Draw()
 		return
 	end
 
-	self.box_a:Draw()
-	self.box_b:Draw()
+	self.box_a:Draw(_, "line")
+	self.box_b:Draw(_, "line")
 end
 
 function _Combat:IsInDamageArr(obj_id, frame)

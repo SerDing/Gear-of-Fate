@@ -29,7 +29,7 @@ return {--[[ #PVF_File --]]
 		
 		["[auto cooltime apply]"]=1,
 		
-		["[icon]"]={"Character/Swordman/Effect/SkillIcon.img",94,"Character/Swordman/Effect/SkillIcon.img",95},
+		["[icon]"]={"entity/effect/swordman/skillicon",94,"entity/effect/swordman/skillicon",95},
 		
 		["[weapon effect type]"]="[physical]",
 		

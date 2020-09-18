@@ -56,7 +56,7 @@ function _TripleSlash:SetProcess(nextProcess)
 	if self.body:GetFrame() > self._keyFrames[self._process] then 
 		if self.input:IsPressed("tripleslash") then
 			self._process = nextProcess
-			self.avatar:Play(self._animPathSet[nextProcess])
+			self.avatar:Play(self._animNameSet[nextProcess])
 			self.combat:ClearDamageArr()
 			self:ChangeDir()
 			self._entity.transform.direction = self.nextDir

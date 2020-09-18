@@ -26,27 +26,22 @@ function _GoreCross:Enter()
 	self._NewProjectile = function(effect)
 		local t = effect.transform
 		local param = {
-			x = t.position.x,
+			x = t.position.x + t.direction * effect.render.renderObj:GetWidth() * 0.75,
 			y = t.position.y,
-			z = t.position.z,
+			z = t.position.z - effect.render.renderObj:GetHeight() / 2,
 			direction = t.direction,
 			master = self._entity,
 			camp = self._entity.identity.camp,
 		}
 		_FACTORY.NewEntity(self._entityDataSet[3], param)
-
-		-- self.atkObj = _PassiveObjMgr.GeneratePassiveObj(20028)
-		-- self.atkObj:SetHost(self._entity)
-		-- self.atkObj:SetPos(self._entity.transform.position.x + 85 * self._entity.transform.direction, self._entity.transform.position.y, - 85) -- x + 70 * dir, y - 85
-		-- self.atkObj:SetMoveSpeed(240)
 	end
 
 	local param = { master = self._entity }
 	_FACTORY.NewEntity(self._entityDataSet[1], param)
 	self._crossEffect = _FACTORY.NewEntity(self._entityDataSet[2], param)
-	-- self._crossEffect.identity.destroyEvent.AddListener(self._crossEffect, self._NewProjectile)
+	self._crossEffect.identity.destroyEvent:AddListener(self._crossEffect, self._NewProjectile)
 
-	self.projectile = nil
+	self._projectile = nil
 	self._startSecJudge = false
 	self.combat:ClearDamageArr()
 end

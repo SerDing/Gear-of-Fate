@@ -10,7 +10,7 @@ local _Timer = require("utils.timer")
 ---@class Entity.Component.HitStop : Entity.Component.Base
 local _HitStop = require("core.class")()
 
-local _constStopComponents = {'state', 'avatar', 'Movement', "effect"}
+local _stopList = {'state', 'avatar', 'Movement', "effect"}
 
 ---@param entity GameObject
 function _HitStop:Ctor(entity)
@@ -38,8 +38,8 @@ end
 
 function _HitStop:SetComponentsEnable(state)
     local cp
-    for i = 1, #_constStopComponents do
-        cp = self._entity[_constStopComponents[i]]
+    for i = 1, #_stopList do
+        cp = self._entity[_stopList[i]]
         if cp then
             cp.enable = state
         end

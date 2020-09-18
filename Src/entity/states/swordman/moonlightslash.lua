@@ -40,7 +40,7 @@ function _MoonlightSlash:Update(dt)
 		end
 		if self.body:GetFrame() > self._keyFrames[1] then
 			if self.input:IsPressed("moonlightslash") then
-				self.avatar:Play(self._animPathSet[2])
+				self.avatar:Play(self._animNameSet[2])
 				self._process = 2
 				self.combat:ClearDamageArr()
 				self:NewEffect()

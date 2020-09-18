@@ -17,9 +17,6 @@ local _obj = require "entity.gameobject"
 local _Bullet = require("core.class")(_obj)
 
 function _Bullet:Ctor(path)
-
-	--TODO: bullet的全面组件标准化！
-
 	self:SetType("ATKOBJ")
 	self.objType = "NORMAL_OBJ"
 	local _pathArr = _STRING.split(path, "/")
@@ -131,8 +128,6 @@ function _Bullet:Update(dt)
 	if _overNum == _elementNum then
 		self.over = true
 	end
-
-	---------------------------------------------
 
 	if self.speed ~= 0 and self.aniArr["basicAni"].active then
 		self.position.x = self.position.x + self.speed * dt * self.dir

@@ -46,7 +46,7 @@ function _Pop:Draw(x, y)
     self._sprites[4]:SetRenderValue("scale", self._width / self._sprites[4]:GetWidth(), self._height / self._sprites[4]:GetHeight())
     
     -- right side
-    self._sprites[5]:SetRenderValue("position", x + self._sprites[0]:GetWidth() + self._width, y + self._sprites[0]:GetHeight())
+    self._sprites[5]:SetRenderValue("position", x + self._sprites[0]:GetWidth() + self._width, y + self._sprites[2]:GetHeight())
     self._sprites[5]:SetRenderValue("scale", 1, self._height / self._sprites[5]:GetHeight())
     
     -- bottom-left corner

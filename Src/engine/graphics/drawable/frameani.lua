@@ -8,7 +8,7 @@ local _Timer = require("utils.timer")
 local _Sprite = require("engine.graphics.drawable.sprite")
 
 ---@class Engine.Graphics.Drawable.Frameani : Engine.Graphics.Drawable.Sprite
----@field protected _animData Engine.Resource.AnimData
+---@field protected _aniData Engine.Resource.AniData
 ---@field protected _frame int
 ---@field protected _tick int
 ---@field protected _length int
@@ -20,15 +20,15 @@ local _Frameani = require("core.class")(_Sprite)
 ---@field public time milli
 local _Frame = require("core.class")()
 
-function _Frameani:Ctor(animData)
+function _Frameani:Ctor(aniData)
     _Sprite.Ctor(self)
-    self._animData = nil
+    self._aniData = nil
     self._frame = 1
     self._tick = 0
     self._length = 0
-    self._animData = nil
+    self._aniData = nil
     self._timer = _Timer.New()
-    self:Play(animData)
+    self:Play(aniData)
 end
 
 ---@param dt float
@@ -38,7 +38,7 @@ function _Frameani:Update(dt, rate)
     if self._timer.isRunning == false then
         self._tick = self._frame
         if self._frame == self._length then
-            if self._animData.isLoop == true then
+            if self._aniData.isLoop == true then
                 self:Reset()
             end
         else
@@ -48,31 +48,10 @@ function _Frameani:Update(dt, rate)
     end
 end
 
-function _Frameani:Refresh()
-    if self._animData then
-        if self._animData.frames[self._frame].time then
-            self._timer:Start(self._animData.frames[self._frame].time)
-        else
-            self._timer:Stop()
-        end
-        if self._animData.frames[self._frame].data then
-            self:SetData(self._animData.frames[self._frame].data)
-        else
-            self:SetData()
-        end
-    else
-        self:SetData()
-    end
-end
-
--- function _Frameani:Draw(x, y, r, sx, sy)    
---     _Sprite.Draw(x, y, r, sx, sy)
--- end
-
-function _Frameani:Play(animData)
-    self._animData = animData
-    if self._animData then
-        self._length = #self._animData.frames
+function _Frameani:Play(aniData)
+    self._aniData = aniData
+    if self._aniData then
+        self._length = #self._aniData.frames
     else
        self._length = 0
     end
@@ -84,6 +63,23 @@ end
 function _Frameani:Reset()
     self._frame = 1
     self._tick = 0
+end
+
+function _Frameani:Refresh()
+    if self._aniData then
+        if self._aniData.frames[self._frame].time then
+            self._timer:Start(self._aniData.frames[self._frame].time, true)
+        else
+            self._timer:Stop()
+        end
+        if self._aniData.frames[self._frame].data then
+            self:SetData(self._aniData.frames[self._frame].data)
+        else
+            self:SetData()
+        end
+    else
+        self:SetData()
+    end
 end
 
 function _Frameani:SetFrame(frame)
@@ -98,7 +94,7 @@ end
 function _Frameani:NextFrame()
     local frame = self._frame + 1
     if frame > self._length then
-        if self._animData.isLoop == true then
+        if self._aniData.isLoop == true then
             frame = 1
         else
             return false

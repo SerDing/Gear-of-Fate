@@ -8,7 +8,7 @@
 local _Vector2 = require("utils.vector2")
 local _GRAPHICS = require("engine.graphics.graphics")
 local _RESOURCE = require('engine.resource')
-local _Rect = require("core.rect")
+local _Rect = require("engine.graphics.drawable.rect")
 local _Color = require("engine.graphics.config.color")
 local _Base = require("engine.graphics.drawable.base") 
 
@@ -34,9 +34,12 @@ local _emptyTable = {}
 function _Sprite:Ctor(data)
 	_Base.Ctor(self)
 	self._quad = love.graphics.newQuad(0, 0, 1, 1, 1,1)
-	self.rect = _Rect.New(0, 0, 1, 1)
-	self.rect:SetColor(255, 255, 255, 150)
-	self.rect:SetDrawType("line")
+	self._rect = _Rect.New(0, 0, 1, 1)
+	-- self._rect:SetColor(255, 255, 255, 150)
+
+	self.eventMap.setPosition:AddListener(self, self._UpdateRect)
+	self.eventMap.setScale:AddListener(self, self._UpdateRect)
+	self.eventMap.setOrigin:AddListener(self, self._UpdateRect)
 
 	if data then
 		self:SetData(data)
@@ -44,12 +47,9 @@ function _Sprite:Ctor(data)
 end
 
 function _Sprite:_OnDraw()
-	_Base.DrawObj(self, self.image)
-	
-	self.rect:SetPos(self._actualValues.position:Get())
-	self.rect:SetScale(self._actualValues.scale:Get())
+	_Base.DrawObj(self, self._image)
 	if gDebug then
-		self.rect:Draw()
+		self._rect:Draw(_, "line")
 	end
 end
 
@@ -68,26 +68,39 @@ function _Sprite:SetData(data)
 	self:SetImage(data.image)
 	self:SetRenderValue("blendmode", blendmode)
 	self:SetRenderValue("origin", ox, oy)
-	self.rect:SetOrigin(ox, oy)
 	self:SetRenderValue("scale", sx, sy)
 	self:SetRenderValue("radian", angle)
+
+end
+
+function _Sprite:_UpdateRect()
+	local px, py = self:GetRenderValue("position")
+	local sx, sy = self:GetRenderValue("scale")
+	local ox, oy = self:GetRenderValue("origin")
+	local iw = self:GetWidth()
+	local ih = self:GetHeight()
+	local b1 = (sx < 0) and 1 or 0
+	local b2 = (sy < 0) and 1 or 0
+	local x = px - ox * sx - iw * b1
+	local y = py - oy * sy - ih * b2
+	self._rect:SetDrawData(x, y, iw * math.abs(sx), ih * math.abs(sy))
 end
 
 function _Sprite:SetImage(image)
 	if image == nil then
-		self.image = _RESOURCE.nullImg
+		self._image = _RESOURCE.nullImg
 	else
-		if image == self.image then
+		if image == self._image then
 			return
 		end
 		if type(image) == "string" then
-			self.image = _RESOURCE.LoadImage(image)
+			self._image = _RESOURCE.LoadImage(image)
 		else
-			self.image = image
+			self._image = image
 		end
 	end
-	self:SetQuad(0, 0, self.image:getDimensions())
-	self.rect:SetSize(self.image:getDimensions())
+	self:SetQuad(0, 0, self._image:getDimensions())
+	self._rect:SetSize(self._image:getDimensions())
 end
 
 ---@param x number @ drawing area x
@@ -95,29 +108,28 @@ end
 ---@param w number @ drawing area w
 ---@param h number @ drawing area h
 function _Sprite:SetQuad(x, y, w, h)
-	self._quad:setViewport(x, y, w, h, self.image:getDimensions())
-	self.rect:SetSize(w, h)
+	self._quad:setViewport(x, y, w, h, self._image:getDimensions())
+	self._rect:SetSize(w, h)
 end
 
 function _Sprite:SetOrigin(x, y)
 	self:SetRenderValue("origin", x, y)
-	self.rect:SetOrigin(x, y)
 end
 
 function _Sprite:GetImage()
-	return self.image
+	return self._image
 end
 
 function _Sprite:GetRect()
-	return self.rect
+	return self._rect
 end
 
 function _Sprite:GetWidth()
-	return self.image:getWidth()
+	return self._image:getWidth()
 end
 
 function _Sprite:GetHeight()
-	return self.image:getHeight()
+	return self._image:getHeight()
 end
 
 return _Sprite

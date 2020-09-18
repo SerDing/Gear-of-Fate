@@ -4,11 +4,12 @@
 	Since: 2018-08-14 02:03:40 
 	Last Modified time: 2018-08-14 02:03:40 
 ]]
-local _Event = require("core.event")
+
+local _GRAPHICS = require("engine.graphics.graphics") 
 local _Color = require("engine.graphics.config.color")
-local _RESMGR = require("system.resource.resmgr")
 local _Sprite = require("engine.graphics.drawable.sprite")
-local _ENUM = require("system.gui.enum")
+local _RESMGR = require("system.resource.resmgr")
+local _Event = require("core.event")
 local _Widget = require("system.gui.widgets.widget")
 
 ---@class GUI.Widgets.Button : GUI.Widgets.Base
@@ -61,7 +62,7 @@ function _Button:Draw()
         self._color:Apply()
         local x = math.floor(self.x + (self._sprites.normal:GetWidth() - love.graphics.getFont():getWidth(self._text)) / 2) 
         local y = math.floor(self.y + (self._sprites.normal:GetHeight()- love.graphics.getFont():getHeight()) / 2) 
-        love.graphics.print(self._text, x, y)
+        _GRAPHICS.Print(self._text, x, y)
         self._color:Reset()
     end
     if self._sprites.flash then

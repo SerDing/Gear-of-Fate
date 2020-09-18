@@ -8,7 +8,7 @@ return {
     nextState = 'stay',
     keyFrames = {3},
     ticks = {2},
-    animPathSet = {
+    animNameSet = {
         "moonlightslash1",
         "moonlightslash2",
     },

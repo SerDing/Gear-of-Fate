@@ -9,15 +9,22 @@
 local _INPUT = require("engine.input.init")
 local _AUDIO = require("engine.audio")
 local _GRAPHICS = require("engine.graphics.graphics")
-local _SCENEMGR = require("scene.levelmgr")
+local _LEVELMGR = require("scene.levelmgr")
 local _CAMERA = require("scene.camera")
 local _FACTORY = require("system.entityfactory")
 local _ENTITYMGR = require("system.entitymgr")
 local _UIMGR = require("system.gui.uimgr")
 
+local _Timer = require("utils.timer")
+local _Rect = require("engine.graphics.drawable.rect")
+local _Box = require("entity.drawable.box")
+local _Color = require("engine.graphics.config.color")
+
 ---@class GAME
 local _GAME = {
-	_pause = false
+	_rate = 1.0,
+	_timer = _Timer.New(),
+	_pause = false,
 }
 
 gDebug = false -- global game debug
@@ -25,21 +32,27 @@ gDebug = false -- global game debug
 function _GAME.Ctor() --initialize
 	_AUDIO.Init()
 	_INPUT.Register(_GAME)
-	local player = _FACTORY.NewEntity("character/swordman", {
+	local param = {
 		x = 400, 
 		y = 460, 
 		direction = 1, 
 		camp = 1, 
 		firstState = "stay"
-	})
+	}
+	local player = _FACTORY.NewEntity("character/swordman", param)
 	player.skills.debug = true
-	_FACTORY.mainPlayer = player
 	_ENTITYMGR.player = player
+
+	param.x = param.x + 100
+	param.camp = 3
+	local player2 = _FACTORY.NewEntity("character/swordman", param)
+	player2.input:SetAIControl(false)
+	-- _INPUT.UnRegister(player2.input)
 	
-	_SCENEMGR.Ctor()
+	_LEVELMGR.Ctor()
 	_CAMERA.Ctor()
-	_CAMERA.SetWorld(_SCENEMGR.curScene:GetWidth(), _SCENEMGR.curScene:GetHeight())
-	_UIMGR.Ctor({
+	_CAMERA.SetWorld(_LEVELMGR.curLevel:GetWidth(), _LEVELMGR.curLevel:GetHeight())
+	_UIMGR.Init({
 		hud = "panels.hud",
 		inventory = "panels.inventory",
 	})
@@ -55,18 +68,33 @@ function _GAME.Update(dt)
 		return 
 	end
 
-	_SCENEMGR.Update(dt)
-	_CAMERA.LookAt(_FACTORY.mainPlayer.transform.position.x, _FACTORY.mainPlayer.transform.position.y - 50)
+	if _GAME._rate < 1.0 then
+		_GAME._timer:Tick(dt)
+		if _GAME._timer.isRunning == false then
+			_GAME._rate = 1.0
+		end
+	end
+
+	_ENTITYMGR.Update(dt * _GAME._rate)
+	-- _SCENEMGR.Update(dt)
+	_CAMERA.LookAt(_ENTITYMGR.player.transform.position.x, _ENTITYMGR.player.transform.position.y - 50)
 	_INPUT.Update(dt)
 end
 
 function _GAME.Draw()
-	_CAMERA.Draw(_SCENEMGR.Draw, true)
+	_CAMERA.Draw(_LEVELMGR.Draw, true)
+	_CAMERA.Draw(_ENTITYMGR.Draw, true) -- move into LEVEL.Draw()
 	_UIMGR.Draw()
+	--GameCurtain.Draw()
 	--_CAMERA.DrawLockCross()
 	
 	_GRAPHICS.Print("FPS:" .. love.timer.getFPS(), math.floor(_GRAPHICS.GetWidth() / _CAMERA._scale.x + 10), 10)
 	_GRAPHICS.Print(love.mouse.getX() .. "," .. love.mouse.getY(), (love.mouse.getX() - 20), (love.mouse.getY() - 10))
+end
+
+function _GAME.SetRate(rate, time)
+	_GAME._rate = rate
+	_GAME._timer:Start(time)
 end
 
 function _GAME.Press(_, action)
@@ -77,7 +105,8 @@ function _GAME.Press(_, action)
 		_GAME._pause = not _GAME._pause
 	end 
 	if action == "FREEZE" then
-		_SCENEMGR.curScene.limit = 20
+		-- _SCENEMGR.curScene.limit = 20
+		_GAME.SetRate(0.05, 3000)
 		print("Freeze game world for a while.")
 	end
 	-- if action == "MENU" then

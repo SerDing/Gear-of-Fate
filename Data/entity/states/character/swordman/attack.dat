@@ -8,7 +8,7 @@ return {
     nextState = 'stay',
     keyFrames = {6, 6, 5},
     ticks = {9, 10, 5},
-    animPathSet = {
+    animNameSet = {
         "attack1",
         "attack2",
         "attack3ex",

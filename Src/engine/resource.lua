@@ -12,8 +12,9 @@ local _FILE = require('engine.filesystem')
 local _RESOURCE = {}
 
 local _pools = {
-    animData = {},
+    aniData = {},
     spriteData = {},
+    colliderData = {},
     image = {},
     font = {},
     sound = {},
@@ -25,13 +26,6 @@ for _, p in pairs(_pools) do
     setmetatable(p, _meta)
 end
 
-local _poolLimit = {
-    image = 500,
-    audio = 100,
-    soundData = 100,
-    font = 8,
-}
-
 _RESOURCE.nullImg = love.graphics.newImage(love.image.newImageData(1, 1))
 _RESOURCE.NewShader = love.graphics.newShader
 
@@ -42,13 +36,13 @@ function _RESOURCE.NewImage(path)
         return love.graphics.newImage(path)
     end
     
-    return love.graphics.newImage("ImagePacks/" .. path .. ".png")
+    return love.graphics.newImage("resource/image/" .. path .. ".png")
 end
 
 ---@param path string
 ---@return SoundData 
 function _RESOURCE.NewSoundData(path)
-    return love.sound.newSoundData("SoundPacks/sounds/" .. path .. ".ogg")
+    return love.sound.newSoundData("resource/sound/" .. path .. ".ogg")
 end
 
 ---@param path string
@@ -58,7 +52,7 @@ function _RESOURCE.NewSound(path)
         return love.audio.newSource(path)
     end
 
-    return love.audio.newSource("SoundPacks/sounds/" .. path .. ".ogg")
+    return love.audio.newSource("resource/sound/" .. path .. ".ogg")
 end
 
 ---@param path string
@@ -73,16 +67,17 @@ end
 
 ---@param path string
 ---@param newSpriteDataFunc function
----@param ... any
----@return Engine.Resource.AnimData
-function _RESOURCE.NewAnimData(path, newSpriteDataFunc, imgPath) 
-    imgPath = (imgPath ~= nil) and imgPath .. "/" or ""
-    local staticData = _RESOURCE.ReadData("Data/anim/" .. path)
+---@param imgPath string | nil
+---@return Engine.Resource.AniData
+function _RESOURCE.NewAniData(path, newSpriteDataFunc, imgPath) 
+    imgPath = imgPath and imgPath .. "/" or ""
+    local staticData = _RESOURCE.ReadData("Data/animation/" .. path)
 
-    ---@class Engine.Resource.AnimData
+    ---@class Engine.Resource.AniData
     ---@field public path string
     ---@field public isLoop boolean
     ---@field public frames table<int, Engine.Graphics.Drawable.Frameani.Frame>
+    ---@field public colliderData table<int, Entity.Collider.ColliderData>
     local data = {path = path, isLoop = staticData.isLoop or false, frames = {}}
 
     for k,v in pairs(staticData.frames) do
@@ -92,8 +87,24 @@ function _RESOURCE.NewAnimData(path, newSpriteDataFunc, imgPath)
             data.frames[k].data = _RESOURCE.LoadResource(imgPath .. v.sprite, newSpriteDataFunc, _pools.spriteData, imgPath)
         end
     end
+    
+    imgPath = string.sub(imgPath, 1, string.len(imgPath) - 1)
+    local aniName = string.sub(path, _STRING.FindCharReverse(path, "/") + 1, string.len(path))
+    local colliderDataPath = (imgPath ~= "") and string.sub(imgPath, 1, _STRING.FindCharReverse(imgPath, "/")) .. aniName or path
+    colliderDataPath = string.gsub(colliderDataPath, "entity/", "")
+    data.colliderData = _RESOURCE.NewColliderData(colliderDataPath)
+
+    -- if data.colliderData then
+    --     print(path, imgPath, data.colliderData)
+    -- end
 
     return data
+end
+
+function _RESOURCE.NewColliderData(path)
+    path = "Data/entity/collider/" .. path
+    local exists = _FILE.Exist(path .. ".dat")
+    return exists and _RESOURCE.ReadData(path) or nil
 end
 
 ---@param path string
@@ -121,10 +132,10 @@ function _RESOURCE.LoadSpriteData(path)
 end
 
 ---@param path string
----@return Engine.Resource.AnimData
-function _RESOURCE.LoadAnimData(path)
+---@return Engine.Resource.AniData
+function _RESOURCE.LoadAniData(path)
     -- print("_RESOURCE.LoadAnimData(path)", path)
-    return _RESOURCE.LoadResource(path, _RESOURCE.NewAnimData, _pools.animData, _RESOURCE.NewSpriteData)
+    return _RESOURCE.LoadResource(path, _RESOURCE.NewAniData, _pools.aniData, _RESOURCE.NewSpriteData)
 end
 
 function _RESOURCE.ReadData(path)

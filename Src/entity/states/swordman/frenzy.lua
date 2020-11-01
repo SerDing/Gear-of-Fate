@@ -28,7 +28,7 @@ function _Frenzy:Enter()
 		
 		self.switch = false
 		
-		self.body:SetRenderValue("color", 255, 255, 255, 255)
+		self._body:SetRenderValue("color", 255, 255, 255, 255)
 		-- self._entity:GetAvatar():GetPart("weapon_b1"):SetColor(255, 255, 255, 255)
 		-- self._entity:GetAvatar():GetPart("weapon_c1"):SetColor(255, 255, 255, 255)
 		self.buffComponent:OffBuff("frenzy")
@@ -38,9 +38,9 @@ function _Frenzy:Enter()
 		return 
 	end 
 	
-	self.avatar:Play("grab")
+	self._avatar:Play("grab")
 	
-	self.body:SetRenderValue("color", unpack(self.stateColor))
+	self._body:SetRenderValue("color", unpack(self.stateColor))
 	-- self._entity:GetAvatar():GetPart("weapon_b1"):SetColor(unpack(self.stateColor))
 	-- self._entity:GetAvatar():GetPart("weapon_c1"):SetColor(unpack(self.stateColor))
 
@@ -52,11 +52,11 @@ function _Frenzy:Enter()
 end
 
 function _Frenzy:Update(dt)
-	if not self.effect[2] and self.body:GetFrame() == 6 then
+	if not self.effect[2] and self._body:GetFrame() == 6 then
 		-- _Base.Effect(self, "frenzy/blast.ani")
 	end 
 
-	if self.body:GetFrame() == 16 then
+	if self._body:GetFrame() == 16 then
 		self.buffComponent:AddBuff("frenzy")
 	end 
 end 

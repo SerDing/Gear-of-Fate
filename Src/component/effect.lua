@@ -9,9 +9,10 @@
     Since: 2019-11-5
     Alter: 2019-11-5
 ]]
+local _Base = require("component.base")
 
 ---@class Entity.Component.Effect : Entity.Component.Base
-local _Effect = require("core.class")()
+local _Effect = require("core.class")(_Base)
 
 local function _Follow(self)
 	local x, y, z = self._entity.identity.master.transform.position:Get()
@@ -24,15 +25,14 @@ end
 
 ---@param entity Entity
 function _Effect:Ctor(entity, data, param)
-	self._entity = entity
-	self.enable = true
-	
+	_Base.Ctor(self, entity)
 	self._lockDirection = data.lockDirection
 	self._lockRate = data.lockRate
+	self._lockStop = data.lockStop == nil and true or data.lockStop
 	self._playEnd = data.playEnd or false
+	self._eternal = data.eternal or false
 	self._followType = data.followType
-	self._state = param.master.state.curState
-	-- self:Update(0)
+	self._state = (param.master) and param.master.state.curState or nil
 end
 
 function _Effect:Update()
@@ -43,6 +43,22 @@ function _Effect:Update()
 	if self._entity.identity.master then
 		local master = self._entity.identity.master
 		
+		if self._eternal == false then
+			if self._state ~= master.state.curState then
+				self._entity.identity:StartDestroy()
+			end
+	
+			if self._playEnd then
+				if self._entity.render.renderObj:TickEnd() then
+					self._entity.identity:StartDestroy()
+				end
+			end
+		end
+
+		if self._lockStop and self._entity.identity.isPaused ~= master.identity.isPaused then
+			self._entity.identity.isPaused = master.identity.isPaused
+		end
+
 		if self._lockDirection then
 			if self._entity.transform.direction ~= master.transform.direction then
 				self._entity.transform.direction = master.transform.direction
@@ -55,18 +71,14 @@ function _Effect:Update()
 			end
 		end
 
+		if self._followType then
+			_Follow(self)
+		end
+	else
 		if self._playEnd then
 			if self._entity.render.renderObj:TickEnd() then
 				self._entity.identity:StartDestroy()
 			end
-		else
-			if self._state ~= master.state.curState then
-				self._entity.identity:StartDestroy()
-			end
-		end
-
-		if self._followType then
-			_Follow(self)
 		end
 	end
 end

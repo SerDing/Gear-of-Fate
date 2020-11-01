@@ -7,6 +7,7 @@
 		* main feature: load all skills'path and use them to create skill objects 
 		* it will help cooldown skills and set their are usable state.
 ]]
+local _RESOURCE = require("engine.resource")
 local _STRING = require("engine.string")
 local _Skill = require("component.skills.skill")
 local _Base = require("component.base")
@@ -34,7 +35,7 @@ function _Skills:InitData(job)
 	self.skillPathList = {} --- @type table<number, string> @map<id, path>
 	self.skillNameList = {} --- @type table<number, string> @map<id, name>
 	self.skills = {} ---@type table<number, Skill> @map<id, skillObj>
-	self.skillList = require("Data/entity/skill/" .. job .. "skill") -- load skill list file
+	self.skillList = _RESOURCE.ReadData("Data/entity/skill/" .. job .. "skill") -- load skill list file
 	
 	-- Construct skill file path list and skill name list
 	local pathSplit = {}
@@ -47,7 +48,7 @@ function _Skills:InitData(job)
 	-- Create skill objects
 	self.skills = {}
 	for k,v in pairs(self.skillPathList) do
-		if love.filesystem.exists(v .. ".lua") then -- only create skills which has a real file
+		if love.filesystem.exists(v .. ".dat") then -- only create skills which has a real file
 			self.skills[k] = _Skill.New(v, k)
 		end 
 	end 
@@ -117,7 +118,7 @@ function _Skills:DoSkill(sklID)
 
 	local skill = self.skills[sklID]
 	local consume_mp = skill.property['[consume MP]'] or skill.property['[dungeon]']['[consume MP]']
-	self._entity.stats.mp:Change(-consume_mp[1])
+	self._entity.stats.mp:Decrease(consume_mp[1])
 end
 
 function _Skills:StartCoolSkl(id)

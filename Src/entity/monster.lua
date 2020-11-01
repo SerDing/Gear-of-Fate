@@ -17,7 +17,7 @@ local _RESMGR = require("system.resource.resmgr")
 
 local scene_ = {} -- init a null Scene Pointer
 
----@class Monster : GameObject
+---@class Monster
 local _Monster = require("core.class")()
 
 

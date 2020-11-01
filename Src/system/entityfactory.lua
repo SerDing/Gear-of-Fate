@@ -21,11 +21,13 @@ local _FACTORY = {
 local this = _FACTORY
 
 local _creationOrder = {
+    "aic",
     "input", 
-    "stats", 
     "movement", 
-    "combat", 
-    "buff", 
+    "fighter",
+    "combat",
+    "stats",
+    "buff",
     "render",
     "skills", 
     "state", 
@@ -44,8 +46,8 @@ function _FACTORY.NewEntity(data, param)
 
     ---@type Entity
     local entity = {}
-    entity.transform = _Transform.New(data.transform or {}, param)
-    entity.identity = _Identity.New(data.identity or {}, param)
+    entity.transform = _Transform.New(entity, data.transform or {}, param)
+    entity.identity = _Identity.New(entity, data.identity or {}, param)
     
     local key = ""
     for i=1,#_creationOrder do

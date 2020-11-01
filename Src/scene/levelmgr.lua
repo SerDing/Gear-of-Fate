@@ -8,7 +8,9 @@
 local _Event = require "core.event"
 local _Level = require "scene.level"
 local _CAMERA = require "scene.camera"
+local _FILE = require('engine.filesystem')
 local _RESMGR = require("system.resource.resmgr")
+local _RESOURCE = require("engine.resource")
 
 local _FACTORY = require "system.entityfactory"
 local _sendPos = {}
@@ -37,12 +39,12 @@ function _LEVELMGR.Ctor()
 	this._levelPool = {town = {}, dungeon = {}}
 	this._area = {town = {}, dungeon = {}}
 	this._NAME_LIST = {
-		town = require "Data/town/town" ,
+		town = _RESOURCE.ReadData("Data/town/town"),
 		dungeon = {},
 	}
 
 	for k,v in pairs(this._NAME_LIST.town) do
-		this._area.town[k] = require ("Data/town." .. v)
+		this._area.town[k] = _RESOURCE.ReadData("Data/town/" .. v)
 	end 
 
 	this._curtain = { alpha = 240, speed = 3 }
@@ -118,14 +120,14 @@ end
 
 function _LEVELMGR.CreatScene(area, map, type)
 	-- delete the suffix ".map" 
-	local _path = string.sub(_LEVELMGR.path .. this._area[type][area]["[area]"][map][1], 1, - 4 - 1)
+	local mapPath = string.sub(_LEVELMGR.path .. this._area[type][area]["[area]"][map][1], 1, - 4 - 1) .. ".dat"
 	if not this._levelPool[type][area][map] then
 		--[[	check whether the map file exits 	]]
-		if _LEVELMGR.IsMapFileExisting(_path .. ".lua") == false then
-			error("the map: " .. _path .. ".lua" .. " is not existing!")
+		if _LEVELMGR.IsMapFileExisting(mapPath) == false then
+			error("No map file: " .. mapPath)
 			return false
 		end
-		this._levelPool[type][area][map] = _Level.New(_path, _LEVELMGR) 
+		this._levelPool[type][area][map] = _Level.New(mapPath, _LEVELMGR) 
 	end
 end
 
@@ -164,13 +166,14 @@ function _LEVELMGR.DelEventListener(event, obj, func)
 end
 
 function _LEVELMGR.IsMapFileExisting(path)
-	local fp = io.open(path)
-	if not fp then
-		return false
-	else 
-		fp:close()
-		return true
-	end 
+	return _FILE.Exist(path)
+	-- local fp = io.open(path)
+	-- if not fp then
+	-- 	return false
+	-- else 
+	-- 	fp:close()
+	-- 	return true
+	-- end 
 end
 
 function _LEVELMGR.PutCover()

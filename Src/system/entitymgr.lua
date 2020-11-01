@@ -2,34 +2,38 @@
 	Desc: Entity Manager
 	Author: SerDing
 	Since: 2019-11-07
-	Alter: 2019-11-07
+    Alter: 2019-11-07
+    * Attention! You must assign the logic and responsibility of every component clearly
+    to update them in right order, it's neccessary for using this entity-component architecture 
+    or you can't find suitable updating order easily.
 ]]
-local _keylist = {
+local _runningOrder = {
     update = {
-        'hitstop',
-        'stats',
-        'buff',
-        'skills',
-        'state',
-        'input',
-        'effect',
-        'projectile',
-        'movement',
-        'render',
+        "aic",
+        "state",
+        "combat",
+        "skills",
+        "projectile",
+        "movement",
+        "fighter",
+        "hitstop",
+        "effect",
+        "stats",
+        "buff",
+        "input",
+        "render",
     },
     draw = {
-        'render', 
-	    'buff', 
-	    'collider',
+        "render", 
     },
 }
 
 ---@class EntityManager
----@field protected _entities table<number, Entity>
----@field protected _count number 
+---@field protected _entityList table<int, Entity>
+---@field protected _count int
 ---@field public player Entity
 local _EntityMgr = {
-    _entities = {},
+    _entityList = {},
     _count = 0,
     player = nil,
 }
@@ -37,8 +41,10 @@ local _EntityMgr = {
 ---@class Entity
 ---@field public transform Entity.Component.Transform
 ---@field public identity Entity.Component.Identity
+---@field public aic Entity.Component.AIC
 ---@field public input Entity.Component.Input
 ---@field public render Entity.Component.Render
+---@field public fighter Entity.Component.Fighter
 ---@field public movement Entity.Component.Movement
 ---@field public stats Entity.Component.Stats
 ---@field public state Entity.Component.State
@@ -51,52 +57,23 @@ local _EntityMgr = {
 ---@field public projectile Entity.Component.Projectile
 local _Entity = require("core.class")()
 
----@param entity Entity
----@param dt number
-local function _UpdateEntity(entity, dt)
-    local component = nil ---@type Component
-    for i = 1, #_keylist.update do
-        component = entity[_keylist.update[i]] or nil
-        if component and component.Update and component.enable then
-            component:Update(dt)
-        end
-    end
-end
-
----@param entity Entity
-local function _DrawEntity(entity)
-    local component = nil ---@type Component
-    for i = 1, #_keylist.draw do
-        component = entity[_keylist.draw[i]] or nil
-        if component and component.Draw and component.enable then 
-            component:Draw()
-        end
-    end
-end
-
 function _EntityMgr.Update(dt)
-    --[[
-        Using for loop to update entities will make the new entity 
-        which is created in current loop cannot be update, 
-        because the times of current for loop is fixed before you create new entity and add it into list, 
-        and its value won't be changed when new entity be added.
-        So it will make some bugs like the render component of a new effect entity cannot apply
-        data from transform component leading to the effect is not in right position when its first draw 
-        (first update of render component has not been performed).
-    ]]
-    -- for i = 1, #_EntityMgr._entities do
-    --     _UpdateEntity(_EntityMgr._entities[i], dt)
-    -- end 
-
-    local i = 1
-    while i <= #_EntityMgr._entities do
-        _UpdateEntity(_EntityMgr._entities[i], dt)
-        i = i + 1
+    for i=1,#_runningOrder.update do
+        local compKey = _runningOrder.update[i]
+        local j = 1
+        while j <= #_EntityMgr._entityList do
+            local entity = _EntityMgr._entityList[j]
+            local comp = entity[compKey] or nil ---@type Entity.Component.Base
+            if comp and comp.Update and comp.enable then 
+                comp:Update(dt)
+            end
+            j = j + 1
+        end
     end
 
-    for n = #_EntityMgr._entities, 1, -1 do
-        if _EntityMgr._entities[n].identity.process == 0 then
-            _EntityMgr.DelEntity(_EntityMgr._entities[n])
+    for n = #_EntityMgr._entityList, 1, -1 do
+        if _EntityMgr._entityList[n].identity.process == 0 then
+            _EntityMgr.DelEntity(_EntityMgr._entityList[n])
         end 
 	end 
 end
@@ -114,15 +91,22 @@ local _Sort = function (a, b)
 end
 
 function _EntityMgr.Draw() 
-    table.sort(_EntityMgr._entities, _Sort)
-    for i = 1, #_EntityMgr._entities do
-        _DrawEntity(_EntityMgr._entities[i])
+    table.sort(_EntityMgr._entityList, _Sort)
+    for i=1,#_runningOrder.update do
+        local compKey = _runningOrder.update[i]
+        for j = 1, #_EntityMgr._entityList do
+            local entity = _EntityMgr._entityList[j]
+            local comp = entity[compKey] or nil ---@type Entity.Component.Base
+            if comp and comp.Draw and comp.enable then 
+                comp:Draw()
+            end
+        end
     end
 end
 
 ---@param entity Entity
 function _EntityMgr.AddEntity(entity)
-    _EntityMgr._entities[#_EntityMgr._entities + 1] = entity
+    _EntityMgr._entityList[#_EntityMgr._entityList + 1] = entity
     _EntityMgr._count = _EntityMgr._count + 1
     entity.identity.id = _EntityMgr._count
 end
@@ -130,13 +114,18 @@ end
 ---@param entity Entity
 function _EntityMgr.DelEntity(entity)
     local index = 0
-    for i = 1, #_EntityMgr._entities do
-        if _EntityMgr._entities[i] == entity then
+    for i = 1, #_EntityMgr._entityList do
+        if _EntityMgr._entityList[i] == entity then
             index = i
         end
     end
-    table.remove(_EntityMgr._entities, index)
+    table.remove(_EntityMgr._entityList, index)
     _EntityMgr._count = _EntityMgr._count - 1
+end
+
+---@return table<int, Entity>
+function _EntityMgr.GetEntityList()
+    return _EntityMgr._entityList
 end
 
 return _EntityMgr

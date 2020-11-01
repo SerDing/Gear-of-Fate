@@ -8,20 +8,22 @@
     Since: 2020-03-18
     Alter: 2020-03-18
 ]]
+local _Base = require("component.base")
 
 ---@class Entity.Component.Projectile : Entity.Component.Base
-local _Projectile = require("core.class")()
+local _Projectile = require("core.class")(_Base)
 
 function _Projectile:Ctor(entity, data, param)
-    self._entity = entity
-    self.enable = true
+    _Base.Ctor(self, entity)
     self._playEnd = data.playEnd
+    self._attack = data.attack
     self._maxDistance = data.maxDistance
     self._movementParam = data.movementParam
+    self._entity.combat:StartAttack(self._attack)
 end
 
 function _Projectile:Update(dt)
-    if not self.enable then
+    if not self.enable or self._entity.fighter.isDead then
         return
 	end
 

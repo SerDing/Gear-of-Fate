@@ -27,7 +27,7 @@ function Queue:Enqueue(e)
 end
 
 function Queue:Dequeue()
-    assert(not self:IsEmpty(), "queue is full.")
+    assert(not self:IsEmpty(), "queue is empty.")
     local item = self._array[self._front]
     self._front = self._front % self._capacity + 1
     self._size = self._size - 1

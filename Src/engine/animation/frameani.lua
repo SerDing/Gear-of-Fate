@@ -80,7 +80,7 @@ function _Frameani:Update(dt)
     if not self.active or self.stop or self.playOver then
         return
     end
-
+    print("old frameani updating")
     self._time = self._time + (dt or 0) * self.playRate
     if self._time >= (self.curAnim[self.frameHead]['[DELAY]'] or 100) / 1000 then
         self._time = 0

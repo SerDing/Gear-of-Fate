@@ -19,16 +19,16 @@ end
 
 function _Stay:Update(dt) 
 	_Base.AutoEndTrans(self)
-	if self.input:IsHold("UP") or self.input:IsHold("DOWN") then
-		self.STATE:SetState(self._nextState,self._entity)
+	if self._input:IsHold("UP") or self._input:IsHold("DOWN") then
+		self._STATE:SetState(self._nextState,self._entity)
 	end 
 	
-	if self.input:IsHold("LEFT") then
+	if self._input:IsHold("LEFT") then
 		self._entity.transform.direction = -1
-		self.STATE:SetState(self._nextState, self._entity)
-	elseif self.input:IsHold("RIGHT") then
+		self._STATE:SetState(self._nextState, self._entity)
+	elseif self._input:IsHold("RIGHT") then
 		self._entity.transform.direction = 1
-		self.STATE:SetState(self._nextState, self._entity)
+		self._STATE:SetState(self._nextState, self._entity)
 	end
 end 
 

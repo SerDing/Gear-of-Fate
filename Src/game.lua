@@ -1,36 +1,30 @@
 --[[
-	Desc: A singleton to manage core modules of the game.
-		* F1 -- Debug 
-		* Space -- Freeze GameWorld for a while
+	Desc: A singleton to manage game flow.
  	Author: SerDing
 	Since: 2017-07-28 21:54:14
 	Alter: 2019-10-24 23:28:48
+	* F1 -- Debug 
+	* Space -- Freeze GameWorld for a while
 ]]
-local _INPUT = require("engine.input.init")
 local _AUDIO = require("engine.audio")
 local _GRAPHICS = require("engine.graphics.graphics")
+local _INPUT = require("engine.input.init")
 local _LEVELMGR = require("scene.levelmgr")
 local _CAMERA = require("scene.camera")
 local _FACTORY = require("system.entityfactory")
 local _ENTITYMGR = require("system.entitymgr")
+local _PLAYERMGR = require("system.playermgr")
 local _UIMGR = require("system.gui.uimgr")
-
 local _Timer = require("utils.timer")
-local _Rect = require("engine.graphics.drawable.rect")
-local _Box = require("entity.drawable.box")
-local _Color = require("engine.graphics.config.color")
+local _SETTING = require("setting")
 
----@class GAME
+---@class Game
 local _GAME = {
 	_rate = 1.0,
 	_timer = _Timer.New(),
 	_pause = false,
 }
-
-gDebug = false -- global game debug
--- love.graphics.setFont(love.graphics.newFont("Font/simsun.ttc", 14))
-function _GAME.Ctor() --initialize
-	_AUDIO.Init()
+function _GAME.Ctor()
 	_INPUT.Register(_GAME)
 	local param = {
 		x = 400, 
@@ -40,15 +34,14 @@ function _GAME.Ctor() --initialize
 		firstState = "stay"
 	}
 	local player = _FACTORY.NewEntity("character/swordman", param)
-	player.skills.debug = true
-	_ENTITYMGR.player = player
+	-- player.skills.debug = true
+	_PLAYERMGR.SetMainPlayer(player)
 
 	param.x = param.x + 100
 	param.camp = 3
 	local player2 = _FACTORY.NewEntity("character/swordman", param)
-	player2.input:SetAIControl(false)
-	-- _INPUT.UnRegister(player2.input)
-	
+	-- _PLAYERMGR.SetMainPlayer(player2)
+
 	_LEVELMGR.Ctor()
 	_CAMERA.Ctor()
 	_CAMERA.SetWorld(_LEVELMGR.curLevel:GetWidth(), _LEVELMGR.curLevel:GetHeight())
@@ -57,7 +50,6 @@ function _GAME.Ctor() --initialize
 		inventory = "panels.inventory",
 	})
 
-	-- set callbacks
 	love.mousepressed = _GAME.MousePressed
 	love.mousereleased = _GAME.MouseReleased
 	love.mousemoved = _GAME.MouseMoved
@@ -77,7 +69,7 @@ function _GAME.Update(dt)
 
 	_ENTITYMGR.Update(dt * _GAME._rate)
 	-- _SCENEMGR.Update(dt)
-	_CAMERA.LookAt(_ENTITYMGR.player.transform.position.x, _ENTITYMGR.player.transform.position.y - 50)
+	_CAMERA.LookAt(_PLAYERMGR._mainPlayer.transform.position.x, _PLAYERMGR._mainPlayer.transform.position.y - 50)
 	_INPUT.Update(dt)
 end
 
@@ -88,8 +80,13 @@ function _GAME.Draw()
 	--GameCurtain.Draw()
 	--_CAMERA.DrawLockCross()
 	
-	_GRAPHICS.Print("FPS:" .. love.timer.getFPS(), math.floor(_GRAPHICS.GetWidth() / _CAMERA._scale.x + 10), 10)
-	_GRAPHICS.Print(love.mouse.getX() .. "," .. love.mouse.getY(), (love.mouse.getX() - 20), (love.mouse.getY() - 10))
+	if _SETTING.debug.fps then
+		_GRAPHICS.Print("FPS:" .. love.timer.getFPS(), math.floor(_GRAPHICS.GetWidth() / _CAMERA._scale.x + 10), 10)
+	end
+
+	if _SETTING.debug.mouse then
+		_GRAPHICS.Print(love.mouse.getX() .. "," .. love.mouse.getY(), (love.mouse.getX() - 20), (love.mouse.getY() - 10))
+	end
 end
 
 function _GAME.SetRate(rate, time)
@@ -97,26 +94,38 @@ function _GAME.SetRate(rate, time)
 	_GAME._timer:Start(time)
 end
 
-function _GAME.Press(_, action)
-	if action == "DEBUG" then
-		gDebug = not gDebug
-	end
-	if action == "PAUSE" then
+function _GAME.Quit()
+	love.event.quit()
+end
+
+function _GAME.OnPress(_, button)
+	if button == "PAUSE" then
 		_GAME._pause = not _GAME._pause
 	end 
-	if action == "FREEZE" then
-		-- _SCENEMGR.curScene.limit = 20
+
+	if button == "FREEZE" then
 		_GAME.SetRate(0.05, 3000)
 		print("Freeze game world for a while.")
 	end
-	-- if action == "MENU" then
-	-- 	love.event.quit()
-	-- end
+	
+	if button == "REBORN_ALL" then
+		local list = _ENTITYMGR.GetEntityList()
+		for i=1,#list do
+			local e = list[i]
+			if e.identity.type == "character" and e.fighter.isDead then
+				e.fighter:Reborn()
+			end
+		end
+	end
+	
+	if button == "QUIT" then
+		_GAME.Quit()
+	end
 
-	_UIMGR.KeyPressed(action)
+	_UIMGR.KeyPressed(button)
 end
 
-function _GAME.Release(_, action)
+function _GAME.OnRelease(_, action)
 end
 
 function _GAME.MousePressed(x, y, button, istouch)

@@ -27,12 +27,12 @@ end
 
 function _Move:Update(dt, rate)
 	
-    local up = self.input:IsHold("UP")
-	local down = self.input:IsHold("DOWN")
-	local left = self.input:IsHold("LEFT")
-    local right = self.input:IsHold("RIGHT")
+    local up = self._input:IsHold("UP")
+	local down = self._input:IsHold("DOWN")
+	local left = self._input:IsHold("LEFT")
+    local right = self._input:IsHold("RIGHT")
     
-    self.render.rate = self._entity.stats.moveRate * (rate or 1.0)
+    self._render.rate = self._entity.stats.moveRate * (rate or 1.0)
     local moveSpeed = self._entity.stats.moveSpeed * (rate or 1.0)
     self.speed:Set(moveSpeed, moveSpeed * 0.6)
     local axisX, axisY = 0, 0
@@ -68,33 +68,33 @@ function _Move:Update(dt, rate)
     if axisX ~= 0 and self._entity.transform.direction ~= axisX then
         self._entity.transform.direction = axisX
     end
-    self.movement:X_Move(axisX * self.speed.x)
-    self.movement:Y_Move(axisY * self.speed.y)
+    self._movement:X_Move(axisX * self.speed.x)
+    self._movement:Y_Move(axisY * self.speed.y)
 
-    if self.input:IsPressed("UP") then
+    if self._input:IsPressed("UP") then
         self.time_up = love.timer.getTime()
     end 
     
-    if self.input:IsPressed("DOWN") then
+    if self._input:IsPressed("DOWN") then
         self.time_down = love.timer.getTime()
     end 
     
-    if self.input:IsPressed("LEFT") then
+    if self._input:IsPressed("LEFT") then
         self.time_left = love.timer.getTime()
     end 
    
-    if self.input:IsPressed("RIGHT") then
+    if self._input:IsPressed("RIGHT") then
         self.time_right = love.timer.getTime()
     end 
 
     if not up and not down and not left and not right then 
-        self.STATE:SetState(self._nextState)
+        self._STATE:SetState(self._nextState)
     end 
     
 end 
 
 function _Move:Exit()
-    self.render.rate = 1.0
+    self._render.rate = 1.0
 end
 
 function _Move:GetTrans()

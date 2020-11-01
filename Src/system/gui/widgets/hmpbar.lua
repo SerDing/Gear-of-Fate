@@ -16,9 +16,9 @@ end
 
 function _HMP_Bar:Ctor(name, x, y, stylePath)
     _ProgressBar.Ctor(self, name, x, y, stylePath)
-    self.max = 100
-    self.cur = 100
-    self.percent = self.cur / self.max
+    self._max = 100
+    self._cur = 100
+    self._percent = self._cur / self._max
 end 
 
 function _HMP_Bar:Draw(px, py)
@@ -26,22 +26,22 @@ function _HMP_Bar:Draw(px, py)
 end
 
 ---@param type string
----@param value number
-function _HMP_Bar:OnHpChanged(type, value)
-    self.cur = self.cur + value
+---@param delte number
+function _HMP_Bar:OnHpChanged(type, delte)
+    self._cur = self._cur + delte
     if type == "increase" then
-        if self.cur >= self.max then
-            self.cur = self.max
+        if self._cur >= self._max then
+            self._cur = self._max
         end
         --TODO:increase animation
     elseif type == "decrease" then
-        if self.cur <= 0 then
-            self.cur = 0
+        if self._cur <= 0 then
+            self._cur = 0
         end
         --TODO:decrease animation
     end
     
-    self.percent = self.cur / self.max
+    self._percent = self._cur / self._max
 end
 
 return _HMP_Bar 

@@ -13,8 +13,7 @@ local _Animator = require "entity.drawable.frameani"
 local _AttackJudger = require "component.combat"
 local _HitStop = require("component.hitstop")
 
-local _obj = require "entity.gameobject"
-local _Bullet = require("core.class")(_obj)
+local _Bullet = require("core.class")()
 
 function _Bullet:Ctor(path)
 	self:SetType("ATKOBJ")
@@ -161,7 +160,7 @@ end
 
 function _Bullet:SetHost(host)
 	self.host = host
-	self.attackJudger:ClearDamageArr()
+	self.attackJudger:ClearAttackedList()
 	--for _,v in pairs(self.aniArr) do
 	--	v:SetPlayRate(host:GetAtkSpeed())
 	--	v:Draw(math.floor(self.position.x), math.floor(self.position.y) + math.floor(self.position.z), 0, 1 * self.dir, 1)

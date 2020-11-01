@@ -1,0 +1,11 @@
+return {
+    render = {
+        obj = 'frameani',
+        path = "entity/effect/common/hit/slashsmall3",
+    },
+    effect = {
+        lockDirection = true,
+        lockStop = false,
+        playEnd = true,
+    }
+}

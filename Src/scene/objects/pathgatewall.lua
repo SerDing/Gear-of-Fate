@@ -6,8 +6,8 @@
 
 ]]
 
-local _obj = require "entity.gameobject"
-local _PathgateWall = require("core.class")(_obj)
+-- local _obj = require "entity.gameobject"
+local _PathgateWall = require("core.class")()
 
 local _STRING = require("engine.string")
 local _Animator = require "engine.animation.frameani"

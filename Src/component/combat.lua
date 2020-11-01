@@ -2,250 +2,254 @@
 	Desc: Combat Component
 	Author: SerDing 
 	Since: 2018-02-26 14:36:00 
-	Last Modified time: 2019-9-27
-	Docs: 
-		* Draw() could be used to debug when there is a collision bug
-		* Add attack info file before you using this class for new entity
-		* Call ClearDamageArr() at the right time when you want to judge attack again
+	Alter: 2019-9-27
+	* get 200% damage in flaw state as hit by counter attack
+	* get 150% damage in flaw state as hit by normal attack
+	* get 120% damage in lift state as hit by normal attack
 ]]
-
-local _constEffectPathArr = {
-	['[cut]'] = {
-		['[hit lift up]'] = {
-			"Data/common/hiteffect/animation/slashlarge1.ani",
-			"Data/common/hiteffect/animation/slashsmall1.ani",
-		},
-		['[hit horizon]'] = {
-			"Data/common/hiteffect/animation/slashlarge2.ani",
-			"Data/common/hiteffect/animation/slashsmall2.ani",
-		},
-		['[hit down]'] = {
-			"Data/common/hiteffect/animation/slashlarge3.ani",
-			"Data/common/hiteffect/animation/slashsmall3.ani",
-		},
-	},
-	['[blow]'] = {
-		"Data/common/hiteffect/animation/knocklarge.ani",
-		"Data/common/hiteffect/animation/knocksmall.ani",
-	},
-}
+local _ENTITYMGR = require("system.entitymgr")
+local _FACTORY = require("system.entityfactory")
+local _RESOURCE = require("engine.resource")
+local _RESMGR = require("system.resource.resmgr")
+local _AUDIO = require("engine.audio")
+local _Event = require("core.event")
+local _Color = require("engine.graphics.config.color")
+local _Base = require("component.base")
 
 ---@class Entity.Component.Combat : Entity.Component.Base
-local _Combat = require("core.class")()
+---@field public _OnHit function
+local _Combat = require("core.class")(_Base)
 
-local _Collider = require "system.collider"
-local _Rect = require "engine.graphics.drawable.rect"
-local _AUDIOMGR = require "engine.audio"
+local _hitEffectMap = {
+	cut = {
+		up = {
+			_RESMGR.LoadEntityData("effect/common/hit/slashlarge3"),
+			_RESMGR.LoadEntityData("effect/common/hit/slashsmall3"),
+		},
+		horizon = {
+			_RESMGR.LoadEntityData("effect/common/hit/slashlarge2"),
+			_RESMGR.LoadEntityData("effect/common/hit/slashsmall2"),
+		},
+		down = {
+			_RESMGR.LoadEntityData("effect/common/hit/slashlarge1"),
+			_RESMGR.LoadEntityData("effect/common/hit/slashsmall1"),
+		},
+	},
+	blow = {
+		_RESMGR.LoadEntityData("effect/common/hit/knocklarge"),
+		_RESMGR.LoadEntityData("effect/common/hit/knocksmall"),
+	},
+	blood = _RESMGR.LoadEntityData("effect/common/hit/blood"),
+	fire = _RESMGR.LoadEntityData("effect/common/hit/elemental/fire"),
+	ice = _RESMGR.LoadEntityData("effect/common/hit/elemental/ice"),
+	dark = _RESMGR.LoadEntityData("effect/common/hit/elemental/dark"),
+	light = _RESMGR.LoadEntityData("effect/common/hit/elemental/light"),
+}
 
-local _specialList = {"ATK_OBJ",} -- storage some entities with special types that do not need load AtkInfo
+local _elementSoundDataMap = {
+	fire = _RESOURCE.LoadSoundData("entity/effect/hitting/fire"),
+	ice = _RESOURCE.LoadSoundData("entity/effect/hitting/ice"),
+	dark = _RESOURCE.LoadSoundData("entity/effect/hitting/dark"),
+	light = _RESOURCE.LoadSoundData("entity/effect/hitting/light"),
+}
 
-function _Combat:Ctor(atker)
-	self.enable = true
-	self.damageArr = {}
-	self.atker = atker
-	self.box_a = _Rect.New(0,0,1,1)
-	self.box_b = _Rect.New(0,0,1,1)
-	self.atkInfoArr = {}
-	self.debug = false
+function _Combat:Ctor(entity)
+	_Base.Ctor(self, entity)
+	self._isRunning = false
+	self._attackedList = {}
+	self._attack = nil
+	self.onAttackedEvent = _Event.New()
+	self.onAttackedData = {
+		damage = 0,
+	}
+	
 end
 
---- @param atker GameObject
---- @param enemyType string
---- @param attackName string 
---- @param atkInfo table for skill passive object
-function _Combat:Judge(atker, enemyType, attackName, atkInfo) 
-	
-	if not self.enable then
-		return false
+function _Combat:StartAttack(attack, OnHitCallback)
+	self._attack = attack
+	self._OnHit = OnHitCallback
+	self:Reset()
+	if attack.hitSound then
+		self._hitSoundGroup = attack.hitSound
 	end
-	
-	self.atker = atker
-	local entities = _ObjectMgr.GetObjects()
-	local hit = false
-	local hitRet = false
-	local attackInfo
-	local e
-	
-	for n = 1, #entities do
-		if entities[n] and entities[n]:GetType() == enemyType then
-			e = entities[n]
-			
-			-- judge whether the enemy is hit
-			hit = false
-			if not e.identity.dead then
-				if not self:IsInDamageArr(e:GetId()) then
-					attackInfo = atkInfo or self.atkInfoArr[attackName]
-					hit = self:IsHit(atker, e)
-				end
-			end
+	if attack.turnDirection == nil then
+		self._attack.turnDirection = true
+	end
+end
 
-			-- hit process
+function _Combat:FinishAttack()
+	self._isRunning = false
+	self._hitSoundGroup = nil
+end
+
+function _Combat:Reset()
+	self:ClearAttackedList()
+	self._isRunning = true
+end
+
+---@param a Entity
+---@param b Entity
+local function _IsSameCamp(a, b)
+	return a.identity.camp == b.identity.camp
+end
+
+---@param a Entity
+---@param b Entity
+---@param key1 string
+---@param key2 string
+local function _Collide(a, b, key1, key2)
+	local aColliders = a.render:GetColliders()
+	local bColliders = b.render:GetColliders()
+	local hit, x, y, z = false, 0, 0, 0
+	for i=1,#aColliders do
+		for j=1,#bColliders do
+			hit, x, y, z = aColliders[i]:Collide(bColliders[j], key1, key2)
 			if hit then
-				e:Damage(atker.host or atker, attackInfo)
-				self.damageArr[#self.damageArr + 1] = e:GetId()
-				-- atker:SetHitTime(love.timer.getTime())
-				atker.components.hitstop:Enter(atker.stats.hitstopTime or 80)
+				break
+			end
+		end
+	end
 
-				local weaponSoundArr
-				local weaponHitInfo
-				
-				if atker:GetType() == "character" then
-					local weapon = atker.equipment:GetCurrentEqu("weapon")
-					-- weaponSoundArr = atker.property.weapon_wav
-					-- weaponSoundArr = weaponSoundArr[weapon.main_type]
-					-- weaponHitInfo = atker.property.weapon_hit_info
-					-- weaponHitInfo = weaponHitInfo[weapon.main_type]
+	return hit, x, y, z
+end
+
+---@param entity Entity
+function _Combat:_CanBeAttacked(entity)
+	local fighter = entity.fighter
+	return fighter and fighter.isDead == false and 
+	_IsSameCamp(self._entity, entity) == false and 
+	self:InAttackedList(entity.identity.id) == false
+end
+
+function _Combat:Update(dt)
+	if not self._isRunning or self._entity.fighter.isDead then
+		return false
+	end
+
+	local entityList = _ENTITYMGR.GetEntityList()
+	for i=1,#entityList do
+		local e = entityList[i]
+		if self:_CanBeAttacked(e) then
+			local hit, x, y, z = _Collide(self._entity, e, "attack", "damage")	
+			if hit then
+				local oppoTransform = e.transform
+				local curState = e.state:GetCurState()
+				local isCritical = curState:IsFlawState() or self._entity.transform:IsInBackOf(oppoTransform)
+
+				if (e.fighter or e.projectile) and self._attack.turnDirection then
+					local selfPos = self._entity.transform.position
+					local oppoPos = e.transform.position
+					e.transform.direction = (selfPos.x - oppoPos.x > 0) and 1 or -1
 				end
-				if atker:GetType() == "character" then
-					local hitWav = attackInfo["[hit wav]"]
-					if not hitWav then
-						hitWav = weaponSoundArr[3]
-						if attackName == "dashattack" or attackName == "dashattackmultihit" then
-							hitWav = weaponSoundArr[4]
+
+				if self._attack.selfstop then
+					local selfstop = isCritical and self._attack.selfstop * 2 or self._attack.selfstop
+					self._entity.hitstop:Enter(selfstop)
+				end
+				
+				if self._attack.hitstop then
+					local hitstop = isCritical and self._attack.hitstop * 2 or self._attack.hitstop
+					e.hitstop:Enter(hitstop)
+				end
+				
+				if e.state then
+					local push = self._attack.push
+					local lift = self._attack.lift
+					local curStateName = curState:GetName()
+
+					if push and curStateName ~= "lift" then
+						if curState:HasTag("jump") then
+							e.state:SetState("lift")
+						else
+							e.state:SetState("push", push.time, push.v, push.a)
 						end
-						
 					end
-					_AUDIOMGR.PlaySound(hitWav)
+					
+					if lift then
+						e.state:SetState("lift", lift.vz, lift.az, lift.vx, lift.ax)
+					end
 				end
-
-				local hitType = (weaponHitInfo ~= nil) and weaponHitInfo[1] or attackInfo["[hit info]"]
-				local hitDir = attackInfo["[attack direction]"]
-				local animPath = self:GetEffectPath(hitType, hitDir)
-				local enemyBodyCenter = {x = 0, y = 0}
-				if weaponHitInfo or attackInfo["[hit info]"] then
-					enemyBodyCenter.x = e:GetPos().x
-					enemyBodyCenter.y = e:GetPos().y
-					enemyBodyCenter.z = e.pos.z - e:GetBody():GetHeight() / 2
-					local effect = _EffectMgr.NewEffect(animPath, e, false)
-					effect:SetPos(enemyBodyCenter.x, enemyBodyCenter.y, enemyBodyCenter.z)
-				end
-			end
-
-			if not hitRet and hit == true then
-				hitRet = true
-			end
-
-		end
-		
-	end
-
-	return hitRet
-end 
-
-function _Combat:IsHit(atker, enemy)
-	
-	local damageBoxs
-	local attackBoxs
-
-	local atkerPos
-	local enemyPos
-	local atkerScale
-	local enemyScale
-
-	-- get boxs data
-	attackBoxs = atker:GetAttackBox()
-	damageBoxs = enemy:GetDamageBox()
-	
-	if damageBoxs then
-		-- get position scale data of both sides
-		atkerPos = atker:GetPos()
-		enemyPos = enemy:GetPos()
-		atkerScale = atker:GetBody().scale
-		enemyScale = enemy:GetBody().scale
-		
-		-- detect if attack area box collide with enemy damage area box
-		for n=1, #attackBoxs, 6 do
-			
-			self.box_a:SetPosition(atkerPos.x + attackBoxs[n] * atker:GetDir(), atkerPos.y + - attackBoxs[n+1])
-			self.box_a:SetSize(attackBoxs[n+3] * atkerScale.x, -attackBoxs[n+4] * atkerScale.y)
-			self.box_a:SetDirection(atker:GetDir())
-			
-			for m=1, #damageBoxs, 6 do
 				
-				self.box_b:SetPosition(enemyPos.x + damageBoxs[m] * enemy:GetDir(),enemyPos.y + - damageBoxs[m+1])
-				self.box_b:SetSize(damageBoxs[m+3] * enemyScale.x, -damageBoxs[m+4] * enemyScale.y)
-				self.box_b:SetDirection(enemy:GetDir())
-
-				if not _Collider.Collide(self.box_a, self.box_b) then
-					return false
-				end
-			end
-		end
-
-		-- detect if attack side box collide with enemy damage side box
-		for n=1, #attackBoxs, 6 do
-			
-			self.box_a:SetPosition(atkerPos.x + attackBoxs[n] * atker:GetDir(), atkerPos.y + atkerPos.z + - attackBoxs[n+2])
-			self.box_a:SetSize(attackBoxs[n+3] * atkerScale.x, -attackBoxs[n+5] * atkerScale.y)
-			self.box_a:SetDirection(atker:GetDir())
-			
-			for m=1, #damageBoxs, 6 do
+				local param = {
+					x = x, 
+					y = e.transform.position.y, -- for correct order
+					z = z,
+					direction = e.transform.direction,
+					master = e,
+				}
+				local hitType = self._attack.type
+				local hitDirection = self._attack.direction
+				local effect = self:_GetEffect(hitType, hitDirection)
+				_FACTORY.NewEntity(effect, param)
 				
-				self.box_b:SetPosition(enemyPos.x + damageBoxs[m] * enemy:GetDir(),enemyPos.y + - damageBoxs[m+2] + enemyPos.z)
-				self.box_b:SetSize(damageBoxs[m+3] * enemyScale.x, -damageBoxs[m+5] * enemyScale.y)
-				self.box_b:SetDirection(enemy:GetDir())
-
-				if _Collider.Collide(self.box_a, self.box_b) then
-					return true
+				if self._attack.element then
+					_FACTORY.NewEntity(_hitEffectMap[self._attack.element], param)
 				end
+
+				if self._attack.type == "cut" then
+					local blood = _FACTORY.NewEntity(_hitEffectMap.blood, param)
+					-- blood.render.renderObj:SetRenderValue("color", 220, 0, 0 , 255)
+				end
+
+				if self._hitSoundGroup then
+					_AUDIO.RandomPlay(self._hitSoundGroup)
+				end
+
+				if self._attack.element then
+					_AUDIO.PlaySound(_elementSoundDataMap[self._attack.element])
+				end
+
+				local damageSoundDataSet = self._entity.fighter.damageSoundDataSet
+				if damageSoundDataSet then
+					if type(damageSoundDataSet) == "table" then
+						_AUDIO.RandomPlay(damageSoundDataSet)
+					else
+						_AUDIO.PlaySound(damageSoundDataSet)
+					end
+				end
+
+				local attackedData = e.combat.onAttackedData
+				attackedData.damage = self._attack.damage;
+				e.combat.onAttackedEvent:Notify()
+	
+				if self._OnHit then
+					self._OnHit(self, e)
+				end
+				
+				self._attackedList[#self._attackedList + 1] = e.identity.id
+				self._isRunning = false
 			end
 		end
-
-		return false
-	else
-		return false
 	end
 	
-
 end
 
-function _Combat:HitProcess(atker, enemy, ...)
-end
-
-function _Combat:Draw() 
-	if not self.debug then
-		return
-	end
-
-	self.box_a:Draw(_, "line")
-	self.box_b:Draw(_, "line")
-end
-
-function _Combat:IsInDamageArr(obj_id, frame)
-	for i=1,#self.damageArr do
-		if self.damageArr[i] == obj_id then
+---@param eid int
+function _Combat:InAttackedList(eid)
+	for i=1,#self._attackedList do
+		if self._attackedList[i] == eid then
 			return true
 		end
 	end
+
 	return false
 end
 
-function _Combat:ClearDamageArr()
-	self.damageArr = {}
+function _Combat:ClearAttackedList()
+	self._attackedList = {}
 end
 
-local function NeedLoadAtkInfo(entityType)
-	for i,v in ipairs(_specialList) do
-		if entityType == v then
-			print(v)
-			return true
-		end
-	end
-	return false
+---@param hitType string
+---@param hitDriection string
+function _Combat:_GetEffect(hitType, hitDriection)
+	local list = hitDriection and _hitEffectMap[hitType][hitDriection] or _hitEffectMap[hitType]
+	local index = math.random(1, #list)
+	return list[index]
 end
 
----@param atkType string
----@param atkDir string
-function _Combat:GetEffectPath(atkType, atkDir)
-	local path = ""
-
-	if atkType == "[cut]" then
-		path = _constEffectPathArr[atkType][atkDir][math.random(1, 2)]
-	elseif atkType == "[blow]" then
-		path = _constEffectPathArr[atkType][math.random(1, 2)]
-	end
-
-	return path
+---@param hitSoundGroup table<int, SoundData>
+function _Combat:SetSoundGroup(hitSoundGroup)
+	self._hitSoundGroup = hitSoundGroup
 end
 
 return _Combat 

@@ -6,7 +6,7 @@ return {
     effect = {
         lockDirection = true,
         lockRate = true,
-        palyEnd = true,
+        playEnd = true,
         followType = "xy",
     }
 }

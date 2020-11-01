@@ -13,7 +13,7 @@ local _RESMGR = require "system.resource.resmgr"
 local _ImgPack = require "system.resource.imgpack"
 
 function _Tile:Ctor(path)
-    
+
     self.tile = _RESMGR.LoadDataFile(path)
     self.sprite = _Sprite.New()
     

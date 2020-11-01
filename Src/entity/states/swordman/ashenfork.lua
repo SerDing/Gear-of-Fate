@@ -10,8 +10,8 @@ local _AUDIO = require("engine.audio")
 local _Base  = require "entity.states.base"
 
 local _Ashenfork = require("core.class")(_Base)
-function _Ashenfork:Ctor(...)
-	_Base.Ctor(self, ...)
+function _Ashenfork:Ctor(data, ...)
+	_Base.Ctor(self, data, ...)
 	self.name = "ashenfork"
 	self.skillID = 16
 	self.g = 250 -- 130

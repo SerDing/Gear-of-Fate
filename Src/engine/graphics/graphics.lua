@@ -14,6 +14,7 @@ _GRAPHICS.Pop = love.graphics.pop
 _GRAPHICS.Translate = love.graphics.translate
 _GRAPHICS.Scale = love.graphics.scale
 _GRAPHICS.DrawRect = love.graphics.rectangle
+_GRAPHICS.Points = love.graphics.points
 _GRAPHICS.Print = love.graphics.print
 _GRAPHICS.SetShader = love.graphics.setShader
 _GRAPHICS.GetWidth = love.graphics.getWidth

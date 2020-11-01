@@ -5,11 +5,13 @@
 	Last Modified time: 2018-08-21 02:16:12 
 
 ]]
+local _RESOURCE = require("engine.resource")
+
 ---@class Skill
 local _Skill = require("core.class")()
 
 function _Skill:Ctor(path, id)
-	self.property = require(path)
+	self.property = _RESOURCE.ReadData(path)
 	self.id = id
 	self.iconPath = {
 		self.property["[icon]"][1] .. "/" .. self.property["[icon]"][2] .. "",

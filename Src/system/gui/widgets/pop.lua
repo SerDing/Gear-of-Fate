@@ -5,7 +5,7 @@
 	Alter: 2020-04-04 23:53:28
 
 ]]
-local _RESMGR = require("system.resource.resmgr")
+local _RESOURCE = require("engine.resource")
 local _Sprite = require("engine.graphics.drawable.sprite")
 
 ---@class GUI.Widgets.Pop : GUI.Widgets.Base
@@ -15,7 +15,7 @@ local _Pop = require("core.class")()
 function _Pop:Ctor(w, h, stylePath)
     self._width = w or 0
     self._height = h or 0
-    self._style = require(stylePath)
+    self._style = _RESOURCE.ReadData(stylePath)
     assert(self._style, "style table is null!")
     self._sprites = {}
     for i = 0, 8 do

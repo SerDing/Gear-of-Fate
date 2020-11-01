@@ -6,7 +6,36 @@ return {
         attackRate = true,
     },
     nextState = 'stay',
-    ticks = {3, 7},
+    effectTicks = {3, 7, 10},
+    attackTicks = {6},
+    attack = {
+        {
+            type = "cut",
+            direction = "horizon",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -80,
+                a = 350
+            },
+            selfstop = 92,
+            hitstop = 180,
+            damage = 30,
+        },
+        {
+            type = "cut",
+            direction = "up",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -70,
+                a = 350
+            },
+            selfstop = 92,
+            hitstop = 220,
+            damage = 30,
+        },
+    },
     animNameSet = {
         "gorecross",
     },
@@ -16,14 +45,14 @@ return {
         "projectile/swordman/gorecross",
     },
     sound = {
-        voice = "voice/swordman/sm_gorecross",
+        voice = "entity/character/voice/swordman/sm_gorecross",
         swing = {
-            "swing/swordman/gorecross_atk3",
-            "swing/swordman/gorecross_cross",
+            "entity/character/swing/swordman/gorecross_atk3",
+            "entity/character/swing/swordman/gorecross_cross",
         },
         hitting = {
-            "hitting/swordman/hsword/3",
-            "hitting/swordman/hsword/4",
+            "entity/character/hitting/swordman/hsword/3",
+            "entity/character/hitting/swordman/hsword/4",
         },
     },
 }

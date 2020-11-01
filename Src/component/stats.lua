@@ -12,7 +12,7 @@ local _Base = require("component.base")
 local _Stats = require("core.class")(_Base)
 
 function _Stats:Ctor(entity, data)
-    _Base.Ctor(self)
+    _Base.Ctor(self, entity)
 
     self.maxhp = data.maxhp or 100
     self.maxmp = data.maxmp or 100
@@ -26,12 +26,21 @@ function _Stats:Ctor(entity, data)
     self.attackRate = data.attackRate or 1.0
     self.moveRate = data.moveRate or 1.0
     self.moveSpeed = data.moveSpeed or 100
-    self.hitstopTime = data.hitstopTime or 75
+
+    self._entity.combat.onAttackedEvent:AddListener(self, self.OnAttacked)
 end
 
 function _Stats:Update(dt)
     self.hp:Update(dt)
     self.mp:Update(dt)
+end
+
+function _Stats:OnAttacked()
+    local data = self._entity.combat.onAttackedData
+    self.hp:Decrease(data.damage)
+    if self.hp:GetCur() == 0 then
+        self._entity.fighter:Die()
+    end
 end
 
 return _Stats

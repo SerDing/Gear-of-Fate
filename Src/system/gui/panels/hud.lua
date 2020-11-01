@@ -4,7 +4,7 @@
 	Since: 2019-08-10 18:26
 	Alter: 2019-12-08 
 ]]
-local _ENTITYMGR = require("system.entitymgr") 
+local _PLAYERMGR = require("system.playermgr")
 local _Panel = require("system.gui.panels.panel")
 local _HUD = require("core.class")(_Panel) ---@class HUD : Panel
 
@@ -19,19 +19,19 @@ function _HUD:Ctor()
 
     self.hpView = self:GetWidgetById("hp_bar")
     self.mpView = self:GetWidgetById("mp_bar")
-    self.hpController = _HpController.New() ---@type HpController
-    self.mpController = _HpController.New() ---@type HpController
+    self.hpController = _HpController.New() ---@type GUI.Widgets.HpController
+    self.mpController = _HpController.New() ---@type GUI.Widgets.HpController
     self.hpController:SetView(self.hpView)
     self.mpController:SetView(self.mpView)
 
-    self:SetEntity(_ENTITYMGR.player)
+    self:SetEntity(_PLAYERMGR._mainPlayer)
 end
 
 ---@param entity Entity
 function _HUD:SetEntity(entity)
     self._entity = entity
     self:SetSkillShortcutsInfo()
-    self:SetHmpMVC()
+    self:SetMVC()
 end
 
 function _HUD:SetSkillShortcutsInfo()
@@ -61,7 +61,7 @@ function _HUD:SetSkillShortcutsInfo()
     end
 end
 
-function _HUD:SetHmpMVC()
+function _HUD:SetMVC()
     self.hpController:SetModel(self._entity.stats.hp)
     self.mpController:SetModel(self._entity.stats.mp)
 end

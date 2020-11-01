@@ -4,6 +4,7 @@
     Since: 2019-12-04
     Alter: 2019-12-04
 ]]
+local _GRAPHICS = require("engine.graphics.graphics")
 local _Color = require("engine.graphics.config.color")
 local _Drawable = require("engine.graphics.drawable.base")
 local _Base = require("component.base")
@@ -33,22 +34,11 @@ function _Render:Ctor(entity, data, param)
         self.layer = _Drawable.New()
         self.layer:AddChild(self.renderObj)
     end
-    -- link to other methods of renderObj
-    -- for key, value in pairs(data.objClass) do
-    --     if type(value) == "function" then
-    --         if key ~= "HandleData" and key ~= "New" and key ~= "Ctor" and key ~= "Update" and key ~= "Draw" then
-    --             print("_Render:Ctor, key = ", key)
-    --             _Render[key] = function (...)
-    --                 value(self.renderObj, ...)
-    --             end
-    --         end
-    --     end
-    -- end
 end
 
 function _Render:Update(dt)
-    
-    if self.renderObj.Update then
+
+    if self.renderObj.Update and not self._entity.identity.isPaused then
         self.renderObj:Update(dt, self.rate)
     end
     
@@ -61,14 +51,17 @@ function _Render:Update(dt)
     obj:SetRenderValue("radian", e.transform.rotation)
     obj:SetRenderValue("scale", sx * e.transform.direction, sy)
     obj:SetRenderValue("color", self.color:Get())
+
 end
 
 function _Render:Draw()
     self.renderObj:Draw()
+    local pos = self._entity.transform.position
+    -- _GRAPHICS.Points(pos.x, pos.y + pos.z)
 end
 
--- function _Render:GetPart(key)
---     return self.renderObj:GetPart(key)
--- end
+function _Render:GetColliders()
+    return (self.renderObj.GetColliderGroup) and self.renderObj:GetColliderGroup() or {self.renderObj:GetCollider()}
+end
 
 return _Render

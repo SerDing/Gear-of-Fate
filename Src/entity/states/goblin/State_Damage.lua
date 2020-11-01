@@ -9,7 +9,7 @@
 
 local _State_Damage = require("core.class")()
 
-local _AUDIOMGR = require "engine.audio"
+local _AUDIO = require "engine.audio"
 
 function _State_Damage:Ctor(FSM, entity)
 	self.FSM = FSM
@@ -29,7 +29,6 @@ function _State_Damage:Ctor(FSM, entity)
 	self.bounce = false
 
 	self.acfactor = 1.1 -- acceleration factor
-
 end 
 
 function _State_Damage:SetDamageAnimR()
@@ -69,12 +68,12 @@ function _State_Damage:Enter(damageInfo, obj)
 	self.timer = 0
 	self.timer2 = 0
 
-	local _info = (self.lift_V > 0) and damageInfo["lift"] or damageInfo["push"]
+	local info = (self.lift_V > 0) and damageInfo["lift"] or damageInfo["push"]
 
-	self.push_A = _info["backSpeed"]
+	self.push_A = info["backSpeed"]
 	-- self.bounce = _info["bounce"] or self.bounce
-	self.bounce = (_info["float"] > 0) and true or false
-	self.liftPower = _info["float"] * self.stableFPS * 1.15
+	self.bounce = (info["float"] > 0) and true or false
+	self.liftPower = info["float"] * self.stableFPS * 1.15
 
 	if self.liftPower > 0 then
 		if self.dir_Y == "up" or self.dir_Y == "down" then
@@ -89,7 +88,7 @@ function _State_Damage:Enter(damageInfo, obj)
 		self.bounce = true
 		
 	else -- no float effect
-		self.push_V = _info["backPower"] * self.stableFPS
+		self.push_V = info["backPower"] * self.stableFPS
 		if self.dir_Y == "up" or self.dir_Y == "down" then -- in air
 			self.lift_V = 2
 			self.dir_Y = "up"
@@ -171,7 +170,7 @@ function _State_Damage:Enter(damageInfo, obj)
 	
 	local damageSound = self._entity.data.voice.damage
 	if damageSound then
-		_AUDIOMGR.PlaySound(damageSound)
+		_AUDIO.PlaySound(damageSound)
 	end
 
 end

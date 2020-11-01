@@ -5,10 +5,10 @@
 	Alter: 2017-07-30 12:40:40
 ]]
 
----@class AnimObj:GameObject
+---@class AnimObj
 
-local _obj = require "entity.gameobject"
-local _AnimObj = require("core.class")(_obj)
+-- local _obj = require "entity.gameobject"
+local _AnimObj = require("core.class")()
 
 local _RESMGR = require "system.resource.resmgr"
 local _Animator = require("engine.animation.frameani")

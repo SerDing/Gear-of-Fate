@@ -8,42 +8,39 @@
 ]]
 local _AUDIO = require("engine.audio")
 local _FACTORY = require("system.entityfactory") 
-local _Base  = require "entity.states.base"
+local _Base  = require("entity.states.base")
 
----@class State.UpperSlash : State.Base
-local _State_UpperSlash = require("core.class")(_Base)
+---@class State.Swordman.UpperSlash : State.Base
+local _UpperSlash = require("core.class")(_Base)
 
-function _State_UpperSlash:Ctor(data, ...)
+function _UpperSlash:Ctor(data, ...)
 	_Base.Ctor(self, data, ...)
 	self.skillID = 46
 	self._process = 1
 	self._ticks = data.ticks
 end 
 
-function _State_UpperSlash:Enter()
+function _UpperSlash:Enter()
 	_Base.Enter(self)
-	self.combat:ClearDamageArr()
+	self._combat:SetSoundGroup(self._soundDataSet.hitting.hsword)
+	self._combat:StartAttack(self._attackDataSet[1])
 end
 
-function _State_UpperSlash:Update(dt)
+function _UpperSlash:Update(dt)
 	_Base.EaseMove(self)
 	_Base.AutoEndTrans(self)
 	
-	if self.body:GetTick() == self._ticks[1] then
+	if self._body:GetTick() == self._ticks[1] then
 		local param = {master = self._entity}
 		_FACTORY.NewEntity(self._entityDataSet[1], param)
 
 		_AUDIO.PlaySound(self._soundDataSet.voice)
 		_AUDIO.PlaySound(self._soundDataSet.swing)
 	end 
-	
-	-- if self._entity:GetAttackBox() then
-	-- 	self.combat:Judge(self._entity, "MONSTER", self.name)
-	-- end
 end 
 
-function _State_UpperSlash:Exit()
-    _Base.Exit(self)
+function _UpperSlash:Exit()
+	_Base.Exit(self)
 end
 
-return _State_UpperSlash 
+return _UpperSlash 

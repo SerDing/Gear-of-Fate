@@ -1,0 +1,17 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "entity/effect/common/hit/knocksmall/0",
+            time = 80,
+        },
+        {
+            sprite = "entity/effect/common/hit/knocksmall/1",
+            time = 80,
+        },
+        {
+            sprite = "entity/effect/common/hit/knocksmall/2",
+            time = 80,
+        },
+    },
+}

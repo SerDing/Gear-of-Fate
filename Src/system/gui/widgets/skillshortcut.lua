@@ -4,8 +4,6 @@
 	Since: 2018-08-29 15:11:16 
 	Last Modified time: 2018-08-29 15:11:16
 ]]
-
-local _RESMGR = require "system.resource.resmgr"
 local _Sprite = require "engine.graphics.drawable.sprite"
 local _FACTORY = require "system.entityfactory"
 local _GRAPHICS = require("engine.graphics.graphics")

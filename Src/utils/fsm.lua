@@ -11,7 +11,7 @@ local _FSM = require("core.class")()
 ---@param entity Entity
 ---@param stateName string
 function _FSM:Ctor()
-	self.states = {}
+	self._states = {}
     self.transitions = {}
 	self.preState = nil
 	self.curState = nil
@@ -27,13 +27,14 @@ end
 
 ---@param name string 
 function _FSM:SetState(name, ...)
-	assert(self.states[name], "_FSM:SetState(), no state: " .. name)
+	assert(self._states[name], "No state: " .. name)
 	if self.curState then
 		self.preState = self.curState
 		self.curState:Exit()
 		self:OnCurStateExit()
 	end
-	self.curState = self.states[name]
+
+	self.curState = self._states[name]
 	self.curState:Enter(...)
 	self:OnNewStateEnter()
 
@@ -43,8 +44,8 @@ end
 ---@param name string
 ---@param state State.Base
 function _FSM:RegState(name, state)
-	state.STATE = self
-	self.states[name] = state
+	state._STATE = self
+	self._states[name] = state
 	-- print("_FSM:RegState: ", name, state)
 end
 
@@ -61,15 +62,15 @@ end
 ---@param cond string @condition
 ---@param source string @source state name
 ---@param dest string @destination state name
-function _FSM:AddTransition(cd, src, d, ...)
-    assert(type(cd) == "string", "condition must be string.")
-    assert(type(src) == "string", "source state name must be string.")
-    assert(type(d) == "string", "destination state name must be string.")
+function _FSM:AddTransition(condition, source, dest, ...)
+    assert(type(condition) == "string", "condition must be string.")
+    assert(type(source) == "string", "source state name must be string.")
+    assert(type(dest) == "string", "destination state name must be string.")
 	-- create message pool by cd, if it is not existing.
-	if not self.transitions[cd] then
-		self.transitions[cd] = {}
+	if not self.transitions[condition] then
+		self.transitions[condition] = {}
 	end
-	self.transitions[cd][src] = d
+	self.transitions[condition][source] = dest
 end
 
 ---@param msg string @message

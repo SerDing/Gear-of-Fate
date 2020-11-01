@@ -7,24 +7,17 @@
         * Every scene is created by a *.map file
         * Press space to freeze camera 
 ]]
-
-local _Rect = require("engine.graphics.drawable.rect")
+local _SETTING = require("setting")
+local _STRING = require("engine.string")
+local _AUDIOMGR = require("engine.audio")
+local _RESOURCE = require("engine.resource")
+local _RESMGR = require("system.resource.resmgr")
+local _ENTITYMGR = require("system.entitymgr")
 local _Tile = require("scene.objects.tile")
 local _AnimObj = require("scene.objects.animobj")
 local _Animator = require("engine.animation.frameani")
-local _EntityMgr = require("system.entitymgr")
-local _Collider = require("system.collider")
-
-local _STRING = require("engine.string")
-local _RESMGR = require("system.resource.resmgr")
-local _AUDIOMGR = require("engine.audio")
--- local _PassiveObjMgr = require("system.passiveobjmgr")
--- local _MonsterSpawner = require("system.monsterspawner")
-
+local _Rect = require("engine.graphics.drawable.rect")
 local _Navigation = require("system.navigation.navigation")
-
--- _PassiveObjMgr.Ctor()
--- _MonsterSpawner.Ctor()
 
 local mathFloor = math.floor
 local mathCeil = math.ceil
@@ -37,7 +30,7 @@ function _Level:Ctor(path, LEVELMGR) --initialize
     self._LEVELMGR = LEVELMGR
 
     self.pathHead = "Data/map/"
-    self.map = require(string.gsub(path,".lua",""))
+    self.map = _RESOURCE.ReadData(string.gsub(path,".dat",""))
 
     -- temp proc of [virtual movable area] for test maps
     -- if not self.map["[virtual movable area]"] then
@@ -243,7 +236,7 @@ function _Level:Update(dt)
 		self.limit = self.limit - self.warmSpd
     end
     
-    _EntityMgr.Update(dt)
+    _ENTITYMGR.Update(dt)
 end
 
 ---@param cam_x number
@@ -258,13 +251,13 @@ function _Level:Draw(cam_x,cam_y)
     self:DrawLayer("[bottom]", cam_x, cam_y)
     self:DrawLayer("[closeback]", cam_x, cam_y)
 
-    if gDebug then
+    if _SETTING.debug.level then
         --self:DrawSpecialArea("movable")
         self:DrawSpecialArea("event")
     end 
 
     self.nav:Draw()
-    _EntityMgr.Draw()
+    _ENTITYMGR.Draw()
     self:DrawLayer("[close]", cam_x, cam_y)
 end
 
@@ -503,9 +496,9 @@ function _Level:IsInObstacles(x, y)
     end
 
     for n=1,#self.obstacles do
-        if _Collider.CheckPoint(x, y, self.obstacles[n].rect) then
+        -- if _Collider.CheckPoint(x, y, self.obstacles[n].rect) then
             return {true, self.obstacles[n].rect}
-        end 
+        -- end 
     end 
 
     return {false, "no collision"}
@@ -515,9 +508,9 @@ end
 function _Level:CollideWithObstacles(rect_a)
     for n=1,#self.obstacles do
         local rect_b = self.obstacles[n]:GetRect()
-        if _Collider.Collide(rect_a, rect_b) then
+        -- if _Collider.Collide(rect_a, rect_b) then
             return true
-        end
+        -- end
     end 
     
     return false

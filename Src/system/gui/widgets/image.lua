@@ -6,7 +6,6 @@
 
 ]]
 local _Sprite = require("engine.graphics.drawable.sprite")
-local _RESMGR = require("system.resource.resmgr")
 local _Widget = require("system.gui.widgets.widget")
 
 ---@class GUI.Widgets.Image : GUI.Widgets.Base

@@ -21,7 +21,7 @@ local _Input = require("core.class")(_Base)
 local _enum = {pressed = 0, hold = 1, released = 2}
 
 function _Input:Ctor(entity, data)
-    _Base.Ctor(self, entity) 
+    _Base.Ctor(self, entity)
     self._buttonMap = {}
     self.skillInputMap = data.skillInputMap or {}
     self.isAIControl = false
@@ -75,9 +75,16 @@ function _Input:Release(button)
     return false
 end
 
-function _Input:SetAIControl(control)
-    self.isAIControl = control
-    return control and _INPUT.Register(self) or _INPUT.UnRegister(self)
+function _Input:OnPress(button)
+    if self._entity.aic.enable == false then
+        self:Press(button)
+    end
+end
+
+function _Input:OnRelease(button)
+    if self._entity.aic.enable == false then
+        self:Release(button)
+    end
 end
 
 return _Input 

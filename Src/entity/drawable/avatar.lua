@@ -59,7 +59,6 @@ function _Avatar:Play(name)
     for key, part in pairs(self._aniMap) do
         local data = (self._dynamic) and self._aniDatas[key][name] or self._aniDatas[key]
         part:Play(data, name)
-        -- print(name, key, data.colliderData)
     end
 end 
 
@@ -145,6 +144,19 @@ end
 
 function _Avatar:TickEnd()
     return self:CallChildGetFunc("TickEnd")
+end
+
+---@return table<int, Entity.Collider>
+function _Avatar:GetColliderGroup()
+    local colliders = {}
+    for k,v in pairs(self._aniMap) do
+        local collider = v:GetCollider()
+        if collider and (#collider._lists.damage > 0 or #collider._lists.attack > 0) then
+            colliders[#colliders + 1] = collider
+        end
+    end
+    
+    return colliders
 end
 
 -- function _Avatar:GetHeight()

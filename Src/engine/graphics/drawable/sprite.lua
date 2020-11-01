@@ -4,7 +4,7 @@
 	Since: 2017-07-26 23:41:15
 	Alter: 2020-02-10 02:11:12
 ]]
-
+local _SETTING = require("setting")
 local _Vector2 = require("utils.vector2")
 local _GRAPHICS = require("engine.graphics.graphics")
 local _RESOURCE = require('engine.resource')
@@ -13,6 +13,8 @@ local _Color = require("engine.graphics.config.color")
 local _Base = require("engine.graphics.drawable.base") 
 
 ---@class Engine.Graphics.Drawable.Sprite:Engine.Graphics.Drawable.Base 
+---@field protected _data Engine.Graphics.Drawable.SpriteData
+---@field protected _rect Engine.Graphics.Drawable.Rect
 local _Sprite = require("core.class")(_Base)
 
 ---@class Engine.Graphics.Drawable.SpriteData
@@ -40,15 +42,13 @@ function _Sprite:Ctor(data)
 	self.eventMap.setPosition:AddListener(self, self._UpdateRect)
 	self.eventMap.setScale:AddListener(self, self._UpdateRect)
 	self.eventMap.setOrigin:AddListener(self, self._UpdateRect)
-
-	if data then
-		self:SetData(data)
-	end
+	
+	self:SetData(data)
 end
 
 function _Sprite:_OnDraw()
 	_Base.DrawObj(self, self._image)
-	if gDebug then
+	if _SETTING.debug.sprite then
 		self._rect:Draw(_, "line")
 	end
 end

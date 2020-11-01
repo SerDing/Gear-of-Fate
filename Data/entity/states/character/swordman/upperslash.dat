@@ -14,13 +14,28 @@ return {
         "effect/swordman/upperslash1",
     },
     sound = {
-        voice = "voice/swordman/sm_upslash",
-        swing = "swing/swordman/upper_slash_01",
+        voice = "entity/character/voice/swordman/sm_upslash",
+        swing = "entity/character/swing/swordman/upper_slash_01",
         hitting = {
             hsword = {
-                "hitting/swordman/hsword/1",
-                "hitting/swordman/hsword/2",
+                "entity/character/hitting/swordman/hsword/1",
+                "entity/character/hitting/swordman/hsword/2",
             },
+        },
+    },
+    attack = {
+        {
+            type = "cut",
+            direction = "up",
+            reaction = "damage",
+            lift = {
+                vz = 610,
+                az = 26,
+                vx = -55,
+            },
+            selfstop = 92,
+            hitstop = 170,
+            damage = 40,
         },
     },
     easeMoveData = {

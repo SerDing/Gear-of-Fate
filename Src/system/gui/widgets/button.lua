@@ -4,11 +4,10 @@
 	Since: 2018-08-14 02:03:40 
 	Last Modified time: 2018-08-14 02:03:40 
 ]]
-
+local _RESOURCE = require("engine.resource")
 local _GRAPHICS = require("engine.graphics.graphics") 
 local _Color = require("engine.graphics.config.color")
 local _Sprite = require("engine.graphics.drawable.sprite")
-local _RESMGR = require("system.resource.resmgr")
 local _Event = require("core.event")
 local _Widget = require("system.gui.widgets.widget")
 
@@ -25,7 +24,7 @@ function _Button:Ctor(name, text, x, y, stylePath)
     _Widget.Ctor(self, name, x, y)
 
     self._text = text
-    self._style = require(stylePath)
+    self._style = _RESOURCE.ReadData(stylePath)
     self._state = "normal"
     self._sprites = {
         normal = _Sprite.New(),

@@ -1,0 +1,12 @@
+return {
+    render = {
+        obj = 'frameani',
+        path = "entity/effect/swordman/bloodslash/slash2",
+    },
+    effect = {
+        lockDirection = true,
+        lockRate = true,
+        playEnd = true,
+        followType = "xy",
+    }
+}

@@ -4,6 +4,7 @@
 	Since: 2018-04-06
 	Alter: 2019-10-24
 ]]
+local _RESOURCE = require("engine.resource")
 
 ---@class Engine.Input
 ---@field protected _inputStates table @input states for keyboard and gamePad
@@ -30,7 +31,7 @@ local _INPUT = {
     }
 }
 
-local _InputMap = require("Data.input.InputMap")
+local _InputMap = _RESOURCE.ReadData("Data/input/map")
 local _InputHandlers = {} ---@type table<number, Engine.Input.InputHandler>
 local _AXIS_DEADBAND = 0.19
 local _TRIGGER_DEADBAND = 0.19
@@ -50,13 +51,13 @@ end
 
 local function _PressButton(action)
     for i=1,#_InputHandlers do
-        _InputHandlers[i]:Press(action)
+        _InputHandlers[i]:OnPress(action)
     end
 end
 
 local function _ReleaseAction(action)
     for i=1,#_InputHandlers do
-        _InputHandlers[i]:Release(action)
+        _InputHandlers[i]:OnRelease(action)
     end
 end
 

@@ -3,7 +3,7 @@ return {
     explain = "",
     background_text = "在长久的战斗中不断浸染血气而拥有了狂暴力量的恐怖之剑。",
     icon = "",
-    type = "weapon", -- item type
+    type = "weapon",
     subtype = "hsword",
     damage = 24,
     avatar = {

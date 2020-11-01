@@ -1,8 +1,10 @@
 return {
     identity = {     
-        name = "鬼剑士", -- 狂战士
-        type = "character"
+        type = "character",
+        subtype = "swordman",
+        weight = 50,
     },
+    aic = {},
     input = {
         skillInputMap = {
             SKILL_SHORTCUT_1 = "hopsmash",
@@ -10,11 +12,11 @@ return {
             SKILL_SHORTCUT_3 = nil,
             SKILL_SHORTCUT_4 = "tripleslash",
             SKILL_SHORTCUT_5 = nil,
-            SKILL_SHORTCUT_6 = "frenzy",
+            -- SKILL_SHORTCUT_6 = "frenzy",
             SKILL_SHORTCUT_EX_1 = "upperslash",
             SKILL_SHORTCUT_EX_2 = nil,
             SKILL_SHORTCUT_EX_3 = "moonlightslash",
-            SKILL_SHORTCUT_EX_4 = "ashenfork",
+            -- SKILL_SHORTCUT_EX_4 = "ashenfork",
             SKILL_SHORTCUT_EX_5 = nil,
             SKILL_SHORTCUT_EX_6 = nil,
             GAMEPAD_SKILL_A = 'hopsmash',
@@ -37,27 +39,37 @@ return {
             weapon_c1 = 30,
         },
     },
+    fighter = {
+        weight = 10,
+        deathSound = "entity/character/voice/swordman/death",
+        damageSound = {
+            "entity/character/voice/swordman/sm_dmg_01",
+            "entity/character/voice/swordman/sm_dmg_02",
+        },
+    },
     equipment = {
         "character/swordman/weapon/hsword_2", -- katana_ hsword_
     },
     skills = {
         job = "swordman",
-        skills = {8, 16, 46, 64, 65, 76, 77, 169}, 
+        skills = {8, 16, 46, 64, 65, 76, 77, 169},
     },
     stats = {
-        hp = 100,
-		mp = 100,
-		maxhp = 100,
+        hp = 500,
+		mp = 50,
+		maxhp = 500,
 		maxmp = 100,
 		hpRecovery = 7.5, 
-		mpRecovery = 7.5,
-		attackRate = 0.90,
+		mpRecovery = 5,
+		attackRate = 0.80,
 		moveRate = 1.0,
-		moveSpeed = 210,
+        moveSpeed = 210,
     },
     state = {
         stay = "character/swordman/stay",
-		move = "character/swordman/move",
+        move = "character/swordman/move",
+        push = "character/swordman/push",
+        lift = "character/swordman/lift",
 		attack = "character/swordman/attack",
 		jump = "character/swordman/jump",
 		moonlightslash = "character/swordman/moonlightslash",

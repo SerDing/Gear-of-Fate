@@ -13,11 +13,12 @@ local _Timer = require("core.class")()
 
 ---@param time milli
 ---@param action function
-function _Timer:Ctor(time, action)
+function _Timer:Ctor(time, action, nonStop)
     self._count = 0
     self._time = time or 0
-    self.isRunning = false
     self._action = action or nil
+    self._nonStop = (nonStop ~= nil) and nonStop or false
+    self.isRunning = false
 end
 
 ---@param dt float
@@ -31,7 +32,9 @@ function _Timer:Tick(dt)
         if self._action ~= nil then
             self._action()
         end
-        self.isRunning = false
+        if self._nonStop == false then
+            self.isRunning = false
+        end
     end
 end
 
@@ -54,7 +57,7 @@ function _Timer:Continue()
     self.isRunning = true
 end
 
-function _Timer:Cancel()
+function _Timer:Reset()
     self:Stop()
     self._count = 0
 end

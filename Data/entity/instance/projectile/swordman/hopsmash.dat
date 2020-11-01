@@ -18,6 +18,27 @@ return {
             combat = true,
         },
         playEnd = true,
+        attack = {
+            turnDirection = false,
+            type = "cut",
+            direction = "up",
+            reaction = "damage",
+            lift = {
+                vz = 370,
+                az = 26,
+                vx = -30,
+            },
+            selfstop = 92,
+            hitstop = 200,
+            damage = 30,
+            hitSound = {
+                "entity/character/hitting/swordman/gorecross/1",
+                "entity/character/hitting/swordman/gorecross/2",
+            },
+        },
+        
     },
     combat = {},
+    fighter = {},
+    hitstop = {},
 }

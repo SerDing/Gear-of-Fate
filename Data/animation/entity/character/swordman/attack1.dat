@@ -7,11 +7,11 @@ return {
         },
         {
             sprite = "1",
-            time = 50,
+            time = 70,
         },
         {
             sprite = "2",
-            time = 50,
+            time = 70,
         },
         {
             sprite = "3",
@@ -19,15 +19,15 @@ return {
         },
         {
             sprite = "4",
-            time = 50,
+            time = 30,
         },
         {
             sprite = "5",
-            time = 50,
+            time = 30,
         },
         {
             sprite = "6",
-            time = 50,
+            time = 30,
         },
         {
             sprite = "7",

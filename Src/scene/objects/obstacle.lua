@@ -11,8 +11,7 @@ local _Animator = require("engine.animation.frameani")
 local _Rect = require("engine.graphics.drawable.rect")
 local _ENTITYMGR = require("system.entitymgr")
 
-local _obj = require("entity.gameobject")
-local _Obstacle = require("core.class")(_obj)
+local _Obstacle = require("core.class")()
 
 function _Obstacle:Ctor(path)
 	

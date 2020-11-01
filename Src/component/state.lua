@@ -4,14 +4,14 @@
 	Since: 2018-04-12
 	Alter: 2018-04-12
 ]]
-
-local _Base = require("utils.fsm")
 local _RESMGR = require("system.resource.resmgr")
+local _Fsm = require("utils.fsm")
+local _Base = require("component.base")
 
 ---@class Entity.Component.State : Utils.FSM
 ---@field protected _entity Entity
----@field protected states table<string, State.Base>
-local _State = require("core.class")(_Base)
+---@field protected _states table<string, State.Base>
+local _State = require("core.class")(_Fsm)
 
 function _State.HandleData(data)
 	for key, value in pairs(data) do
@@ -22,19 +22,18 @@ function _State.HandleData(data)
 end
 
 function _State:Ctor(entity, data, param)
-	_Base.Ctor(self)
-	self._entity = entity
-	self.enable = true
+	_Fsm.Ctor(self)
+	_Base.Ctor(self, entity)
 	self.skills = self._entity.skills
 	self.input = self._entity.input
 	
 	for name, value in pairs(data) do
 		if name ~= "class" then
-			_Base.RegState(self, name, value.class.New(value, name))
+			_Fsm.RegState(self, name, value.class.New(value, name))
 		end
 	end
 
-	for key, state in pairs(self.states) do
+	for key, state in pairs(self._states) do
 		state:Init(self._entity)
 	end
 	
@@ -42,11 +41,11 @@ function _State:Ctor(entity, data, param)
 end
 
 function _State:Update(dt)
-	if not self.enable then
-		return
+	if self._entity.identity.isPaused or self._entity.fighter.isDead then
+		return false
 	end
 	
-	_Base.Update(self, dt)
+	_Fsm.Update(self, dt)
 end
 
 function _State:LateUpdate()
@@ -56,11 +55,11 @@ function _State:LateUpdate()
 end 
 
 function _State:SetState(name, ...)
-	_Base.SetState(self, name, ...)
+	_Fsm.SetState(self, name, ...)
 end
 
 function _State:ReloadAnimDatas(part)
-	for key, state in pairs(self.states) do
+	for key, state in pairs(self._states) do
 		state:ReloadAnimData(part)
 	end
 end
@@ -75,13 +74,13 @@ function _State:AutoTrans(nextState)
 end
 
 function _State:Transition()
-	local _trans = self.curState:GetTrans()
-	if _trans then
-		for i=1,#_trans do
-			if _trans[i][1] == "NORMAL" then
-				self:SwitchState(_trans[i][2], _trans[i][3], _trans[i][4] or nil)
-			elseif _trans[i][1] == "SKILL" then
-				self:SwitchSkillState(_trans[i][2], _trans[i][3], _trans[i][4] or nil)
+	local trans = self.curState:GetTrans()
+	if trans then
+		for i=1,#trans do
+			if trans[i][1] == "NORMAL" then
+				self:SwitchState(trans[i][2], trans[i][3], trans[i][4] or nil)
+			elseif trans[i][1] == "SKILL" then
+				self:SwitchSkillState(trans[i][2], trans[i][3], trans[i][4] or nil)
 			end
 		end
 	end
@@ -99,11 +98,16 @@ end
 ---@param ... any @vararg
 function _State:SwitchSkillState(sklID, stateName, ...)
 	if self.input:IsPressed(stateName) then -- IsPressed
-		if self.skills:IsSklUseable(self.states[stateName].skillID) then -- self.SkillMgr_:IsSklUseable(self.states[stateName].skillID)
+		if self.skills:IsSklUseable(self._states[stateName].skillID) then -- self.SkillMgr_:IsSklUseable(self.states[stateName].skillID)
 			self:SetState(stateName, ...)
-			self.skills:DoSkill(self.states[stateName].skillID)
+			self.skills:DoSkill(self._states[stateName].skillID)
 		end
 	end
+end
+
+---@return State.Base
+function _State:GetCurState()
+	return _Fsm.GetCurState(self)
 end
 
 function _State:OnCurStateExit()

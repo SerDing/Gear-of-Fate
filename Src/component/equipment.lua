@@ -7,10 +7,23 @@
 
 local _RESMGR = require("system.resource.resmgr")
 local _Event = require("core.event")
+local _Base = require("component.base")
 
 ---@class Entity.Component.Equipment : Entity.Component.Base
----@field protected _entity Entity 
-local _Equipment = require("core.class")()
+---@field protected _equipments table<int, EquData>
+---@field public onEquipmentChanged Event
+local _Equipment = require("core.class")(_Base)
+
+---@class EquData
+---@field public name string
+---@field public explain string
+---@field public type string
+---@field public subtype string
+---@field public damage int
+---@field public icon Engine.Graphics.Drawable.Sprite
+---@field public avatar table<string, string>
+---@field public add table<string, int>
+local _EquData = require("core.class")()
 
 local _EQU_TYPE_ENUM = {
     weapon = 1,
@@ -28,11 +41,11 @@ function _Equipment.HandleData(data)
 end
 
 function _Equipment:Ctor(entity, data)
-    self._entity = entity ---@type GameObject
-    self.equipments = {} -- entity's current equipments
-    -- self.equPathList = dofile("Data/equipment/equipmentlist.lua")
+    _Base.Ctor(self, entity) 
+    self._equipments = {} -- entity's current equipments
     self.onEquipmentChanged = _Event.New()
     -- self.onEquipmentChanged:AddListener(self, self._printEquInfo)
+    -- self.equPathList = dofile("Data/equipment/equipmentlist.lua")
 
     for key, value in pairs(data) do
         if key ~= "class" then
@@ -48,10 +61,10 @@ end
 function _Equipment:Equip(equ)
     if self._entity.identity.type == "character" then
         local slotIndex = _EQU_TYPE_ENUM[equ.type]
-        self.equipments[slotIndex] = equ
+        self._equipments[slotIndex] = equ
         self.onEquipmentChanged:Notify(equ, "equiped")
     else -- for monster
-        self.equipments[#self.equipments + 1] = equ
+        self._equipments[#self._equipments + 1] = equ
     end
     
     self._entity.render.renderObj:AddByData(equ.avatar)
@@ -69,11 +82,11 @@ end
 ---@param part string 
 ---@return table equipment data 
 function _Equipment:GetCurrentEqu(part)
-    return self.equipments[_EQU_TYPE_ENUM[part]]
+    return self._equipments[_EQU_TYPE_ENUM[part]]
 end
 
 function _Equipment:GetSubtype(part)
-    return self.equipments[_EQU_TYPE_ENUM[part]].subtype
+    return self._equipments[_EQU_TYPE_ENUM[part]].subtype
 end
 
 function _Equipment:_printEquInfo(equ, msgType)

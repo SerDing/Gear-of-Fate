@@ -19,6 +19,24 @@ return {
             combat = true,
             hitstop = true,
         },
+        attack = {
+            turnDirection = false,
+            type = "cut",
+            direction = "down",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -70,
+                a = 350
+            },
+            selfstop = 92,
+            hitstop = 200,
+            damage = 30,
+            hitSound = {
+                "entity/character/hitting/swordman/gorecross/1",
+                "entity/character/hitting/swordman/gorecross/2",
+            },
+        },
         movementParam = {
             type = "x",
             tick = 1,
@@ -27,6 +45,7 @@ return {
         },
     },
     combat = {},
+    fighter = {},
     hitstop = {},
     movement = {},
 }

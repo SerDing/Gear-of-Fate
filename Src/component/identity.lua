@@ -4,8 +4,8 @@
     Since: 2019-12-02
     Alter: 2019-12-02
 ]]
-
 local _Event = require("core.event")
+local _Base = require("component.base")
 
 ---@class Entity.Component.Identity : Entity.Component.Base
 ---@field public name string
@@ -14,17 +14,21 @@ local _Event = require("core.event")
 ---@field public process number
 ---@field public master Entity
 ---@field public camp int
-local _Identity = require("core.class")()
+local _Identity = require("core.class")(_Base)
 
-function _Identity:Ctor(data, param)
+function _Identity:Ctor(entity, data, param)
+    _Base.Ctor(self, entity)
     self.name = param.name or ""
     self.job = data.job or ""
     self.type = data.type or ""
     self.master = param.master or nil
     self.camp = param.camp or 0
+    self.weight = 0
     self.id = -1
     self.process = 2
-    self.destroyEvent = _Event.New()
+    self.isPaused = false
+    self.immortal = false
+    self.onDestroying = _Event.New()
 end
 
 -- function _Identity:Update(dt)
@@ -33,7 +37,7 @@ end
 
 function _Identity:StartDestroy()
     self.process = 0
-    self.destroyEvent:Notify()
+    self.onDestroying:Notify()
 end
 
 return _Identity

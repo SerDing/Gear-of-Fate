@@ -10,12 +10,12 @@ local _InputHandler = require("core.class")()
 function _InputHandler:Ctor()
 end 
 
----@param action string
-function _InputHandler:Press(action)
+---@param button string
+function _InputHandler:OnPress(button)
 end
 
----@param action string
-function _InputHandler:Release(action)
+---@param button string
+function _InputHandler:OnRelease(button)
 end
 
 return _InputHandler

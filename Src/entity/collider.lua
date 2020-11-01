@@ -8,7 +8,7 @@
 	Since: 2020-04-19
 	Alter: 2020-04-19 
 ]]
-
+local _SETTING = require("setting")
 local _Box = require("entity.drawable.box")
 local _Color = require("engine.graphics.config.color")
 
@@ -77,6 +77,10 @@ function _Collider:Collide(opponent, selfKey, oppoKey)
 end
 
 function _Collider:Draw()
+    if not _SETTING.debug.collider then
+        return 
+    end
+    
     for i=1,#self._lists.damage do
         self._lists.damage[i]:Draw(_Color.const.blue, _Color.const.green)
     end

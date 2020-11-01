@@ -88,7 +88,7 @@ function _RESOURCE.NewAniData(path, newSpriteDataFunc, imgPath)
         end
     end
     
-    imgPath = string.sub(imgPath, 1, string.len(imgPath) - 1)
+    imgPath = string.sub(imgPath, 1, string.len(imgPath) - 1) -- delete '/'
     local aniName = string.sub(path, _STRING.FindCharReverse(path, "/") + 1, string.len(path))
     local colliderDataPath = (imgPath ~= "") and string.sub(imgPath, 1, _STRING.FindCharReverse(imgPath, "/")) .. aniName or path
     colliderDataPath = string.gsub(colliderDataPath, "entity/", "")

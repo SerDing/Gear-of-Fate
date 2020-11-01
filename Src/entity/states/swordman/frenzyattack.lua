@@ -29,8 +29,8 @@ function _FrenzyAttack:OnAttack(frame)
     if not self._entity:GetAttackBox() or self.hitTimes >= 2 then
         return
     end
-    self.combat:ClearDamageArr()
-    if self.combat:Judge(self._entity, "MONSTER", self.anims[self._process]) then
+    self._combat:ClearAttackedList()
+    if self._combat:Judge(self._entity, "MONSTER", self.anims[self._process]) then
         self.hitTimes = self.hitTimes + 1
     end
 end
@@ -40,19 +40,19 @@ function _FrenzyAttack:Enter()
     -- _Base.Effect(self, "frenzy/sword1-1.ani")
     -- _Base.Effect(self, "frenzy/sword1-3.ani")
     -- _Base.Effect(self, "frenzy/sword1-4.ani")
-    self.avatar:Play(self.anims[1])
+    self._avatar:Play(self.anims[1])
     
-    self.avatar:GetPart("weapon_c1").eventMap.OnChangeFrame:AddListener(self, self.OnAttack)
-    self.avatar:GetPart("weapon_b1").eventMap.OnChangeFrame:AddListener(self, self.OnAttack)
-    self.combat:ClearDamageArr()
+    self._avatar:GetPart("weapon_c1").eventMap.OnChangeFrame:AddListener(self, self.OnAttack)
+    self._avatar:GetPart("weapon_b1").eventMap.OnChangeFrame:AddListener(self, self.OnAttack)
+    self._combat:ClearAttackedList()
 
 	self._process = 1
     self.hitTimes = 0
 end
 
 function _FrenzyAttack:Update()    
-    local _leftHold = self.input:IsHold("LEFT")
-    local _rightHold = self.input:IsHold("RIGHT")
+    local _leftHold = self._input:IsHold("LEFT")
+    local _rightHold = self._input:IsHold("RIGHT")
     local _movable = true
 
     if (_leftHold and self._entity.transform.direction == 1) or
@@ -62,11 +62,11 @@ function _FrenzyAttack:Update()
 
     if self._process == 1 then
         
-        if self.input:IsHold("ATTACK") and self.body:GetFrame() > 4 then
+        if self._input:IsHold("ATTACK") and self._body:GetFrame() > 4 then
             self._process = 2
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
-            self.avatar:Play(self.anims[self._process])
+            self._avatar:Play(self.anims[self._process])
 
             -- self:ClearEffects()
 
@@ -79,21 +79,21 @@ function _FrenzyAttack:Update()
     elseif self._process == 2 then
         
         if _movable then
-            if self.body:GetFrame() <= 2 then
-                self.movement:X_Move(self._entity.spd.x * self._entity.transform.direction )
+            if self._body:GetFrame() <= 2 then
+                self._movement:X_Move(self._entity.spd.x * self._entity.transform.direction )
             end 
     
             if (_leftHold and self._entity.transform.direction == -1 ) or
             (_rightHold and self._entity.transform.direction == 1 )   then
-                self.movement:X_Move(self._entity.spd.x * self.spdRate * self._entity.transform.direction )
+                self._movement:X_Move(self._entity.spd.x * self.spdRate * self._entity.transform.direction )
             end 
         end
 
-        if self.input:IsHold("ATTACK") and self.body:GetFrame() > 3 then
+        if self._input:IsHold("ATTACK") and self._body:GetFrame() > 3 then
             self._process = 3
             -- self.atkJudger:ClearDamageArr()
             self.hitTimes = 0
-            self.avatar:Play(self.anims[self._process])
+            self._avatar:Play(self.anims[self._process])
             
             -- self:ClearEffects()
 
@@ -106,24 +106,24 @@ function _FrenzyAttack:Update()
     elseif self._process == 3 then
 
         if _movable then
-            if self.body:GetFrame() < 4 then
-                self.movement:X_Move(self._entity.spd.x * self._entity.transform.direction )
+            if self._body:GetFrame() < 4 then
+                self._movement:X_Move(self._entity.spd.x * self._entity.transform.direction )
             end 
             
             if (_leftHold and self._entity.transform.direction == -1 ) or
             (_rightHold and self._entity.transform.direction == 1 )   then
                 
-                self.movement:X_Move(self._entity.spd.x * self.spdRate  * self._entity.transform.direction )
+                self._movement:X_Move(self._entity.spd.x * self.spdRate  * self._entity.transform.direction )
             end
         end
 
-        if self.input:IsHold("ATTACK") and self.body:GetFrame() > 3 then
+        if self._input:IsHold("ATTACK") and self._body:GetFrame() > 3 then
             self._process = 4
 
             -- self.atkJudger:ClearDamageArr()
 
             self.hitTimes = 0
-            self.avatar:Play(self.anims[self._process])
+            self._avatar:Play(self.anims[self._process])
             
             
             -- self:ClearEffects()
@@ -135,14 +135,14 @@ function _FrenzyAttack:Update()
         end 
 
     elseif self._process == 4 then
-        if self.body:GetFrame() < 3 then
+        if self._body:GetFrame() < 3 then
             if _movable then
-                self.movement:X_Move(self._entity.spd.x * self._entity.transform.direction )
+                self._movement:X_Move(self._entity.spd.x * self._entity.transform.direction )
                 
                 if (_leftHold and self._entity.transform.direction == -1 ) or
                 (_rightHold and self._entity.transform.direction == 1 )   then
                     
-                    self.movement:X_Move(self._entity.spd.x * self.spdRate  * self._entity.transform.direction )
+                    self._movement:X_Move(self._entity.spd.x * self.spdRate  * self._entity.transform.direction )
                 end
             end
         end 
@@ -162,8 +162,8 @@ end
 
 function _FrenzyAttack:Exit()
     _Base.Exit(self)
-    self.avatar:GetPart("weapon_b1").eventMap.OnChangeFrame.DelListener(self, self.OnAttack)
-    self.avatar:GetPart("weapon_c1").eventMap.OnChangeFrame.DelListener(self, self.OnAttack)
+    self._avatar:GetPart("weapon_b1").eventMap.OnChangeFrame.DelListener(self, self.OnAttack)
+    self._avatar:GetPart("weapon_c1").eventMap.OnChangeFrame.DelListener(self, self.OnAttack)
     for n=1,#self.effect do
         self.effect[n].playOver = true
     end

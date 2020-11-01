@@ -1,8 +1,8 @@
 resource/
-ImagePacks/
 Music/
 Font/
 Build/
 Save/
 .idea/
+.vscode/
 *.love

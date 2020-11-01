@@ -5,16 +5,17 @@
 	Alter: 2019-11-10 
 ]]
 local _Animator = require("engine.animation.frameani")
+local _Base = require("component.base")
 
 ---@class Entity.Component.Buff : Entity.Component.Base
-local _Buff = require("core.class")()
+local _Buff = require("core.class")(_Base)
 
 local _buffAnis = {
 	["frenzy"] = "Data/character/swordman/effect/animation/frenzy/buff.ani", 
 }
 
 function _Buff:Ctor(entity)
-	self._entity = entity
+	_Base.Ctor(self, entity) 
 	self.buff = {['name'] = {switch = false, anim = nil}}
 end
 

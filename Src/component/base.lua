@@ -6,15 +6,17 @@
 ]]
 
 ---@class Entity.Component.Base
----@field protected _entity Entity
 ---@field public enable boolean
+---@field protected _entity Entity
 local _Component = require("core.class")()
 
+---@param entity Entity
 function _Component:Ctor(entity)
-    self._entity = entity
     self.enable = true
+    self._entity = entity
 end
 
+---@param dt float
 function _Component:Update(dt)
 end
 

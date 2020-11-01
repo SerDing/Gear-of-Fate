@@ -1,4 +1,0 @@
-return {
-    "interface/hud/47", 
-    "interface/hud/44", 
-}

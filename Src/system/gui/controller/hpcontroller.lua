@@ -5,43 +5,43 @@
 	Alter: 2019-12-08
 ]]
 
----@class HpController
----@field public model Utils.Value
----@field public view HMP_Bar
+---@class GUI.Widgets.HpController
+---@field public _model Utils.PositiveValue
+---@field public _view GUI.Widgets.HMP_Bar
 local _HpController = require("core.class")()
 
 function _HpController:Ctor()
-    self.model = nil 
-    self.view = nil 
+    self._model = nil 
+    self._view = nil 
 end
 
 function _HpController:SetModel(model)
-    if self.model then
-        self.model.changeEvent:DelListener(self, self.OnHpChange)
+    if self._model then
+        self._model.onValueChange:DelListener(self, self.OnHpChange)
     end
-    self.model = model
-    self.model.changeEvent:AddListener(self, self.OnHpChange)
-    if self.view then
+    self._model = model
+    self._model.onValueChange:AddListener(self, self.OnHpChange)
+    if self._view then
         self:RefreshView()
     end
 end
 
 function _HpController:SetView(view)
-    self.view = view
-    if self.model then
+    self._view = view
+    if self._model then
         self:RefreshView()
     end
 end
 
 function _HpController:RefreshView()
-    self.view.max = self.model:GetMax()
-    self.view.cur = self.model:GetCur()
+    self._view._max = self._model:GetMax()
+    self._view._cur = self._model:GetCur()
 end
 
 ---@param type string @ the changing type
 ---@param change number @ the changed value
 function _HpController:OnHpChange(type, change)
-    self.view:OnHpChanged(type, change)
+    self._view:OnHpChanged(type, change)
 end
 
 return _HpController

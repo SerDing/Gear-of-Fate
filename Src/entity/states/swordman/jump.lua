@@ -23,10 +23,8 @@ end
 function _Jump:Enter(backJump)
 	_Base.Enter(self)
 	
-	self.combat:ClearDamageArr()
-
-	self.jumpDirection = 0
-	if self.STATE.preState.name == "dash" then
+	self._combat:ClearAttackedList()
+	if self._STATE.preState.name == "dash" then
 		self.jumpPower = 720
 	else 
 		self.jumpPower = 660
@@ -35,7 +33,7 @@ function _Jump:Enter(backJump)
 	self.backJump = backJump
 	if backJump then
 		self.jumpPower = 300
-		self.avatar:SetFrame(9)
+		self._avatar:SetFrame(9)
 	end
 	
 	self.directionLock = false
@@ -43,8 +41,8 @@ function _Jump:Enter(backJump)
 	self.jumpAtkTimes = 0
 	self.jumpStart = false
 
-	self.movement.eventMap.top:AddListener(self, self.Top)
-	self.movement.eventMap.land:AddListener(self, self.Land)
+	self._movement.eventMap.topped:AddListener(self, self.Top)
+	self._movement.eventMap.touchdown:AddListener(self, self.Land)
 end
 
 function _Jump:Update(dt)
@@ -64,9 +62,9 @@ end
 
 function _Jump:StartJump()
 	if not self.jumpAttack and not self.jumpStart then
-		if self.movement.directionZ ~= 1 and self.movement.directionZ ~= -1 then
-			if self.body:GetFrame() == 1 or self.backJump then
-				self.movement:StartJump(self.jumpPower, self.g)
+		if not self._movement:IsRising() and not self._movement:IsFalling() then
+			if self._body:GetFrame() == 1 or self.backJump then
+				self._movement:StartJump(self.jumpPower, self.g)
 				self.jumpStart = true
 			end 
 		end 
@@ -75,50 +73,49 @@ end
 
 function _Jump:Top()
 	if not self.jumpAttack and not self.backJump then
-		while self.body:GetFrame() <= 8 and self.body:GetFrame() > 0 do
-			self.avatar:NextFrame()
+		while self._body:GetFrame() <= 8 and self._body:GetFrame() > 0 do
+			self._avatar:NextFrame()
 		end
 	end
 end
 
 function _Jump:Land() 
 	if not self.jumpAttack then
-		while self.body:GetFrame() <= 15 and self.body:GetFrame() > 8 do
-			self.avatar:NextFrame()
+		while self._body:GetFrame() <= 15 and self._body:GetFrame() > 8 do
+			self._avatar:NextFrame()
 		end
 	end
 	-- self.STATE:SetState(self.nextState) 
 end
 
 function _Jump:Movement()
-	self.jumpDirection = self.movement.directionZ
 	if not self.backJump then
-		if self.jumpDirection == 1 or self.jumpDirection == -1 then
+		if self._movement:IsRising() or self._movement:IsFalling() then
 			local v = 0.9 -- rate of movement
-			if self.STATE.preState.name == "dash" then
+			if self._STATE.preState.name == "dash" then
 				v = 2
 			end 
-			if self.input:IsHold("LEFT") then
+			if self._input:IsHold("LEFT") then
 				if not self.jumpAttack and not self.directionLock then
 					self._entity.transform.direction = -1
 				end
-				self.movement:X_Move(self._entity.spd.x * v * -1)
-			elseif self.input:IsHold("RIGHT") then
+				self._movement:X_Move(self._entity.spd.x * v * -1)
+			elseif self._input:IsHold("RIGHT") then
 				if not self.jumpAttack and not self.directionLock then
 					self._entity.transform.direction = 1
 				end
-				self.movement:X_Move(self._entity.spd.x * v * 1)
+				self._movement:X_Move(self._entity.spd.x * v * 1)
 			end
 
-			if self.input:IsHold("UP") then
-				self.movement:Y_Move(self._entity.spd.y * v * 0.5 * -1)
-			elseif self.input:IsHold("DOWN") then
-				self.movement:Y_Move(self._entity.spd.y * v * 0.5 * 1)
+			if self._input:IsHold("UP") then
+				self._movement:Y_Move(self._entity.spd.y * v * 0.5 * -1)
+			elseif self._input:IsHold("DOWN") then
+				self._movement:Y_Move(self._entity.spd.y * v * 0.5 * 1)
 			end
 		end 
 	else 
-		if self.jumpDirection == 1 or self.jumpDirection == -1 then
-			self.movement:X_Move(250 * self._entity.transform.direction * -1)
+		if self._movement:IsRising() or self._movement:IsFalling() then
+			self._movement:X_Move(250 * self._entity.transform.direction * -1)
 		end
 	end 
 end
@@ -126,34 +123,34 @@ end
 function _Jump:JumpAttack()
 	if not self.jumpAttack and not self.backJump then
 		if  self._entity.transform.position.z < -2  then
-			if self.input:IsPressed("ATTACK") then
-				self.avatar:Play("jumpattack")
+			if self._input:IsPressed("ATTACK") then
+				self._avatar:Play("jumpattack")
 				self.directionLock = true
 				self.jumpAttack = true
 				self.hasHit = false
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
-				self.combat:ClearDamageArr()
+				self._combat:ClearAttackedList()
 				self:PlaySound()
 			end 
 		end 
 	end
 
 	if self.jumpAttack then -- multi-attack
-		if self.body:GetFrame() >= 5 then
-			if self.input:IsPressed("ATTACK") and self._entity.transform.position.z < -2 then
-				self.body.playNum = 1
+		if self._body:GetFrame() >= 5 then
+			if self._input:IsPressed("ATTACK") and self._entity.transform.position.z < -2 then
+				self._body.playNum = 1
 				self.jumpAtkTimes = self.jumpAtkTimes + 1
-				self.combat:ClearDamageArr()
-				self.avatar:Play("jumpattack")
+				self._combat:ClearAttackedList()
+				self._avatar:Play("jumpattack")
 				self:PlaySound()
 				self.hasHit = false
 			else
 				self.jumpAttack = false
 				if self._entity.transform.position.z >= 0 then  -- hero has been landed
-					self.STATE:SetState(self._nextState)
+					self._STATE:SetState(self._nextState)
 				else 
-					self.avatar:Play(self.name) -- trans to jump state
-					self.avatar:SetFrame(9)
+					self._avatar:Play(self.name) -- trans to jump state
+					self._avatar:SetFrame(9)
 				end 
 			end 
 			
@@ -162,7 +159,7 @@ function _Jump:JumpAttack()
 		--[[	Hero has been on land, then set state to oriState	]]
 		if self._entity.transform.position.z >= 0 then
 			self.jumpAttack = false
-			self.STATE:SetState(self._nextState)
+			self._STATE:SetState(self._nextState)
 		end 
 
 	end 
@@ -174,10 +171,9 @@ end
 
 function _Jump:Exit()
 	_Base.Exit(self)
-    self.jumpDirection = ""
 	self.jumpAttack = false
-	self.movement.eventMap.top:AddListener(self, self.Top)
-	self.movement.eventMap.land:AddListener(self, self.Land)
+	self._movement.eventMap.topped:AddListener(self, self.Top)
+	self._movement.eventMap.touchdown:AddListener(self, self.Land)
 end
 
 function _Jump:GetTrans()

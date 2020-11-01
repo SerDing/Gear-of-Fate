@@ -9,10 +9,9 @@
 
 local _State_Attack = require("core.class")()
 
----@param entity GameObject
 function _State_Attack:Ctor(FSM, entity)
 	self.FSM = FSM
-    self._entity = entity ---@type GameObject
+    self._entity = entity
     self.name = "attack"
 end 
 

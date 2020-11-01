@@ -4,8 +4,7 @@
 	Since: 2018-08-17 17:29:59 
 	Last Modified time: 2018-08-17 17:29:59 
 ]]
-
-local _RESMGR = require("system.resource.resmgr")
+local _RESOURCE = require("engine.resource")
 local _Sprite = require("engine.graphics.drawable.sprite")
 local _Widget = require("system.gui.widgets.widget")
 
@@ -14,7 +13,7 @@ local _ProgressBar = require("core.class")(_Widget)
 
 function _ProgressBar:Ctor(name, x, y, stylePath)
     _Widget.Ctor(self, name, x, y)
-    self._style = require(stylePath)
+    self._style = _RESOURCE.ReadData(stylePath)
     assert(self._style, "style table is null!")
     self._upper = _Sprite.New()
     self._bottom = _Sprite.New()

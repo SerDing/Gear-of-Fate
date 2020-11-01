@@ -7,15 +7,16 @@
 
 local _Event = require("core.event")
 local _Vector3 = require("utils.vector3") 
+local _Base = require("component.base")
 
 ---@class Entity.Component.Movement : Entity.Component.Base
 ---@field public eventMap table<stirng, Event>
----@field protected g number
----@field protected vz number
----@field public directionZ number
----@field protected fallCondition function
----@field public easeMoveParam table
-local _Movement = require("core.class")()
+---@field protected _g number
+---@field protected _vz number
+---@field protected _directionZ number
+---@field protected _fallCondition function
+---@field public _easemoveParam table
+local _Movement = require("core.class")(_Base)
 
 local _SCENE = {}
 local _GetDt = love.timer.getDelta
@@ -27,23 +28,21 @@ local _DIRECTION_Z = {
 }
 
 function _Movement:Ctor(entity)
-	self._entity = entity
-	self.enable = true
-	self.position = entity.transform.position
-    self.drawPos = entity.drawPos
-	self.input = entity.input
+	_Base.Ctor(self, entity)
+	self._position = entity.transform.position
+	self._input = entity.input
 	self.eventMap = {
-		top = _Event.New(),
-		land = _Event.New(),
+		topped = _Event.New(),
+		touchdown = _Event.New(),
 	}
 
 	self._dt = 0
-	self.g = 0
-	self.vz = 0
-	self.directionZ = _DIRECTION_Z.NONE
-	self.fallCondition = nil
+	self._g = 0
+	self._vz = 0
+	self._directionZ = _DIRECTION_Z.NONE
+	self._fallCondition = nil
 
-	self.easeMoveParam = {
+	self._easemoveParam = {
 		type = "",
 		v = 0,
 		a = 0,
@@ -55,19 +54,16 @@ end
 
 function _Movement:Update(dt)
 	self._dt = dt
-	self:_Gravity(dt)
-	self:_EasemoveUpdate(dt)
-end
-
-function _Movement:SetSceneRef(s)
-	assert(s, "scene ref is null.")
-	_SCENE = s
+	if self._entity.identity.isPaused == false then
+		self:EasemoveUpdate(dt)
+		self:Gravity(dt)
+	end
 end
 
 function _Movement:X_Move(dx)
     dx = dx * self._dt--_GetDt()
-	local _pass, _result
-	local _next = self.position.x + dx
+	local pass, result
+	local next = self._position.x + dx
 
 	-- if scene_:IsPassable(_next, self.position.y) then -- IsInMoveableArea
 	-- 	_result = scene_:IsInObstacles(_next, self.position.y)
@@ -87,14 +83,14 @@ function _Movement:X_Move(dx)
 	-- 	_pass = false
 	-- end
 
-	self.position.x = _next
+	self._position.x = next
 	-- scene_:CheckEvent(self.position.x, self.position.y)
 end
 
 function _Movement:Y_Move(dy)
     dy = dy * self._dt--_GetDt()
-	local _result
-	local _next = self.position.y + dy
+	local result
+	local next = self._position.y + dy
 
 	-- if scene_:IsPassable(self.position.x, _next) then	-- IsInMoveableArea
 		
@@ -110,61 +106,60 @@ function _Movement:Y_Move(dy)
 	-- 	_next = self.position.y
 	-- end
 
-	self.position.y = _next
+	self._position.y = next
 	-- scene_:CheckEvent(self.position.x, self.position.y)
 end
 
 function _Movement:Z_Move(dz)
     dz = dz * self._dt--_GetDt()
-	self.position.z = self.position.z + dz
+	self._position.z = self._position.z + dz
 	-- self.drawPos.z = math.floor(self.pos.z)
 end
 
-function _Movement:SetVz(vz)
-	self.vz = vz
-end 
-
 function _Movement:Set_g(g)
-    self.g = g
+    self._g = g
 end 
 
 ---@param vz number @ velocity of z axis
 ---@param g number @ acceleration of gravity
 ---@param fallCond function @ condition of falling
 function _Movement:StartJump(vz, g, fallCond)
-	self.vz = vz or 0
-	self.g = g or 0
-	self.directionZ = _DIRECTION_Z.UP
-	self.fallCondition = fallCond
+	vz = vz or 0
+	g = g or 0
+	self._vz = vz
+	self._g = (g == 0) and self._g or g
+	self._directionZ = _DIRECTION_Z.UP
+	self._fallCondition = fallCond
 end
 
-function _Movement:_Gravity(dt)
-	if self.directionZ == _DIRECTION_Z.UP then
-		self.vz = self.vz - dt * self.g * _stableFPS
-        if self.vz < 0 then
-            self.vz = 0 
+function _Movement:Gravity(dt)
+	if self._directionZ == _DIRECTION_Z.UP then
+		self._vz = self._vz - dt * self._g * _stableFPS
+        if self._vz < 0 then
+            self._vz = 0 
 		end
-		self:Z_Move(-self.vz)
-		local fall = (self.vz <= 0) and true or false
-		if self.fallCondition then
-			fall = self.fallCondition()
+		
+		self:Z_Move(-self._vz)
+		local fall = (self._vz <= 0) and true or false
+		if self._fallCondition then
+			fall = self._fallCondition()
 		end
         if fall then
-			self.directionZ = _DIRECTION_Z.DOWN
-			self.eventMap.top:Notify()
+			self._directionZ = _DIRECTION_Z.DOWN
+			self.eventMap.topped:Notify()
 		end
-    elseif self.directionZ == _DIRECTION_Z.DOWN then
-		self.vz = self.vz + dt * self.g * _stableFPS
-		if self.position.z < 0 then
-			self:Z_Move(self.vz)
+    elseif self._directionZ == _DIRECTION_Z.DOWN then
+		self._vz = self._vz + dt * self._g * _stableFPS
+		if self._position.z < 0 then
+			self:Z_Move(self._vz)
 		end
-		if self.position.z >= 0 then
-			self.position.z = 0
-			self.directionZ = _DIRECTION_Z.NONE
-			self.g = 0
-			self.vz = 0
-			self.eventMap.land:Notify()
-			self.fallCondition = nil
+		if self._position.z >= 0 then
+			self._position.z = 0
+			self._directionZ = _DIRECTION_Z.NONE
+			self._g = 0
+			self._vz = 0
+			self.eventMap.touchdown:Notify()
+			self._fallCondition = nil
 		end
     end  
 end 
@@ -174,52 +169,69 @@ end
 ---@param a int
 ---@param addRate float
 function _Movement:EaseMove(type, v, a, addRate)
-	self.easeMoveParam.type = type
-	self.easeMoveParam.v = v * self._entity.transform.direction
-	self.easeMoveParam.a = a * self._entity.transform.direction
-	self.easeMoveParam.addRate = addRate or 0
-	self.easeMoveParam.enable = true
-	if self.easeMoveParam.a < 0 then
-		self.easeMoveParam.dir = -1
-	elseif self.easeMoveParam.a > 0 then
-		self.easeMoveParam.dir = 1
-	else
-		self.easeMoveParam.dir = 0
-	end
+	self._easemoveParam.type = type
+	self._easemoveParam.v = v --* self._entity.transform.direction
+	self._easemoveParam.a = a --* self._entity.transform.direction
+	self._easemoveParam.addRate = addRate or 0
+	self._easemoveParam.enable = true
+	-- if self._easemoveParam.a < 0 then
+	-- 	self._easemoveParam.dir = -1
+	-- elseif self._easemoveParam.a > 0 then
+	-- 	self._easemoveParam.dir = 1
+	-- else
+	-- 	self._easemoveParam.dir = 0
+	-- end
 end
 
-function _Movement:_EasemoveUpdate(dt)
-	if self.easeMoveParam.enable == true then
-		if self.easeMoveParam.type == "x" then
-			self:X_Move(self.easeMoveParam.v)
-		elseif self.easeMoveParam.type == "y" then
-			self:Y_Move(self.easeMoveParam.v)
+function _Movement:EasemoveUpdate(dt)
+	if self._easemoveParam.enable == true then
+		local entityDirection = self._entity.transform.direction
+		if self._easemoveParam.type == "x" then
+			self:X_Move(self._easemoveParam.v * entityDirection)
+		elseif self._easemoveParam.type == "y" then
+			self:Y_Move(self._easemoveParam.v * entityDirection)
 		end
-		self.easeMoveParam.v = self.easeMoveParam.v + self.easeMoveParam.a * dt
 
-		if self.easeMoveParam.dir == -1 then
-			if self.easeMoveParam.v <= 0 then
-				self.easeMoveParam.v = 0
-				self.easeMoveParam.enable = false
+		self._easemoveParam.v = self._easemoveParam.v + self._easemoveParam.a * dt
+		if self._easemoveParam.a < 0 then
+			if self._easemoveParam.v <= 0 then
+				self._easemoveParam.v = 0
+				self._easemoveParam.enable = false
 			end
-		elseif self.easeMoveParam.dir == 1 then
-			if self.easeMoveParam.v >= 0 then
-				self.easeMoveParam.v = 0
-				self.easeMoveParam.enable = false
+		elseif self._easemoveParam.a > 0 then
+			if self._easemoveParam.v >= 0 then
+				self._easemoveParam.v = 0
+				self._easemoveParam.enable = false
 			end
 		end
 
 		if self._entity.transform.direction == -1 then
-			if self.input and self.input:IsHold("LEFT") then
-				self:X_Move(self.easeMoveParam.v * self.easeMoveParam.addRate)
+			if self._input and self._input:IsHold("LEFT") then
+				self:X_Move(self._easemoveParam.v * entityDirection * self._easemoveParam.addRate)
 			end
 		elseif self._entity.transform.direction == 1 then
-			if self.input and self.input:IsHold("RIGHT") then
-				self:X_Move(self.easeMoveParam.v * self.easeMoveParam.addRate)
+			if self._input and self._input:IsHold("RIGHT") then
+				self:X_Move(self._easemoveParam.v * entityDirection * self._easemoveParam.addRate)
 			end
 		end
 
 	end
+end
+
+function _Movement:DisableEasemove()
+	self._easemoveParam.enable = false
+end
+
+function _Movement:IsEasemoving()
+	return self._easemoveParam.enable
+end
+
+function _Movement:IsFalling()
+	return self._directionZ == _DIRECTION_Z.DOWN
+end
+
+function _Movement:IsRising()
+	return self._directionZ == _DIRECTION_Z.UP
 end
 
 return _Movement 

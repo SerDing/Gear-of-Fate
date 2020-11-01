@@ -4,8 +4,10 @@
 	Since: 2017-07-28
 	Alter: 2020-01-19
 ]]
-local _RESOURCE = require('engine.resource')
 local _STRING = require("engine.string")
+local _FILE = require('engine.filesystem')
+local _RESOURCE = require('engine.resource')
+
 
 ---@class _RESMGR
 local _RESMGR = {
@@ -43,13 +45,12 @@ local function _HeaderHandle(path)
 end
 
 function _RESMGR.LoadDataFile(path)
-	local f = dofile(path)
+	-- local f = dofile(path)
+
+	local fileContent = _FILE.LoadFile(path)
+	local f = loadstring(fileContent)()
 	f.A = _STRING.GetFileDirectory(path)
 	return f
-end
-
-function _RESMGR.GetFileDirectory(filePath)
-	return string.match(filePath, "(.+)/[^/]*%.%w+$")
 end
 
 ---@param path string | table
@@ -117,6 +118,8 @@ function _RESMGR.LoadAvatarAnimData(path, imgPath)
     return _RESOURCE.LoadResource(path .. "|" .. imgPath, _NewAvatarAnimData, _pools.anim, imgPath)
 end
 
+---@param path string
+---@return EquData
 function _RESMGR.LoadEquipmentData(path)
 	return _RESOURCE.LoadResource(path, _NewEquipmentData, _pools.equipment)
 end

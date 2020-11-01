@@ -4,7 +4,7 @@
 	Since: 2018-08-02
 	Alter: 2020-01-19
 ]]
-
+local _SETTING = require("setting")
 local _RESOURCE = require('engine.resource')
 
 ---@class Engine.Audio
@@ -12,47 +12,43 @@ local _RESOURCE = require('engine.resource')
 local _AUDIO = {}
 
 local _music = {
-    BGM = {id = '', source = nil},
-    EVM = {id = '', source = nil},
+    _BGM = {id = '', source = nil},
+    _AMB = {id = '', source = nil},
+    _playingQueue = {},
 }
-
-function _AUDIO.Init(bgmVol, soundVol)
-    _AUDIO._bgmVol = bgmVol or 0.005 -- 0.005   0.65
-    _AUDIO._soundVol = soundVol or 0.085 -- 0.0085  1
-    _AUDIO._playingQueue = {}
-end
 
 function _AUDIO.Update(dt)
     -- body
 end
 
----@param soundData string 
+---@param soundData SoundData|string 
 function _AUDIO.PlaySound(soundData)
     local source = _RESOURCE.NewSound(soundData)
-    source:setVolume(1.0 * _AUDIO._soundVol)
+    source:setVolume(0.7 * _SETTING.sound)
     source:play()
 end 
 
+---@param soundDataSet table<int, SoundData>
 function _AUDIO.RandomPlay(soundDataSet)
     local n = math.random(1, #soundDataSet)
     _AUDIO.PlaySound(soundDataSet[n])
 end
 
----@param id_table table
-function _AUDIO.PlaySceneMusic(id_table) -- play map music
-    -- example: id_table = {"AMB_FOREST_01", "M_FOREST_01_NEW"}
-    _AUDIO.PlayEVM(id_table[1])
-    _AUDIO.PlayBGM(id_table[2])
+---@param idTable table
+function _AUDIO.PlaySceneMusic(idTable) -- play map music
+    -- example: idTable = {"AMB_FOREST_01", "M_FOREST_01_NEW"}
+    _AUDIO.PlayAMB(idTable[1])
+    _AUDIO.PlayBGM(idTable[2])
 end
 
 function _AUDIO.PlayBGM(id) -- play background music
     _AUDIO.PlayMusic("BGM", id)
-    _music["BGM"].source:setVolume(0.5 * _AUDIO._bgmVol)
+    _music._BGM.source:setVolume(_SETTING.music)
 end
 
-function _AUDIO.PlayEVM(id) -- play enviroment music
+function _AUDIO.PlayAMB(id) -- play ambient music
     _AUDIO.PlayMusic("EVM", id)
-    _music["EVM"].source:setVolume(0.5 * _AUDIO._bgmVol)
+    _music._AMB.source:setVolume(_SETTING.music)
 end
 
 ---@param tp string
@@ -79,10 +75,10 @@ function _AUDIO.PlayMusic(tp, id) -- play music
         end
 
         if not love.filesystem.exists(_PATH) then -- check file exists
-            print("Error: _AudioMgr --> PlayMusic()" .. tp .. " file not exists:")
+            print("Error: AUDIO:PlayMusic()" .. tp .. " no file:")
             print("\t - ", _PATH)
 
-            return 0
+            return false
         end
         
         -- file exists, make the source point to new source
@@ -93,19 +89,6 @@ function _AUDIO.PlayMusic(tp, id) -- play music
         _music[tp].id = id -- record new index
     end
 
-
-end
-
----@param volume number
-function _AUDIO.SetSndVol(volume)
-    assert(type(volume) == "number", "volume must be a number value.")
-    _AUDIO._soundVol = volume
-end
-
----@param volume number
-function _AUDIO.SetBgmVol(volume)
-    assert(type(volume) == "number", "volume must be a number value.")
-    _AUDIO._bgmVol = volume
 end
 
 return _AUDIO

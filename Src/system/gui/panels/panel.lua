@@ -6,7 +6,7 @@
 	Docs: 
 		* load and draw layouts as a tree structure on root widget
 ]]
----@class Panel
+---@class GUI.Panel
 local _Panel = require("core.class")()
 
 local _Queue = require("core.queue")

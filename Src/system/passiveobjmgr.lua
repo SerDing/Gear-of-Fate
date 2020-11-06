@@ -16,9 +16,9 @@ local _PassiveObjMgr = {}
 local this = _PassiveObjMgr
 
 function _PassiveObjMgr.Ctor()
-	this.pathHead = "Data/passiveobject/"
+	this.pathHead = "resource/data/passiveobject/"
 	this.objPathArr = {}
-	this.objPathArr = require("Data/passiveobject/passiveobject")
+	this.objPathArr = require("resource/data/passiveobject/passiveobject")
 end
 
 local function _GetObjPath(id)

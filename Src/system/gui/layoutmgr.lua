@@ -11,16 +11,16 @@ local _RESOURCE = require("engine.resource")
 ---@class GUI.LayoutManager
 local _LayoutMgr = {}
 
----@param panel Panel
+---@param panel GUI.Panel
 ---@param path string @layout file path
 function _LayoutMgr.LoadLayout(panel, path)
-    local layout = _RESOURCE.ReadData(path)
+    local layout = _RESOURCE.ReadData("resource/data/ui/" .. path)
     assert(panel, "panel is null")
     assert(layout, "layout is null")
     _LayoutMgr._ApplyLayout(panel.root, layout) -- load start from root view
 end
 
----@param parent Panel|Widget
+---@param parent GUI.Panel|Widget
 ---@param data table
 function _LayoutMgr._ApplyLayout(parent, data)
     local widget = nil ---@type Widget

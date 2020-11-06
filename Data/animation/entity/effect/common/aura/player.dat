@@ -1,8 +1,0 @@
-return {
-    isLoop = true,
-    frames = {
-        {
-            sprite = "entity/effect/common/aura/player",
-        },
-    },
-}

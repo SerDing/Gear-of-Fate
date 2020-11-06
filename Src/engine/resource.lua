@@ -59,7 +59,7 @@ end
 ---@return Engine.Graphics.Drawable.SpriteData
 function _RESOURCE.NewSpriteData(path)
     ---@type Engine.Graphics.Drawable.SpriteData
-    local data = _RESOURCE.ReadData("Data/sprite/" .. path)
+    local data = _RESOURCE.ReadData("resource/data/sprite/" .. path)
     data.image = _RESOURCE.LoadImage(path)
 
     return data
@@ -71,7 +71,7 @@ end
 ---@return Engine.Resource.AniData
 function _RESOURCE.NewAniData(path, newSpriteDataFunc, imgPath) 
     imgPath = imgPath and imgPath .. "/" or ""
-    local staticData = _RESOURCE.ReadData("Data/animation/" .. path)
+    local staticData = _RESOURCE.ReadData("resource/data/animation/" .. path)
 
     ---@class Engine.Resource.AniData
     ---@field public path string
@@ -102,7 +102,7 @@ function _RESOURCE.NewAniData(path, newSpriteDataFunc, imgPath)
 end
 
 function _RESOURCE.NewColliderData(path)
-    path = "Data/entity/collider/" .. path
+    path = "resource/data/entity/collider/" .. path
     local exists = _FILE.Exist(path .. ".dat")
     return exists and _RESOURCE.ReadData(path) or nil
 end

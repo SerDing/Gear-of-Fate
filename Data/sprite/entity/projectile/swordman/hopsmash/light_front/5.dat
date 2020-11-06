@@ -1,6 +1,0 @@
-return { 
-	image = "5",
-	ox = 160,
-	oy = 21,
-	blendmode = "add",
-}

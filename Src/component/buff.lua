@@ -11,7 +11,7 @@ local _Base = require("component.base")
 local _Buff = require("core.class")(_Base)
 
 local _buffAnis = {
-	["frenzy"] = "Data/character/swordman/effect/animation/frenzy/buff.ani", 
+	["frenzy"] = "resource/data/character/swordman/effect/animation/frenzy/buff.ani", 
 }
 
 function _Buff:Ctor(entity)

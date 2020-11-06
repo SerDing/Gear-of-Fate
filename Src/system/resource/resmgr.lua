@@ -12,7 +12,7 @@ local _RESOURCE = require('engine.resource')
 ---@class _RESMGR
 local _RESMGR = {
 	imgPathHead = "resource/image/", -- ImagePacks/
-	-- dataPathHead = "Data/"
+	-- dataPathHead = "resource/data/"
 }
 local this = _RESMGR
 
@@ -57,7 +57,7 @@ end
 ---@return System.RESMGR.EntityData
 local function _NewEntityData(path)
 	---@class System.RESMGR.EntityData 
-	local data = _RESOURCE.ReadData("Data/entity/instance/" .. path)
+	local data = _RESOURCE.ReadData("resource/data/entity/instance/" .. path)
 
 	for key, value in pairs(data) do
         value.class = require("component." .. key)
@@ -73,7 +73,7 @@ end
 ---@return System.RESMGR.StateData
 local function _NewStateData(path)
 	---@class System.RESMGR.StateData
-	local data = _RESOURCE.ReadData("Data/entity/states/" .. path)
+	local data = _RESOURCE.ReadData("resource/data/entity/states/" .. path)
 
 	data.class = require("entity.states." .. data.script)
 	data.script = nil
@@ -96,7 +96,7 @@ end
 
 ---@param path string
 local function _NewEquipmentData(path)
-	return _RESOURCE.ReadData("Data/entity/equipment/" .. path)
+	return _RESOURCE.ReadData("resource/data/entity/equipment/" .. path)
 end
 
 ---@param path string

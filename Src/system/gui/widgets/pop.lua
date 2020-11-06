@@ -15,7 +15,7 @@ local _Pop = require("core.class")()
 function _Pop:Ctor(w, h, stylePath)
     self._width = w or 0
     self._height = h or 0
-    self._style = _RESOURCE.ReadData(stylePath)
+    self._style = _RESOURCE.ReadData("resource/data/ui/" .. stylePath)
     assert(self._style, "style table is null!")
     self._sprites = {}
     for i = 0, 8 do

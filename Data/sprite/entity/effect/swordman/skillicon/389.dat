@@ -1,5 +1,0 @@
-return { 
-	image = "389",
-	ox = 0,
-	oy = 0,
-}

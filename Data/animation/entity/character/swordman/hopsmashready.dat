@@ -1,9 +1,0 @@
-return {
-    isLoop = false,
-    frames = {
-        {
-            sprite = "125",
-            time = 400,
-        },
-    }
-}

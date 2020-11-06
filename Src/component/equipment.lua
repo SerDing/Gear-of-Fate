@@ -45,7 +45,7 @@ function _Equipment:Ctor(entity, data)
     self._equipments = {} -- entity's current equipments
     self.onEquipmentChanged = _Event.New()
     -- self.onEquipmentChanged:AddListener(self, self._printEquInfo)
-    -- self.equPathList = dofile("Data/equipment/equipmentlist.lua")
+    -- self.equPathList = dofile("resource/data/equipment/equipmentlist.lua")
 
     for key, value in pairs(data) do
         if key ~= "class" then

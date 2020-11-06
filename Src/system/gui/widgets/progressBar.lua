@@ -13,7 +13,7 @@ local _ProgressBar = require("core.class")(_Widget)
 
 function _ProgressBar:Ctor(name, x, y, stylePath)
     _Widget.Ctor(self, name, x, y)
-    self._style = _RESOURCE.ReadData(stylePath)
+    self._style = _RESOURCE.ReadData("resource/data/ui/" .. stylePath)
     assert(self._style, "style table is null!")
     self._upper = _Sprite.New()
     self._bottom = _Sprite.New()

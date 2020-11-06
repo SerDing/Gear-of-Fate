@@ -29,8 +29,8 @@ local _Level = require("core.class")()
 function _Level:Ctor(path, LEVELMGR) --initialize
     self._LEVELMGR = LEVELMGR
 
-    self.pathHead = "Data/map/"
-    self.map = _RESOURCE.ReadData(string.gsub(path,".dat",""))
+    self.pathHead = "resource/data/map/"
+    self.map = _RESOURCE.ReadData(path)
 
     -- temp proc of [virtual movable area] for test maps
     -- if not self.map["[virtual movable area]"] then

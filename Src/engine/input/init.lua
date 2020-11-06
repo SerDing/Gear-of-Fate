@@ -31,7 +31,7 @@ local _INPUT = {
     }
 }
 
-local _InputMap = _RESOURCE.ReadData("Data/input/map")
+local _InputMap = _RESOURCE.ReadData("resource/data/input/map")
 local _InputHandlers = {} ---@type table<number, Engine.Input.InputHandler>
 local _AXIS_DEADBAND = 0.19
 local _TRIGGER_DEADBAND = 0.19

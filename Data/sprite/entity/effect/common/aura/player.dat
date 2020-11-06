@@ -1,6 +1,0 @@
-return {
-    -- image = "player",
-	ox = 63,
-	oy = 21,
-	blendmode = "add",
-}

@@ -14,6 +14,7 @@ local _Widget = require("system.gui.widgets.widget")
 ---@class GUI.Widgets.Button : GUI.Widgets.Base
 ---@field protected _color Engine.Graphics.Config.Color
 ---@field protected _sprites table<string, Engine.Graphics.Drawable.Sprite>
+---@field public onClick Event
 local _Button = require("core.class")(_Widget)
 
 function _Button.NewWithData(data)
@@ -24,7 +25,7 @@ function _Button:Ctor(name, text, x, y, stylePath)
     _Widget.Ctor(self, name, x, y)
 
     self._text = text
-    self._style = _RESOURCE.ReadData(stylePath)
+    self._style = _RESOURCE.ReadData("resource/data/ui/" .. stylePath)
     self._state = "normal"
     self._sprites = {
         normal = _Sprite.New(),
@@ -48,7 +49,7 @@ function _Button:Ctor(name, text, x, y, stylePath)
     self._flash = {alpha = 255, v = 5}
     self._color = _Color.New(250, 179, 0, 255)
 
-    self.eventClick = _Event.New()
+    self.onClick = _Event.New()
 
     self._dragging = false
     self._dragOffset = {x = 0, y = 0}
@@ -92,7 +93,7 @@ function _Button:HandleEvent(msg, x, y)
     elseif msg == "MOUSE_LEFT_RELEASED" then
         if self._sprites[self._state]:GetRect():CheckPoint(x, y) then
             self:SetState("light")
-            self.eventClick:Notify()
+            self.onClick:Notify()
         else
             self:SetState("normal")
         end

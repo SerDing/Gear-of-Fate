@@ -1,19 +1,20 @@
 --[[	
 	Desc: HUD panel
-	Author: SerDing 	
+	Author: SerDing 
 	Since: 2019-08-10 18:26
-	Alter: 2019-12-08 
+	Alter: 2020-11-06
 ]]
 local _PLAYERMGR = require("system.playermgr")
 local _Panel = require("system.gui.panels.panel")
-local _HUD = require("core.class")(_Panel) ---@class HUD : Panel
-
 local _HpController = require("system.gui.controller.hpcontroller")
+
+---@class GUI.Panel.HUD : GUI.Panel
+local _HUD = require("core.class")(_Panel)
 
 ---@param entity Swordman
 function _HUD:Ctor()
     _Panel.Ctor(self,"HUD")
-    self:LoadLayout("Data/ui/layout/hud")
+    self:LoadLayout("layout/hud")
 
     self._entity = nil ---@type Swordman
 

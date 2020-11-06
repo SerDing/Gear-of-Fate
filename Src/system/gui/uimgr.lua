@@ -14,7 +14,7 @@ local _Stack = require("core.stack")
 local _LayoutMgr = require("system.gui.layoutmgr")
 
 ---@class UIManager
----@field protected _panels Panel[] @panel list
+---@field protected _panels GUI.Panel[] @panel list
 local _UIMgr = {}
 
 function _UIMgr.Init(data)
@@ -64,7 +64,7 @@ function _UIMgr.Back()
 end
 
 ---@param name string
----@param panel Panel
+---@param panel GUI.Panel
 function _UIMgr.AddPanel(name, panel)
     _UIMgr._panels[name] = panel
 end

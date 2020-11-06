@@ -1,4 +1,0 @@
-return {
-    hud = 'HUD',
-    inventory = 'Inventory',
-}

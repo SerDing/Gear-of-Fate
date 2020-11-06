@@ -31,7 +31,7 @@ local this = _LEVELMGR
 
 function _LEVELMGR.Ctor()
 	
-	this.path = "Data/map/"
+	this.path = "resource/data/map/"
 	this.curLevel = nil
 	this.offset = {x = 0, y = 0}
 	this.curIndex = _Index["elvengard"]
@@ -39,12 +39,12 @@ function _LEVELMGR.Ctor()
 	this._levelPool = {town = {}, dungeon = {}}
 	this._area = {town = {}, dungeon = {}}
 	this._NAME_LIST = {
-		town = _RESOURCE.ReadData("Data/town/town"),
+		town = _RESOURCE.ReadData("resource/data/town/town"),
 		dungeon = {},
 	}
 
 	for k,v in pairs(this._NAME_LIST.town) do
-		this._area.town[k] = _RESOURCE.ReadData("Data/town/" .. v)
+		this._area.town[k] = _RESOURCE.ReadData("resource/data/town/" .. v)
 	end 
 
 	this._curtain = { alpha = 240, speed = 3 }
@@ -120,13 +120,8 @@ end
 
 function _LEVELMGR.CreatScene(area, map, type)
 	-- delete the suffix ".map" 
-	local mapPath = string.sub(_LEVELMGR.path .. this._area[type][area]["[area]"][map][1], 1, - 4 - 1) .. ".dat"
+	local mapPath = string.sub(_LEVELMGR.path .. this._area[type][area]["[area]"][map][1], 1, - 4 - 1)
 	if not this._levelPool[type][area][map] then
-		--[[	check whether the map file exits 	]]
-		if _LEVELMGR.IsMapFileExisting(mapPath) == false then
-			error("No map file: " .. mapPath)
-			return false
-		end
 		this._levelPool[type][area][map] = _Level.New(mapPath, _LEVELMGR) 
 	end
 end

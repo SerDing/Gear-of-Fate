@@ -3,23 +3,23 @@ return {
     frames = {
         {
             sprite = "200",
-            time = 100, -- 70
+            time = 130, -- 70
         },
         {
             sprite = "201",
-            time = 70,
+            time = 70, -- 70
         },
         {
             sprite = "202",
-            time = 70,
+            time = 50,-- 70
         },
         {
             sprite = "203",
-            time = 70,
+            time = 50,-- 70
         },
         {
             sprite = "203",
-            time = 300,
+            time = 200,
         },
     }
 }

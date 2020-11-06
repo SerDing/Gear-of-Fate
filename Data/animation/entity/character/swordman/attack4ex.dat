@@ -7,7 +7,7 @@ return {
         },
         {
             sprite = "205",
-            time = 60,
+            time = 100,--60
         },
         {
             sprite = "206",

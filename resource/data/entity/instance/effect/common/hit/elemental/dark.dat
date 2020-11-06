@@ -1,0 +1,26 @@
+return {
+    render = {
+        obj = 'avatar',
+        path = "entity/effect/common/",
+        dynamic = false,
+        animPathSet = {
+            dark_bg = "hit/elemental/dark_bg",
+            dark_glow = "hit/elemental/dark_glow",
+            dark_normal = "hit/elemental/dark_normal",
+        },
+        order = {
+            dark_bg = 1,
+            dark_glow = 3,
+            dark_normal = 2,
+        }
+    },
+    identity = {
+        name = "dark_hit_effect",
+        type = "effect",
+    },
+    effect = {
+        -- lockDirection = true,
+        lockStop = false,
+        playEnd = true,
+    }
+}

@@ -1,0 +1,13 @@
+return {
+    name = "裁决刃-国殇",
+    explain = "",
+    background_text = "贝尔玛尔护国将军的配剑，只需一击便能打飞敌人。",
+    icon = "",
+    type = "weapon", -- item type
+    subtype = "hsword",
+    damage = 24,
+    avatar = {
+        weapon_b1 = "hsword/lswd0205b",
+        weapon_c1 = "hsword/lswd0205c",
+    },
+}

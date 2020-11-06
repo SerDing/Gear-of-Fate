@@ -1,0 +1,40 @@
+return {
+--["[NAME]"]= "sword2-1.ani"
+["[FRAME MAX]"]= 5,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-232,-333}
+,
+	["[DELAY]"]=60,
+	["[IMAGE]"]={"character/swordman/effect/frenzy/sword_blood_under.img",6}
+,
+},
+["[FRAME001]"]={
+	["[IMAGE POS]"]={-232,-333}
+,
+	["[DELAY]"]=60,
+	["[IMAGE]"]={"character/swordman/effect/frenzy/sword_blood_under.img",7}
+,
+},
+["[FRAME002]"]={
+	["[IMAGE POS]"]={-232,-333}
+,
+	["[DELAY]"]=60,
+	["[IMAGE]"]={"character/swordman/effect/frenzy/sword_blood_under.img",8}
+,
+},
+["[FRAME003]"]={
+	["[IMAGE POS]"]={-232,-333}
+,
+	["[DELAY]"]=60,
+	["[IMAGE]"]={"character/swordman/effect/frenzy/sword_blood_under.img",9}
+,
+},
+["[FRAME004]"]={
+	["[IMAGE POS]"]={-232,-333}
+,
+	["[DELAY]"]=400, -- 300
+	["[IMAGE]"]={"character/swordman/effect/frenzy/sword_blood_under.img",10}
+,
+},
+
+}

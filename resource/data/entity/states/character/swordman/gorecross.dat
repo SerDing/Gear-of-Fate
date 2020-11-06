@@ -1,0 +1,58 @@
+return {
+    script = "swordman/gorecross",
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    nextState = 'stay',
+    effectTicks = {3, 7, 10},
+    attackTicks = {6},
+    attack = {
+        {
+            type = "cut",
+            direction = "horizon",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -80,
+                a = 350
+            },
+            selfstop = 92,
+            hitstop = 180,
+            damage = 30,
+        },
+        {
+            type = "cut",
+            direction = "up",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -70,
+                a = 350
+            },
+            selfstop = 92,
+            hitstop = 220,
+            damage = 30,
+        },
+    },
+    animNameSet = {
+        "gorecross",
+    },
+    entity = {
+        "effect/swordman/gorecross/slash1",
+        "effect/swordman/gorecross/slash2",
+        "projectile/swordman/gorecross",
+    },
+    sound = {
+        voice = "entity/character/voice/swordman/sm_gorecross",
+        swing = {
+            "entity/character/swing/swordman/gorecross_atk3",
+            "entity/character/swing/swordman/gorecross_cross",
+        },
+        hitting = {
+            "entity/character/hitting/swordman/hsword/3",
+            "entity/character/hitting/swordman/hsword/4",
+        },
+    },
+}

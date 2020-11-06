@@ -1,0 +1,31 @@
+return {--[[ #PVF_File --]]
+		["[FRAME MAX]"]=6,
+	["[FRAME000]"]={
+		["[IMAGE]"]={"",0},
+		["[IMAGE POS]"]={0,0},
+		["[DELAY]"]=70,},
+	["[FRAME001]"]={
+		["[IMAGE]"]={"Character/Swordman/Effect/BloodInkanet/bloodinkanet_dangong.img",4},
+		["[IMAGE POS]"]={-319,-467},
+		["[DELAY]"]=70,
+		["[DAMAGE TYPE]"]="NORMAL",},
+	["[FRAME002]"]={
+		["[IMAGE]"]={"Character/Swordman/Effect/BloodInkanet/bloodinkanet_dangong.img",5},
+		["[IMAGE POS]"]={-319,-467},
+		["[DELAY]"]=70,
+		["[DAMAGE TYPE]"]="NORMAL",},
+	["[FRAME003]"]={
+		["[IMAGE]"]={"Character/Swordman/Effect/BloodInkanet/bloodinkanet_dangong.img",6},
+		["[IMAGE POS]"]={-319,-467},
+		["[DELAY]"]=70,
+		["[DAMAGE TYPE]"]="NORMAL",},
+	["[FRAME004]"]={
+		["[IMAGE]"]={"Character/Swordman/Effect/BloodInkanet/bloodinkanet_dangong.img",7},
+		["[IMAGE POS]"]={-319,-467},
+		["[DELAY]"]=70,
+		["[DAMAGE TYPE]"]="NORMAL",},
+	["[FRAME005]"]={
+		["[IMAGE]"]={"",0},
+		["[IMAGE POS]"]={0,0},
+		["[DELAY]"]=360,}
+}

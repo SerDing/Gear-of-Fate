@@ -1,8 +1,9 @@
-resource/
-Music/
-Font/
-Build/
-Save/
+resource/image/
+resource/sound/
+resource/music/
+resource/font/
+build/
+save/
 .idea/
 .vscode/
 *.love

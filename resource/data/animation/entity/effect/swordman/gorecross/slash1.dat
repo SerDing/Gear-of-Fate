@@ -1,0 +1,49 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            -- sprite = "0",
+            time = 50,
+        },
+        {
+            -- sprite = "0",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/0",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/1",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/2",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/3",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/4",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/5",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/6",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/7",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/gorecross/gorecross_slash/8",
+            time = 100,
+        },
+    },
+}

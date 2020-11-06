@@ -1,0 +1,10 @@
+return {
+--["[NAME]"]= "elvenltw.ani"
+["[FRAME MAX]"]= 1,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-117,-256},
+	["[DELAY]"]=20,
+	["[IMAGE]"]={"map/elvenltw.img",0},
+},
+
+}

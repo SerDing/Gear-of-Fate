@@ -1,0 +1,14 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "entity/effect/common/hit/elemental/light_bg/0",
+            time = 600,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/light_bg/0",
+            sx = 0.5,
+            sy = 0.5,
+        },
+    },
+}

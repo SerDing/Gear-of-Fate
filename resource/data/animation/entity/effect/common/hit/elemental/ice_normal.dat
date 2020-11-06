@@ -1,0 +1,41 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/0",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/1",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/2",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/3",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/4",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/5",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/6",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/7",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/common/hit/elemental/water_normal/8",
+            time = 50,
+        },
+    },
+}

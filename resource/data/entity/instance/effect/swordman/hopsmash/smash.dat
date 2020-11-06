@@ -1,0 +1,16 @@
+return {
+    render = {
+        obj = 'frameani',
+        path = "entity/effect/swordman/hopsmash/smash",
+    },
+    identity = {
+        name = "hopsmash_smash",
+        type = "effect",
+    },
+    effect = {
+        lockDirection = true,
+        lockRate = true,
+        playEnd = true,
+        followType = "xyz",
+    }
+}

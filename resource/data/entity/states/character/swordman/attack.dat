@@ -1,0 +1,144 @@
+return {
+    script = 'swordman/attack',
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    nextState = 'stay',
+    keyFrames = {6, 6, 5},
+    ticks = {7, 7, 4},
+    -- ticks = {9, 10, 5},
+    animNameSet = {
+        "attack1",
+        "attack2",
+        "attack3ex",
+        "attack4ex",
+    },
+    entity = {
+        "effect/swordman/attack/bloodslash1",
+        "effect/swordman/attack/bloodslash2",
+        "effect/swordman/attack/bloodslash3",
+        "effect/swordman/attack/bloodslash4",
+    },
+    attack = {
+        {
+            type = "cut",
+            direction = "down",
+            reaction = "damage",
+            push = {
+                time = 300,
+                v = -95,
+                a = 350
+            },
+            selfstop = 100,
+            hitstop = 220,
+            damage = 15,
+        },
+        {
+            type = "cut",
+            direction = "horizon",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -95,
+                a = 350
+            },
+            selfstop = 100,
+            hitstop = 220,
+            damage = 15,
+        },
+        {
+            type = "cut",
+            direction = "up",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -95,
+                a = 350
+            },
+            -- lift = {
+            --     vz = 270,
+            --     az = 22,
+            --     vx = -55,
+            -- },
+            selfstop = 100,
+            hitstop = 220,
+            damage = 15,
+        },
+        {
+            type = "cut",
+            direction = "down",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -120,
+                a = 350
+            },
+            selfstop = 100,
+            hitstop = 220,
+            damage = 15,
+        },
+    },
+    easeMoveData = {
+        {
+            process = 2,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 100, -- 95, 160
+                a = -500, -- -200, -800
+            }
+        },
+        {
+            process = 3,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 100, -- 150
+                a = -500, -- -750
+            }
+        },
+        {
+            process = 4,
+            frame = 2,
+            param = {
+                type = "x",
+                v = 300, -- 400
+                a = -3000, -- -4000
+            }
+        },
+    },
+    sound = {
+        voice = {
+            "entity/character/voice/swordman/sm_atk_01",
+            "entity/character/voice/swordman/sm_atk_02",
+            "entity/character/voice/swordman/sm_atk_03",
+        },
+        swing = {
+            hsword = {
+                "entity/character/swing/swordman/hsword/1",
+                "entity/character/swing/swordman/hsword/2",
+            },
+            katana = {
+                "entity/character/swing/swordman/katana/1",
+                "entity/character/swing/swordman/katana/2",
+                "entity/character/swing/swordman/katana/3",
+            },
+        },
+        hitting = {
+            hsword = {
+                "entity/character/hitting/swordman/hsword/1",
+                "entity/character/hitting/swordman/hsword/2",
+            },
+        },
+    },
+    trans = {
+        {"NORMAL", "BACK", "jump", true},
+        {"SKILL", 46, "upperslash"},
+        {"SKILL", 64, "gorecross"},
+        {"SKILL", 65, "hopsmash"},
+        {"SKILL", 77, "moonlightslash"},
+        {"SKILL", 8, "tripleslash"},
+    },
+}

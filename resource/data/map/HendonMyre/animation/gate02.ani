@@ -1,0 +1,12 @@
+return {
+--["[NAME]"]= "gate02.ani"
+["[FRAME MAX]"]= 1,
+["[FRAME000]"]={
+	["[IMAGE POS]"]={-151,-283}
+,
+	["[DELAY]"]=120,
+	["[IMAGE]"]={"map/hendonmyre/hendonpath.img",1}
+,
+},
+
+}

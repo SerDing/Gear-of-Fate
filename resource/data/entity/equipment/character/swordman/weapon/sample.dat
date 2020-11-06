@@ -1,0 +1,26 @@
+return {
+    name = "equipment name",
+    explain = "", -- text for explaining the effect of equipment
+    background_text = "", -- background story
+    icon = "", -- item icon image path
+    type = "weapon", -- item type: potion weapon ring stone ...
+    main_type = "hsword", -- weapon main type
+    subtype = "lswd", -- weapon sub type
+    move_wav = "SQUARESWD_TOUCH", -- sound of moving the equipment in inventory
+    damage = 24, -- weapon damage
+    animation = { -- some equipment does not need animation changing
+        variation = 4200,
+        layers = {
+            {
+                name = "weapon_b1",
+                img = "lswd%04db.img",
+                ani_script = "equipment/character/swordman",
+            },
+            {
+                name = "weapon_c1",
+                img = "lswd%04dc.img",
+                ani_script = "equipment/character/swordman",
+            },
+        },
+    },
+}

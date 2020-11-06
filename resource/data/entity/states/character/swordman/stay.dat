@@ -1,0 +1,21 @@
+return {
+    script = 'swordman/stay',
+    tags = {
+        autoPlay = true,
+    },
+    animNameSet = {
+        "stay",
+    },
+    nextState = "move",
+    trans = {
+        {"NORMAL", "JUMP", "jump"},
+        {"NORMAL", "ATTACK", "attack"},
+        {"NORMAL", "BACK", "jump", true},
+        {"SKILL", 46, "upperslash"},
+        {"SKILL", 64, "gorecross"},
+        {"SKILL", 65, "hopsmash"},
+        {"SKILL", 76, "frenzy"},
+        {"SKILL", 77, "moonlightslash"},
+        {"SKILL", 8, "tripleslash"},
+    },
+}

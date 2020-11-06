@@ -1,0 +1,11 @@
+return {
+    render = {
+        obj = 'frameani',
+        path = "entity/effect/common/aura/player",
+        offset = -1,
+    },
+    effect = {
+        followType = "xy",
+        eternal = true,
+    }
+}

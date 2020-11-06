@@ -1,0 +1,9 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "96",
+            time = 10000,
+        },
+    }
+}

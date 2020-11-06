@@ -1,0 +1,82 @@
+return {
+    script = "swordman/moonlightslash",
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    nextState = 'stay',
+    keyFrames = {3},
+    ticks = {2},
+    attack = {
+        {
+            type = "cut",
+            direction = "down",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -100,
+                a = 350
+            },
+            selfstop = 85,
+            hitstop = 150,
+            damage = 30,
+            element = "dark",
+        },
+        {
+            type = "cut",
+            direction = "up",
+            reaction = "damage",
+            lift = {
+                vz = 360,
+                az = 24,
+                vx = -80,
+            },
+            selfstop = 85,
+            hitstop = 170,
+            damage = 30,
+            element = "dark",
+        },
+    },
+    animNameSet = {
+        "moonlightslash1",
+        "moonlightslash2",
+    },
+    entity = {
+        "effect/swordman/moonlightslash/slash1",
+        "effect/swordman/moonlightslash/slash2",
+    },
+    sound = {
+        voice = "entity/character/voice/swordman/sm_moon_atk",
+        swing = {
+            "entity/character/swing/swordman/moon_atk_01",
+            "entity/character/swing/swordman/moon_atk_02",
+        },
+        hitting = {
+            hsword = {
+                "entity/character/hitting/swordman/hsword/3",
+                "entity/character/hitting/swordman/hsword/4",
+            },
+        },
+    },
+    easeMoveData = { 
+        {
+            process = 1,
+            frame = 1,
+            param = {
+                type = "x",
+                v = 200,
+                a = -800,
+            }
+        },
+        {
+            process = 2,
+            frame = 1,
+            param = {
+                type = "x",
+                v = 210,
+                a = -840,
+            }
+        },
+    }
+}

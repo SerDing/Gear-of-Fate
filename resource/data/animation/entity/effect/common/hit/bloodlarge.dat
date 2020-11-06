@@ -1,0 +1,33 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "entity/effect/common/hit/bloodlarge/0",
+            time = 40,
+        },
+        {
+            sprite = "entity/effect/common/hit/bloodlarge/1",
+            time = 40,
+        },
+        {
+            sprite = "entity/effect/common/hit/bloodlarge/2",
+            time = 40,
+        },
+        {
+            sprite = "entity/effect/common/hit/bloodlarge/3",
+            time = 40,
+        },
+        {
+            sprite = "entity/effect/common/hit/bloodlarge/4",
+            time = 40,
+        },
+        {
+            sprite = "entity/effect/common/hit/bloodlarge/5",
+            time = 40,
+        },
+        {
+            sprite = "entity/effect/common/hit/bloodlarge/6",
+            time = 40,
+        },
+    },
+}

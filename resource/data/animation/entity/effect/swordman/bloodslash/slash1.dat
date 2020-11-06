@@ -1,0 +1,27 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            time = 200,
+        },
+        {
+            sprite = "entity/effect/swordman/bloodinkanet/bloodinkanet_dangong/0",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/bloodinkanet/bloodinkanet_dangong/1",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/bloodinkanet/bloodinkanet_dangong/2",
+            time = 50,
+        },
+        {
+            sprite = "entity/effect/swordman/bloodinkanet/bloodinkanet_dangong/3",
+            time = 50,
+        },
+        {
+            time = 250,
+        },
+    },
+}

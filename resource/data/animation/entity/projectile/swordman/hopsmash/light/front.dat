@@ -1,0 +1,29 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "entity/projectile/swordman/hopsmash/light_front/0",
+            time = 80,
+        },
+        {
+            sprite = "entity/projectile/swordman/hopsmash/light_front/1",
+            time = 80,
+        },
+        {
+            sprite = "entity/projectile/swordman/hopsmash/light_front/2",
+            time = 80,
+        },
+        {
+            sprite = "entity/projectile/swordman/hopsmash/light_front/3",
+            time = 80,
+        },
+        {
+            sprite = "entity/projectile/swordman/hopsmash/light_front/4",
+            time = 80,
+        },
+        {
+            sprite = "entity/projectile/swordman/hopsmash/light_front/5",
+            time = 80,
+        },
+    },
+}

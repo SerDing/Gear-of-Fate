@@ -1,0 +1,13 @@
+return {
+    name = "冥炎刀",
+    explain = "",
+    background_text = "",
+    icon = "",
+    type = "weapon", -- item type
+    subtype = "katana",
+    damage = 24,
+    avatar = {
+        weapon_b1 = "katana/katana3201b",
+        weapon_c1 = "katana/katana3201c",
+    },
+}

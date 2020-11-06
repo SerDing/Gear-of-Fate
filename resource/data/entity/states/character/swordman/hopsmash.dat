@@ -1,0 +1,63 @@
+return {
+    script = "swordman/hopsmash",
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    nextState = 'stay',
+    animNameSet = {
+        "hopsmashready",
+        "hopsmash",
+    },
+    attack = {
+        {
+            type = "cut",
+            direction = "down",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -70,
+                a = 350
+            },
+            selfstop = 92,
+            hitstop = 200,
+            damage = 30,
+        },
+        {
+            type = "cut",
+            direction = "horizon",
+            reaction = "damage",
+            lift = {
+                vz = 0,
+                az = 0,
+                vx = -30,
+            },
+            selfstop = 92,
+            hitstop = 220,
+            damage = 30,
+        },
+    },
+    entity = {
+        "effect/swordman/hopsmash/sword",
+        "effect/swordman/hopsmash/smash",
+        "projectile/swordman/hopsmash",
+        "effect/swordman/hopsmash/bloodfront",
+    },
+    sound = {
+        voice = "entity/character/voice/swordman/sm_boongsan",
+        hitting = {
+            hsword = {
+                "entity/character/hitting/swordman/hsword/1",
+                "entity/character/hitting/swordman/hsword/2",
+            },
+        },
+    },
+    verticalSpeedBase = 750,
+    gravity = 36,
+    varAttackRate = 0.3,
+    minTimePercent = 0.5,
+    forwardSpeed = 450,
+    holddownTimeMax = 0.15,
+	holddownTimeMin = 0.11,
+}

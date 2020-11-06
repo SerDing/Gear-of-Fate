@@ -1,0 +1,15 @@
+return {
+    script = "swordman/jump",
+    tags = {
+        autoPlay = true,
+        autoTrans = true,
+        attackRate = true,
+    },
+    nextState = 'stay',
+    animNameSet = {
+        "jump",
+    },
+    trans = {
+		{"SKILL", 16, "ashenfork"}, 
+	},
+}

@@ -1,0 +1,51 @@
+return {
+    render = {
+        obj = 'avatar',
+        path = "entity/projectile/swordman/",
+        dynamic = false,
+        animPathSet = {
+            gorecross1 = "gorecross/gorecross1",
+            gorecross2 = "gorecross/gorecross2",
+        },
+        order = {
+            gorecross1 = 1,
+            gorecross2 = 0,
+        },
+        offset = 5,
+    },
+    projectile = {
+        playEnd = true,
+        tags = {
+            combat = true,
+            hitstop = true,
+        },
+        attack = {
+            turnDirection = false,
+            type = "cut",
+            direction = "down",
+            reaction = "damage",
+            push = {
+                time = 450,
+                v = -70,
+                a = 350
+            },
+            selfstop = 92,
+            hitstop = 200,
+            damage = 30,
+            hitSound = {
+                "entity/character/hitting/swordman/gorecross/1",
+                "entity/character/hitting/swordman/gorecross/2",
+            },
+        },
+        movementParam = {
+            type = "x",
+            tick = 1,
+            v = 240,
+            a = -670,
+        },
+    },
+    combat = {},
+    fighter = {},
+    hitstop = {},
+    movement = {},
+}

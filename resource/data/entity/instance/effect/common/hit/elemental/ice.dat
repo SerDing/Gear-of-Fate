@@ -1,0 +1,26 @@
+return {
+    render = {
+        obj = 'avatar',
+        path = "entity/effect/common/",
+        dynamic = false,
+        animPathSet = {
+            ice_bg = "hit/elemental/ice_bg",
+            ice_glow = "hit/elemental/ice_glow",
+            ice_normal = "hit/elemental/ice_normal",
+        },
+        order = {
+            ice_bg = 1,
+            ice_glow = 3,
+            ice_normal = 2,
+        }
+    },
+    identity = {
+        name = "ice_hit_effect",
+        type = "effect",
+    },
+    effect = {
+        -- lockDirection = true,
+        lockStop = false,
+        playEnd = true,
+    }
+}

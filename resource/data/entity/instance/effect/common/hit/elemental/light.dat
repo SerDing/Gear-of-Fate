@@ -1,0 +1,24 @@
+return {
+    render = {
+        obj = 'avatar',
+        path = "entity/effect/common/",
+        dynamic = false,
+        animPathSet = {
+            light_bg = "hit/elemental/light_bg",
+            light_normal = "hit/elemental/light_normal",
+        },
+        order = {
+            light_bg = 1,
+            light_normal = 2,
+        }
+    },
+    identity = {
+        name = "light_hit_effect",
+        type = "effect",
+    },
+    effect = {
+        -- lockDirection = true,
+        lockStop = false,
+        playEnd = true,
+    }
+}

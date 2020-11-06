@@ -1,0 +1,24 @@
+return {
+    render = {
+        obj = 'avatar',
+        path = "entity/projectile/swordman/",
+        dynamic = false,
+        animPathSet = {
+            mainFront = "hopsmash/main/front",
+            lightFront = "hopsmash/light/front",
+        },
+        order = {
+            mainFront = 2,
+            lightFront = 3,
+        }
+    },
+    identity = {
+        name = "hopsmash_bloodfront",
+        type = "effect",
+    },
+    effect = {
+        lockDirection = true,
+        lockRate = true,
+        playEnd = true,
+    }
+}

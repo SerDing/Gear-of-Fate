@@ -1,0 +1,6 @@
+return { 
+	image = "2",
+	ox = -41,
+	oy = 72,
+	blendmode = "add",
+}

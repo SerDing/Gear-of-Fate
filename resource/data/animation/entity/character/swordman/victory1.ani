@@ -1,0 +1,113 @@
+return {
+ 	['[FRAME017]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 1000,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",164,},
+	},
+	['[FRAME007]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",160,},
+	},
+	['[FRAME008]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",161,},
+	},
+	['[FRAME005]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",164,},
+	},
+	['[FRAME014]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",161,},
+	},
+	['[FRAME004]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",163,},
+	},
+	['[FRAME002]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",161,},
+	},
+	['[FRAME000]'] = {
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",159,},
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[PLAY SOUND]'] = "winner_pose_sm_01",
+	},
+	['[FRAME009]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",162,},
+	},
+	['[FRAME MAX]'] = 18,
+	['[FRAME013]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",160,},
+	},
+	['[FRAME006]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",159,},
+	},
+	['[FRAME003]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",162,},
+	},
+	['[FRAME001]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",160,},
+	},
+	['[FRAME016]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",162,},
+	},
+	['[FRAME015]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",163,},
+	},
+	['[FRAME010]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",163,},
+	},
+	['[FRAME011]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",164,},
+	},
+	['[FRAME012]'] = {
+		['[IMAGE POS]'] = {-232,-333,},
+		['[DAMAGE TYPE]'] = "normal",
+		['[DELAY]'] = 100,
+		['[IMAGE]'] = {"character/swordman/equipment/avatar/skin/sm_body%04d.img",159,},
+	},
+ 
+}

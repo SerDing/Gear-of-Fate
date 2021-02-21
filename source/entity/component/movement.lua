@@ -7,7 +7,7 @@
 
 local _Event = require("core.event")
 local _Vector3 = require("utils.vector3") 
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Movement : Entity.Component.Base
 ---@field public eventMap table<stirng, Event>

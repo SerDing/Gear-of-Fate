@@ -7,7 +7,7 @@
 local _GRAPHICS = require("engine.graphics.graphics")
 local _Color = require("engine.graphics.config.color")
 local _Drawable = require("engine.graphics.drawable.base")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Render : Entity.Component.Base
 ---@field public renderObj Entity.Drawable.Avatar | Entity.Drawable.Frameani

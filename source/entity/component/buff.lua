@@ -5,7 +5,7 @@
 	Alter: 2019-11-10 
 ]]
 local _Animator = require("engine.animation.frameani")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Buff : Entity.Component.Base
 local _Buff = require("core.class")(_Base)

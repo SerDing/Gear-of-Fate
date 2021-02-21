@@ -8,11 +8,11 @@
 ]]
 
 local _Animator = require("engine.animation.frameani")
-local _Avatar = require("component.avatar")
-local _Input = require("component.input")
+local _Avatar = require("entity.component.avatar")
+local _Input = require("entity.component.input")
 local _FSM = require("utils.fsm")
-local _FSMAIControl = require("component.ai")
-local _Effect = require("component.effect")
+local _FSMAIControl = require("entity.component.ai")
+local _Effect = require("entity.component.effect")
 local _RESMGR = require("system.resource.resmgr")
 
 local scene_ = {} -- init a null Scene Pointer

@@ -7,7 +7,7 @@
 
 local _Value = require("utils.value")
 local _MpModel = require("entity.mpmodel")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Stats : Entity.Component.Base
 local _Stats = require("core.class")(_Base)

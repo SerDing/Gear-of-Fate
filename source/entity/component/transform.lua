@@ -7,7 +7,7 @@
 local _GRAPHICS = require("engine.graphics.graphics")
 local _Vector2 = require("utils.vector2")
 local _Vector3 = require("utils.vector3")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 local _SETTING = require("setting")
 
 ---@class Entity.Component.Transform : Entity.Component.Base

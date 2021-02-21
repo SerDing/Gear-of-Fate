@@ -9,7 +9,7 @@ local _RESMGR = require("system.resource.resmgr")
 local _AUDIO = require("engine.audio")
 local _FACTORY = require("system.entityfactory")
 local _Timer = require("utils.timer")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Fighter : Entity.Component.Base
 ---@field protected _mark Entity

@@ -9,7 +9,7 @@
     Since: 2019-11-5
     Alter: 2019-11-5
 ]]
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Effect : Entity.Component.Base
 local _Effect = require("core.class")(_Base)

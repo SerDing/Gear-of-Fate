@@ -9,8 +9,8 @@
 ]]
 local _RESOURCE = require("engine.resource")
 local _STRING = require("engine.string")
-local _Skill = require("component.skills.skill")
-local _Base = require("component.base")
+local _Skill = require("entity.component.skills.skill")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Skills : Entity.Component.Base
 local _Skills = require("core.class")(_Base)

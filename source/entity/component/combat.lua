@@ -14,7 +14,7 @@ local _RESMGR = require("system.resource.resmgr")
 local _AUDIO = require("engine.audio")
 local _Event = require("core.event")
 local _Color = require("engine.graphics.config.color")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Combat : Entity.Component.Base
 ---@field public _OnHit function

@@ -5,7 +5,7 @@
     Alter: 2019-12-02
 ]]
 local _Event = require("core.event")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Identity : Entity.Component.Base
 ---@field public name string

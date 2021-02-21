@@ -10,7 +10,7 @@
 ]]
 
 local _INPUT = require("engine.input")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Input : Engine.Input.InputHandler
 ---@field protected _buttonMap table @ map of actions

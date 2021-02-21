@@ -4,10 +4,9 @@
 	Since: 2019-03-14
 	Alter: 2019-11-07
 ]]
-
+local _Transform = require("entity.component.transform")
+local _Identity = require("entity.component.identity")
 local _RESMGR = require("system.resource.resmgr")
-local _Transform = require("component.transform") 
-local _Identity = require("component.identity")
 local _ENTITYMGR = require("system.entitymgr")
 
 ---@class System.EntityFactory

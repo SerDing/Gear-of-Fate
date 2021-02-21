@@ -5,7 +5,7 @@
 	Alter: 2020-10-10 01:05:38
 ]]
 local _Timer = require("utils.timer")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.HitStop : Entity.Component.Base
 local _HitStop = require("core.class")(_Base)

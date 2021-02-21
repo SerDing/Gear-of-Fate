@@ -7,7 +7,7 @@
 
 local _RESMGR = require("system.resource.resmgr")
 local _Event = require("core.event")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Equipment : Entity.Component.Base
 ---@field protected _equipments table<int, EquData>

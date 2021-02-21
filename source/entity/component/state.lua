@@ -6,7 +6,7 @@
 ]]
 local _RESMGR = require("system.resource.resmgr")
 local _Fsm = require("utils.fsm")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.State : Utils.FSM
 ---@field protected _entity Entity

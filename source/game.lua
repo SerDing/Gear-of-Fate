@@ -51,7 +51,7 @@ function _GAME.Update(dt)
 	if not _GAME._running then
 		return 
 	end
-	print(dt)
+
 	if _GAME._timeScale < 1.0 then
 		_GAME._timer:Tick(dt)
 		if _GAME._timer.isRunning == false then

@@ -8,7 +8,7 @@
     Since: 2020-03-18
     Alter: 2020-03-18
 ]]
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Projectile : Entity.Component.Base
 local _Projectile = require("core.class")(_Base)

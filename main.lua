@@ -1,4 +1,4 @@
-﻿love.filesystem.setRequirePath("Src/?.lua;Src/?/init.lua")
+﻿love.filesystem.setRequirePath("source/?.lua;source/?/init.lua")
 
 local _RESOURCE = require("engine.resource")
 local _GRAPHICS = require("engine.graphics.graphics")

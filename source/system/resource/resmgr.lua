@@ -59,7 +59,7 @@ local function _NewEntityData(path)
 	local data = _RESOURCE.LoadData("resource/data/entity/instance/" .. path)
 
 	for key, value in pairs(data) do
-        value.class = require("component." .. key)
+        value.class = require("entity.component." .. key)
         if value.class.HandleData then
             value.class.HandleData(value)
         end

@@ -6,7 +6,7 @@
 ]]
 local _FACTORY = require("system.entityfactory")
 local _MATH = require("engine.math")
-local _Base = require("component.base")
+local _Base = require("entity.component.base")
 
 ---@class Entity.Component.AIC : Entity.Component.Base
 local _AIController = require("core.class")(_Base)

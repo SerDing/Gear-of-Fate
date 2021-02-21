@@ -1,0 +1,8 @@
+return {
+    isLoop = false,
+    frames = {
+        {
+            sprite = "scene/lorien/bg/1",
+        },
+    },
+}

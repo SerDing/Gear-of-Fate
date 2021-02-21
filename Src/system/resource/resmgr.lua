@@ -8,7 +8,6 @@ local _STRING = require("engine.string")
 local _FILE = require('engine.filesystem')
 local _RESOURCE = require('engine.resource')
 
-
 ---@class _RESMGR
 local _RESMGR = {
 	imgPathHead = "resource/image/", -- ImagePacks/
@@ -57,7 +56,7 @@ end
 ---@return System.RESMGR.EntityData
 local function _NewEntityData(path)
 	---@class System.RESMGR.EntityData 
-	local data = _RESOURCE.ReadData("resource/data/entity/instance/" .. path)
+	local data = _RESOURCE.LoadData("resource/data/entity/instance/" .. path)
 
 	for key, value in pairs(data) do
         value.class = require("component." .. key)
@@ -66,6 +65,13 @@ local function _NewEntityData(path)
         end
     end
 
+	local pos = _STRING.FindCharReverse(path, "/") + 1
+	local ename = string.sub(path, pos, string.len(path))
+	if data.identity == nil or data.identity.name == nil then
+		data.identity = data.identity or {}
+		data.identity.name = ename
+	end
+
 	return data
 end
 
@@ -73,7 +79,7 @@ end
 ---@return System.RESMGR.StateData
 local function _NewStateData(path)
 	---@class System.RESMGR.StateData
-	local data = _RESOURCE.ReadData("resource/data/entity/states/" .. path)
+	local data = _RESOURCE.LoadData("resource/data/entity/states/" .. path)
 
 	data.class = require("entity.states." .. data.script)
 	data.script = nil
@@ -87,7 +93,7 @@ end
 
 ---@param path string @specific anim data path (animPath + "|" + imgPath)
 ---@param imgPath string @avatar part image path
----@return Engine.Resource.AniData 
+---@return Engine.Resource.AnimData
 local function _NewAvatarAnimData(path, imgPath)
 	local pos = string.find(path, "|")
 	path = string.sub(path, 1, pos - 1)
@@ -96,7 +102,7 @@ end
 
 ---@param path string
 local function _NewEquipmentData(path)
-	return _RESOURCE.ReadData("resource/data/entity/equipment/" .. path)
+	return _RESOURCE.LoadData("resource/data/entity/equipment/" .. path)
 end
 
 ---@param path string
@@ -106,14 +112,14 @@ function _RESMGR.LoadEntityData(path)
 end
 
 ---@param path string
----@return Engine.Engine.Resource.StateData
+---@return System.RESMGR.StateData
 function _RESMGR.LoadStateData(path)
 	return _RESOURCE.LoadResource(path, _NewStateData, _pools.state)
 end
 
 ---@param path string @anim data path
 ---@param imgPath string @avatar part image path
----@return Engine.Resource.AniData 
+---@return Engine.Resource.AnimData
 function _RESMGR.LoadAvatarAnimData(path, imgPath)
     return _RESOURCE.LoadResource(path .. "|" .. imgPath, _NewAvatarAnimData, _pools.anim, imgPath)
 end

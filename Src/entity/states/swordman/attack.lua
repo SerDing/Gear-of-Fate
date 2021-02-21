@@ -8,7 +8,7 @@
 local _AUDIO = require("engine.audio")
 local _FACTORY = require("system.entityfactory") 
 local _Base = require("entity.states.base")
-local _INPUT = require("engine.input.init")
+local _INPUT = require("engine.input")
 
 ---@class Entity.State.Swordman.Attack : State.Base
 local _Attack = require("core.class")(_Base)

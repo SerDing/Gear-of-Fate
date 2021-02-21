@@ -18,7 +18,7 @@ local _Identity = require("core.class")(_Base)
 
 function _Identity:Ctor(entity, data, param)
     _Base.Ctor(self, entity)
-    self.name = param.name or ""
+    self.name = param.name or data.name or ""
     self.job = data.job or ""
     self.type = data.type or ""
     self.master = param.master or nil
@@ -28,7 +28,7 @@ function _Identity:Ctor(entity, data, param)
     self.process = 2
     self.isPaused = false
     self.immortal = false
-    self.onDestroying = _Event.New()
+    self.onDestroy = _Event.New()
 end
 
 -- function _Identity:Update(dt)
@@ -37,7 +37,7 @@ end
 
 function _Identity:StartDestroy()
     self.process = 0
-    self.onDestroying:Notify()
+    self.onDestroy:Notify()
 end
 
 return _Identity

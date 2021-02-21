@@ -5,7 +5,7 @@
 	Alter: 2019-10-24
 ]]
 local _RESOURCE = require("engine.resource")
-
+local _MOUSE = require("engine.mouse")
 ---@class Engine.Input
 ---@field protected _inputStates table @input states for keyboard and gamePad
 ---@field protected _mode string @input mode
@@ -21,17 +21,21 @@ local _INPUT = {
         positive = {
             leftx = "RIGHT",
             lefty = "DOWN",
+            rightx = 'RIGHT_SKILL',
+            righty = 'DOWN_SKILL',
             triggerleft = "USE_ITEM",
             triggerright = "BACK",
         },
         negative = {
             leftx = "LEFT",
             lefty = "UP",
+            rightx = 'LEFT_SKILL',
+            righty = 'UP_SKILL',
         }
     }
 }
 
-local _InputMap = _RESOURCE.ReadData("resource/data/input/map")
+local _InputMap = _RESOURCE.LoadData("resource/data/input/map")
 local _InputHandlers = {} ---@type table<number, Engine.Input.InputHandler>
 local _AXIS_DEADBAND = 0.19
 local _TRIGGER_DEADBAND = 0.19
@@ -99,24 +103,39 @@ end
 
 function _INPUT.KeyPressed(key)
 	_INPUT.Press("keyboard", key)
-	-- _UIMGR.KeyPressed(key)
 end
 
 function _INPUT.KeyReleased(key)
 	_INPUT.Release("keyboard", key)
 end
 
--- function _INPUT.MousePressed(x, y, button, istouch)
--- 	_UIMGR.MousePressed(x, y, button, istouch)
--- end
+function _INPUT.MousePressed(x, y, button, istouch)
+    x, y = _MOUSE.GetScaledMousePosition(x, y)
+    for i=1,#_InputHandlers do
+        if _InputHandlers[i].MousePressed then
+            _InputHandlers[i]:MousePressed(x, y, button, istouch) 
+        end
+    end
+end
 
--- function _INPUT.MouseReleased(x, y, button, istouch)
--- 	_UIMGR.MouseReleased(x, y, button, istouch)
--- end
+function _INPUT.MouseReleased(x, y, button, istouch)
+    x, y = _MOUSE.GetScaledMousePosition(x, y)
+    for i=1,#_InputHandlers do
+        if _InputHandlers[i].MouseReleased then
+            _InputHandlers[i]:MouseReleased(x, y, button, istouch) 
+        end
+    end
+end
 
--- function _INPUT.MouseMoved(x, y, dx, dy)
--- 	_UIMGR.MouseMoved(x, y, dx, dy)
--- end
+function _INPUT.MouseMoved(x, y, dx, dy)
+    x, y = _MOUSE.GetScaledMousePosition(x, y)
+    dx, dy = _MOUSE.GetScaledMousePosition(dx, dy)
+    for i=1,#_InputHandlers do
+        if _InputHandlers[i].MouseMoved then
+            _InputHandlers[i]:MouseMoved(x, y, dx, dy)
+        end
+    end
+end
 
 function _INPUT.JoystickAdded(joystick)
     if joystick:isGamepad() then
@@ -129,11 +148,13 @@ end
 ---@param axis string
 ---@param newValue number
 function _INPUT.GamePadAxis(joystick, axis, newValue)
-    if math.abs(newValue) >= _AXIS_DEADBAND then
-        _INPUT._mode = "gamepad" 
-    end
+    if joystick == _INPUT._gamepad then
+        if math.abs(newValue) >= _AXIS_DEADBAND then
+            _INPUT._mode = "gamepad"
+        end
 
-    _INPUT.HandleAxis(axis, newValue)
+        _INPUT.HandleAxis(axis, newValue)
+    end
 end
 
 function _INPUT.GamePadPressed(joystick, button)
@@ -192,9 +213,9 @@ end
 
 love.keypressed = _INPUT.KeyPressed
 love.keyreleased = _INPUT.KeyReleased
--- love.mousepressed = _GAME.MousePressed
--- love.mousereleased = _GAME.MouseReleased
--- love.mousemoved = _GAME.MouseMoved
+love.mousepressed = _INPUT.MousePressed
+love.mousereleased = _INPUT.MouseReleased
+love.mousemoved = _INPUT.MouseMoved
 love.joystickadded = _INPUT.JoystickAdded
 love.gamepadaxis = _INPUT.GamePadAxis
 love.gamepadpressed = _INPUT.GamePadPressed

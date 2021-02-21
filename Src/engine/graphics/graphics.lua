@@ -4,6 +4,7 @@
 	Since: 2020-02-09
 	Alter: 2020-02-09
 ]]
+local _Vector2 = require("utils.vector2")
 
 ---@class Engine.Graphics.Graphics
 local _GRAPHICS = {}
@@ -15,10 +16,20 @@ _GRAPHICS.Translate = love.graphics.translate
 _GRAPHICS.Scale = love.graphics.scale
 _GRAPHICS.DrawRect = love.graphics.rectangle
 _GRAPHICS.Points = love.graphics.points
+_GRAPHICS.Line = love.graphics.line
 _GRAPHICS.Print = love.graphics.print
+_GRAPHICS.SetCanvas = love.graphics.setCanvas
 _GRAPHICS.SetShader = love.graphics.setShader
 _GRAPHICS.GetWidth = love.graphics.getWidth
 _GRAPHICS.GetHeight = love.graphics.getHeight
+_GRAPHICS.GetDimension = love.graphics.getDimensions
+_GRAPHICS.NewCanvas = love.graphics.newCanvas
+_GRAPHICS.NewQuad = love.graphics.newQuad
+
+local oriwidth = 960
+local oriheight = 540
+local w, h = _GRAPHICS.GetDimension()
+local _dimensionRatio = _Vector2.New(w / oriwidth, h / oriheight)
 
 local _preBlendmode = ""
 local _curBlendmode = "alpha"
@@ -29,9 +40,13 @@ local _curShader = love.graphics.getShader()
 local _preFont
 local _curFont = love.graphics.getFont()
 
+
 love.graphics.setPointSize(5)
 love.graphics.setBackgroundColor(100, 100, 100, 255)
+--love.graphics.setDefaultFilter("nearest", "nearest")
+
 function _GRAPHICS.Init()
+
 end
 
 function _GRAPHICS.SetColor(red, green, blue, alpha)
@@ -64,6 +79,32 @@ end
 
 function _GRAPHICS.ResetBlendmode()
     _GRAPHICS.SetBlendmode(_preBlendmode)
+end
+
+function _GRAPHICS.SetScissor(x, y, w, h)
+    x = x and x * _dimensionRatio.x
+    y = y and y * _dimensionRatio.y
+    w = w and w * _dimensionRatio.x
+    h = h and h * _dimensionRatio.y
+    love.graphics.setScissor(x, y, w, h)
+end
+
+function _GRAPHICS.SetWindowMode(w, h, flags)
+    local lastw, lasth = _GRAPHICS.GetDimension()
+    love.window.setMode(w, h, flags)
+    if w ~= lastw or h ~= lasth then
+        _dimensionRatio:Set(w / oriwidth, h / oriheight)
+    end
+    --TODO:窗口尺寸调整后，应当调整Camera的渲染比例。
+end
+
+function _GRAPHICS.GetOriginDimension()
+    return oriwidth, oriheight
+end
+
+---@return Vector2
+function _GRAPHICS.GetDimensionRatio()
+    return _dimensionRatio
 end
 
 return _GRAPHICS

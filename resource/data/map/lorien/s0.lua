@@ -10,7 +10,13 @@ return {--[[ #PVF_File ]]
 
 	["[greed]"]="BB BB",
 
-	["[tile]"]={"Tile/ForestOver.til","Tile/ForestOver.til","Tile/ForestOver.til","Tile/ForestOver.til","Tile/ForestOver.til",},
+	["[tile]"]={
+		"Tile/ForestOver.til",
+		"Tile/ForestOver.til",
+		"Tile/ForestOver.til",
+		"Tile/ForestOver.til",
+		"Tile/ForestOver.til",
+	},
 
 	["[far sight scroll]"]=56,
 
@@ -20,7 +26,7 @@ return {--[[ #PVF_File ]]
 
 	["[background animation]"]={ 
 
-		["[ani info]"]={ 
+		["[ani info]"]={
 
 			["[filename]"]="animation/far1.ani",
 
@@ -28,7 +34,7 @@ return {--[[ #PVF_File ]]
 
 			["[order]"]="[below]",},
 
-		["[ani info2]"]={ 
+		["[ani info2]"]={
 
 			["[filename]"]="animation/mid1.ani",
 

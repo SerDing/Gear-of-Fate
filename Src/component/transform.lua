@@ -4,11 +4,12 @@
 	Since: 2019-11-07 
 	Alter: 2017-11-07 
 ]]
-
+local _GRAPHICS = require("engine.graphics.graphics")
 local _Vector2 = require("utils.vector2")
 local _Vector3 = require("utils.vector3")
-
 local _Base = require("component.base")
+local _SETTING = require("setting")
+
 ---@class Entity.Component.Transform : Entity.Component.Base
 ---@field public position Vector3
 ---@field public scale Vector2
@@ -24,6 +25,12 @@ function _Transform:Ctor(entity, data, param)
 
 	if data.scale then
 		self.scale:Set(data.scale.x, data.scale.y)
+	end
+end
+
+function _Transform:Draw()
+	if _SETTING.debug.transform then
+		_GRAPHICS.Points(self.position.x, self.position.y + self.position.z)
 	end
 end
 

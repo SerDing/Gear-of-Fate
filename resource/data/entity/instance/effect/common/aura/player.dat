@@ -1,4 +1,5 @@
 return {
+    identity = {},
     render = {
         obj = 'frameani',
         path = "entity/effect/common/aura/player",

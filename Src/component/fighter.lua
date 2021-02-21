@@ -1,5 +1,5 @@
 --[[
-	Desc: Fighter Component
+	Desc: Fighter Component, any entity that can attack or be attacked owns this component.
 	Author: SerDing 
 	Since: 2020-10-09
 	Alter: 2020-10-09
@@ -12,7 +12,7 @@ local _Timer = require("utils.timer")
 local _Base = require("component.base")
 
 ---@class Entity.Component.Fighter : Entity.Component.Base
----@field protected _aura Entity
+---@field protected _mark Entity
 ---@field protected _deathFlashTimer Utils.Timer
 local _Fighter = require("core.class")(_Base)
 
@@ -106,14 +106,14 @@ function _Fighter:Reborn()
 end
 
 ---@param key string
-function _Fighter:SetAura(key)
-    if self._aura then
-        self._aura.identity:StartDestroy()
-        self._aura = nil
+function _Fighter:SetMark(key)
+    if self._mark then
+        self._mark.identity:StartDestroy()
+        self._mark = nil
     end
 
     if key then
-        self._aura = _FACTORY.NewEntity(_auras[key], {master = self._entity})
+        self._mark = _FACTORY.NewEntity(_auras[key], { master = self._entity})
     end
 end
 

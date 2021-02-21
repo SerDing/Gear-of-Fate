@@ -8,8 +8,9 @@
 
 local _Stack = require("core.class")()
 
-function _Stack:Ctor(MAX_SIZE)
-    self._MAX_SIZE = MAX_SIZE or 10
+local _defaultCapacity = 10
+function _Stack:Ctor(capacity)
+    self._capacity = capacity or _defaultCapacity
     self._top = 0
     self._stack = {}
 end
@@ -17,7 +18,7 @@ end
 ---@generic T : GUI.Panel
 ---@param e T
 function _Stack:Push(e)
-    assert(self._top ~= self._MAX_SIZE, "_Stack:Push(e)  stack is full!")
+    assert(self._top ~= self._capacity, "_Stack:Push(e)  stack is full!")
     self._stack[#self._stack + 1] = e
     self._top = self._top + 1
 end
@@ -47,8 +48,12 @@ function _Stack:GetContext()
     return self._stack
 end
 
-function _Stack:GetNum()
+function _Stack:Size()
     return #self._stack
+end
+
+function _Stack:Capacity()
+    return self._capacity
 end
 
 return _Stack 

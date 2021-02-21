@@ -9,9 +9,8 @@ local _RESMGR = require("system.resource.resmgr")
 local _Transform = require("component.transform") 
 local _Identity = require("component.identity")
 local _ENTITYMGR = require("system.entitymgr")
-local _Skills = require("component.skills")
 
----@class EntityFactory
+---@class System.EntityFactory
 ---@field public mainPlayer Entity
 ---@field public monsters table<number, Monster>
 local _FACTORY = {
@@ -29,8 +28,8 @@ local _creationOrder = {
     "stats",
     "buff",
     "render",
-    "skills", 
-    "state", 
+    "skills",
+    "state",
     "hitstop",
     "effect",
     "projectile",
@@ -44,7 +43,23 @@ function _FACTORY.NewEntity(data, param)
         data = _RESMGR.LoadEntityData(data)
     end
 
-    ---@type Entity
+    ---@class Entity
+    ---@field public transform Entity.Component.Transform
+    ---@field public identity Entity.Component.Identity
+    ---@field public aic Entity.Component.AIC
+    ---@field public input Entity.Component.Input
+    ---@field public render Entity.Component.Render
+    ---@field public fighter Entity.Component.Fighter
+    ---@field public movement Entity.Component.Movement
+    ---@field public stats Entity.Component.Stats
+    ---@field public state Entity.Component.State
+    ---@field public skills Entity.Component.Skills
+    ---@field public combat Entity.Component.Combat
+    ---@field public equipment Entity.Component.Equipment
+    ---@field public hitstop Entity.Component.HitStop
+    ---@field public buff Entity.Component.Buff
+    ---@field public effect Entity.Component.Effect
+    ---@field public projectile Entity.Component.Projectile
     local entity = {}
     entity.transform = _Transform.New(entity, data.transform or {}, param)
     entity.identity = _Identity.New(entity, data.identity or {}, param)

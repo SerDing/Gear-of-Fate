@@ -6,10 +6,10 @@
 	Docs: 
         * Receive and cache input messages for entity, implement input handler interface.
         * When you create an instance for a entity, it will register itself to the input module of engine.
-        * skillInputMap is used to map some skill shortcut messages to concrete skill messages
+        * skillInputMap is used to map some skill shortcut messages to concrete skill messages(e.g:"skill_1"->"gorecross")
 ]]
 
-local _INPUT = require("engine.input.init")
+local _INPUT = require("engine.input")
 local _Base = require("component.base")
 
 ---@class Entity.Component.Input : Engine.Input.InputHandler

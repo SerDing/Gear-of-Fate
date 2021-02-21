@@ -28,7 +28,7 @@ function _Render:Ctor(entity, data, param)
     self.height = data.height or 0
     self.offset = data.offset or 0 -- offset for render order
     self.color = data.color and _Color.New(data.color.red, data.color.green, data.color.blue, data.color.alpha) or _Color.White()
-    self.rate = 1.0
+    self.timeScale = 1.0
 
     if data.obj == "frameani" or data.obj == "sprite" then
         self.layer = _Drawable.New()
@@ -37,9 +37,8 @@ function _Render:Ctor(entity, data, param)
 end
 
 function _Render:Update(dt)
-
     if self.renderObj.Update and not self._entity.identity.isPaused then
-        self.renderObj:Update(dt, self.rate)
+        self.renderObj:Update(dt, self.timeScale)
     end
     
     local e = self._entity
@@ -47,17 +46,14 @@ function _Render:Update(dt)
     local sx, sy = e.transform.scale:Get()
 
     local obj = self.layer or self.renderObj
-    obj:SetRenderValue("position", px, py, pz)
+    obj:SetRenderValue("position", math.ceil(px), math.ceil(py), math.ceil(pz))
     obj:SetRenderValue("radian", e.transform.rotation)
     obj:SetRenderValue("scale", sx * e.transform.direction, sy)
     obj:SetRenderValue("color", self.color:Get())
-
 end
 
 function _Render:Draw()
     self.renderObj:Draw()
-    local pos = self._entity.transform.position
-    -- _GRAPHICS.Points(pos.x, pos.y + pos.z)
 end
 
 function _Render:GetColliders()

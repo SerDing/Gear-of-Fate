@@ -6,6 +6,7 @@
 ]]
 
 local _Value = require("utils.value")
+local _MpModel = require("entity.mpmodel")
 local _Base = require("component.base")
 
 ---@class Entity.Component.Stats : Entity.Component.Base
@@ -19,7 +20,7 @@ function _Stats:Ctor(entity, data)
     self.hpRecovery = data.hpRecovery or 0
     self.mpRecovery = data.mpRecovery or 0
     self.hp = _Value.New(data.hp or self.maxhp, self.maxhp, self.hpRecovery)
-    self.mp = _Value.New(data.mp or self.maxmp, self.maxmp, self.mpRecovery)
+    self.mp = _MpModel.New(data.mp or self.maxmp, self.maxmp, self.mpRecovery)
     self.attack = data.attack or 10
     self.defense = data.defense or 10
     self.critical = data.critical or 0

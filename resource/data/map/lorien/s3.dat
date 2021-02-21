@@ -65,7 +65,6 @@ return {--[[ #PVF_File ]]
 		-- x, y, pathgateNum, desitinateMapNum(-1 = no dest)
 		-- 15, 233, 361, -- lorien left normal
 		-- 1105, 226, 366, -1 -- lorien right wall
-
 		15, 233, 363, -1,
 		1105, 226, 366, -1,
 

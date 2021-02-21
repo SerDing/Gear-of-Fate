@@ -7,51 +7,51 @@
 
 local _Event = require("core.event")
 
----@class PlayerManager
+---@class System.PlayerManager
 ---@field protected _players table<int, Entity>
----@field protected _mainPlayer Entity
----@field public onSetMainPlayer Event @func(preMainPlayer, newMainPlayer)
+---@field protected _localPlayer Entity
+---@field public onSetLocalPlayer Event @func(preLocalPlayer, newLocalPlayer)
 local _PLAYERMGR = {
     _players = {},
-    _mainPlayer = nil,
-    onSetMainPlayer = _Event.New(),
+    _localPlayer = nil,
+    onSetLocalPlayer = _Event.New(),
 }
 
 local this = _PLAYERMGR
 
 ---@param player Entity
----@param isMain boolean
-function _PLAYERMGR.Add(player, isMain)
+---@param isLocal boolean
+function _PLAYERMGR.Add(player, isLocal)
     this._players[#this._players + 1] = player
-    if isMain then
-        _PLAYERMGR.SetMainPlayer(player)
+    if isLocal then
+        _PLAYERMGR.SetLocalPlayer(player)
     end
 end
 
 
 ---@param player Entity
-function _PLAYERMGR.SetMainPlayer(player)
-    if this._mainPlayer == player then
+function _PLAYERMGR.SetLocalPlayer(player)
+    if this._localPlayer == player then
         return 
     end
 
-    player.fighter:SetAura("player")
+    player.fighter:SetMark("player")
     player.aic.enable = false
     
-    if this._mainPlayer then
-        this._mainPlayer.aic.enable = true
-        if not this._mainPlayer.fighter.isDead then
-            local auraType = (player.identity.camp == this._mainPlayer.identity.camp) and "partner" or nil --TODO:add partner check
-            this._mainPlayer.fighter:SetAura(auraType)
+    if this._localPlayer then
+        this._localPlayer.aic.enable = true
+        if not this._localPlayer.fighter.isDead then
+            local auraType = (player.identity.camp == this._localPlayer.identity.camp) and "partner" or nil
+            this._localPlayer.fighter:SetMark(auraType)
         end
     end
     
-    this.onSetMainPlayer:Notify(player)
-    this._mainPlayer = player
+    this.onSetLocalPlayer:Notify(player)
+    this._localPlayer = player
 end
 
-function _PLAYERMGR.GetMainPlayer()
-    return this._mainPlayer
+function _PLAYERMGR.GetLocalPlayer()
+    return this._localPlayer
 end
 
 return _PLAYERMGR

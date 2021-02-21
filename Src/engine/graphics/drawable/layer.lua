@@ -32,5 +32,12 @@ function _Layer:_OnDraw()
     end
 end
 
+---@param func fun(o:Engine.Graphics.Drawable.Base):void
+function _Layer:DoFuncForAll(func)
+    for i=1,#self._list do
+        func(self._list[i])
+    end
+end
+
 
 return _Layer

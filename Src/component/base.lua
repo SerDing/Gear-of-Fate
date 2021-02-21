@@ -16,6 +16,9 @@ function _Component:Ctor(entity)
     self._entity = entity
 end
 
+function _Component:Init()
+end
+
 ---@param dt float
 function _Component:Update(dt)
 end

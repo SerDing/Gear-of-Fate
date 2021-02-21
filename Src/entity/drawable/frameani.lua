@@ -17,11 +17,11 @@ local _Frameani = require('core.class')(_Base)
 
 function _Frameani.HandleData(data)
     if data.path then
-        data.aniData = _RESOURCE.LoadAniData(data.path)
+        data.aniData = _RESOURCE.LoadAnimData(data.path)
     end
 end
 
----@param aniData Engine.Resource.AniData
+---@param aniData Engine.Resource.AnimData
 local function _NewColliderGroup(aniData)
     local colliderData = aniData.colliderData
     if colliderData then
@@ -112,7 +112,7 @@ function _Frameani:Play(aniData, aniName)
     end
     
     _Base.Play(self, aniData)
-    self._aniName = aniName or self._aniName    
+    self._aniName = aniName or self._aniName
 end
 
 ---@param main Entity.Drawable.Frameani
@@ -145,6 +145,7 @@ function _Frameani:UpdateCollider()
     self._collider:Set(x, y, z, sx, sy)
 end
 
+---@return Entity.Collider
 function _Frameani:GetCollider()
     return self._collider
 end

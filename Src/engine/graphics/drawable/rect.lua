@@ -36,7 +36,7 @@ function _Rect:Draw(color, style)
 		_GRAPHICS.SetColor(color:Get())
 	end
 
-	_GRAPHICS.DrawRect(style,self._x,self._y, self._width, self._height)
+	_GRAPHICS.DrawRect(style, self._x, self._y, self._width, self._height)
 
 	if color then
 		_GRAPHICS.ResetColor()

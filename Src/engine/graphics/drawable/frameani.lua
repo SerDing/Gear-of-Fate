@@ -8,7 +8,7 @@ local _Timer = require("utils.timer")
 local _Sprite = require("engine.graphics.drawable.sprite")
 
 ---@class Engine.Graphics.Drawable.Frameani : Engine.Graphics.Drawable.Sprite
----@field protected _aniData Engine.Resource.AniData
+---@field protected _aniData Engine.Resource.AnimData
 ---@field protected _frame int
 ---@field protected _tick int
 ---@field protected _length int

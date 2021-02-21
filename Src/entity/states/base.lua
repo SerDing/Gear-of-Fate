@@ -72,7 +72,7 @@ function _State:Enter()
 		self._avatar:Play(self._animNameSet[1])
 	end
 	if self:HasTag("attackRate") then
-		self._entity.render.rate = self._entity.stats.attackRate
+		self._entity.render.timeScale = self._entity.stats.attackRate
 	end
 end
 
@@ -98,7 +98,7 @@ end
 
 function _State:Exit()
 	if self:HasTag("attackRate") then
-		self._entity.render.rate = 1.0
+		self._entity.render.timeScale = 1.0
 	end 
 	self._combat:FinishAttack()
 	self._movement:DisableEasemove()

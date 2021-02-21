@@ -55,4 +55,82 @@ return {
         start = "START",
     },
 
+    -- action map
+    gaming = {
+        {
+            device = "gamepad",
+            control = {
+                {
+                    type = "axis",
+                    code = "leftx",
+                    behaviour = "plus"
+                },
+            },
+            action = "move-right"
+        },
+        {
+            device = "gamepad",
+            control = {
+                {
+                    type = "button",
+                    code = "rightshoulder",
+                    behaviour = "press"
+                },
+            },
+            action = "attack"
+        },
+        {
+            device = "gamepad",
+            control = {
+                {
+                    type = "axis",
+                    code = "triggerleft",
+                    behaviour = "minus"
+                    
+                },
+                {
+                    type = "button",
+                    code = "x",
+                    behaviour = "press"
+                },
+            },
+            action = "skillx"
+        },
+    },
+    interface = {
+        {
+            device = "gamepad",
+            control = {
+                {
+                    type = "axis",
+                    code = "leftx",
+                    behaviour = "plus"
+                },
+            },
+            action = "select-right"
+        },
+        {
+            device = "gamepad",
+            control = {
+                {
+                    type = "button",
+                    code = "a",
+                    behaviour = "press"
+                },
+            },
+            action = "apply"
+        },
+        {
+            device = "gamepad",
+            control = {
+                {
+                    type = "button",
+                    code = "b",
+                    behaviour = "press"
+                },
+            },
+            action = "back"
+        },
+    },
+
 }

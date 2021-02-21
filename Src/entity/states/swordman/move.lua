@@ -25,16 +25,16 @@ function _Move:Enter()
     _Base.Enter(self)
 end
 
-function _Move:Update(dt, rate)
-	
+function _Move:Update(dt, timeScale)
+    timeScale = timeScale or 1.0
     local up = self._input:IsHold("UP")
 	local down = self._input:IsHold("DOWN")
 	local left = self._input:IsHold("LEFT")
     local right = self._input:IsHold("RIGHT")
     
-    self._render.rate = self._entity.stats.moveRate * (rate or 1.0)
-    local moveSpeed = self._entity.stats.moveSpeed * (rate or 1.0)
-    self.speed:Set(moveSpeed, moveSpeed * 0.6)
+    self._render.timeScale = self._entity.stats.moveRate * timeScale
+    local moveSpeed = self._entity.stats.moveSpeed * timeScale
+    self.speed:Set(moveSpeed, moveSpeed * 0.56)
     local axisX, axisY = 0, 0
 
     if up or down then
@@ -94,7 +94,7 @@ function _Move:Update(dt, rate)
 end 
 
 function _Move:Exit()
-    self._render.rate = 1.0
+    self._render.timeScale = 1.0
 end
 
 function _Move:GetTrans()

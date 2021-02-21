@@ -62,7 +62,6 @@ function _Combat:Ctor(entity)
 	self.onAttackedData = {
 		damage = 0,
 	}
-	
 end
 
 function _Combat:StartAttack(attack, OnHitCallback)
@@ -116,7 +115,8 @@ end
 ---@param entity Entity
 function _Combat:_CanBeAttacked(entity)
 	local fighter = entity.fighter
-	return fighter and fighter.isDead == false and 
+
+	return fighter and fighter.isDead == false and
 	_IsSameCamp(self._entity, entity) == false and 
 	self:InAttackedList(entity.identity.id) == false
 end
@@ -127,7 +127,7 @@ function _Combat:Update(dt)
 	end
 
 	local entityList = _ENTITYMGR.GetEntityList()
-	for i=1,#entityList do
+	for i = 1, #entityList do
 		local e = entityList[i]
 		if self:_CanBeAttacked(e) then
 			local hit, x, y, z = _Collide(self._entity, e, "attack", "damage")	
@@ -217,7 +217,6 @@ function _Combat:Update(dt)
 				end
 				
 				self._attackedList[#self._attackedList + 1] = e.identity.id
-				self._isRunning = false
 			end
 		end
 	end

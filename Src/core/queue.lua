@@ -13,7 +13,7 @@ local Queue = require("core.class")()
 
 function Queue:Ctor(capacity)
     self._array = { nil, nil, nil, nil, nil, nil, nil, nil} -- make the table capcity
-    self._capacity = capacity
+    self._capacity = capacity == -1 and 100000 or capacity
     self._front = 1
     self._rear = 1
     self._size = 0

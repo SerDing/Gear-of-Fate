@@ -1,15 +1,21 @@
-
 local _SETTING = {
+    release = false,
     version = 0.3,
-    sound = 0.03, --0.3
+    sound = 0.3, --0.3
     music = 0.5,
     ambient = 0.5,
+    window = {
+        w = 960,
+        h = 540
+    },
     debug = {
         fps = true,
-        mouse = false,
-        collider = true,
+        mouse = true,
+        playerPosition = true,
+        transform = false,
+        collider = false,
         sprite = false,
-        position = false,
+        uidrag = false,
         level = {
 
         },

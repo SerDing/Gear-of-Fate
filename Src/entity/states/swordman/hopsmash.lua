@@ -5,10 +5,11 @@
 	Alter: 2020-10-15 12:40:40
 ]]
 local _AUDIO = require("engine.audio")
+local _TIME = require("engine.time")
 local _FACTORY = require("system.entityfactory") 
-local _CAMERA = require "scene.camera"
+local _CAMERA = require("system.scene.camera")
 local _Timer = require("utils.timer")
-local _Base  = require "entity.states.base"
+local _Base  = require("entity.states.base")
 
 ---@class Entity.State.Swordman.Hopsmash : State.Base
 local _Hopsmash = require("core.class")(_Base)
@@ -35,6 +36,7 @@ function _Hopsmash:Ctor(data, name)
 	self._attackCount = 0
 	self._attackInterval = 60
 	self._attackTimer = _Timer.New()
+	self._hitFrame = 0
 
 	self._process = 0
 	self._shakeParam = {
@@ -45,7 +47,7 @@ function _Hopsmash:Ctor(data, name)
 
 	self._touchdown = false
 	self._smash = true
-	-- self._smash = false
+	--self._smash = false
 end 
 
 function _Hopsmash:Enter()
@@ -55,10 +57,14 @@ function _Hopsmash:Enter()
 	self._holddownTimer:Start(self._holddownTimeMax * 1000)
 
 	self._OnHit = function(combat, entity)
-		self._attackCount = self._attackCount + 1
-		if self._attackCount < self._attackTimes then
-			self._attackEnable = true
-			self._attackTimer:Start(self._attackInterval)
+		local hitFrame = _TIME.GetFrame()
+		if hitFrame ~= self._hitFrame then
+			self._attackCount = self._attackCount + 1
+			if self._attackCount < self._attackTimes then
+				self._attackEnable = true
+				self._attackTimer:Start(self._attackInterval)
+			end
+			self._hitFrame = hitFrame
 		end
 	end
 	self._combat:StartAttack(self._attackDataSet[1], self._OnHit)
@@ -89,7 +95,7 @@ function _Hopsmash:Update(dt)
 
 			local timePercent = self._holddownTime / self._holddownTimeMax
 			self._attackRate = self._entity.stats.attackRate + (self._attackRateRange * (1.0 - timePercent))
-			self._render.rate = self._attackRate
+			self._render.timeScale = self._attackRate
 			self._forwardSpeed = self._forwardSpeedBase * math.max(self._minTimePercent, timePercent) * self._entity.stats.attackRate
 			
 			self._holddownTime = math.max(self._holddownTimeMin, self._holddownTime)

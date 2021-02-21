@@ -11,7 +11,7 @@ local _RESOURCE = require("engine.resource")
 
 ---@class Entity.Drawable.Avatar : Engine.Graphics.Drawable.Layer
 ---@field protected _aniMap table<string, Entity.Drawable.Frameani>
----@field protected _aniDatas table<string, table<string, Engine.Resource.AniData>>
+---@field protected _aniDatas table<string, table<string, Engine.Resource.AnimData>>
 ---@field protected _path string @ basic path for animData and images
 ---@field protected _subpath table<string, string> @ sprite subpath for dynamic mode
 ---@field protected _order table<string, number>
@@ -22,7 +22,7 @@ function _Avatar.HandleData(data)
     if data.animPathSet then
         data.aniDatas = {}
         for key, path in pairs(data.animPathSet) do
-            data.aniDatas[key] = _RESOURCE.LoadAniData(data.path .. path)
+            data.aniDatas[key] = _RESOURCE.LoadAnimData(data.path .. path)
         end
     end
 end
@@ -48,9 +48,9 @@ function _Avatar:Ctor(data)
     end
 end 
 
-function _Avatar:Update(dt, rate)
+function _Avatar:Update(dt, timeScale)
     for _,part in pairs(self._aniMap) do
-        part:Update(dt, rate)
+        part:Update(dt, timeScale)
     end 
 end 
 
@@ -65,7 +65,7 @@ end
 function _Avatar:SyncPart(key)
     local animName = self:GetPart()._aniName
     local part = self._aniMap[key]
-    part:Play(self._aniDatas[key][animName])
+    part:Play(self._aniDatas[key][animName], animName)
     part:Sync(self:GetPart())
 end
 
@@ -149,9 +149,9 @@ end
 ---@return table<int, Entity.Collider>
 function _Avatar:GetColliderGroup()
     local colliders = {}
-    for k,v in pairs(self._aniMap) do
+    for _,v in pairs(self._aniMap) do
         local collider = v:GetCollider()
-        if collider and (#collider._lists.damage > 0 or #collider._lists.attack > 0) then
+        if collider and not collider:IsEmpty() then
             colliders[#colliders + 1] = collider
         end
     end

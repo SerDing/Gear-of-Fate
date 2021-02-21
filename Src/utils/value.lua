@@ -20,13 +20,13 @@ function _PositiveValue:Ctor(cur, max, varySpeed)
     self._max = max or 100
     self._autoVariable = (varySpeed == 0) and false or true
     self._varySpeed = varySpeed or 0
+    self._AutoVaryFunc = self._varySpeed > 0 and self.Increase or self.Decrease
     self.onValueChange = _Event.New()
 end
 
 function _PositiveValue:Update(dt)
     if self._autoVariable then
-        local Func = self._varySpeed > 0 and self.Increase or self.Decrease
-        Func(self, self._varySpeed * dt)
+        self._AutoVaryFunc(self, self._varySpeed * dt)
     end
 end
 

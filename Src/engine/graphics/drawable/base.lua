@@ -1,5 +1,5 @@
 --[[
-	Desc: Drawable base
+	Desc: Drawable base (high-layer)
  	Author: SerDing
 	Since: 2020-02-09
 	Alter: 2020-02-09
@@ -71,9 +71,9 @@ function _Drawable:Apply()
 	self._actualValues.shader:Apply()
 end
 
-function _Drawable:Draw()
+function _Drawable:Draw(...)
 	_Drawable.Apply(self)
-	self:_OnDraw()
+	self._OnDraw(self, ...)
 	_Drawable.Reset(self)
 end
 
@@ -92,6 +92,7 @@ function _Drawable:Reset()
 	end
 end
 
+--- draw an object of love2d drawable type
 function _Drawable:DrawObj(obj)
 	local v = self._values
 	if self._quad then
@@ -101,7 +102,7 @@ function _Drawable:DrawObj(obj)
 	end
 end
 
-function _Drawable:_OnDraw()
+function _Drawable:_OnDraw(...)
 end
 
 ---@param type string
@@ -162,88 +163,100 @@ function _Drawable:SetUpperValue(type, value)
 end
 
 function _Drawable:Merge(type)
-	-- local memory = collectgarbage("count")
-	local _mergeFuncs = {
-		position = function ()
-			if self._upperValues.position then
-				local bx, by, bz = self._baseValues.position:Get()
-				local ux, uy, uz = self._upperValues.position:Get()
-				self._actualValues.position:Set(bx + ux, by + uy, bz + uz)
+	local mergeFuncs = {
+		---@param obj Engine.Graphics.Drawable.Base
+		position = function (obj)
+			if obj._upperValues.position then
+				local bx, by, bz = obj._baseValues.position:Get()
+				local ux, uy, uz = obj._upperValues.position:Get()
+				obj._actualValues.position:Set(bx + ux, by + uy, bz + uz)
 			else
-				self._actualValues.position:Set(self._baseValues.position:Get())
+				obj._actualValues.position:Set(obj._baseValues.position:Get())
 			end
 		end, 
-		radian = function ()
-			if self._upperValues.radian then
-				self._actualValues.radian:Set(self._baseValues.radian:Get(true) + self._upperValues.radian:Get(true))
+		---@param obj Engine.Graphics.Drawable.Base
+		radian = function (obj)
+			if obj._upperValues.radian then
+				obj._actualValues.radian:Set(obj._baseValues.radian:Get(true) + obj._upperValues.radian:Get(true))
 			else
-				self._actualValues.radian:Set(self._baseValues.radian:Get(true))
+				obj._actualValues.radian:Set(obj._baseValues.radian:Get(true))
 			end
 		end, 
-		scale = function ()
-			if self._upperValues.scale then
-				local bx, by = self._baseValues.scale:Get()
-				local ux, uy = self._upperValues.scale:Get()
-				self._actualValues.scale:Set(bx * ux, by * uy)
+		---@param obj Engine.Graphics.Drawable.Base
+		scale = function (obj)
+			if obj._upperValues.scale then
+				local bx, by = obj._baseValues.scale:Get()
+				local ux, uy = obj._upperValues.scale:Get()
+				obj._actualValues.scale:Set(bx * ux, by * uy)
 			else
-				self._actualValues.scale:Set(self._baseValues.scale:Get())
+				obj._actualValues.scale:Set(obj._baseValues.scale:Get())
 			end
 		end, 
-		origin = function ()
-			if self._upperValues.origin then
-				local bx, by = self._baseValues.origin:Get()
-				local ux, uy = self._upperValues.origin:Get()
-				self._actualValues.origin:Set(bx + ux, by + uy)
+		---@param obj Engine.Graphics.Drawable.Base
+		origin = function (obj)
+			if obj._upperValues.origin then
+				local bx, by = obj._baseValues.origin:Get()
+				local ux, uy = obj._upperValues.origin:Get()
+				obj._actualValues.origin:Set(bx + ux, by + uy)
 			else
-				self._actualValues.origin:Set(self._baseValues.origin:Get())
+				obj._actualValues.origin:Set(obj._baseValues.origin:Get())
 			end
 		end, 
-		blendmode = function ()
-			self._actualValues.blendmode = self._baseValues.blendmode
+		---@param obj Engine.Graphics.Drawable.Base
+		blendmode = function (obj)
+			obj._actualValues.blendmode = obj._baseValues.blendmode
 		end, 
-		color = function ()
-			if self._upperValues.color then
-				local br, bg, bb, ba = self._baseValues.color:Get()
-				local ur, ug, ub, ua = self._upperValues.color:Get()
-				self._actualValues.color:Set(br * ur / 255, bg * ug / 255, bb * ub / 255, ba * ua / 255)
+		---@param obj Engine.Graphics.Drawable.Base
+		color = function (obj)
+			if obj._upperValues.color then
+				local br, bg, bb, ba = obj._baseValues.color:Get()
+				local ur, ug, ub, ua = obj._upperValues.color:Get()
+				obj._actualValues.color:Set(br * ur / 255, bg * ug / 255, bb * ub / 255, ba * ua / 255)
 			else
-				self._actualValues.color:Set(self._baseValues.color:Get())
+				obj._actualValues.color:Set(obj._baseValues.color:Get())
 			end
 		end, 
-		shader = function ()
-			self._actualValues.shader = self._baseValues.shader
+		---@param obj Engine.Graphics.Drawable.Base
+		shader = function (obj)
+			obj._actualValues.shader = obj._baseValues.shader
 		end, 
 	}
-	-- memory = collectgarbage("count") - memory
-	-- print("merge fns memory:", memory)
-	_mergeFuncs[type](self)
+	mergeFuncs[type](self)
 end
 
 function _Drawable:RefreshValues(type)
-	local _refreshFuncs = {
-		position = function()
-			self._values.x = self._actualValues.position.x
-			self._values.y = self._actualValues.position.y + self._actualValues.position.z
+	local refreshFuncs = {
+		---@param obj Engine.Graphics.Drawable.Base
+		position = function(obj)
+			obj._values.x = obj._actualValues.position.x
+			obj._values.y = obj._actualValues.position.y + obj._actualValues.position.z
 		end,
-		radian = function()
-			self._values.r = self._actualValues.radian:Get()
+		---@param obj Engine.Graphics.Drawable.Base
+		radian = function(obj)
+			obj._values.r = obj._actualValues.radian:Get()
 		end,
-		scale = function()
-			self._values.sx = self._actualValues.scale.x
-			self._values.sy = self._actualValues.scale.y
+		---@param obj Engine.Graphics.Drawable.Base
+		scale = function(obj)
+			obj._values.sx = obj._actualValues.scale.x
+			obj._values.sy = obj._actualValues.scale.y
 		end,
-		origin = function()
-			self._values.ox = self._baseValues.origin.x
-			self._values.oy = self._baseValues.origin.y
+		---@param obj Engine.Graphics.Drawable.Base
+		origin = function(obj)
+			obj._values.ox = obj._baseValues.origin.x
+			obj._values.oy = obj._baseValues.origin.y
 		end
 	}
-	if _refreshFuncs[type] then
-		_refreshFuncs[type](self)
+	if refreshFuncs[type] then
+		refreshFuncs[type](self)
 	end
 end
 
-function _Drawable:GetRenderValue(type)
-	return self._actualValues[type]:Get()
+function _Drawable:GetRenderValue(type, relative)
+	if relative then
+		return self._baseValues[type]:Get()
+	else
+		return self._actualValues[type]:Get()
+	end
 end
 
 function _Drawable:SetQuad(quad)

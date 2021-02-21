@@ -1,4 +1,4 @@
-# Gear of Fate -- UI_Manager设计
+# Gear of Fate -- UI Manager设计
 
 ## 基本构成
 

@@ -59,7 +59,7 @@ end
 ---@return Engine.Graphics.Drawable.SpriteData
 function _RESOURCE.NewSpriteData(path)
     ---@type Engine.Graphics.Drawable.SpriteData
-    local data = _RESOURCE.ReadData("resource/data/sprite/" .. path)
+    local data = _RESOURCE.LoadData("resource/data/sprite/" .. path)
     data.image = _RESOURCE.LoadImage(path)
 
     return data
@@ -68,12 +68,12 @@ end
 ---@param path string
 ---@param newSpriteDataFunc function
 ---@param imgPath string | nil
----@return Engine.Resource.AniData
+---@return Engine.Resource.AnimData
 function _RESOURCE.NewAniData(path, newSpriteDataFunc, imgPath) 
     imgPath = imgPath and imgPath .. "/" or ""
-    local staticData = _RESOURCE.ReadData("resource/data/animation/" .. path)
+    local staticData = _RESOURCE.LoadData("resource/data/animation/" .. path)
 
-    ---@class Engine.Resource.AniData
+    ---@class Engine.Resource.AnimData
     ---@field public path string
     ---@field public isLoop boolean
     ---@field public frames table<int, Engine.Graphics.Drawable.Frameani.Frame>
@@ -104,7 +104,7 @@ end
 function _RESOURCE.NewColliderData(path)
     path = "resource/data/entity/collider/" .. path
     local exists = _FILE.Exist(path .. ".dat")
-    return exists and _RESOURCE.ReadData(path) or nil
+    return exists and _RESOURCE.LoadData(path) or nil
 end
 
 ---@param path string
@@ -132,22 +132,39 @@ function _RESOURCE.LoadSpriteData(path)
 end
 
 ---@param path string
----@return Engine.Resource.AniData
-function _RESOURCE.LoadAniData(path)
+---@return Engine.Resource.AnimData
+function _RESOURCE.LoadAnimData(path)
     -- print("_RESOURCE.LoadAnimData(path)", path)
     return _RESOURCE.LoadResource(path, _RESOURCE.NewAniData, _pools.aniData, _RESOURCE.NewSpriteData)
 end
 
-function _RESOURCE.ReadData(path)
+---@param path string
+---@return table
+function _RESOURCE.LoadUiData(path)
+    return _RESOURCE.LoadData("resource/data/ui/" .. path)
+end
+
+---@param path string
+---@return table
+function _RESOURCE.LoadSceneData(path)
+    return _RESOURCE.LoadData("resource/data/", "scene/" .. path)
+end
+
+---@param path string
+---@param subpath string
+---@return table
+function _RESOURCE.LoadData(path, subpath)
     if type(path) == "table" then
         return path
     end
-    path = path .. ".dat"
-    assert(_FILE.Exist(path), "no file: ".. path) 
-    local fileContent = _FILE.LoadFile(path)
-    local A = _STRING.GetFileDirectory(path)
-    fileContent = string.gsub(fileContent, "$A", A)
-    return loadstring(fileContent)()
+    path = subpath and path .. subpath .. ".dat" or path .. ".dat"
+    assert(_FILE.Exist(path), "no file: ".. path)
+    local subDirectory = subpath and _STRING.GetFileDirectory(subpath) or ""
+    local content = _FILE.LoadFile(path)
+    --local A = _STRING.GetFileDirectory(path)
+    --content = string.gsub(content, "$A", A)
+    content = string.gsub(content, "$SD", subDirectory)
+    return loadstring(content)()
 end
 
 ---@param path string
@@ -159,6 +176,12 @@ function _RESOURCE.LoadResource(path, newFunc, pool, ...)
         pool[path] = t
     end
 
+    return pool[path]
+end
+
+function _RESOURCE.ReloadResource(path, newFunc, pool, ...)
+    local t = newFunc(path, ...)
+    pool[path] = t
     return pool[path]
 end
 

@@ -35,7 +35,7 @@ function _Skills:InitData(job)
 	self.skillPathList = {} --- @type table<number, string> @map<id, path>
 	self.skillNameList = {} --- @type table<number, string> @map<id, name>
 	self.skills = {} ---@type table<number, Skill> @map<id, skillObj>
-	self.skillList = _RESOURCE.ReadData("resource/data/entity/skill/" .. job .. "skill") -- load skill list file
+	self.skillList = _RESOURCE.LoadData("resource/data/entity/skill/" .. job .. "skill") -- load skill list file
 	
 	-- Construct skill file path list and skill name list
 	local pathSplit = {}

@@ -33,11 +33,11 @@ function _State:Ctor(entity, data, param)
 		end
 	end
 
-	for key, state in pairs(self._states) do
+	for _, state in pairs(self._states) do
 		state:Init(self._entity)
 	end
 	
-	self:SetState(param.firstState)
+	self:SetState(param.firstState or "stay")
 end
 
 function _State:Update(dt)

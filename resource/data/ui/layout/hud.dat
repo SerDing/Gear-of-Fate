@@ -8,25 +8,28 @@ return {
         h = 126.5,
         style_path = "popup/normal",
         subjects = {
-            --{
-            --    name = "character_head_frame",
-            --    script = "frame",
-            --    x = 10,
-            --    y = 10,
-            --    w = 30,
-            --    h = 22,
-            --    style_path = "popup/groove",
-            --},
             {
-                name = "character_img",
-                script = "image",
+                name = "character_head_frame",
+                script = "frame",
                 x = 5,
-                y = 4,
-                r = 0,
-                sx = 0.7,
-                sy = 0.7,
-                img_path = "interface/hud/2"
+                y = 5,
+                w = 50,
+                h = 45,
+                style_path = "popup/groove",
+                subjects = {
+                    {
+                        name = "character_img",
+                        script = "image",
+                        x = 0,
+                        y = 0,
+                        r = 0,
+                        sx = 0.7,
+                        sy = 0.7,
+                        img_path = "interface/hud/2"
+                    },
+                },
             },
+            
             {
                 name = "hp_bar",
                 script = "hmpbar",

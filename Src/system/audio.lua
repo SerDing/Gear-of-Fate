@@ -64,7 +64,7 @@ end
 function _Audio.PlaySceneMusic(id_table) -- play map music
     -- example: id_table = {"AMB_FOREST_01", "M_FOREST_01_NEW"}
     _Audio.PlayEVM(id_table[1])
-    _Audio.PlayBGM(id_table[2])
+    -- _Audio.PlayBGM(id_table[2])
 end
 
 function _Audio.PlayBGM(id) -- play background music

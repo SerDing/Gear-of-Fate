@@ -8,7 +8,7 @@ local _SETTING = require("setting")
 local _RESOURCE = require('engine.resource')
 
 ---@class Engine.Audio
----@field protected _playingQueue table<number, soundData>
+---@field protected _playingQueue table<number, SoundData>
 local _AUDIO = {}
 
 local _music = {
@@ -42,12 +42,12 @@ function _AUDIO.PlaySceneMusic(idTable) -- play map music
 end
 
 function _AUDIO.PlayBGM(id) -- play background music
-    _AUDIO.PlayMusic("BGM", id)
+    _AUDIO.PlayMusic("_BGM", id)
     _music._BGM.source:setVolume(_SETTING.music)
 end
 
 function _AUDIO.PlayAMB(id) -- play ambient music
-    _AUDIO.PlayMusic("EVM", id)
+    _AUDIO.PlayMusic("_AMB", id)
     _music._AMB.source:setVolume(_SETTING.music)
 end
 

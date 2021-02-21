@@ -66,8 +66,8 @@ function _Effect:Update()
 		end
 
 		if self._lockRate then
-			if self._entity.render.rate ~= master.render.rate then
-				self._entity.render.rate = master.render.rate
+			if self._entity.render.timeScale ~= master.render.timeScale then
+				self._entity.render.timeScale = master.render.timeScale
 			end
 		end
 

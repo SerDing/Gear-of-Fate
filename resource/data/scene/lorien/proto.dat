@@ -1,0 +1,74 @@
+return {
+	setting = {
+		width = 224 * 5,
+		height = 600,
+		name = "lorien0",
+		type = "dungeon",
+		level = "lorien",
+		bgm = "",
+		amb = "",
+		horizon = 370,
+		bound = {
+			x = 50,
+			y = 370
+		}, --the bound that entity move around
+		scroll = {
+			far = 0.56,
+			mid = 0.9,
+			near = 1.1,
+		}, --scroll speed of background
+		arrivalposition = {
+			up = {722, 356},
+			down = {722, 356},
+			left = {722, 356},
+			right = {722, 356},
+		}, --direction:{x, y}, positions of player character arrive this scene
+	},
+	background = {
+		far = "$SD/bg/far",
+		mid = "$SD/bg/mid",
+	},
+	floor = {
+		tile = {
+			"$SD/tile/3",
+			"$SD/tile/3",
+			"$SD/tile/2",
+			"$SD/tile/0",
+			"$SD/tile/0",
+		},
+		decoration = {
+			{"$SD/grass/0", 120, 460},
+			{"$SD/grass/1", 330, 490},
+			{"$SD/grass/2", 450, 500},
+			{"$SD/trail/0", 330, 420},
+			{"$SD/trail/1", 450, 450},
+			{"$SD/trail/2", 600, 500},
+		}, --special-grass, light-spot, shadow
+		extend = {
+			path = "$SD/tile/4",
+			rows = 1,
+		},
+		--down = {},
+	},
+	closeback = {
+		{"$SD/stone/5", 100, 344},
+		{"$SD/stone/7", 300, 344},
+	},--tree, flower
+	entity = {
+		portal = {
+			--name, x, y, type
+		},
+		enemy = {
+			--name, x, y, direction
+			{"character/swordman", 600, 460, 1},
+			{"character/swordman", 700, 460, 1},
+		},
+		npc = {
+			--name, x, y, direction
+		},
+	},--monster, npc, destructible, obstacle, portal
+	nearsight = {
+		{"$SD/stone/5", 200, 620},
+		{"$SD/stone/7", 400, 620},
+	},--similar to closeback
+}

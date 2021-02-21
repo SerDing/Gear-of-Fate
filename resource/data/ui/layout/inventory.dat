@@ -21,9 +21,9 @@ return {
                     {
                         name = "button1",
                         script = "button",
-                        text = "装备",
-                        x = 10,
-                        y = 300,
+                        text = "结束游戏",
+                        x = 40,
+                        y = 120,
                         style_path = "buttons/small",
                     },
                     {

@@ -13,13 +13,12 @@ local _Box = require("entity.drawable.box")
 local _Color = require("engine.graphics.config.color")
 
 ---@class Entity.Collider
----@field protected _lists table<string, table<int, Entity.Drawable.Box>>
+---@field protected _boxlists table<string, table<int, Entity.Drawable.Box>>
 local _Collider = require("core.class")()
 
 ---@class Entity.Collider.ColliderData
 ---@field public damage table
 ---@field public attack table
-local _ColliderData = require("core.class")()
 
 local function _HandleData(data, lists, key)
     if data[key] and #data[key] >= 1 then
@@ -38,19 +37,19 @@ end
 
 ---@param data Entity.Collider.ColliderData
 function _Collider:Ctor(data)
-    self._lists = {
+    self._boxlists = {
         damage = {},
         attack = {},
     }
 
     if data then
-        _HandleData(data, self._lists, "damage")
-        _HandleData(data, self._lists, "attack")
+        _HandleData(data, self._boxlists, "damage")
+        _HandleData(data, self._boxlists, "attack")
     end
 end
 
 function _Collider:Set(x, y, z, sx, sy)
-    for key, list in pairs(self._lists) do
+    for key, list in pairs(self._boxlists) do
         for i=1,#list do
             list[i]:Set(x, y, z, sx, sy)
         end
@@ -61,7 +60,7 @@ end
 ---@param selfKey string
 ---@param oppoKey string
 function _Collider:Collide(opponent, selfKey, oppoKey)
-    local selfList = self._lists[selfKey]
+    local selfList = self._boxlists[selfKey]
     local oppoList = opponent:GetBoxList(oppoKey)
 
     for i=1,#selfList do
@@ -81,16 +80,20 @@ function _Collider:Draw()
         return 
     end
     
-    for i=1,#self._lists.damage do
-        self._lists.damage[i]:Draw(_Color.const.blue, _Color.const.green)
+    for i=1,#self._boxlists.damage do
+        self._boxlists.damage[i]:Draw(_Color.const.blue, _Color.const.green)
     end
-    for i=1,#self._lists.attack do
-        self._lists.attack[i]:Draw(_Color.const.blue, _Color.const.red)
+    for i=1,#self._boxlists.attack do
+        self._boxlists.attack[i]:Draw(_Color.const.blue, _Color.const.red)
     end
 end
 
 function _Collider:GetBoxList(key)
-    return self._lists[key]
+    return self._boxlists[key]
+end
+
+function _Collider:IsEmpty()
+    return #self._boxlists.damage == 0 and #self._boxlists.attack == 0
 end
 
 return _Collider

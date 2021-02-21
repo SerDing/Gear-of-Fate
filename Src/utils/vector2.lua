@@ -5,7 +5,7 @@
 	Alter: 2017-11-08 
 ]]
 ---@class Vector2
-local _Vector2 = require "core.class"()
+local _Vector2 = require("core.class")()
 
 ---@param x number
 ---@param y number

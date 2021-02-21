@@ -11,12 +11,11 @@ local _HpController = require("system.gui.controller.hpcontroller")
 ---@class GUI.Panel.HUD : GUI.Panel
 local _HUD = require("core.class")(_Panel)
 
----@param entity Swordman
 function _HUD:Ctor()
     _Panel.Ctor(self,"HUD")
     self:LoadLayout("layout/hud")
 
-    self._entity = nil ---@type Swordman
+    self._entity = nil ---@type Entity
 
     self.hpView = self:GetWidgetById("hp_bar")
     self.mpView = self:GetWidgetById("mp_bar")
@@ -25,21 +24,21 @@ function _HUD:Ctor()
     self.hpController:SetView(self.hpView)
     self.mpController:SetView(self.mpView)
 
-    self:SetEntity(_PLAYERMGR._mainPlayer)
+    self:SetEntity(_PLAYERMGR._localPlayer)
 end
 
 ---@param entity Entity
 function _HUD:SetEntity(entity)
     self._entity = entity
-    self:SetSkillShortcutsInfo()
+    self:BindSkillModels()
     self:SetMVC()
 end
 
-function _HUD:SetSkillShortcutsInfo()
+function _HUD:BindSkillModels()
     local map = self._entity.input.skillInputMap
-    local skills = self._entity.skills ---@type SkillComponent
+    local skills = self._entity.skills ---@type Entity.Component.Skills
 
-    local shortcut = nil ---@type SkillShortcut
+    local shortcut ---@type GUI.Widgets.SkillShortcut
     local id = ""
     local skillID = 0
     -- set simple skill shortcuts

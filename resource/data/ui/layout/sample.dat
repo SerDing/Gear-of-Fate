@@ -2,8 +2,8 @@ return {
     {
         name = "bottom_pop",
         script = "frame",
-        x = 10,
-        y = 10,
+        x = 0, -- x=0:panel set it to screen center, x>0:fix position
+        y = 0, -- same as x
         w = 200,
         h = 125,
         subjects = {

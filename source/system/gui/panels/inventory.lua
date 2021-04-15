@@ -17,13 +17,22 @@ end
 
 function _Inventory:Ctor()
     _Panel.Ctor(self, "inventory")
-    self:LoadLayout("layout/inventory")
+    _Panel.LoadLayout(self, "layout/inventory")
+end
+
+function _Inventory:OnEnable()
+    _Panel.OnEnable(self)
     self._button = self:GetWidgetById("button1")
     self._button.onClick:AddListener(nil, _OnFinBtnClick)
 end
 
 function _Inventory:Draw(x, y)
     _Panel.Draw(self, x, y)
+end
+
+function _Inventory:OnDisable()
+    _Panel.OnDisable(self)
+    self._button.onClick:DelListener(nil, _OnFinBtnClick)
 end
 
 return _Inventory

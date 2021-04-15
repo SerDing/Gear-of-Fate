@@ -8,18 +8,31 @@
 ]]
 local _Queue = require("core.queue")
 local _Stack = require("core.stack")
+local _GRAPHICS = require("engine.graphics")
 local _RESOURCE = require("engine.resource")
 local _Widget = require("system.gui.widget.widget")
 
 ---@class GUI.Panel
 ---@field public name string
 ---@field public root GUI.Widgets.Base
+---@field protected _setToCenterOnEnable boolean
 local _Panel = require("core.class")()
 
 function _Panel:Ctor(name)
     self.name = name
     self.root = _Widget.New("root", 0, 0)
     self.root.wtype = "container"
+    self._width = 0
+    self._height = 0
+    self._setToCenterOnEnable = true
+end
+
+function _Panel:OnEnable()
+    local w, h = _GRAPHICS.GetOriginDimension()
+
+    if self._setToCenterOnEnable then
+        self.root:SetPosition((w - self._width) / 2, (h - self._height) / 2)
+    end
 end
 
 ---@param path string @layout file path
@@ -34,7 +47,7 @@ function _Panel:LoadLayout(path)
 
         return widget
     end
-	-- a variant of depth-first-search
+	-- create widgets by data (a variant of depth-first-search)
     local parentStack = _Stack.New(10)
     local dataStack = _Stack.New(50)
     local parent = self.root
@@ -51,27 +64,32 @@ function _Panel:LoadLayout(path)
             widget = _CreateWidget(data)
             parent:AddChild(widget)
             widget:Init()
+            widget:SetParent(parent) --set parent to get upperRenderValue
         end
 
-        local subjects = data.subjects
-        if subjects and #subjects > 0 then
+        -- process data of sub widgets
+        if data.subjects and #data.subjects > 0 then
             parentStack:Push(parent)
             parent = widget
-            dataStack:Push(emptyTable) -- push emptyTable as mark for switch parent widget
-            for i = #subjects, 1, -1 do
-                dataStack:Push(subjects[i])
+            dataStack:Push(emptyTable) -- push emptyTable as mark for switching parent widget
+            for i = #data.subjects, 1, -1 do
+                dataStack:Push(data.subjects[i])
             end
         end
     end
 
-    self.root:Init() -- set renderValue again to activate renderValue of children
+    self._width, self._height = self.root:GetChild(1):GetSize()
 end
 
-function _Panel:Draw(x, y)
-    self.root:DrawChildren(x, y)
+function _Panel:Draw()
+    self.root:DrawChildren()
 end
 
-function _Panel:GetWidgetById(id, func)
+function _Panel:OnDisable()
+
+end
+
+function _Panel:GetWidgetById(id)
     local widget = nil
     
     ---@param w GUI.Widgets.Base

@@ -1,6 +1,6 @@
 return {
     {
-        name = "bottom_pop",
+        name = "hud_frame",
         script = "frame",
         x = 10,
         y = 10,

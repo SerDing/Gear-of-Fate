@@ -5,7 +5,7 @@
 	Last Modified time: 2018-08-15 02:15:08
 ]]
 local _RESOURCE = require("engine.resource")
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _Sprite = require("engine.graphics.drawable.sprite")
 local _Widget = require("system.gui.widget.widget")
 
@@ -90,6 +90,10 @@ function _Frame:RefreshPosition()
         self._width - 2*self._sprites[6]:GetWidth() * ratio2 * sx5,
         self._height - 2*self._sprites[8]:GetHeight() * ratio2 * sy7,
     }
+end
+
+function _Frame:GetSize()
+    return self._width, self._height
 end
 
 return _Frame 

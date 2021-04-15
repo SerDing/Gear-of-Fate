@@ -8,7 +8,7 @@
 local _Vector3 = require("utils.vector3")
 local _Vector2 = require("utils.vector2")
 local _Event = require("core.event")
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _Blendmode = require("engine.graphics.config.blendmode")
 local _Color = require("engine.graphics.config.color")
 local _Shader = require("engine.graphics.config.shader")
@@ -93,6 +93,7 @@ function _Drawable:Reset()
 end
 
 --- draw an object of love2d drawable type
+---@param obj Drawable
 function _Drawable:DrawObj(obj)
 	local v = self._values
 	if self._quad then
@@ -121,6 +122,7 @@ function _Drawable:SetRenderValue(type, ...)
 	end
 end
 
+---@param type string
 local function _NewValueObj(type, ...)
 	local _newValuefns = {
 		position = function ()
@@ -148,6 +150,8 @@ local function _NewValueObj(type, ...)
 	return _newValuefns[type]()
 end
 
+---@param type string
+---@param value table
 function _Drawable:SetUpperValue(type, value)
 	self._upperValues[type] = value
 	self:Merge(type)
@@ -162,6 +166,7 @@ function _Drawable:SetUpperValue(type, value)
 	end
 end
 
+---@param type string
 function _Drawable:Merge(type)
 	local mergeFuncs = {
 		---@param obj Engine.Graphics.Drawable.Base
@@ -224,6 +229,7 @@ function _Drawable:Merge(type)
 	mergeFuncs[type](self)
 end
 
+---@param type string
 function _Drawable:RefreshValues(type)
 	local refreshFuncs = {
 		---@param obj Engine.Graphics.Drawable.Base
@@ -251,6 +257,8 @@ function _Drawable:RefreshValues(type)
 	end
 end
 
+---@param type string
+---@param relative boolean
 function _Drawable:GetRenderValue(type, relative)
 	if relative then
 		return self._baseValues[type]:Get()
@@ -259,12 +267,27 @@ function _Drawable:GetRenderValue(type, relative)
 	end
 end
 
+---@param quad Quad
 function _Drawable:SetQuad(quad)
 	self._quad = quad
 end
 
+---@param parentObj Engine.Graphics.Drawable.Base
+function _Drawable:SetParent(parentObj)
+	for key, _ in pairs(self._baseValues) do
+		self:SetUpperValue(key, parentObj._actualValues[key])
+	end
+end
+
+---@param child Engine.Graphics.Drawable.Base
 function _Drawable:AddChild(child)
 	self._children[#self._children + 1] = child
+end
+
+---@param index int
+---@return Engine.Graphics.Drawable.Base
+function _Drawable:GetChild(index)
+	return self._children[index]
 end
 
 return _Drawable

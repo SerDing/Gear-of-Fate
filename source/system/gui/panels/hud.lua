@@ -9,13 +9,13 @@ local _Panel = require("system.gui.panels.panel")
 local _HpController = require("system.gui.controller.hpcontroller")
 
 ---@class GUI.Panel.HUD : GUI.Panel
+---@field protected _entity Entity
 local _HUD = require("core.class")(_Panel)
 
 function _HUD:Ctor()
     _Panel.Ctor(self,"HUD")
-    self:LoadLayout("layout/hud")
-
-    self._entity = nil ---@type Entity
+    _Panel.LoadLayout(self, "layout/hud")
+    self._setToCenterOnEnable = false
 
     self.hpView = self:GetWidgetById("hp_bar")
     self.mpView = self:GetWidgetById("mp_bar")
@@ -30,11 +30,11 @@ end
 ---@param entity Entity
 function _HUD:SetEntity(entity)
     self._entity = entity
-    self:BindSkillModels()
-    self:SetMVC()
+    self:SetSkillModels()
+    self:SetHmpModels()
 end
 
-function _HUD:BindSkillModels()
+function _HUD:SetSkillModels()
     local map = self._entity.input.skillInputMap
     local skills = self._entity.skills ---@type Entity.Component.Skills
 
@@ -61,7 +61,7 @@ function _HUD:BindSkillModels()
     end
 end
 
-function _HUD:SetMVC()
+function _HUD:SetHmpModels()
     self.hpController:SetModel(self._entity.stats.hp)
     self.mpController:SetModel(self._entity.stats.mp)
 end

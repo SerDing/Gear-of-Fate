@@ -26,7 +26,7 @@ function _Image:Ctor(name, path, x, y, radian, sx, sy)
 end
 
 function _Image:Init()
-    
+    _Widget.Init(self)
 end
 
 ---@param px number parent x

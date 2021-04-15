@@ -55,10 +55,15 @@ function _Button:Ctor(name, text, x, y, stylePath)
     self._labelColor = _Color.New(250, 179, 0, 255)
     self._label = _Label.New(name .. "_label", 0, 0, text, true)
     self._label:SetRenderValue("color", self._labelColor:Get())
+    self._label:Init()
     self:AddChild(self._label)
-
     self:SetState("normal")
-end 
+end
+
+function _Button:Init()
+    _Widget.Init(self)
+
+end
 
 function _Button:_OnDraw()
     self._curSprite:Draw()
@@ -110,10 +115,7 @@ function _Button:SetState(state)
     self._state = state or self._state
     self._curSprite = self._sprites[self._state]
 
-    local font = love.graphics.getFont()
-    local x = math.floor((self._curSprite:GetWidth() - font:getWidth(self._text)) / 2)
-    local y = math.floor((self._curSprite:GetHeight() - font:getHeight()) / 2)
-    self._label:SetRenderValue("position", x, y)
+    self._label:SetToCenter(0, 0, self._curSprite:GetWidth(), self._curSprite:GetHeight())
 end
 
 function _Button:CheckPoint(x, y)

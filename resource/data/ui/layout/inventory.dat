@@ -2,8 +2,8 @@ return {
     {
         name = "mainframe",
         script = "frame",
-        x = (960 - (800)) / 2,
-        y = (540 - (450)) / 2,
+        x = 0,
+        y = 0,
         w = 800,
         h = 450,
         style_path = "popup/normal",
@@ -25,6 +25,14 @@ return {
                         x = 40,
                         y = 120,
                         style_path = "buttons/small",
+                    },
+                    {
+                        name = "label1",
+                        script = "label",
+                        text = "物理攻击：90%",
+                        x = 100,
+                        y = 120,
+                        stroke = true,
                     },
                     {
                         name = "skill_shortcut_ex_3",

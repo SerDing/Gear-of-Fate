@@ -1,4 +1,4 @@
 return {
-    hud = 'HUD',
-    inventory = 'Inventory',
+    hud = "system.gui.panels.hud",
+    inventory = "system.gui.panels.inventory",
 }

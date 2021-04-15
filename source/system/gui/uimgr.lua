@@ -9,15 +9,17 @@
 ]]
 local _Vector2 = require("utils.vector2")
 local _MATH = require("engine.math")
-local _MOUSE = require("engine.mouse")
-local _GRAPHICS = require("engine.graphics.graphics")
+local _Mouse = require("engine.input.mouse")
+local _GRAPHICS = require("engine.graphics")
 local _Color = require("engine.graphics.config.color")
+local _RESOURCE = require("engine.resource")
 local _CAMERA = require("system.scene.camera")
 local _Stack = require("core.stack")
 local _Panel = require("system.gui.panels.panel")
 local _SETTING = require("setting")
 
 ---@class UIManager
+---@field protected _panelTable table<string, string>
 ---@field protected _panels GUI.Panel[] @panel list
 ---@field protected _topPanel GUI.Panel
 ---@field protected _persistentPanel GUI.Panel
@@ -38,29 +40,31 @@ local _easeInAnim = {
 }
 local _Abs = math.abs
 
----@param data table<string, string>
 ---@param persistentPanel string
-function _UIMGR.Init(data, persistentPanel)
+function _UIMGR.Init(persistentPanel)
+    this._panelTable = _RESOURCE.LoadUiData("panels")
     this._panels = {}
     this._topPanel = _emptyPanel
     this._persistentPanel = _emptyPanel
     this._stack = _Stack.New(10)
     this._scale = _Vector2.New(_CAMERA._scale.x / 1.3, _CAMERA._scale.y / 1.3)
-    this._lastMousePosition = _Vector2.New(_MOUSE.GetScaledMousePosition())
+    this._lastMousePosition = _Vector2.New(_Mouse.GetScaledMousePosition())
     this._dragWidget = nil
     this._dragOffset = _Vector2.New(0, 0)
 
     --local font = love.graphics.newFont("resource/font/simsun.ttc", 16)
     --local font = love.graphics.newFont("resource/font/simsun_bitmap_fnt/simsun12.fnt")
-    local font = love.graphics.newFont("resource/font/notosans/normal.otf", 12)
+    local fontSize = math.floor(this._scale.x * 12)
+    print("fontsize", fontSize)
+    local font = love.graphics.newFont("resource/font/notosans/normal.otf", fontSize)
     love.graphics.setFont(font)
 
-    for key, value in pairs(data) do
+    for key, value in pairs(this._panelTable) do
         this.AddPanel(key, require(value).New())
     end
 
     if persistentPanel then
-        this.Enter(persistentPanel)
+        this.Open(persistentPanel)
         this._persistentPanel = this._topPanel
     end
 end
@@ -89,8 +93,7 @@ function _UIMGR.Draw()
             _easeInAnim.color:Set(255, 255, 255, _easeInAnim.from)
             this._topPanel.root:SetRenderValue("color", _easeInAnim.color:Get())
             if _easeInAnim.direction == -1 and _easeInAnim.isRunning == false then
-                this._stack:Pop()
-                this._topPanel = this._stack:GetTopE()
+                this._Close()
             end
         end
 
@@ -103,12 +106,14 @@ function _UIMGR.Draw()
 	_GRAPHICS.Pop()
 end
 
+--- open a panel
 ---@param name string
 ---@param anim boolean
-function _UIMGR.Enter(name, anim)
+function _UIMGR.Open(name, anim)
     if this._stack:Size() < this._stack:Capacity() then
         this._stack:Push(this.GetPanel(name))
         this._topPanel = this._stack:GetTopE()
+        this._topPanel:OnEnable()
         if anim then
             _easeInAnim.direction = 1
             _easeInAnim.to = 255
@@ -118,13 +123,20 @@ function _UIMGR.Enter(name, anim)
     end
 end
 
-function _UIMGR.Back()
+--- close current panel
+function _UIMGR.Close()
     if this._stack:Size() > 1 and _easeInAnim.isRunning == false then
         _easeInAnim.direction = -1
         _easeInAnim.to = 0
         _easeInAnim.isRunning = true
         this._topPanel.root:SetRenderValue("color", _easeInAnim.color:Get())
+        this._topPanel:OnDisable()
     end
+end
+
+function _UIMGR._Close()
+    this._stack:Pop()
+    this._topPanel = this._stack:GetTopE()
 end
 
 ---@param name string
@@ -145,9 +157,9 @@ end
 ---@param name string
 function _UIMGR.OnOff(name)
     if this._topPanel.name == name then
-        this.Back()
+        this.Close()
     else
-        this.Enter(name, true)
+        this.Open(name, true)
     end
 end
 
@@ -224,6 +236,12 @@ function _UIMGR.MouseMoved(_, x, y, dx, dy)
         local sx, sy, sz = this._dragWidget:GetRenderValue("position", true)
         this._dragWidget:SetRenderValue("position", sx + dx, sy + dy, sz)
     end
+end
+
+function _UIMGR:HandleAction(action, state)
+end
+
+function _UIMGR:HandleAxis(axis, value)
 end
 
 _UIMGR.OnPress = _UIMGR.ButtonPressed

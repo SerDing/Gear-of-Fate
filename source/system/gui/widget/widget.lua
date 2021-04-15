@@ -4,7 +4,6 @@
 	Since: 2019-08-10 
 	Last Modified time: 2020-02-04 17:29:59
 ]]
-local _GRAPHICS = require("engine.graphics.graphics")
 local _Drawable = require("engine.graphics.drawable.base")
 
 ---@class GUI.Widgets.Base:Engine.Graphics.Drawable.Base
@@ -12,10 +11,10 @@ local _Drawable = require("engine.graphics.drawable.base")
 ---@field public x float
 ---@field public y float
 ---@field public wtype string
+---@field public mousePressed boolean
 ---@field protected _children table<int, GUI.Widgets.Base>
 ---@field protected _interactable boolean
 ---@field protected _visible boolean
----@field public mousePressed boolean
 local _Widget = require("core.class")(_Drawable)
 
 function _Widget:Ctor(name, x, y)
@@ -23,6 +22,7 @@ function _Widget:Ctor(name, x, y)
     self.name = name
     self.x, self.y = x, y
     self.focus = false
+    self._children = {}
     self._visible = true
     self._interactable = true
     self.mousePressed = false
@@ -32,7 +32,7 @@ end
 
 function _Widget:Init()
     self.eventMap.setPosition:AddListener(self, self.RefreshPosition)
-    _Widget.SetPosition(self, self.x, self.y)
+    self:SetPosition(self.x, self.y)
 end
 
 function _Widget:Draw()
@@ -97,6 +97,16 @@ end
 
 function _Widget:SetFocus(f)
     self.focus = f
+end
+
+---@param index int
+---@return GUI.Widgets.Base
+function _Widget:GetChild(index)
+    return _Drawable.GetChild(self, index)
+end
+
+function _Widget:GetSize()
+    return 1, 1
 end
 
 return _Widget 

@@ -1,246 +1,301 @@
 --[[
-    Desc: A new lua class.
+    Desc: Navigation system, provide pathfinding and move amending.
     Author: SerDing
-    Since: 2018-04-05T02:33:49.469Z+08:00
-    Alter: 2020-10-11T02:56:53.386Z+08:00
+    Since: 2018-04-05
+    Alter: 2021-03-22
 ]]
+local _List = require("core.list")
+local _MATH = require("engine.math")
+local _Vector2 = require("utils.vector2")
+local _GRAPHICS = require("engine.graphics")
+local _Color = require("engine.graphics.config.color")
+local _Pathfinder = require("system.navigation.pathfinder")
+local _SETTING = require("setting")
 
-local _Pathfinder = require "lib.jumper.pathfinder"
-local _Grid = require "lib.jumper.grid"
-local _MATH = require "engine.math"
-local _Node = require "system.navigation.node"
-
-
+---@class System.Navigation
+---@field protected _passMap table<int>
+---@field protected _pathfinder System.Navigation.Pathfinder
 local _Navigation = require("core.class")()
 
-function _Navigation:Ctor(area, scene)
+local _PASSTYPE = {
+	YES = 0,
+	NO = 1,
+}
+local _emptyPath = {}
 
-    self.area = {
-        [1] = area[1],
-        [2] = area[2] + 200, -- y offset
-        [3] = area[3],
-        [4] = area[4],
-    }
-    self.scene = scene
-    self.nodeSize = 16
-    self.rows = math.floor(self.area[4] / self.nodeSize) -- graph height
-    self.cols = math.floor(self.area[3] / self.nodeSize) - 1 -- graph width
-    
-    self.navNodes = {}
-    self.map = {}
-    self.lastPath = {}
-    self.walkable = 1
-    self.graphColor = {
-        r = 0,
-        g = 0,
-        b = 150,
-        a = 200,
-    }
+local _NOPASS_COLOR = _Color.New(255, 0, 0, 150)
+local _PATHNODE_COLOR = {
+	START = _Color.New(0, 0, 0, 255),
+	NORMAL = _Color.New(0, 0, 150, 255),
+	DEST = _Color.New(150, 0, 0, 255),
+	SCANNED = _Color.New(150, 150, 0, 255),
+	CLOSE = _Color.New(0, 150, 150, 255),
+}
 
-    self.debug = false
-end 
+local _drawBoundLine = false
+function _Navigation:Ctor()
+	self._area = {
+		x = 0,
+		y = 0,
+		w = 224 * 5,
+		h = 600,
+		x2 = 0,
+		y2 = 0,
+	}
+	self._AXIS_RATIO_Y = _SETTING.scene.AXIS_RATIO_Y
+	self._nodeSize = _Vector2.New(16, 16 * self._AXIS_RATIO_Y)
 
-function _Navigation:Init()
-    -- NEW jumper pathfinder
-    self.grid = _Grid(self.map) -- grid nodes table
-    self.pathFinder = _Pathfinder(self.grid, 'ASTAR', self.walkable) 
+	self._pathfinder = _Pathfinder.New()
+	self._passMap = {}
+	self._passMap2D = {}
+	self._path = _List.New()
+	self._pathTable = {}
+	self._pathPoints = {}
+	self.walkable = 1
+
+	self.debug = false
 end
 
-function _Navigation:BuildNavGraph()
-    self.linearGraph = {}
-    for i = self.nodeSize, self.area[4] + (self.nodeSize - self.area[4] % self.nodeSize), self.nodeSize do
-        self.map[i / self.nodeSize] = {}
-        self.navNodes[i / self.nodeSize] = {}
-        for n = self.nodeSize, self.area[3] , self.nodeSize do
+function _Navigation:Init(x, y, w, h)
+	self._area.x = x
+	self._area.y = y
+	self._area.w = w
+	self._area.h = h
+	self._area.x2 = x + w
+	self._area.y2 = y + h
+	self._nCol = math.floor(self._area.w / self._nodeSize.x)
+	self._nRow = math.floor(self._area.h / self._nodeSize.y)
+	self._passMap = {}
+	for i = 1, self._nCol * self._nRow do
+		self._passMap[i] = _PASSTYPE.YES
+	end
+	_LOG.Debug("Navigation.Init - nCol:%d nRow:%d", self._nCol, self._nRow)
+end
 
-            local row = i / self.nodeSize
-            local col = n / self.nodeSize
-            local x = self.area[1] - (self.nodeSize / 2) + n
-            local y = self.area[2] - (self.nodeSize / 2) + i
-            local node = _Node.New(x, y, self.nodeSize, col, row)
-            
-            if self.scene:CollideWithObstacles(node) == false then
-                node:SetPass(true)
-                self.map[row][col] = 1
-            else
-                node:SetPass(false)
-                self.map[row][col] = 0
-            end
+function _Navigation:InitPathfinderPassMap()
+	local map2d = {}
+	for y = 1, self._nRow do
+		map2d[y] = {}
+		for x = 1, self._nCol do
+			map2d[y][x] = self._passMap[(y - 1) * self._nCol + x]
+		end
+	end
+	self._pathfinder:SetPassMap(map2d, _PASSTYPE.YES)
+end
 
-            self.navNodes[row][col] = node
-            self.linearGraph[#self.linearGraph + 1] = node
-            self.linearGraph[#self.linearGraph]:SetIndex(#self.linearGraph)
-        end
-    end
+---@param start Vector2
+---@param dest Vector2
+function _Navigation:FindPath(start, dest)
+	if not self:IsPositionInArea(start:Get()) or not self:IsPositionInArea(dest:Get()) then
+		_LOG.Error("Navigation:FindPath - start or dest position is not in area.")
+		return _emptyPath
+	end
 
-    -- print("build graph end")
+	local startIndex = _Vector2.New(self:GetNodeIndexByPos(start:Get()))
+	local destIndex = _Vector2.New(self:GetNodeIndexByPos(dest:Get()))
 
-    self:Init()
-    
-end 
+	if not self:GetNodePass(startIndex:Get()) then
+		_LOG.Error("Navigation:FindPath - start position is not passable.")
+		return _emptyPath
+	end
+	if not self:GetNodePass(destIndex:Get()) then
+		_LOG.Error("Navigation:FindPath - destination is not passable.")
+		return _emptyPath
+	end
 
----@param entity Entity
----@param x float
----@param y float 
-function _Navigation:FindPath(entity, x, y)
+	self._path:Clear()
+	self._pathTable = {}
+	self._pathPoints = {}
+	self._pathfinder:FindPath(startIndex.x, startIndex.y, destIndex.x, destIndex.y, self._path)
+	self._pathTable = self._path:ToArray()
 
-    -------------NEW PATH FINDING-----------------------------------------
-    
-    -- Clear up last path nodes (set their color to original)
-    if self.lastPath ~= {} then
-        for i=1,#self.lastPath do
-            self.lastPath[i]:SetColor(0, 0, 150, 255)
-            self.lastPath[i]:SetDrawType("line")
-        end
-    end
+	local pathFinal = {}
+	for i = 1, #self._pathTable do
+		pathFinal[i] = _Vector2.New(self:GetNodePosition(self._pathTable[i].x, self._pathTable[i].y))
+		self._pathPoints[#self._pathPoints + 1] = pathFinal[i].x
+		self._pathPoints[#self._pathPoints + 1] = pathFinal[i].y
+	end
 
-    -- Define start and goal locations coordinates
-    local entityPos = entity.transform.position
-    local startIndex = self:GetNodeIndexByPos(entityPos.x, entityPos.y)
-    local endIndex = self:GetNodeIndexByPos(x, y)
-
-    local pathNodes = {}
-    -- Calculates the path, and its length
-    local startFindingTime = love.timer.getTime()
-    local path = self.pathFinder:getPath(startIndex.x, startIndex.y, endIndex.x, endIndex.y)
-    if path then
-        -- print("Path finding cost time:", love.timer.getTime() - _startFindingTime)
-        -- print(('Path found! Length: %.2f'):format(path:getLength()))
-        for node, count in path:nodes() do
-            -- print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
-            pathNodes[count] = self:GetNodeByIndex(node:getY(), node:getX())
-            pathNodes[count]:SetColor(0, 200, 0, 255) -- set walkable nodes color to Green
-            pathNodes[count]:SetDrawType("fill")
-        end
-        
-    else
-        return false
-    end
-
-    self.lastPath = pathNodes
-    pathNodes[1]:SetColor(200, 0, 0, 255) -- set end node color to red
-
-    return pathNodes
-
-    --> Output:
-    --> Path found! Length: 8.83
-    --> Step: 1 - x: 1 - y: 1
-    --> Step: 2 - x: 1 - y: 3
-    --> Step: 3 - x: 2 - y: 4
-    --> Step: 4 - x: 4 - y: 4
-    --> Step: 5 - x: 5 - y: 3
-    --> Step: 6 - x: 5 - y: 1
-end 
+	return pathFinal
+end
 
 function _Navigation:Draw()
-    if self.debug == false then
-        return
-    end
+	if _SETTING.debug.navigation.grid == false then
+		return
+	end
 
-    for i=1,#self.linearGraph do
-        if self.linearGraph[i]:GetPass() then
-            self.linearGraph[i]:Draw()
-        end
-        
-    end
-    
-    -- self:DrawConnection()
+	if _SETTING.debug.navigation.obstacle then
+		for iy = 1, self._nRow do
+			for ix = 1, self._nCol do
+				local nodeIndex = (iy - 1) * self._nCol + ix
+				if self._passMap[nodeIndex] == _PASSTYPE.NO then
+					local x = self._area.x + (ix - 1) * self._nodeSize.x
+					local y = self._area.y + (iy - 1) * self._nodeSize.y
+					_GRAPHICS.SetColor(_NOPASS_COLOR:Get())
+					_GRAPHICS.DrawRect("fill", x, y, self._nodeSize:Get())
+					_GRAPHICS.ResetColor()
+				end
+			end
+		end
+	end
+
+	--draw path nodes
+	if #self._pathTable > 0 then
+		for y = 1, #self._pathfinder.scannedMap do
+			for x = 1, #self._pathfinder.scannedMap[y] do
+				local TempColor
+				TempColor = self._pathfinder.scannedMap[y][x] == self._pathfinder._closeValue and _PATHNODE_COLOR.SCANNED or TempColor
+				TempColor = self._pathfinder._closeMap[y][x] == self._pathfinder._closeValue and _PATHNODE_COLOR.CLOSE or TempColor
+				if TempColor then
+					local rx = self._area.x + (x - 1) * self._nodeSize.x
+					local ry = self._area.y + (y - 1) * self._nodeSize.y
+					_GRAPHICS.SetColor(TempColor:Get())
+					_GRAPHICS.DrawRect("fill", rx, ry, self._nodeSize:Get())
+					_GRAPHICS.ResetColor()
+				end
+			end
+		end
+
+		for i = 1, #self._pathTable do
+			local nodeColor = _PATHNODE_COLOR.NORMAL
+			if i == 1 then
+				nodeColor = _PATHNODE_COLOR.START
+			elseif i == #self._pathTable then
+				nodeColor = _PATHNODE_COLOR.DEST
+			end
+
+			local x = self._area.x + (self._pathTable[i].x - 1) * self._nodeSize.x
+			local y = self._area.y + (self._pathTable[i].y - 1) * self._nodeSize.y
+			_GRAPHICS.SetColor(nodeColor:Get())
+			_GRAPHICS.DrawRect("fill", x, y, self._nodeSize:Get())
+			_GRAPHICS.ResetColor()
+			--_GRAPHICS.Print(i, x, y)
+		end
+		for i = 1, #self._pathPoints, 2 do
+			love.graphics.ellipse("line", self._pathPoints[i], self._pathPoints[i + 1], 10, 6)
+		end
+		if #self._pathPoints >= 4 then
+			_GRAPHICS.Line(self._pathPoints)
+		end
+	end
+
+
+	local y1 = self._area.y
+	local y2 = self._area.y + self._nodeSize.y * self._nRow
+	for i = 1, self._nCol + 1 do
+		local x = self._area.x + (i - 1) * self._nodeSize.x
+		_GRAPHICS.Line(x, y1, x, y2)
+	end
+
+
+	local x1 = self._area.x
+	local x2 = self._area.x + self._nodeSize.x * self._nCol
+	for i = 1, self._nRow + 1 do
+		local y = self._area.y + (i - 1) * self._nodeSize.y
+		_GRAPHICS.Line(x1, y, x2, y)
+	end
+
+	if _drawBoundLine then
+		_GRAPHICS.Line(
+				self._area.x + self._area.w,
+				self._area.y,
+				self._area.x + self._area.w,
+				self._area.y + self._area.h
+		)
+		_GRAPHICS.Line(
+				self._area.x,
+				self._area.y + self._area.h,
+				self._area.x + self._area.w,
+				self._area.y + self._area.h
+		)
+	end
+
+	local x, y = self:GetNodePosition(1, 1)
+
 end
 
-function _Navigation:DrawConnection()
-    local node
-    local nextNode
+---@param ox float @original x
+---@param oy float @original y
+---@param tx float @target x
+---@param ty float @target y
+---@param axis string
+function _Navigation:AmendMovePosition(ox, oy, tx, ty, axis)
+	local ix, iy = self:GetNodeIndexByPos(tx, ty)
+	if ix < 1 or ix > self._nCol or iy < 1 or iy > self._nRow then
+		return ox, oy
+	end
 
-    local r, g, b, a = love.graphics.getColor()
-    love.graphics.setColor(self.graphColor.r, self.graphColor.g, self.graphColor.b, self.graphColor.a)
+	local retx, rety = tx, ty
+	if not self:GetNodePass(ix, iy) then
+		local direction
+		if axis == "x" then
+			direction = _MATH.Sign(tx - ox)
+			if direction == 1 then
+				retx = self._area.x + (ix - 1) * self._nodeSize.x - 1
+			elseif direction == -1 then
+				retx = self._area.x + ix * self._nodeSize.x
+			end
+		else --y
+			direction = _MATH.Sign(ty - oy)
+			if direction == 1 then
+				rety = self._area.y + (iy - 1) * self._nodeSize.y - 1
+			elseif direction == -1 then
+				rety = self._area.y + iy * self._nodeSize.y
+			end
+		end
+	end
 
-    for i = 1, #self.linearGraph, self.cols do
-        for n = i, i - 1 + self.cols  do
-            node = self.linearGraph[n]
-            if node and node:GetPass() then
-
-                love.graphics.circle("fill", node.x, node.y, 2, 5)
-
-                if n % self.cols ~= 0 then -- not right boundary
-                    
-                    -- connect rigth 
-                    if self.linearGraph[n + 1] and self.linearGraph[n + 1]:GetPass() then 
-                        nextNode = self.linearGraph[n + 1]
-                        love.graphics.line(node.x, node.y, nextNode.x, nextNode.y)
-                    end
-
-                    -- connect right-down
-                    if self.linearGraph[n + self.cols + 1] and 
-                    self.linearGraph[n + self.cols + 1]:GetPass() then 
-                        nextNode = self.linearGraph[n + self.cols + 1]
-                        love.graphics.line(node.x, node.y, nextNode.x, nextNode.y)
-                    end
-                end
-                
-
-                if n % self.cols ~= 1 then -- not left boundary
-                    
-                    -- connect left-down 
-                    if self.linearGraph[n + self.cols - 1] and
-                    self.linearGraph[n + self.cols - 1]:GetPass() then 
-                        nextNode = self.linearGraph[n + self.cols - 1]
-                        love.graphics.line(node.x, node.y, nextNode.x, nextNode.y)
-                    end
-
-                end
-                
-
-                if (i - 1) % self.cols ~= self.rows then -- not down boundary
-                    
-                    -- connect down 
-                    if self.linearGraph[n + self.cols] and 
-                    self.linearGraph[n + self.cols]:GetPass() then 
-                        nextNode = self.linearGraph[n + self.cols]
-                        love.graphics.line(node.x, node.y, nextNode.x, nextNode.y)
-                    end
-                    
-                end
-
-            end
-            
-        end
-    end
-
-    love.graphics.setColor(r, g, b, a)
+	return retx, rety
 end
 
-function _Navigation:GetNodeByIndex(row, col)
-    -- return self.linearGraph[index]
-    return self.navNodes[row][col]
+---@param ix int
+---@param iy int
+---@param passable boolean
+function _Navigation:SetNodePass(ix, iy, passable)
+	if ix < 1 or ix > self._nCol or iy < 1 or iy > self._nRow then
+		return
+	end
+
+	self._passMap[(iy - 1) * self._nCol + ix] = passable and _PASSTYPE.YES or _PASSTYPE.NO
+end
+
+---@param ix int
+---@param iy int
+---@return boolean
+function _Navigation:GetNodePass(ix, iy)
+	if ix < 1 or ix > self._nCol or iy < 1 or iy > self._nRow then
+		return false
+	end
+
+	return self._passMap[(iy - 1) * self._nCol + ix] == _PASSTYPE.YES
+end
+
+---@param ix int
+---@param iy int
+function _Navigation:GetNodePosition(ix, iy)
+	local x = self._area.x + (ix - 1) * self._nodeSize.x + self._nodeSize.x / 2
+	local y = self._area.y + (iy - 1) * self._nodeSize.y + self._nodeSize.y / 2
+	return x, y
 end
 
 function _Navigation:GetNodeIndexByPos(x, y)
-    local node
-    for i=1,#self.linearGraph do
-        if self.linearGraph[i]:IsInNode(x, y) then
-            node = self.linearGraph[i]:GetIndex()
-            return node
-        end
-    end
+	x = x - self._area.x
+	y = y - self._area.y
+	local floatx = x / self._nodeSize.x
+	local floaty = y / self._nodeSize.y
+	local intx = math.floor(floatx) + 1
+	local inty = math.floor(floaty) + 1
 
-    -- x and y is on the square boundary of node, select shortest distance node
-    local d = 0
-    local d_min = 3000
-    local min_id
-    for i=1,#self.linearGraph do
-        d = _MATH.GetDistance(self.linearGraph[i]:GetPos(), {x = x, y = y})
-        if d < d_min then
-            d_min = d
-            min_id = i
-        end
-    end
-    node = self.linearGraph[min_id]:GetIndex()
-    return node
-    
+	return intx, inty
 end
 
 function _Navigation:GetNodeSize()
-    return self.nodeSize
+	return self._nodeSize:Get()
+end
+
+function _Navigation:IsPositionInArea(x, y)
+	return _MATH.IsInRange(x, self._area.x, self._area.x2, true)
+		and _MATH.IsInRange(y, self._area.y, self._area.y2, true)
 end
 
 return _Navigation 

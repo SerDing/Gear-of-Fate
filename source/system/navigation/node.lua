@@ -1,121 +1,64 @@
 --[[
-	Desc: Node class
+	Desc: Node for a star pathfinding.
 	Author: SerDing
-	Since: 2018-03-12 15:25:08 
-	Last Modified time: 2018-03-12 15:25:08 
-	Docs: 
-        * Its core part is a point at centre
-        * Its real shape is a rectangle    
+	Since: 2018-03-12
+	Alter: 2021-04-01
 ]]
 
+---@class System.Navigation.Node
+---@field public from System.Navigation.Node
+---@field public passable boolean
+---@field public ix int
+---@field public iy int
+---@field public fCost float
+---@field public gCost float
 local _Node = require("core.class")()
 
-function _Node:Ctor(x, y, size, iX, iY)
-    self.x = x
-    self.y = y
-    self.size = size
-    self.pass = true
-    self.iX = iX or 0 -- x in nav graph matrix
-    self.iY = iY or 0 -- y in nav graph matrix
-    self.index = 0 -- One-dimensional mark in nav graph
-    self.drawType = "line"
-    -- calc vertex
-    self:Update()
+local _COSTS = {
+	X = 10,
+	Y = 10,
+	XY = 14,
+}
 
-    self.color = {
-        r = 0,
-        g = 0,
-        b = 150,
-        a = 255,
-    }
-
-end 
-
-function _Node:Update()
-    self.vertex = {
-        [1] = { -- left up
-            x = self.x - self.size / 2,
-            y = self.y - self.size / 2,
-        },
-        [2] = { -- right down
-            x = self.x + self.size / 2,
-            y = self.y + self.size / 2,
-        },
-    }
-end 
-
-function _Node:Draw(x,y)
-    
-    local r,g,b,a = love.graphics.getColor()
-    love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.a)
-    
-    love.graphics.rectangle(self.drawType, self.vertex[1].x, self.vertex[1].y, self.size, self.size)
-
-    love.graphics.setColor(r, g, b, a)
-
-    
-    if self.pathIndex then
-        love.graphics.print(tostring(self.pathIndex), self.x - 12 , self.y - 10)
-    else
-        -- love.graphics.print(tostring(self.iX) .. "," .. tostring(self.iY), self.x - 15 , self.y - 10)
-    end
+function _Node:Ctor(ix, iy, passable)
+	self.passable = passable or false
+	self.ix = ix or 0 -- x in nav node map
+	self.iy = iy or 0 -- y in nav node map
+	self.gCost = 0
+	self.hCost = 0
+	self.fCost = 0
+	self.hWeight = 1
+	self.from = nil
 end
 
-function _Node:SetIndex(index)
-    self.index = index
+function _Node:CalcFCost()
+	self.fCost = self.gCost + self.hCost
 end
 
-function _Node:GetIndex()
-    return {x = self.iX, y = self.iY}
+--- Calculate diagonal distance
+---@return number
+function _Node:CalcDistanceCost(targetX, targetY)
+	local distX = math.abs(self.ix - targetX)
+	local distY = math.abs(self.iy - targetY)
+	local diagonalStep = math.min(distX, distY)
+	local straightStep = math.abs(distX - distY) -- dx + dy - 2 * diagonalStep
+	return _COSTS.XY * diagonalStep + _COSTS.Y * straightStep
 end
 
-function _Node:SetPathIndex(pathIndex)
-    self.pathIndex = pathIndex
+---@param lastNode System.Navigation.Node
+function _Node:CalcG(lastNode)
+	--local dx = math.abs(self.ix - lastNode.ix)
+	--local dy = math.abs(self.iy - lastNode.iy)
+	--return _G_COSTS[dy][dx] + lastNode.gCost
+
+	return lastNode.gCost + self:CalcDistanceCost(lastNode.ix, lastNode.iy)
 end
 
-function _Node:GetVertex()
-    return self.vertex
-end
-
-function _Node:SetPass(pass)
-    self.pass = pass
-end
-
-function _Node:GetPass()
-    if self.pass == false then
-        self:SetColor(150, 0, 0, 255)
-    end
-    return self.pass
-end
-
-function _Node:GetPos()
-    return {x = self.x, y = self.y}
-end
-
-function _Node:GetSize()
-    return self.size
-end
-
-function _Node:IsInNode(x, y)
-    if x <= self.x + self.size / 2 and x >= self.x - self.size / 2 then
-        if y <= self.y + self.size / 2 and y >= self.y - self.size / 2 then
-            return true
-        end
-    end
-    return false
-end
-
-function _Node:SetColor(r, g, b, a)
-    self.color = {
-        r = r,
-        g = g,
-        b = b,
-        a = a,
-    }
-end
-
-function _Node:SetDrawType(drawType)
-    self.drawType = drawType
+function _Node:Reset()
+	self.gCost = 0
+	self.hCost = 0
+	self.fCost = 0
+	self.from = nil
 end
 
 return _Node 

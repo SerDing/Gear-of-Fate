@@ -4,15 +4,20 @@
 	Since: 2021-01-29 17:20
 	Alter: 2021-01-30
 ]]
-local _PLAYERMGR = require("system.playermgr")
-local _FACTORY = require("system.entityfactory")
-local _GRAPHICS = require("engine.graphics.graphics")
+local _Event = require("core.event")
+local _GRAPHICS = require("engine.graphics")
 local _Frameani = require("engine.graphics.drawable.frameani")
 local _Sprite = require("engine.graphics.drawable.sprite")
 local _Layer = require("engine.graphics.drawable.layer")
 local _RESOURCE = require("engine.resource")
+local _PLAYERMGR = require("system.playermgr")
+local _FACTORY = require("system.entityfactory")
 local _CAMERA = require("system.scene.camera")
+local _AUDIO = require("engine.audio")
 local _Background = require("system.scene.background")
+local _Navigation = require("system.navigation.navigation")
+local _Movement = require("entity.component.movement")
+local _Vector2 = require("utils.vector2")
 
 ---@class SCENEMGR
 ---@field protected _layers table<string, Engine.Graphics.Drawable.Layer|Engine.Graphics.Drawable.Sprite>
@@ -30,6 +35,7 @@ local _SCENEMGR = {
 		nearsight = _Layer.New(),
 		effect = _Layer.New(), -- ray/fog
 	},
+	navigation = nil,
 }
 
 ---@param data table @scene data
@@ -78,7 +84,9 @@ local function _LoadFloor(data)
 			end
 		end
 	end
+
 	--draw downtile sprites
+
 	if data.decoration then
 		for i = 1, #data.decoration do
 			local decoItem = data.decoration[i]
@@ -98,9 +106,9 @@ local function _LoadStuffAnimation(data, key)
 	local stuff = data[key]
 	for i = 1, #stuff do
 		local animData = _RESOURCE.LoadAnimData(stuff[i][1])
-		local anim = _Frameani.New(animData)
-		anim:SetRenderValue("position", stuff[i][2], stuff[i][3])
-		_SCENEMGR._layers[key]:Add(anim)
+		local animation = _Frameani.New(animData)
+		animation:SetRenderValue("position", stuff[i][2], stuff[i][3])
+		_SCENEMGR._layers[key]:Add(animation)
 	end
 end
 
@@ -126,6 +134,33 @@ local function _LoadEntities(data)
 			_FACTORY.NewEntity(enemyItem[1], param)
 		end
 	end
+
+	local obstacle = data.obstacle
+	if obstacle then
+		local param = {
+			x = 0,
+			y = 0,
+			camp = 3,
+			direction = 1,
+		}
+		for i = 1, #obstacle do
+			local item = obstacle[i]
+			param.x = item[2]
+			param.y = item[3]
+			param.direction = item[4]
+			local entity = _FACTORY.NewEntity(item[1], param)
+			entity.render.color:Set(255, 255, 255, 150)
+		end
+	end
+	_SCENEMGR.navigation:InitPathfinderPassMap()
+end
+
+local function _InitNavigation(data)
+	local x  = data.setting.bound.x
+	local y  = data.setting.bound.y
+	local w  = data.setting.width - x * 2
+	local h  = data.setting.height - y
+	_SCENEMGR.navigation:Init(x, y, w, h)
 end
 
 local _loadFuncs = {
@@ -134,25 +169,34 @@ local _loadFuncs = {
 	stuff = _LoadStuffAnimation,
 	entity = _LoadEntities,
 }
-
+local _playerPosition
+local _destPosition
 ---@param drawEntity fun():void
 function _SCENEMGR.Init(drawEntity)
 	_SCENEMGR._DrawEntity = drawEntity
 	_SCENEMGR._localPlayer = _PLAYERMGR.GetLocalPlayer()
+	_SCENEMGR.navigation = _Navigation.New()
+	_Movement.SetNavigation(_SCENEMGR.navigation)
 	_CAMERA.Ctor(224 * 5, 600)
+
+	_playerPosition = _PLAYERMGR.GetLocalPlayer().transform.position
+	_destPosition = _Vector2.New(1050, 585) ---666 548
 end
 
 ---@param path string @ subpath of scene, e.g:"lorien/proto".
-function _SCENEMGR.Load(path)
+function _SCENEMGR.LoadScene(path)
 	local data = _RESOURCE.LoadSceneData(path)
 	_LoadBackground(data, "far")
 	_LoadBackground(data, "mid")
 	_LoadFloor(data)
 	_LoadStuffAnimation(data, "closeback")
 	_LoadStuffAnimation(data, "nearsight")
+	_InitNavigation(data)
 	_LoadEntities(data)
 
 	_CAMERA.SetWorld(data.setting.width, data.setting.height)
+	_AUDIO.PlaySceneMusic(data.setting.bgm)
+	_AUDIO.PlayAmbientSound(data.setting.amb)
 end
 
 ---@param dt float
@@ -169,8 +213,10 @@ function _SCENEMGR.Update(dt)
 	_SCENEMGR._layers.midback:DoFuncForAll(SetBgTranslation)
 
 	--TODO:sort objects in closeback and nearsight
-
 	--nearsight stuff auto-transpansy when someone of them blcoks player character
+
+	--astar pathfinding test
+	--_SCENEMGR.navigation:FindPath(_playerPosition, _destPosition)
 
 end
 
@@ -178,6 +224,7 @@ local function _DrawScene()
 	_SCENEMGR._layers.farback:Draw()
 	_SCENEMGR._layers.midback:Draw()
 	_SCENEMGR._layers.floor:Draw()
+	_SCENEMGR.navigation:Draw()
 	_SCENEMGR._layers.closeback:Draw()
 	_SCENEMGR._DrawEntity()
 	_SCENEMGR._layers.nearsight:Draw()

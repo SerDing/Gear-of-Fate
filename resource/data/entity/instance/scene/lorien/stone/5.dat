@@ -1,0 +1,12 @@
+return {
+	render = {
+		obj = "sprite",
+		path = "scene/lorien/stone/5",
+	},
+	obstacle = {
+		ox = -4,
+		oy = -2,
+		width = 7,
+		height = 2,
+	},
+}

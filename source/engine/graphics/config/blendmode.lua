@@ -5,7 +5,7 @@
     Alter:2020-03-20
 ]]
 
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 
 ---@class Engine.Graphics.Config.Blendmode
 local _Blendmode = require("core.class")()

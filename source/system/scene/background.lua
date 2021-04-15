@@ -4,7 +4,7 @@
 	Since: 2021-01-30
 	Alter: 2021-02-01
 ]]
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _Frameani = require("engine.graphics.drawable.frameani")
 
 ---@class System.Scene.Background:Engine.Graphics.Drawable.Frameani

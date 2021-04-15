@@ -6,7 +6,7 @@
 ]]
 local _SETTING = require("setting")
 local _STRING = require("engine.string")
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _AUDIOMGR = require("engine.audio")
 local _RESOURCE = require("engine.resource")
 local _RESMGR = require("system.resource.resmgr")
@@ -67,7 +67,7 @@ function _Level:Ctor(path, LEVELMGR) --initialize
     self.nav = _Navigation.New(self.map["[virtual movable area]"], self)
 
     -- set directory for loading
-    self.directory = _STRING.split(path, "/")
+    self.directory = _STRING.Split(path, "/")
     self.directory = self.directory[#self.directory - 1] .. "/"
 
     self:LoadBackGround("[far]")

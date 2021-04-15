@@ -4,9 +4,7 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2020-09-11 11:37:50
 ]]
-local _Base = require("engine.graphics.drawable.base")
-local _Color = require("engine.graphics.config.color")
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _Vector2 = require("utils.vector2")
 
 ---@class Engine.Graphics.Drawable.Rect

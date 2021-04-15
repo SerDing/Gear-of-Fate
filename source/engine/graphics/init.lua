@@ -40,13 +40,22 @@ local _curShader = love.graphics.getShader()
 local _preFont
 local _curFont = love.graphics.getFont()
 
-
 love.graphics.setPointSize(5)
 love.graphics.setBackgroundColor(100, 100, 100, 255)
 --love.graphics.setDefaultFilter("nearest", "nearest")
 
 function _GRAPHICS.Init()
 
+end
+
+function _GRAPHICS.DrawDownTriangle(x, y, edge) -- e.g:edge:15
+    love.graphics.polygon("fill", x, y, x + edge, y, x + edge / 2, y + math.sqrt(math.pow(edge, 2) - math.pow(edge / 2, 2)))
+end
+
+function _GRAPHICS.DrawVerticalScrollBar(x, y)
+    local w, h, r = 10, 100, 5
+    _GRAPHICS.SetColor(200, 200, 200, 255)
+    _GRAPHICS.DrawRect("fill", x, y, w, h, r, r)
 end
 
 function _GRAPHICS.SetColor(red, green, blue, alpha)
@@ -92,6 +101,7 @@ end
 function _GRAPHICS.SetWindowMode(w, h, flags)
     local lastw, lasth = _GRAPHICS.GetDimension()
     love.window.setMode(w, h, flags)
+
     if w ~= lastw or h ~= lasth then
         _dimensionRatio:Set(w / oriwidth, h / oriheight)
     end

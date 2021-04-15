@@ -8,7 +8,7 @@
 local _Event = require("core.event")
 local _Level = require("system.scene.level")
 local _CAMERA = require("system.scene.camera")
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _FILE = require('engine.filesystem')
 local _RESOURCE = require("engine.resource")
 

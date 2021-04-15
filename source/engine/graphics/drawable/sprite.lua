@@ -5,11 +5,8 @@
 	Alter: 2020-02-10 02:11:12
 ]]
 local _SETTING = require("setting")
-local _Vector2 = require("utils.vector2")
-local _GRAPHICS = require("engine.graphics.graphics")
 local _RESOURCE = require('engine.resource')
 local _Rect = require("engine.graphics.drawable.rect")
-local _Color = require("engine.graphics.config.color")
 local _Base = require("engine.graphics.drawable.base") 
 
 ---@class Engine.Graphics.Drawable.Sprite:Engine.Graphics.Drawable.Base 

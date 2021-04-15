@@ -4,7 +4,7 @@
     Since:2020-02-07
     Alter:2020-03-20
 ]]
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _RESOURCE = require("engine.resource")
 
 ---@class Engine.Graphics.Config.Shader

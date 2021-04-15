@@ -4,7 +4,7 @@
 	Since: 2020-02-09
 	Alter: 2020-02-09
 ]]
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 
 ---@class Engine.Graphics.Config.Color
 local _Color = require("core.class")()
@@ -59,6 +59,7 @@ _Color.const = {
     red = _Color.New(255, 0, 0, 255),
     green = _Color.New(0, 255, 0, 255),
     blue = _Color.New(0, 0, 255, 255),
+    yellow = _Color.New(255, 255, 0, 255),
 }
 
 return _Color

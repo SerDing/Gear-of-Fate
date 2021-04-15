@@ -8,7 +8,7 @@
 		* Attention! You can't move the camera when it has a locking target
 ]]
 
-local _GRAPHICS = require("engine.graphics.graphics")
+local _GRAPHICS = require("engine.graphics")
 local _Vector2 = require("utils.vector2") 
 
 ---@class Camera

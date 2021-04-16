@@ -8,17 +8,20 @@ local _SETTING = require("setting")
 local _RESOURCE = require('engine.resource')
 
 ---@class Engine.Audio
----@field protected _playingQueue table<number, SoundData>
 local _AUDIO = {}
 
-local _music = {
-    _BGM = {id = '', source = nil},
-    _AMB = {id = '', source = nil},
-    _playingQueue = {},
+local _playbackQueue = {} ---@type table<number, SoundData>
+local _sceneMusicData = {
+    source = nil,
+    path = "",
+}
+local _ambientSonudData = {
+    source = nil,
+    path = "",
 }
 
 function _AUDIO.Update(dt)
-    -- body
+    --TODO: play first sound in playbackQueue
 end
 
 ---@param soundData SoundData|string 
@@ -34,59 +37,43 @@ function _AUDIO.RandomPlay(soundDataSet)
     _AUDIO.PlaySound(soundDataSet[n])
 end
 
----@param idTable table
-function _AUDIO.PlaySceneMusic(idTable) -- play map music
-    -- example: idTable = {"AMB_FOREST_01", "M_FOREST_01_NEW"}
-    _AUDIO.PlayAMB(idTable[1])
-    _AUDIO.PlayBGM(idTable[2])
+--- play background music
+function _AUDIO.PlaySceneMusic(name)
+    _AUDIO.PlaySceneAudio(_sceneMusicData, name, _RESOURCE.LoadMusic)
+    _sceneMusicData.source:setVolume(_SETTING.music)
 end
 
-function _AUDIO.PlayBGM(id) -- play background music
-    _AUDIO.PlayMusic("_BGM", id)
-    _music._BGM.source:setVolume(_SETTING.music)
+--- play ambient music
+function _AUDIO.PlayAmbientSound(name)
+    _AUDIO.PlaySceneAudio(_ambientSonudData, "ambient/" .. name, _RESOURCE.LoadSound)
+    _ambientSonudData.source:setVolume(_SETTING.music)
 end
 
-function _AUDIO.PlayAMB(id) -- play ambient music
-    _AUDIO.PlayMusic("_AMB", id)
-    _music._AMB.source:setVolume(_SETTING.music)
-end
-
----@param tp string
----@param id string
-function _AUDIO.PlayMusic(tp, id) -- play music
-    assert(type(tp) == "string", "_AudioMgr.PlayMusic(tp, id) tp must be string! ")
-    assert(type(id) == "string", "_AudioMgr.PlayMusic(tp, id) id must be string! ")
-    id = string.upper(id)
-    if _music[tp].id == id then
-        if not _music[tp].source:isPlaying() then
-            _music[tp].source:play()
+---@param data table
+---@param path string
+---@param loadFunc fun(path:string):void
+function _AUDIO.PlaySceneAudio(data, path, loadFunc)
+    if data.path == path then
+        if not data.source:isPlaying() then
+            data.source:play()
         end
+
+        return true
     else
-        -- stop last music
-        if _music[tp].source then
-            _music[tp].source:stop()
-        end 
-
-        local _PATH
-        if tp == "BGM" then
-            _PATH = _AUDIO.audioList[id]
-        elseif tp == "EVM" then
-            _PATH = _AUDIO.pathHead .. _AUDIO.audioList[id]
+        if data.source then
+            data.source:stop()
         end
 
-        if not love.filesystem.exists(_PATH) then -- check file exists
-            print("Error: AUDIO:PlayMusic()" .. tp .. " no file:")
-            print("\t - ", _PATH)
-
+        data.source = loadFunc(path)
+        if data.source then
+            data.source:setLooping(true)
+            data.source:play()
+            data.path = path
+            return true
+        else
+            print("Error: Audio.PlaySceneAudio, audio source load failed!")
             return false
         end
-        
-        -- file exists, make the source point to new source
-        -- music_[tp].source = _RESMGR.LoadSound(_PATH)
-        _music[tp].source = _RESOURCE.LoadSound(_PATH)
-        _music[tp].source:setLooping(true)
-        _music[tp].source:play()
-        _music[tp].id = id -- record new index
     end
 
 end

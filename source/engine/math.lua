@@ -19,4 +19,28 @@ function _MATH.Lerp(a, b, time)
     return a + (b - a) * time
 end
 
+function _MATH.GetFixNumber(number)
+    return math.floor(number * 1000) / 1000
+end
+
+function _MATH.Sign(value)
+    if value == 0 then
+         return 0
+    end
+
+    return value > 0 and 1 or -1
+end
+
+---@param value number
+---@param left number
+---@param right number
+---@param rangeOpen boolean
+function _MATH.IsInRange(value, left, right, rangeOpen)
+    if rangeOpen then
+        return value >= left and value <= right
+    else
+        return value > left and value < right
+    end
+end
+
 return _MATH

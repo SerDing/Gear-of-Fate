@@ -10,7 +10,7 @@ local _STRING = {}
 --- @param str string 
 --- @param delimiter string 
 --- @return table 
-function _STRING.split(str, delimiter)
+function _STRING.Split(str, delimiter)
 	if str then
 		local result = {}
 		str = str..delimiter
@@ -26,7 +26,7 @@ end
 ---@param str_1 string
 ---@param str_2 string
 ---@param ... string
-function _STRING.concat(str_1, str_2, ...)
+function _STRING.Concat(str_1, str_2, ...)
 	local strs = {str_1, str_2}
 	local newStr = ""
 	local args = {...} -- use this solution to package multiple parameters because of luajit does not support arg which is supported by native lua(stop support after 5.2)

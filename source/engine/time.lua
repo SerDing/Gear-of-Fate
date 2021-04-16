@@ -4,39 +4,52 @@
 	Since: 2021-02-05
 	Alter: 2021-02-05
 ]]
----@class Engine.Time
-local _TIME = {}
-local _FRAME_MAX = 1000000000
-local _frame = 0
-local _Floor = math.floor
+local _MATH = require("engine.math")
+local _SETTING = require("setting")
 
-function _TIME._FrameUpdate()
-	_frame = _frame + 1
-	if _frame > _FRAME_MAX then
-		_frame = 0
-	end
-end
+---@class Engine.Time
+local _TIME = {
+	shouldUpdate = true,
+}
+local _FRAME_MAX = 1000000000
+local _fps = 0
+local _frame = 0
+local _time = 0
+local _lastFrameTime = love.timer.getTime()
+local _STANDARD_DT = _MATH.GetFixNumber(1 / _SETTING.fps)
+_LOG.Debug("TIME _STANDARD_DT:%.3f", _STANDARD_DT)
 
 function _TIME.Update(dt)
-	_TIME._FrameUpdate()
+	_frame = _frame > _FRAME_MAX and 0 or _frame + 1
+	_fps = love.timer.getFPS()
+	_time = love.timer.getTime()
 
-	return _Floor(dt * 1000) / 1000
+	_TIME.shouldUpdate = (_time - _lastFrameTime >= _STANDARD_DT) and true or false
+	if _TIME.shouldUpdate then
+		_lastFrameTime = _lastFrameTime + _STANDARD_DT
+	end
+
+	--return _MATH.GetFixNumber(dt)
+	return _STANDARD_DT
 end
 
 function _TIME.GetFrame()
 	return _frame
 end
 
-function _TIME.GetDelta()
-	return love.timer.getDelta()
+---@param real boolean
+function _TIME.GetStandardDelta(real)
+	return real and _MATH.GetFixNumber(love.timer.getDelta()) or _STANDARD_DT
 end
 
-function _TIME.GetTime()
-	return love.timer.getTime()
+--- Return the time when this frame began
+---@param real boolean
+function _TIME.GetTime(real)
+	return real and love.timer.getTime() or _time
 end
 
 function _TIME.GetFPS()
-	return love.timer.getFPS()
+	return _fps
 end
 
 return _TIME

@@ -10,6 +10,16 @@ local _FILE = require('engine.filesystem')
 
 ---@class Engine.Resource
 local _RESOURCE = {}
+local _RESDIR = "resource/"
+local _DIRS = {
+    IMAGE = _RESDIR .. "image/",
+    SOUND = _RESDIR .. "sound/",
+    MUSIC = _RESDIR .. "music/",
+    COLLIDER = _RESDIR .. "data/entity/collider/",
+    ANIM = _RESDIR .. "data/animation/",
+    SPRITE = _RESDIR .. "data/sprite/",
+    UI = _RESDIR .. "data/ui/",
+}
 
 local _pools = {
     aniData = {},
@@ -36,13 +46,23 @@ function _RESOURCE.NewImage(path)
         return love.graphics.newImage(path)
     end
     
-    return love.graphics.newImage("resource/image/" .. path .. ".png")
+    return love.graphics.newImage(_DIRS.IMAGE .. path .. ".png")
 end
 
 ---@param path string
 ---@return SoundData 
 function _RESOURCE.NewSoundData(path)
-    return love.sound.newSoundData("resource/sound/" .. path .. ".ogg")
+    return love.sound.newSoundData(_DIRS.SOUND .. path .. ".ogg")
+end
+
+---@param path string
+---@return Source
+function _RESOURCE.NewMusic(path)
+    if type(path) ~= "string" then
+        return love.audio.newSource(path)
+    end
+
+    return love.audio.newSource(_DIRS.MUSIC .. path .. ".ogg")
 end
 
 ---@param path string
@@ -52,14 +72,14 @@ function _RESOURCE.NewSound(path)
         return love.audio.newSource(path)
     end
 
-    return love.audio.newSource("resource/sound/" .. path .. ".ogg")
+    return love.audio.newSource(_DIRS.SOUND .. path .. ".ogg")
 end
 
 ---@param path string
 ---@return Engine.Graphics.Drawable.SpriteData
 function _RESOURCE.NewSpriteData(path)
     ---@type Engine.Graphics.Drawable.SpriteData
-    local data = _RESOURCE.LoadData("resource/data/sprite/" .. path)
+    local data = _RESOURCE.LoadData(_DIRS.SPRITE .. path)
     data.image = _RESOURCE.LoadImage(path)
 
     return data
@@ -71,7 +91,7 @@ end
 ---@return Engine.Resource.AnimData
 function _RESOURCE.NewAniData(path, newSpriteDataFunc, imgPath) 
     imgPath = imgPath and imgPath .. "/" or ""
-    local staticData = _RESOURCE.LoadData("resource/data/animation/" .. path)
+    local staticData = _RESOURCE.LoadData(_DIRS.ANIM .. path)
 
     ---@class Engine.Resource.AnimData
     ---@field public path string
@@ -102,7 +122,7 @@ function _RESOURCE.NewAniData(path, newSpriteDataFunc, imgPath)
 end
 
 function _RESOURCE.NewColliderData(path)
-    path = "resource/data/entity/collider/" .. path
+    path = _DIRS.COLLIDER .. path
     local exists = _FILE.Exist(path .. ".dat")
     return exists and _RESOURCE.LoadData(path) or nil
 end
@@ -126,6 +146,12 @@ function _RESOURCE.LoadSoundData(path)
 end
 
 ---@param path string
+---@return Source
+function _RESOURCE.LoadMusic(path)
+    return _RESOURCE.LoadResource(path, _RESOURCE.NewMusic, _pools.sound)
+end
+
+---@param path string
 ---@return Engine.Graphics.Drawable.SpriteData
 function _RESOURCE.LoadSpriteData(path)
     return _RESOURCE.LoadResource(path, _RESOURCE.NewSpriteData, _pools.spriteData)
@@ -141,7 +167,7 @@ end
 ---@param path string
 ---@return table
 function _RESOURCE.LoadUiData(path)
-    return _RESOURCE.LoadData("resource/data/ui/" .. path)
+    return _RESOURCE.LoadData(_DIRS.UI .. path)
 end
 
 ---@param path string
@@ -157,12 +183,20 @@ function _RESOURCE.LoadData(path, subpath)
     if type(path) == "table" then
         return path
     end
-    path = subpath and path .. subpath .. ".dat" or path .. ".dat"
-    assert(_FILE.Exist(path), "no file: ".. path)
-    local subDirectory = subpath and _STRING.GetFileDirectory(subpath) or ""
+
+    local subDirectory = ""
+    if subpath then
+        path = path .. subpath .. ".dat"
+        subDirectory = _STRING.GetFileDirectory(subpath)
+    else
+        path = path .. ".dat"
+    end
+
+    if _FILE.Exist(path) == false then
+        error("_RESOURCE.LoadData, no file:" .. path)
+    end
+
     local content = _FILE.LoadFile(path)
-    --local A = _STRING.GetFileDirectory(path)
-    --content = string.gsub(content, "$A", A)
     content = string.gsub(content, "$SD", subDirectory)
     return loadstring(content)()
 end

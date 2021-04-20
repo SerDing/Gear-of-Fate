@@ -1,32 +1,24 @@
 # Input Manager
-## 1.Input abstract layer(InputMap)
-To process input messages from multiple kinds of input device and make players could customize key-mapping, we need add a abstract layer to transform all input messages to some game internal logical messages. We called it game action.
+## 1.Input Mapping
+输入映射，负责将原始硬件输入信息转换为游戏内定义的输入事件（Input Event）。
 
-    key_msg --> action
-    
-    eg: "x" --> "attack"
-    if input.isActionPressed("attack") then
-        self.FSM:SetState("attack")
-    end
-    
-## 2.Skill Shortcut System
+映射结构为InputControl->InputEvent
 
-Generally, skill is started by shortcut(hot key), so we need a table to store game action of shortcuts and real skill game action.
+InputEvent定义了所触发的输入事件，它有两个字段：name，type。
 
-    key_msg --> skill_shortcut_name --> skill_action(skill_name)
+name为事件名，type代表实际的事件类型（按钮事件/轴事件）。
 
-    eg: "a" --> "skill_shortcut_1" --> hero.skillShortcutsMap["skill_shortcut_1"]
-    --> skill_action(skill_name)
-    
-    INPUT(key_msg)-->Input(skill_shortcut_name)-->Hero.skillShortcutsMap(skill_name)-->Input(skill_action)
-    
-    SkillMgr: skillShortcutsMap<string, string> = { [skill_shortcut_name] = skill_name }
-    
-    update the skillShortcutsMap:
-    HUD:
-        SkillShortcuts[i]:HandleEvent(btn, x, y)
-        SkillShortcuts[i]:SetSkill(id)
-    
-    SkillShortcutController(shortcut, btn, x, y):
-        skillMgr = EntityManager.mainPlayer.Components.SkillMgr
-        hero.skillShortcutsMap[shortcut.name] = skillMgr:GetSkillNameByID(shortcut:GetSkillID())
+InputControl定义了InputEvent的输入源，它有三个字段：device，type，code。
+
+device代表操控设备，type代表具体输入类型（按钮/轴），code代表键或轴的标识符。
+
+## 2.Input Device
+
+为各种输入设备实现类，使它们都继承InputState来管理原始输入的状态。
+
+由InputSystem向其注册control对象，接收到原始输入后，通过control转换为具体的InputEvent数据，传回InputSystem。
+
+同时它们还拥有InputSystem的引用，便于
+
+## 3.Input Component
+

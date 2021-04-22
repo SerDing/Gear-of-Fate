@@ -18,26 +18,16 @@ function _Stay:Enter()
 end
 
 function _Stay:Update(dt) 
-	_Base.AutoEndTrans(self)
-	if self._input:IsHold("UP") or self._input:IsHold("DOWN") then
-		self._STATE:SetState(self._nextState,self._entity)
-	end 
-	
-	if self._input:IsHold("LEFT") then
-		self._entity.transform.direction = -1
-		self._STATE:SetState(self._nextState, self._entity)
-	elseif self._input:IsHold("RIGHT") then
-		self._entity.transform.direction = 1
+	_Base.AutoTransitionAtEnd(self)
+
+	if self._movement.moveSignal.left or self._movement.moveSignal.right
+	or self._movement.moveSignal.up or self._movement.moveSignal.down then
 		self._STATE:SetState(self._nextState, self._entity)
 	end
 end 
 
 function _Stay:Exit()
 	_Base.Exit(self)
-end
-
-function _Stay:GetTrans()
-	return self._trans
 end
 
 return _Stay 

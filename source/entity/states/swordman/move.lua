@@ -4,8 +4,10 @@
 	Since: 2017-07-28 21:54:14
 	Alter: 2017-07-30 12:40:40
 ]]
-
+local _TIME = require('engine.time')
 local _Vector2 = require("utils.vector2")
+local _MATH = require("engine.math")
+local _SETTING = require("setting")
 local _Base  = require "entity.states.base"
 
 ---@class State.Move : State.Base
@@ -13,33 +15,75 @@ local _Move = require("core.class")(_Base)
 
 function _Move:Ctor(data, ...)
     _Base.Ctor(self, data, ...)
-    self.name = "dash"
-    self.time_up = 0
-    self.time_down = 0
-    self.time_left = 0
-    self.time_right = 0
-    self.speed = _Vector2.New()
-end 
+    self.name = "move"
+    self._timeUp = 0
+    self._timeDown = 0
+    self._timeLeft = 0
+    self._timeRight = 0
+    self._speed = _Vector2.New()
+end
+
+function _Move:Init(entity)
+    _Base.Init(self, entity)
+    self._input:BindAction("move-left", self._input.STATE.PRESSED, nil, function()
+        self._movement.moveSignal.left = true
+        self._movement.moveSignalTime.left = _TIME.GetTime(true)
+    end)
+    self._input:BindAction("move-right", self._input.STATE.PRESSED, nil, function()
+        self._movement.moveSignal.right = true
+        self._movement.moveSignalTime.right = _TIME.GetTime(true)
+    end)
+    self._input:BindAction("move-up", self._input.STATE.PRESSED, nil, function()
+        self._movement.moveSignal.up = true
+        self._movement.moveSignalTime.down = _TIME.GetTime(true)
+    end)
+    self._input:BindAction("move-down", self._input.STATE.PRESSED, nil, function()
+        self._movement.moveSignal.down = true
+        self._movement.moveSignalTime.up = _TIME.GetTime(true)
+    end)
+
+    self._input:BindAction("move-left", self._input.STATE.RELEASED, nil, function()
+        self._movement.moveSignal.left = false
+    end)
+    self._input:BindAction("move-right", self._input.STATE.RELEASED, nil, function()
+        self._movement.moveSignal.right = false
+    end)
+    self._input:BindAction("move-up", self._input.STATE.RELEASED, nil, function()
+        self._movement.moveSignal.up = false
+    end)
+    self._input:BindAction("move-down", self._input.STATE.RELEASED, nil, function()
+        self._movement.moveSignal.down = false
+    end)
+end
 
 function _Move:Enter()
     _Base.Enter(self)
+    if self._movement.moveSignal.left then
+        self._entity.transform.direction = -1
+    elseif self._movement.moveSignal.right then
+        self._entity.transform.direction = 1
+    end
 end
 
 function _Move:Update(dt, timeScale)
     timeScale = timeScale or 1.0
-    local up = self._input:IsHold("UP")
-	local down = self._input:IsHold("DOWN")
-	local left = self._input:IsHold("LEFT")
-    local right = self._input:IsHold("RIGHT")
+    local up = self._movement.moveSignal.up
+    local down = self._movement.moveSignal.down
+    local left = self._movement.moveSignal.left
+    local right = self._movement.moveSignal.right
     
     self._render.timeScale = self._entity.stats.moveRate * timeScale
     local moveSpeed = self._entity.stats.moveSpeed * timeScale
-    self.speed:Set(moveSpeed, moveSpeed * 0.56)
+    self._speed:Set(moveSpeed, moveSpeed * _SETTING.scene.AXIS_RATIO_Y)
     local axisX, axisY = 0, 0
+    self._timeLeft = self._movement.moveSignalTime.left
+    self._timeRight = self._movement.moveSignalTime.right
+    self._timeUp = self._movement.moveSignalTime.up
+    self._timeDown = self._movement.moveSignalTime.down
 
     if up or down then
         if up and down then
-            if self.time_up > self.time_down then
+            if self._timeUp > self._timeDown then
                 axisY = -1
             else
                 axisY = 1
@@ -53,7 +97,7 @@ function _Move:Update(dt, timeScale)
     
     if left or right then
         if left and right then
-            if self.time_left > self.time_right then
+            if self._timeLeft > self._timeRight then
                 axisX = -1
             else 
                 axisX = 1
@@ -68,24 +112,8 @@ function _Move:Update(dt, timeScale)
     if axisX ~= 0 and self._entity.transform.direction ~= axisX then
         self._entity.transform.direction = axisX
     end
-    self._movement:X_Move(axisX * self.speed.x)
-    self._movement:Y_Move(axisY * self.speed.y)
-
-    if self._input:IsPressed("UP") then
-        self.time_up = love.timer.getTime()
-    end 
-    
-    if self._input:IsPressed("DOWN") then
-        self.time_down = love.timer.getTime()
-    end 
-    
-    if self._input:IsPressed("LEFT") then
-        self.time_left = love.timer.getTime()
-    end 
-   
-    if self._input:IsPressed("RIGHT") then
-        self.time_right = love.timer.getTime()
-    end 
+    self._movement:Move('x', axisX * self._speed.x)
+    self._movement:Move('y', axisY * self._speed.y)
 
     if not up and not down and not left and not right then 
         self._STATE:SetState(self._nextState)
@@ -95,10 +123,6 @@ end
 
 function _Move:Exit()
     self._render.timeScale = 1.0
-end
-
-function _Move:GetTrans()
-	return self._trans
 end
 
 return _Move 

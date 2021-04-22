@@ -8,83 +8,91 @@
         * When you create an instance for a entity, it will register itself to the input module of engine.
         * skillInputMap is used to map some skill shortcut messages to concrete skill messages(e.g:"skill_1"->"gorecross")
 ]]
-
-local _INPUT = require("engine.input")
+local _Event = require("core.event")
+local _INPUT = require("engine.input") ---@type Engine.Input
+local _INPUT_DEFINE = require("engine.input.inputdefine")
 local _Base = require("entity.component.base")
 
 ---@class Entity.Component.Input : Engine.Input.InputHandler
----@field protected _buttonMap table @ map of actions
----@field public isAIControl boolean 
+---@field protected _actionBindings table<string, table<string, Event>>
+---@field protected _axisBindings table<string, Event>
+---@field protected _actionState table @ map of actions
 ---@field public skillInputMap table<string, string>
-local _Input = require("core.class")(_Base)
+local _InputComponent = require("core.class")(_Base)
 
-local _enum = {pressed = 0, hold = 1, released = 2}
+_InputComponent.STATE = _INPUT_DEFINE.STATE
 
-function _Input:Ctor(entity, data)
+function _InputComponent:Ctor(entity, data)
     _Base.Ctor(self, entity)
-    self._buttonMap = {}
+    self._actionState = {}
+    self._actionBindings = {
+        [_INPUT_DEFINE.STATE.PRESSED] = {},
+        [_INPUT_DEFINE.STATE.DOWN] = {},
+        [_INPUT_DEFINE.STATE.RELEASED] = {},
+    }
+    self._axisBindings = {
+        movex = _Event.New(),
+    }
     self.skillInputMap = data.skillInputMap or {}
-    self.isAIControl = false
     _INPUT.Register(self)
-end 
+end
 
-function _Input:Update(dt)
-    for k in pairs(self._buttonMap) do
-        if (self._buttonMap[k] == _enum.pressed) then
-            self._buttonMap[k] = _enum.hold
-		elseif (self._buttonMap[k] == _enum.released) then
-			self._buttonMap[k] = nil
-		end
+function _InputComponent:BindAction(action, state, obj, callback)
+    if not self._actionBindings[state][action] then
+        self._actionBindings[state][action] = _Event.New()
+    end
+    self._actionBindings[state][action]:AddListener(obj, callback)
+    --print("BindAction", action, state, self._actionBindings[state][action])
+end
+
+---@param axis string
+---@param callback fun(value:number):void
+function _InputComponent:BindAxis(axis, obj, callback)
+    if not self._axisBindings[axis] then
+        self._axisBindings[axis] = _Event.New()
+    end
+    self._axisBindings[axis]:AddListener(obj, callback)
+end
+
+function _InputComponent:UnBindAction(action, state, obj, callback)
+    local event = self._actionBindings[state][action]
+    if event then
+        event:DelListener(obj, callback)
     end
 end
 
----@param button string
-function _Input:IsPressed(button)
-	return self._buttonMap[button] == _enum.pressed
-end
-
----@param button string
-function _Input:IsHold(button)
-	return self._buttonMap[button] == _enum.hold
-end
-
----@param button string
-function _Input:IsReleased(button)
-	return self._buttonMap[button] == _enum.released
-end
-
----@param button string
-function _Input:Press(button)
-    button = self.skillInputMap[button] or button -- translate shortcut action to skill action
-    if not self._buttonMap[button] then
-        self._buttonMap[button] = _enum.pressed
-
-        return true
-    end
-    return false
-end
-
----@param button string
-function _Input:Release(button)
-    button = self.skillInputMap[button] or button -- translate skill action
-    if self._buttonMap[button] and self._buttonMap[button] ~= _enum.released then
-        self._buttonMap[button] = _enum.released
-        
-        return true
-    end
-    return false
-end
-
-function _Input:OnPress(button)
-    if self._entity.aic.enable == false then
-        self:Press(button)
+function _InputComponent:UnBindAxis(axis, obj, callback)
+    local event = self._axisBindings[axis]
+    if event then
+        event:DelListener(obj, callback)
     end
 end
 
-function _Input:OnRelease(button)
-    if self._entity.aic.enable == false then
-        self:Release(button)
+function _InputComponent:InputAction(action, state)
+    local event = self._actionBindings[state][action]
+    print("InputAction: ", action, state, event)
+    if event then
+        event:Notify()
     end
 end
 
-return _Input 
+function _InputComponent:InputAxis(axis, value)
+    local event = self._axisBindings[axis]
+    if event then
+        event:Notify(value)
+    end
+end
+
+function _InputComponent:HandleAction(action, state)
+    if not self._entity.aic.enable then
+        self:InputAction(action, state)
+    end
+end
+
+function _InputComponent:HandleAxis(axis, value)
+    if not self._entity.aic.enable then
+        self:InputAxis(axis, value)
+    end
+end
+
+return _InputComponent
